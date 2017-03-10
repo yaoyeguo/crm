@@ -1,0 +1,101 @@
+<div class="tableform">
+    <div class="division1">
+        <table>
+            <tr>
+                <th><label><{t}>营销店铺：<{/t}></label></th>
+                <td><{$wangwang_info.shop_name}></td>
+            </tr>
+            <tr>
+                <th><label>人数预估：</label></th>
+                <td id="members_num"><{$wangwang_info.person_count}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><label><{t}>活动类型：<{/t}></label></th>
+                <td>
+                    <label><input name="send_method" type="radio" value="sms" checked="checked" /> 短信</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label class="hide"><input name="send_method" type="radio" value="edm" /> 邮件</label>
+                </td>
+            </tr>
+        </table>
+        
+        <input id="id" type="hidden" value="<{$id}>" />
+        
+        <div class="table-action">
+            <{if $wangwang_info.person_count > 0 }>
+            <{button label="下一步 >>" type="button" id="btn_next" class="btn-primary"}>
+            <{/if}> 
+            <{button label="关闭" type="button" id="close_btn" class="nodisabled"}>
+        </div>
+        
+        
+    </div>
+</div>
+
+<script>
+window.addEvent('domready',function(){
+    //关闭弹出层
+    $('close_btn').addEvent('click',function(){
+        $('close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $('btn_next').addEvent('click',function(){
+        create_active();
+    });
+    
+    $('shop_id').addEvent('change',function(){
+        get_members();
+    });
+});
+
+function create_active(){
+    var shop_id = "<{$wangwang_info.shop_id}>";
+    var send_method = $$('input[name="send_method"]:checked').get('value');
+    var _title = '';
+    
+    send_method=='sms' ? _title='短信' : _title='邮件';
+    _title += '旺旺属性下单客户';
+    //alert(send_method);
+    
+    if(shop_id == ''){
+        alert('请选择店铺');
+        return false;
+    }
+    
+    if($('members_num').get('html') == '0' || $('members_num').get('html') == '...'){
+        alert('营销客户数为 0');
+        return false;
+    }
+
+    var model_id = $('id').value;
+    var wangwang_model = "<{$wangwang_model}>";
+    var _url = "?app=market&ctl=admin_active_"+send_method+"&act=create_active&send_method="+send_method+"&shop_id="+shop_id+"&wangwang_model="+wangwang_model;
+    $('close_btn').getParent('.dialog').retrieve('instance').close();
+    new Dialog(_url,{title:_title,width:600,height:300,onShow:function(){}});
+}
+
+function get_members(){
+
+    $('members_num').set('html', '...');
+
+    var shop_id = $('shop_id').value;
+    var id = $('id').value;
+    if(shop_id == '' || this.value==''){
+        $('members_num').set('html', 0);
+        return false;
+    }
+    
+    var _url = 'index.php?app=taocrm&ctl=admin_sale_model&act=get_members&id='+id+'&shop_id='+shop_id;
+    new Request({
+        url : _url,
+        method : 'post',
+        //update : $('members_num'),
+        data:{'id':$('id').value},
+        onSuccess:function(responseText){
+            //alert(responseText);
+            $('members_num').set('html', responseText);
+        }
+    }).send();
+}
+</script>
+

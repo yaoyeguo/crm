@@ -1,0 +1,93 @@
+<style>
+h3,h4,ul {margin:0;padding:0;}
+.tableform {padding:10px 0 0 20px;}
+#intro {list-style:none;line-height:2em;padding:0 0 0 30px;color:#069;}
+</style>
+
+<div style="padding:20px 0 0 50px;">
+
+    <h3>开启矩阵私有化</h3>
+    <div class="tableform">
+        <div style="padding:0 0 0 20px;">
+            <form method="post" action="index.php?app=desktop&ctl=matrix&act=index" id="form-branch">
+                <table cellpadding=0 cellspacing=0 >
+                    <tr>
+                        <th width="100"><{t}>是否开启矩阵私有化:<{/t}>：</th>
+                        <td>
+                            <input type="radio" name='switch' class="switch_matrix" value="0" <{if($matrix_switch['switch'] == 0)}>checked<{/if}>>关闭
+                            <input type="radio" name='switch' class="switch_matrix" value="1"<{if($matrix_switch['switch'] == 1)}>checked<{/if}>>开启
+                        </td>
+                    </tr>
+                    <tr class="set_config" >
+                        <th><{t}>私有矩阵api<{/t}>：</th>
+                        <td><input class="x-input" type="text" name="api_url" size="100" value="<{$matrix_switch['api_url']}>"/></td>
+                    </tr>
+                    <tr class="set_config" >
+                        <th><{t}>prism api<{/t}>：</th>
+                        <td><input class="x-input" type="text" name="prism_api" size="100" value="<{$matrix_switch['prism_api']}>"/></td>
+                    </tr>
+                    <tr class="set_config" >
+                        <th><{t}>key<{/t}>：</th>
+                        <td><input class="x-input" type="text" name="key" size="100" value="<{$matrix_switch['key']}>"/></td>
+                    </tr>
+                    <tr class="set_config" >
+                        <th><{t}>secret<{/t}>：</th>
+                        <td><input class="x-input" type="text" name="secret" size="100" value="<{$matrix_switch['secret']}>"/></td>
+                    </tr>
+                    <tr>
+                        <th><{t}><{/t}></th>
+                        <td>
+                            <{button label="保存" type="button" name="submit" id="btn-branch"}>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    var matrix_switch = "<{$matrix_switch['switch']}>";
+    if(matrix_switch == 1)
+    {
+        $$('.set_config').show();
+    }else{
+        $$('.set_config').hide();
+    }
+    $$('.switch_matrix').addEvent('click', function(e){
+        if(this.get('value') == 1)
+        {
+            $$('.set_config').show();
+        }else{
+            $$('.set_config').hide();
+        }
+    })
+    var _form = $('form-branch');//form_id
+    var btn =$('btn-branch');//bt_id
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+        
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                
+                if(_dialogIns)
+                {   
+                    _dialogIns.close();
+                    //window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+                }
+            }
+            
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+})();
+</script>

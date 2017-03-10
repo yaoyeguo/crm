@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>amCharts examples</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="<{$env.app.res_url}>/amcharts/amcharts.js?v=final" type="text/javascript"></script> 
+        <script type="text/javascript">
+            var chart;
+            AmCharts.ready(function () {
+                // SERIAL CHART
+                chart = new AmCharts.AmSerialChart();
+                chart.dataProvider = <{$chartData}>;
+                chart.categoryField = "date";
+                chart.marginTop = 0;
+                chart.fontSize = 12;
+                
+                // AXES
+                // category axis
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.autoGridCount = false;
+                categoryAxis.gridCount = 50;
+                categoryAxis.gridAlpha = 0;
+                categoryAxis.gridColor = "#CC0000";
+                categoryAxis.axisColor = "#555555";
+               // categoryAxis.balloonText = "客户数[[value]]人";
+                categoryAxis.title = "客户数";
+                
+                
+                var durationAxis = new AmCharts.ValueAxis();
+                durationAxis.title = "销售总金额";
+                chart.addValueAxis(durationAxis);
+
+                var distanceAxis = new AmCharts.ValueAxis();
+                distanceAxis.title = "预测金额";
+                distanceAxis.gridAlpha = 0;
+                distanceAxis.position = "right";
+                distanceAxis.inside = true;
+                distanceAxis.axisAlpha = 0;
+                chart.addValueAxis(distanceAxis);
+
+                // GRAPHS
+                // duration graph
+                var durationGraph = new AmCharts.AmGraph(); //预测金额
+                durationGraph.title = "duration";
+                durationGraph.valueField = "duration";
+                durationGraph.type = "line";
+                durationGraph.lineThickness =0;
+                durationGraph.valueAxis = durationAxis; // indicate which axis should be used
+                durationGraph.lineColor = "#CC0000";
+                durationGraph.balloonText = "销售总金额[[value]]元";
+                durationGraph.legendValueText = "[[value]]";
+                durationGraph.bullet = "square";
+                chart.addGraph(durationGraph);
+
+                // distance graph
+                var distanceGraph = new AmCharts.AmGraph();//销售金额
+                distanceGraph.valueField = "distance";
+                distanceGraph.title = "distance";
+                distanceGraph.type = "line";
+                //durationGraph.lineThickness =0;
+                distanceGraph.valueAxis = distanceAxis; // indicate which axis should be used
+                distanceGraph.balloonText = "预测金额：[[value]]元";
+                distanceGraph.legendValueText = "[[value]]";
+                distanceGraph.lineColor = "#0D8ECF";
+                distanceGraph.bullet = "round";
+                chart.addGraph(distanceGraph);
+
+             	// LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.fontSize = 12;//图例
+                legend.equalWidths = false;
+                chart.addLegend(legend);
+                
+                // CURSOR
+                var chartCursor = new AmCharts.ChartCursor();//鼠标线
+                //chartCursor.cursorPosition = "mouse";//鼠标线的位置，跟随鼠标或自动对齐
+                chart.addChartCursor(chartCursor);
+
+                // WRITE                                
+                chart.write("chartdiv")
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div id="chartdiv" style="width:100%; height:380px;"></div>
+    </body>
+
+</html>

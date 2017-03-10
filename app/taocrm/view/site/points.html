@@ -1,0 +1,25 @@
+<div style="padding:20px">
+    <table class="tbl_list" border="0" cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+        <td>积分变化</td>
+        <td>店铺</td>
+        <td>类型</td>
+        <td>时间</td>
+        </tr>
+        </thead>
+        <tbody>
+        <{foreach from=$point_logs item=data}>
+        <tr>
+        <td><{$data.points}></td>
+        <td><{$data.shop_name}></td>
+        <td><{$data.point_type}></td>
+        <td><{$data.create_time}></td>
+        </tr>
+        <{/foreach}>
+        </tbody>
+    
+    </table>
+    
+    <{$pager}>
+</div>

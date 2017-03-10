@@ -1,0 +1,34 @@
+<div class="tableform" style="background:#FFF;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+          <th><em class="c-red">*</em><{t}>规则名称：<{/t}></th>
+          <td><{input id="title" type="text" name="title" value=$rule.title size="25" vtype="required" }></td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em><{t}>起止时间：<{/t}></th>
+            <td><{input id="start_time" size="30" type='date' name='start_time' value=$rule.start_time vtype="required" }>
+                到
+                <{input id="end_time" size="30" type='date' name='end_time' value=$rule.end_time vtype="required" }>
+            </td>
+        </tr>  
+        <tr>
+            <th><em class="c-red">*</em><{t}>时间类型：<{/t}></th>
+            <td>
+                <{assign var="opt" value=array('sendtime'=>'订单处理时间','createtime'=>'订单创建时间','pay_time'=>'订单付款时间')}>
+                <{input type="select" id="time_type" name="time_type" options=$opt value=$rule.time_type}>
+            </td>
+        </tr>             
+        <tr>
+            <th><em class="c-red">*</em><{t}>状　　态：<{/t}></th>
+            <td>
+                <label>
+                    <input type="radio" value="1" name="status" /> 开启
+                </label>
+                　　　　　　
+                <label>
+                    <input type="radio" value="0" name="status" /> 关闭
+                </label>
+            </td>
+        </tr>
+    </table>
+</div>

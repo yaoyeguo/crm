@@ -1,0 +1,44 @@
+<style>
+h3,h4,ul {margin:0;padding:0;}
+.tableform {padding:10px 0 0 20px;}
+#intro {list-style:none;line-height:2em;padding:0 0 0 30px;color:#069;}
+</style>
+
+<div style="padding:20px 0 0 50px;">
+    
+    <h3>绑定ECShop配置信息</h3>
+	<div class="tableform">
+        <div style="padding:0 0 0 20px;">
+			<table cellpadding=0 cellspacing=0 >
+			 <tr>
+			     <th width="100"><{t}>淘管crm网址<{/t}>：</th>
+			     <td><input class="x-input" type="text" size="40" value="<{$import_host}>" /></td>
+			 </tr>
+             <tr>
+                 <th><{t}>授权码<{/t}>：</th>
+                 <td><input class="x-input" type="text" size="40" value="<{$token}>" /> * 仅限绑定ECShop</td>
+             </tr>
+             <tr>
+                 <th><{t}>绑定教程<{/t}>：</th>
+                 <td><a href="http://pingjia.taoex.com/bbsview.asp?id=266" target="_blank">请点击这里查看绑定ECShop的详细方法</a></td>
+             </tr>
+			</table>
+        </div>
+	</div>
+    
+</div>
+
+<script>
+(function(){
+
+    /*
+	var state;
+	$('ImportBtn').addEvent('click',function(e){
+		if(state||!$('ImportCSV').value.length)return false;
+		state=true;
+		this.style.cursor='not-allowed';
+	});
+    */
+    
+})();
+</script>

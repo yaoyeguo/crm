@@ -1,0 +1,152 @@
+<style>
+#sel_goods_list li,#goods_list li{
+    border-bottom:1px solid #EAEEF4;
+    cursor:pointer;
+    overflow:hidden;
+}
+#sel_goods_list li.goods_header,#goods_list li.goods_header{
+    background:#DBE2ED;
+}
+#sel_goods_list .bn,#goods_list .bn{
+    display:block;
+    float:left;
+    width:100px;
+}
+</style>
+
+<div class="tableform">
+  <div class="">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody>
+        <tr>
+            <td width="50%">
+                <form method="post" id="terminal">
+                    <div class="division" style="height:284px;">
+                        <div style="height:26px;">已选择商品：<span id="goods_num"></span></div>
+                        <ul id="sel_goods_list" style="height:260px;overflow-y:scroll;margin:0;">
+                            <li class="goods_header"><span class='bn'>商家编码</span>商品名称</li>
+                            <{foreach from=$rs_goods item=data}>
+                            <li><input type='hidden' name='goods_id[]' value='<{$data.goods_id}>' /><span class='bn'><{$data.bn}>&nbsp;</span><{$data.name}></li>
+                            <{/foreach}>
+                        </ul>
+                    </div>
+                </form>
+            </td>
+            <td width="50%">
+                <div class="division" style="height:284px;">
+                    <div style="height:26px;">
+                        <span>
+                            商品名称/编码：
+                            <{input type="text" id="s_goods_name" /}>
+                            <{button class="filterBtn btn-thirdly" type="button" id="s_goods_btn" label="搜索"}>
+                        </span>
+                    </div>
+                    <ul id="goods_list" style="height:260px;overflow-y:scroll;margin:0;"></ul>
+                </div>
+            </td>
+        </tr>
+        
+        </tbody>
+       </table>
+      
+        <{area inject='.mainFoot'}>
+            <div class="table-action">
+                <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="提交"}>
+            </div>
+        <{/area}>
+  </div>
+</div>
+<script>
+(function(){
+
+    $('saveterminal').addEvent('click',function(event){
+        //提交表单    
+        new Request(
+        {
+            method : 'post',
+            url : 'index.php?app=ecorder&ctl=admin_orders&act=set_goods',
+            data: $('terminal').toQueryString(),
+            onSuccess : function(responseText) {
+                //alert(responseText);
+                if(responseText != 'null') {
+                    //var old_text = $('proNode').get('html');
+                    //$('proNode').set('html', old_text+responseText);
+                    var newNode = new Element('tbody');
+                    newNode.setHTML(responseText);
+                    newNode.injectAfter('proNode');
+                    count_price();
+                }
+            },
+            onFailure : function() {}
+        }).send();
+        try{
+            var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+        }catch(e){}
+        
+        if(_dialogIns)
+        {
+            _dialogIns.close();
+            //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+        }
+    });
+    
+    $('s_goods_btn').addEvent('click',function(event){
+        getProducts('search');
+    });
+    
+    $('goods_list').addEvent('dblclick',function(event){
+        copy_goods(event.target, 'sel_goods_list');
+    });
+    
+    $('sel_goods_list').addEvent('dblclick',function(event){
+        copy_goods(event.target, 'goods_list');
+    });
+    
+    getProducts('init');
+    
+    count_goods();
+
+})();
+
+function count_goods(){
+    $('goods_num').set('text', $$('#sel_goods_list li').length - 1); 
+}
+
+function copy_goods(ele, target){
+    if(ele.getTag() == 'span'){
+        ele = ele.getParent();
+    }
+    if(ele.getTag() == 'li' && !ele.hasClass('goods_header')){
+        ele.injectInside(target);
+        count_goods();
+    }
+}
+
+function getProducts(act){
+    var goods_name = $('s_goods_name').get('value');
+    if(act=='search' && goods_name==''){
+        //alert('请输入商品名称 或 商品编码');
+        //return false;
+    }
+    var sel_goods = '0';
+    $$('#sel_goods_list input').each(function($obj,i){
+        sel_goods += ','+$obj.value;
+    });
+  
+    var data_str = '&name='+goods_name+'&sel_goods='+sel_goods;
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecgoods&ctl=admin_shop_goods&act=ajaxGetGoodsList',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                $('goods_list').set('html', responseText);
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+</script>

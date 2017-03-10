@@ -1,0 +1,25 @@
+<div class="tableform">
+<input type="hidden" name="flag" value="1" />
+    <div class="table-action" id="saveCurrent" style=" font-weight: bold;font-size:24px;">正在提交...</div>
+</div>
+
+<script>
+(function(){
+	 new Request({url:'index.php?app=market&ctl=admin_coupon&act=<{$act}>&p[0]=<{$couponId}>',method:'post',data:{'flag': 1},
+         onSuccess:function(str){
+             if(str == 'ok'){
+            	 MessageBox.success('提交成功');
+            	 $('saveCurrent').set('text','提交成功');
+            	 opener.finderGroup["<{$env.get.finder_id}>"].refresh.delay(400,opener.finderGroup["<{$env.get.finder_id}>"]);
+                 setTimeout("window.close()",500);
+             }else{
+            	 $('saveCurrent').set('html',str);
+            	 //$('saveCurrent').getParent('.dialog').retrieve('instance').close();
+             }
+         }
+       }).send();
+	 
+	
+   
+})();
+</script>

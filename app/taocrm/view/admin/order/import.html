@@ -1,0 +1,77 @@
+<link href="http://g.alicdn.com/sj/dpl/1.0.0/css/sui.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.0.0/js/sui.min.js"></script>
+
+<div style="padding:20px;">
+
+    <ul class="sui-nav nav-tabs nav-large nav-primary">
+        <li><a href="index.php?app=ecorder&ctl=admin_debug">设置系统版本</a></li>
+        <li><a href="index.php?app=ecorder&ctl=admin_download&act=order">下载订单</a></li>
+        <li><a href="index.php?app=ecorder&ctl=admin_download&act=goods2">下载商品</a></li>
+        <li class="active"><a >导入订单</a></li>
+    </ul>
+
+    <form class="sui-form form-horizontal" action="" method="post" id="Form">
+        <table class="control-group">
+            <tr >
+                <th style="width:110px;"><label><{t}>选择店铺：<{/t}></label></th>
+                <td>
+                    <select class="input-medium " id="shop_list" name='shop_id' style="width:200px;">
+                        <{foreach from=$shop_list item=shop}>
+                        <option value="<{$shop['shop_id']}>"><{$shop['name']}></option>
+                        <{/foreach}>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label><{t}>开始时间：<{/t}></label></th>
+                <td><{input size="30" type='date' id='sdate' name='start_date' value=$start_date }></td>
+            </tr>
+            <tr>
+                <th><label><{t}>结束时间：<{/t}></label></th>
+                <td><{input size="30" type='date' id='edate' name='end_date' value=$end_date }></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><button type="button" id="save_code" class="sui-btn btn-primary">开始导入</button></td>
+            </tr>
+            <tr>
+                <td colspan="2"><div id='info' style="color: blue;padding-top: 10px;"></div></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+var _form = $('Form');
+$('save_code').addEvent('click',function(event){
+    ajax_import_order(0);
+});
+    
+function ajax_import_order(day_num){
+
+    $('info').set('html','订单导入开始执行...');
+    
+    var _url = 'index.php?app=taocrm&ctl=admin_order_import&act=import_order&day_num='+day_num;
+    var _data = '';
+    
+    _data += 'shop_id='+$('shop_list').get('value');
+    _data += '&start_date='+$('sdate').get('value');
+    _data += '&end_date='+$('edate').get('value');
+    
+    new Request({
+        url : _url,
+        method : 'post',
+        data : _data,
+        onSuccess : function(responseText){
+           // alert(responseText);
+            $('info').set('html',responseText);
+            day_num = day_num + 1;
+            if(responseText != 'ok'){
+                ajax_import_order(day_num);
+            }
+
+        }
+    }).send();
+    }
+</script>

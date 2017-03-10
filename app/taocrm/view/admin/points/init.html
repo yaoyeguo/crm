@@ -1,0 +1,117 @@
+<h3 class="head-title">积分初始化</h3>
+
+<div class="tableform">
+<div class="division">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <th><{t}>请选择店铺：<{/t}></th>
+           	<td>
+               <select class="x-input" id='shop_id' name='shop_id'>
+                    <option value="">-请选择-</option>
+                    <{foreach from=$shoplist item=item}>
+                    <option value="<{$item.shop_id}>" name="<{$item.name}>"><{$item.name}></option>
+                    <{/foreach}>
+               </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th><{t}>客户范围：<{/t}></th>
+            <td>
+                <label><input type='radio' name='init_type' value="all" /> 全部</label> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label><input type='radio' name='init_type' value="blank" checked="checked" /> 积分为0</label>
+            </td>
+        </tr>
+        
+        <tr>
+            <th><{t}>注意：<{/t}></th>
+            <td>
+                积分初始化以付款金额合计为准，包含全部付款历史订单
+            </td>
+        </tr>
+        
+        <tr style="display:none;" id="loading_bar">
+			<th>&nbsp;</th>
+			<td>
+                <div id="process_info">正在处理，请耐心等待。</div>
+                <div id="order_percent_bar">
+                    <div id="order_percent"></div>
+                </div>
+            </td>
+		</tr>
+        <tr id="submit_tr">
+			<th>&nbsp;</th>
+			<td><{button id="run_process" class="btn-primary" label=$___b2c="开始初始化"|t:'b2c' type="button"}></td>
+		</tr>
+    </table>
+    
+</div>
+</div>
+<style>
+#order_percent_bar {border:1px solid #5D84B0;width:400px;}
+#order_percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+
+    $$('#run_process').addEvent('click',function(){
+        run_process(0);         
+    });
+
+})();
+
+function run_process(page){
+    var shop_id = $('shop_id').get('value');
+    var init_type = 'all';
+    
+    $$('input[name=init_type]').each(function(ele){
+        if(ele.checked) init_type = ele.value;
+    });
+    
+    if(shop_id==""){
+        alert('请选择店铺');
+        $('shop_id').focus();
+        return false;
+    }
+    
+    if(!init_type){
+        alert('请选择客户范围');
+        return false;
+    }
+
+    var _data={'shop_id':shop_id,'init_type':init_type,'page':page};
+    $('loading_bar').show();
+    $('submit_tr').hide();
+    
+    new Request({
+        url : 'index.php?app=taocrm&ctl=admin_points_log&act=init_points',
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText=='finish')
+            if(responseText.indexOf('finish') != -1){
+                $('process_info').set('html','<font color=blue>全部完成</font>');
+                set_percent('100%');
+                $('submit_tr').show();
+            }else if(responseText.indexOf('fail') != -1){
+                $('process_info').set('html','<font color="red">发生错误：'+responseText.replace('fail','')+'</font>');
+                $('submit_tr').show();
+            }else if(responseText.indexOf('succ') != -1){
+                $('process_info').set('html','执行进度：'+responseText.replace('succ','')+' '+page*10);
+                set_percent(responseText.replace('succ',''));
+                run_process(page+1);
+            }else{
+                $('process_info').set('html',responseText);
+                $('submit_tr').show();
+            }
+        }
+    }).send();
+}
+
+function set_percent(percent) {
+    if($('order_percent')) {
+        $('order_percent').setStyle('width',percent);
+    }
+}
+</script>

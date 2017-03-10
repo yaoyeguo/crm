@@ -1,0 +1,57 @@
+
+<div id="step3" style="display:none;">
+     <h3>3.确认完毕，执行发送优惠劵</h3>
+    <table>
+        <tr>
+            <th width="20%">店铺： </th>
+            <td width="80%" id="final_shop_name"><{$shop_name}></td>
+        </tr>
+        <tr>
+            <th>优惠劵名称：</th><td id="final_active_name"><{$coupon.coupon_name}></td>
+        </tr>
+        
+        <!--短信发送清单：-->
+        <tr id="el_send_sms_list">
+            <th>优惠劵发送清单：</th>
+			<td  id="sms_total_num">
+			您选择的客户数：<span id="el_select_sms_membernums"></span><br />
+            当天已发送优惠劵客户数：<span style="color:#ff0000" id="el_sent_sms_membernums"></span>
+                &nbsp;&nbsp;是否发送:
+                <label><input type="radio" name="sent_member_sms" value="1" checked>是</label>
+                <label><input type="radio" name="sent_member_sms" value="0">否</label>
+            <br />
+            当前共待发送客户数：<span id="el_reality_sms_membernums"></span><br />
+            </td>
+        </tr>
+        
+        
+        <tr id="el_send_sms_no" style="display:none" colspan="2"><td>没有需要发送的短信</td></tr>
+        <tr id="el_send_sms_nt7" style="display:none" ><td colspan="2">(备注:单条短信超过67个字符,可能会被拆分成两条短信)</td></tr>
+    </table>
+    
+    <div id='sms_send_id' class="table-action" style="text-align:center;padding:5px 0;">
+        <{button label="<< 上一步" id="exec_up_btn" class="btn-primary" onClick="goStep2()"}> 
+        <{button label="发送" type="button" id="exec_btn" onClick="execSend()" class="btn-primary"}>
+        <{button label="关闭" type="button" class="close_btn btn-primary nodisabled"}>
+    </div>
+    
+    <p id="loading_bar" style="display:none;text-align:center;color:#4B5F87">
+        <br/><br/>
+        正在执行，请耐心等待…… 
+        <br/><img src="<{$env.app.res_url}>/loading42.gif" />
+    </p>
+    
+    <div id="sms_info_content" style="display: none;">
+        <p><span style="color:red;" id="difpice"></span></p>
+        <p>
+            <a href="index.php?app=market&ctl=admin_sms_account&act=index" target="_top">
+                <{button label="去充值>>" type="button" id="" class="btn-primary"}>
+            </a>
+        </p>
+    </div>  
+		
+</div>
+<script>
+
+
+</script>

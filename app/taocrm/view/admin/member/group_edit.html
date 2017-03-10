@@ -1,0 +1,865 @@
+<style>
+.region_list {margin:0;padding:0;}
+.region_list li{display:inline-block;width:75px;}
+
+#goods_page_nav { display:block;padding:5px 0 0 0;}
+#prev,#next,.sbtn {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+#no_prev,#no_next{background:#AAA;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;display:;}
+</style>
+
+<div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+    <form id="tmpl_form" action="index.php?app=taocrm&ctl=admin_member_group&act=save_group" method="post" >
+        <{input type="hidden" name="shop_id" id="shop_id" value=$data.shop_id}>
+        <{input type="hidden" name="group_id" value=$data.group_id}>
+        <{input type="hidden" name="parent_id" value=$data.parent_id}>
+        <{input type="hidden" name="create_type" value=$data.create_type}>
+        <div class="tabs-wrap finder-tabs-wrap clearfix">
+            <ul>
+                <li class="tab current"><span>分组信息</span></li>
+                <li class="tab"><span>购买行为</span></li>
+                <li class="tab"><span>客户属性</span></li>
+                <li class="tab"><span>商品范围</span></li>
+                <li class="tab"><span>所属地区</span></li>
+                <li class="tab"><span>自定义属性</span></li>
+            </ul>
+        </div>
+        
+        <div class="tableform">
+            <table>
+                <tr>
+                    <th> <{t}>店铺 ：<{/t}></th>
+                    <td><b><{$shops[$data.shop_id]}></b></td>
+                </tr>
+                <tr>
+                    <th> <{t}>分组名称 ：<{/t}></th>
+                    <td><{input type="text" name="group_name" style="width:200px" value=$data.group_name vtype="required"}></td>
+                </tr>
+                <tr>
+                    <th> <{t}>上级分组 ：<{/t}></th>
+                    <td><b style="color:#3A5999"><{$data.parent_name}></b></td>
+                </tr>
+                <tr>
+                    <th> <{t}>分组描述：<{/t}></th>
+                    <td><{input type="text" name="group_content" style="width:200px" value=$data.group_content}></td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        <div class="tableform" style="display:none">
+            <table>
+                <tr>
+                    <th>
+                    <{help}>所有订单状态包含（下单、已付款、关闭、成功交易、退款）<{/help}>
+                    <{t}>订单总数 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[total_orders][sign]" options=$select_sign value=$data.filter.total_orders.sign }>
+                        
+                        <{input type="text" name="filter[total_orders][min_val]" size=10 value=$data.filter.total_orders.min_val }>
+                        
+                        <span id="filter[total_orders][sign]" <{if $data.filter.total_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[total_orders][max_val]" size=10 value=$data.filter.total_orders.max_val }>
+                        </span>
+                    </td>
+                   <th>
+                    <{help}>订单状态为已完成的订单<{/help}>
+                    <{t}>成功的订单数 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[finish_orders][sign]" options=$select_sign value=$data.filter.finish_orders.sign }>
+                        
+                        <{input type="text" name="filter[finish_orders][min_val]" size=10 value=$data.filter.finish_orders.min_val }>
+                        
+                        <span id="filter[finish_orders][sign]" <{if $data.filter.finish_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[finish_orders][max_val]" size=10 value=$data.filter.finish_orders.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                    <{help}>所有订单状态包含（下单、已付款、关闭、成功交易、退款)订单的金额<{/help}>
+                    <{t}>订单总金额 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[total_amount][sign]" options=$select_sign value=$data.filter.total_amount.sign }>
+                        
+                        <{input type="text" name="filter[total_amount][min_val]" size=10 value=$data.filter.total_amount.min_val }>
+                        
+                        <span id="filter[total_amount][sign]" <{if $data.filter.total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[total_amount][max_val]" size=10 value=$data.filter.total_amount.max_val }>
+                        </span>
+                    </td>
+                    <th>
+                    <{help}>订单总金额/订单总数 <{/help}>
+                    <{t}>平均订单价 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[total_per_amount][sign]" options=$select_sign value=$data.filter.total_per_amount.sign }>
+                        
+                        <{input type="text" name="filter[total_per_amount][min_val]" size=10 value=$data.filter.total_per_amount.min_val }>
+                        
+                        <span id="filter[total_per_amount][sign]" <{if $data.filter.total_per_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[total_per_amount][max_val]" size=10 value=$data.filter.total_per_amount.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th> 
+                    <{help}>客户购买的次数含（下单、已付款、关闭、成功交易、退款）的订单，一天多笔订单只算一次<{/help}>
+                    <{t}>购买频次：<{/t}>
+                    </th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[buy_freq][sign]" options=$select_sign value=$data.filter.buy_freq.sign }>
+                        
+                        <{input type="text" name="filter[buy_freq][min_val]" size=10 value=$data.filter.buy_freq.min_val }>
+                        
+                        <span id="filter[buy_freq][sign]" <{if $data.filter.buy_freq.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[buy_freq][max_val]" size=10 value=$data.filter.buy_freq.max_val }>
+                        </span>
+                    </td>
+                    <th> 
+                    <{help}>时间段内(最后付款的日期 - 第一次付款的日期)/购买频次<{/help}>
+                    <{t}>平均购买间隔：<{/t}>
+                    </th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[avg_buy_interval][sign]" options=$select_sign value=$data.filter.avg_buy_interval.sign }>
+                        
+                        <{input type="text" name="filter[avg_buy_interval][min_val]" size=10 value=$data.filter.avg_buy_interval.min_val }>
+                        
+                        <span id="filter[avg_buy_interval][sign]" <{if $data.filter.avg_buy_interval.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[avg_buy_interval][max_val]" size=10 value=$data.filter.avg_buy_interval.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th> 
+                    <{help}>存在已付款订单的月份数<{/help}>
+                    <{t}>购买月数：<{/t}>
+                    </th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[buy_month][sign]" options=$select_sign value=$data.filter.buy_month.sign }>
+                        
+                        <{input type="text" name="filter[buy_month][min_val]" size=10 value=$data.filter.buy_month.min_val }>
+                        
+                        <span id="filter[buy_month][sign]" <{if $data.filter.buy_month.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[buy_month][max_val]" size=10 value=$data.filter.buy_month.max_val }>
+                        </span>
+                    </td>
+                    <th>
+                    <{help}>全部订单中出现的商品数量<{/help}>
+                    <{t}>下单商品总数：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[buy_products][sign]" options=$select_sign value=$data.filter.buy_products.sign }>
+                        
+                        <{input type="text" name="filter[buy_products][min_val]" size=10 value=$data.filter.buy_products.min_val }>
+                        
+                        <span id="filter[buy_products][sign]" <{if $data.filter.buy_products.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[buy_products][max_val]" size=10 value=$data.filter.buy_products.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                    <{help}>成功订单的总金额<{/help}>
+                    <{t}>成功的订单金额：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[finish_total_amount][sign]" options=$select_sign value=$data.filter.finish_total_amount.sign }>
+                        
+                        <{input type="text" name="filter[finish_total_amount][min_val]" size=10 value=$data.filter.finish_total_amount.min_val }>
+                        
+                        <span id="filter[finish_total_amount][sign]" <{if $data.filter.finish_total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[finish_total_amount][max_val]" size=10 value=$data.filter.finish_total_amount.max_val }>
+                        </span>
+                    </td>
+                    <th>
+                    <{help}>成功的平均订单价<{/help}>
+                    <{t}>成功的平均订单价：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[finish_per_amount][sign]" options=$select_sign value=$data.filter.finish_per_amount.sign }>
+                        
+                        <{input type="text" name="filter[finish_per_amount][min_val]" size=10 value=$data.filter.finish_per_amount.min_val }>
+                        
+                        <span id="filter[finish_per_amount][sign]" <{if $data.filter.finish_per_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[finish_per_amount][max_val]" size=10 value=$data.filter.finish_per_amount.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                    <{help}>已创建但未付款的订单<{/help}>
+                    <{t}>未付款订单数：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[unpay_orders][sign]" options=$select_sign value=$data.filter.unpay_orders.sign }>
+                        
+                        <{input type="text" name="filter[unpay_orders][min_val]" size=10 value=$data.filter.unpay_orders.min_val }>
+                        
+                        <span id="filter[unpay_orders][sign]" <{if $data.filter.unpay_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[unpay_orders][max_val]" size=10 value=$data.filter.unpay_orders.max_val }>
+                        </span>
+                    </td>
+                    <th>
+                    <{help}>付款状态为全部退款的订单<{/help}>
+                    <{t}>退款订单数：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[refund_orders][sign]" options=$select_sign value=$data.filter.refund_orders.sign }>
+                        
+                        <{input type="text" name="filter[refund_orders][min_val]" size=10 value=$data.filter.refund_orders.min_val }>
+                        
+                        <span id="filter[refund_orders][sign]" <{if $data.filter.refund_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[refund_orders][max_val]" size=10 value=$data.filter.refund_orders.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                    <{help}>退款总金额<{/help}>
+                    <{t}>退款总金额：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[refund_amount][sign]" options=$select_sign value=$data.filter.refund_amount.sign }>
+                        
+                        <{input type="text" name="filter[refund_amount][min_val]" size=10 value=$data.filter.refund_amount.min_val }>
+                        
+                        <span id="filter[refund_amount][sign]" <{if $data.filter.refund_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[refund_amount][max_val]" size=10 value=$data.refund_amount.max_val }>
+                        </span>
+                    </td>
+                   
+                    <th> <{t}>下单时间：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[create_time][sign]" options=$select_sign_time value=$data.filter.create_time.sign }>
+                        
+                        <{input type="date" name="filter[create_time][min_val]" size=10 value=$data.filter.create_time.min_val }>
+                        
+                        <span id="filter[create_time][sign]" <{if $data.filter.create_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="date" name="filter[create_time][max_val]" size=10 value=$data.filter.create_time.max_val }>
+                        </span>
+                    </td>
+                </tr>
+               
+            </table>
+        </div>
+        
+        <{assign var="sex" value=array('male'=>"男",'female'=>"女")}>
+        <{assign var="evaluation" value=array('good'=>"好评",'neutral'=>"中评",'bad'=>"差评")}>
+        <{assign var="taobaolv" value=array('c'=>'普通客户','asso_vip'=>'荣誉客户','vip1'=>'vip1','vip2'=>'vip2','vip3'=>'vip3','vip4'=>'vip4','vip5'=>'vip5','vip6'=>'vip6')}>
+        
+        <div class="tableform" style="display:none">
+            <table>
+                <tr>
+                    <th> <{t}>性别 ：<{/t}></th>
+                    <td>
+                        <{input type="select" options=$sex name="filter[sex]" value=$data.filter.sex }>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <{t}>积分范围 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[points][sign]" options=$select_sign value=$data.filter.points.sign }>
+                        
+                        <{input type="text" name="filter[points][min_val]" size=10 value=$data.filter.points.min_val }>
+                        
+                        <span id="filter[points][sign]" <{if $data.filter.points.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[points][max_val]" size=10 value=$data.filter.points.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th> <{t}>生日范围 ：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[birthday][sign]" options=$select_sign_time value=$data.filter.birthday.sign }>
+                        
+                        <{input type="date" name="filter[birthday][min_val]" size=10 value=$data.filter.birthday.min_val }>
+                        
+                        <span id="filter[birthday][sign]" <{if $data.filter.birthday.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="date" name="filter[birthday][max_val]" size=10 value=$data.filter.birthday.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <{**
+                <tr>
+                    <th> <{t}>客户评价：<{/t}></th>
+                    <td>
+                        <{input type="select" name="filter[shop_evaluation]" options=$evaluation value=$data.filter.shop_evaluation}>
+                    </td>
+                </tr>
+                **}>
+                <tr>
+                    <th> <{t}>客户等级：<{/t}></th>
+                    <td>
+                        <{input type="select" name="filter[lv_id]" options=$levels value=$data.filter.lv_id}>
+                    </td>
+                </tr>
+                <tr style="display:none">
+                    <th><label>淘宝客户等级：</label></th>
+                    <td><{input type="select" name="filter[f_level]" options=$taobaolv value=$data.filter.f_level }></td>
+                </tr>
+                <tr style="display:none">
+                    <th> <{t}>VIP客户：<{/t}></th>
+                    <td>
+                        <{input type="bool" name="filter[is_vip]" value=$data.filter.is_vip}>
+                    </td>
+                </tr>
+                <tr style="display:none">
+                    <th> <{t}>黑名单：<{/t}></th>
+                    <td>
+                        <{input type="bool" name="filter[in_blacklist]" value=$data.filter.in_blacklist}>
+                    </td>
+                </tr>
+                <tr>
+                <th> <{t}>第一次下单时间：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[first_buy_time][sign]" options=$select_sign_time value=$data.filter.first_buy_time.sign }>
+                        
+                        <{input type="date" name="filter[first_buy_time][min_val]" size=10 value=$data.filter.first_buy_time.min_val }>
+                        
+                        <span id="filter[first_buy_time][sign]" <{if $data.filter.first_buy_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="date" name="filter[first_buy_time][max_val]" size=10 value=$data.filter.first_buy_time.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <{t}>最后下单时间：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[last_buy_time][sign]" options=$select_sign_time value=$data.filter.last_buy_time.sign }>
+                        
+                        <{input type="date" name="filter[last_buy_time][min_val]" size=10 value=$data.filter.last_buy_time.min_val }>
+                        
+                        <span id="filter[last_buy_time][sign]" <{if $data.filter.last_buy_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="date" name="filter[last_buy_time][max_val]" size=10 value=$data.filter.last_buy_time.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <{t}>营销次数：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[active_times][sign]" options=$select_sign value=$data.filter.active_times.sign }>
+                        
+                        <{input type="text" name="filter[active_times][min_val]" size=10 value=$data.filter.active_times.min_val }>
+                        
+                        <span id="filter[active_times][sign]" <{if $data.filter.active_times.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[active_times][max_val]" size=10 value=$data.filter.active_times.max_val }>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <{t}>营销成功购买次数：<{/t}></th>
+                    <td>
+                        <{input key="filter_sign" type="select" name="filter[active_buy_times][sign]" options=$select_sign value=$data.filter.active_buy_times.sign }>
+                        
+                        <{input type="text" name="filter[active_buy_times][min_val]" size=10 value=$data.filter.active_buy_times.min_val }>
+                        
+                        <span id="filter[active_buy_times][sign]" <{if $data.filter.active_buy_times.sign!='between'}>style="display:none"<{/if}>> ~ 
+                        <{input type="text" name="filter[active_buy_times][max_val]" size=10 value=$data.filter.active_buy_times.max_val }>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        <{input type="hidden" id="filter_goods_id" value=$data.filter.goods_id}>
+        <div class="tableform" style="display:none">
+            商品名称：<input name="filter[good_name]" type="text" class="x-input" id="goods_search_key" value="<{$data.filter.good_name}>" size=8 />
+            
+            <{assign var="good_name_sign" value=array('and'=>"和",'or'=>"或")}>
+            <{input type="select" id="good_name_sign" name="filter[good_name_sign]" value=$data.filter.good_name_sign options=$good_name_sign }>
+            
+            <input name="filter[good_name2]" type="text" class="x-input" id="goods_search_key2" value="<{$data.filter.good_name2}>" size=8 />            
+            
+            货号：<input name="filter[good_bn]" type="text" class="x-input" id="good_bn" value="<{$data.filter.good_bn}>" size=8 />
+            
+            <{assign var="chk_goods_id" value=array('1'=>"手动选择",'2'=>"名称匹配")}>
+            范围：<{input type="select" name="filter[chk_goods_id]" value=$data.filter.chk_goods_id options=$chk_goods_id }>
+            
+            <{**
+            <input type="radio" name="findRadio" value="1" checked>模糊
+            <input type="radio" name="findRadio" value="2">精确
+            **}>
+            <button type="button" class="btn" id="btn_search_product"><span><span> 搜 索 </span></span></button>
+            <{**
+            购买时间：
+              <{if $data.filter.good_buy_date && $data.actmemeber == 'yes'}>
+                <{input type="select" name="filter[good_buy_date]" value=$data.filter.good_buy_date options=$select_date disabled="disabled"}>
+                <input type=hidden name="filter[good_buy_date]" value="<{$data.filter.good_buy_date}>" />
+              <{else}>
+                <{input type="select" name="filter[good_buy_date]" value=$data.filter.good_buy_date options=$select_date}>
+              <{/if}>
+              **}>
+           <{** 购买数量大于：<{input type="text" name="filter[min_good_num]" value=$data.filter.min_good_num size=4 }> **}>
+            
+            <table class="gridlist">
+                <thead>
+                  <tr>
+                    <th width='10%'>
+                        <input type="checkbox" id="sel_all_goods" />
+                    </th>
+                    <th width='10%'>序号</th>
+                    <th width='20%'><span style="cursor:pointer" id="sort_bn">货号</span></th>
+                    <th width='50%'><span style="cursor:pointer" id="sort_name">商品名称↑</span></th>
+                    <th width='10%'>商品价格</th>
+                  </tr>
+                </thead>
+                <tbody id="proNode"></tbody>
+            </table>
+            <span id="goods_page_nav"></span>
+            <input type="hidden" id="goods_sort_type" value="name" />
+        </div>
+        
+        <{input type="hidden" id="filter_regions_id" value=$data.filter.regions_id}>
+        <div style="display:none">
+            <p style="background:#FDF8DE;padding:8px;margin:0;">
+                <b>地区范围：</b>
+                <input type="radio" name="chk_all" id="chk_all1" value="1" /> 
+                <label for="chk_all1">全部地区</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="chk_all" id="chk_all2" value="2" /> 
+                <label for="chk_all2">部分地区</label>
+            </p>
+            <table width="100%" id="tbl_area" >
+                <tr>
+                    <td>
+                    <table id="region_list" width="100%"  cellpadding=7>
+                        <{foreach from=$regions item=v key=k}>
+                        <tr>
+                            <td width=10%><b><{$k}></b></td>
+                            <td width=90%><ul class="region_list">
+                            <{foreach from=$v item=vv key=kk}>
+                            <li><input name="filter[regions_id][]" id="region<{$kk}>" type="checkbox" value="<{$kk}>" /><label for="region<{$kk}>"><{$vv|substr:0,9}></label></li>
+                            <{/foreach}>
+                        </ul></td>
+                        </tr>
+                        <{/foreach}>
+                    </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <!--自定义属性-->
+        <div class="tableform" style="display:none">
+            <{if(!$prop_name)}>
+                <p style="padding:30px;color:red;">店铺没有设置自定义属性</p>
+            <{else}>
+                <table>
+                <{foreach from=$prop_name item=v key=k}>
+                    <{if($v)}>
+                    <tr>
+                        <th><{$v}>：</th>
+                        <td>
+                        <{if($prop_type[$k]=='num')}>
+                            <{input key="filter_sign" type="select" name="filter[prop_val][{$k}][sign]" options=$select_sign value=$data.filter[prop_val][$k][sign] }>
+                            &nbsp;<{input name="filter[prop_val][{$k}][min_val]" size=10 value=$data.filter[prop_val][$k][min_val] }>
+                            <span id="filter[prop_val][<{$k}>][sign]" <{if $data.filter[prop_val][$k][sign]!='between'}>style="display:none"<{/if}>> ~ 
+                            <{input name="filter[prop_val][{$k}][max_val]" size=10 value=$data.filter[prop_val][$k][max_val] }>
+                            </span>
+                            
+                        <{elseif($prop_type[$k]=='date')}>
+                            <{input key="filter_sign" type="select" name="filter[prop_val][{$k}][sign]" options=$select_sign_time value=$data.filter[prop_val][$k][sign] }>
+                            
+                            <{input type="date" name="filter[prop_val][{$k}][min_val]" size=10 value=$data.filter[prop_val][$k][min_val] }>
+                            
+                            <span id="filter[prop_val][<{$k}>][sign]" <{if $data.filter[prop_val][$k][sign]!='between'}>style="display:none"<{/if}>> ~ 
+                            <{input type="date" name="filter[prop_val][{$k}][max_val]" size=10 value=$data.filter[prop_val][$k][max_val] }>
+                            </span>
+                        <{else}>
+                            <{input name="filter[prop_val][{$k}][min_val]" value=$data.filter[prop_val][$k][min_val] }>
+                        <{/if}>
+                        </td>
+                    </tr>
+                    <{/if}>
+                <{/foreach}>
+                </table>
+            <{/if}>
+        </div>
+        
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+    <{button type="button" label="保存" id="sms-theme-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+(function(){
+
+    //商品全选
+    $('sel_all_goods').addEvent('click',function(){
+        if(this.checked == true){
+            $$('#proNode input[name="filter[goods_id][]"]').set('checked','checked');
+        }else{
+            $$('#proNode input[name="filter[goods_id][]"]').set('checked','');
+        }
+        set_good_bgcolor();
+    });
+    
+    //between运算符处理
+    var between_sign = 'between';//介于运算符
+    var signs = $('group_edit_container').getElements('select[key=filter_sign]');
+    signs.each(function(obj,i){
+        obj.addEvent('change',function(){
+            if(obj.get('value')==between_sign){
+                $(obj.get('name')).setStyle('display','inline');
+            }else{
+                $(obj.get('name')).setStyle('display','none');
+            }
+        });
+    });
+
+    //搜索商品
+    $('btn_search_product').addEvent('click',function(){
+        var findRadioValue = $$('input[name="findRadio"]:checked').get('value');
+        var goodsSearchKey = $('goods_search_key').get('value');
+        if (2 > goodsSearchKey.length && goodsSearchKey.length != 0) {
+            alert('商品名称至少是2个字符以上');
+            return false;
+        }
+        page = 0;
+        
+        gotoPage(0);
+        /*
+        if (findRadioValue == 1) {
+            gotoPage(0)
+        }else if(findRadioValue == 2) {
+            gotoPage_B(0);
+        }
+        */
+        //getProducts();
+    });
+
+    //地区斑马线
+    var trs = document.getElementById('region_list').getElementsByTagName('tr');
+    for(var i=0;i<trs.length;i++){
+        (i%2==1)?trs[i].style.background='#EEE':trs[i].style.background='#FFF';
+    }
+    
+    //地区预选中
+    var filter_regions_id = ',' + $('filter_regions_id').get('value') + ',';
+    var regions_checkbox = $('region_list').getElements('input');
+    regions_checkbox.each(function(obj){
+        if(filter_regions_id.indexOf(','+obj.value+',')>=0){
+            obj.set('checked','checked');
+            //obj.getParent().hide();
+        }
+    });
+    
+    //全部地区和部分地区的切换
+    if(filter_regions_id != ',,') {
+        $('chk_all2').set('checked','checked');
+    }else{
+        $('chk_all1').set('checked','checked');
+        $('tbl_area').hide();
+    }
+    
+    $('chk_all2').addEvent('click',function(){
+        $('tbl_area').show();
+    });
+    $('chk_all1').addEvent('click',function(){
+        $('tbl_area').hide();
+        $$('#tbl_area input[type=checkbox]').set('checked',false);
+    });
+    
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    for(var i=0;i<tab_container.length;i++){
+        tab_div = tab_container[i].getElements('div');
+        tab_nav = tab_div[0].getElements('li');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[0].setStyle('display', 'block');
+                tab_div[i+1].setStyle('display', 'block');
+            };
+        });
+    }
+
+    var _form = $('tmpl_form');
+    var btn =$('sms-theme-form-submit');
+    //var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                    //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+    
+        var goods_length = $$('#proNode input[name="filter[goods_id][]"]:checked').length;
+        if(goods_length > 200){
+            if(!confirm('您选择了超过200件商品，超过的商品会自动忽略，继续保存吗？')){
+                return false;
+            }
+        }
+    
+        _form.fireEvent('submit',{stop:$empty});
+    });
+    
+    //搜索商品
+    var page = 0;
+    var goods_page_nav = '';
+    goods_page_nav += '<span id="page_no" style="float:right">第 1 页</span>';
+    goods_page_nav += '<span id="no_prev">上一页</span>';
+    goods_page_nav += '<span id="prev" onclick="gotoPage(-1)">上一页</span>';
+    goods_page_nav += '<span id="next" onclick="gotoPage(1)">下一页</span>';
+    goods_page_nav += '<span id="no_next">下一页</span>';
+    goods_page_nav += '<span class="sbtn" onclick="check_all_goods(1);">全选</span>';
+    goods_page_nav += '<span class="sbtn" onclick="check_all_goods(0);">清空</span>';
+    $('goods_page_nav').set('html',goods_page_nav);
+    $('prev').hide();$('no_prev').show();
+    
+    //商品预选中
+    var page = 0;
+    var filter_goods_id = $('filter_goods_id').get('value');
+    if(filter_goods_id) {
+        filter_goods_id = ',' + filter_goods_id + ',';
+        getProducts(filter_goods_id);//预先加载商品列表
+    } 
+    
+    setTimeout('gotoPage(0)', 1000);
+
+    /*$ES('select[search_type^=1]','#tmpl_form').each(function(ipt){
+        ipt.addEvent('change',function(e){
+            var dl=this.getParent('dl'),field_name=$E('input[type=text]',dl).name;
+            var obj = dl.getElements('dd');
+            if ('between'==this.value) {					
+                obj[0].style.display = "none";
+                obj[1].style.display = "block";
+                obj[2].style.display = "block";
+            }
+            else {
+                obj[0].style.display = "block";
+                obj[1].style.display = "none";
+                obj[2].style.display = "none";
+            }
+        
+            $(dl).getElements('input.cal').each(function(dpi){
+                dpi.makeCalable();
+            });
+                            
+        });		
+    });
+
+    var replace_name=function(box,nice){
+        var n=$E('input[type=text]',box).name;
+        $$(box.getElements('input'),box.getElements('select')).each(function(el){
+            el.name=el.name.replace(n,n+nice);
+        });
+    }
+    
+    var omit_name=function(box, nice) {
+        var n=$E('input[type=text]',box).name;
+        $$(box.getElements('input'),box.getElements('select')).each(function(el){
+            el.name=el.name.replace(n,n+nice);
+        });			
+    }*/
+    
+    $('sort_bn').addEvent('click', function(){
+        $('sort_bn').set('text', '货号↑');
+        $('sort_name').set('text', '商品名称');
+        $('goods_sort_type').set('value','bn');
+        gotoPage(0);
+    });
+    
+    $('sort_name').addEvent('click', function(){
+        $('sort_bn').set('text', '货号');
+        $('sort_name').set('text', '商品名称↑');
+        $('goods_sort_type').set('value','name');
+        gotoPage(0);
+    });
+
+})();
+
+
+
+function check_all_goods(flag){
+    if(flag==1){
+        $$('#proNode input[name="filter[goods_id][]"]').set('checked','checked');
+    }else{
+        $$('#proNode input[name="filter[goods_id][]"]').set('checked','');
+    }
+    set_good_bgcolor();
+}
+
+function gotoPage(p){
+    if(p==0) page=0;
+    page += p;
+    $('next').show();
+    $('no_next').hide();
+    if(page<=0) {
+        $('prev').hide();
+        $('no_prev').show();
+    }else{
+        $('prev').show();
+        $('no_prev').hide();
+    }
+    getProducts();
+    $('page_no').set('html','第 '+(page+1)+' 页');
+}
+
+function getProducts(filter_goods_id){
+
+    $('no_next').hide();
+    
+    var sel_goods = '0';
+    var goods_sort_type = $('goods_sort_type').get('value');
+    var good_name_sign = $('good_name_sign').get('value');
+    var goods_search_key = $('goods_search_key').get('value');
+    var goods_search_key2 = $('goods_search_key2').get('value');
+    var good_bn = $('good_bn').value;
+    var shop_id = $('shop_id').get('value');
+    var new_node = '';
+    var proNode = $('proNode');
+    var chkBox = proNode.getElements('input');
+    var template_active = '\
+                        <td><input type="checkbox" name="filter[goods_id][]" value="{$goods_id}" /></td>\
+                        <td name="goods_no"></td>\
+                        <td>{$bn}</td>\
+                        <td style="text-align:left;">{$name}</td>\
+                        <td>{$price}</td>\
+                    ';
+                    
+    var template_disabled = '\
+                        <td bgcolor="#eeeeee"><input checked type="checkbox" disabled /></td>\
+                        <td bgcolor="#eeeeee" name="goods_no"></td>\
+                        <td bgcolor="#eeeeee">{$bn}</td>\
+                        <td bgcolor="#eeeeee" style="text-align:left;">{$name}</td>\
+                        <td bgcolor="#eeeeee">{$price}</td>\
+                    ';
+    var templates = '';
+    
+    //只移除未选择的商品
+    chkBox.each(function($obj,i){
+        var tr_obj = $obj.parentNode.parentNode;
+        //alert(tr_obj.getStyle('backgroundColor'))
+        if(tr_obj.getStyle('backgroundColor') != '#ffffcc') {
+            tr_obj.remove();
+        }else{
+            sel_goods += ','+$obj.value;
+        }
+    });
+    
+    if(filter_goods_id) {
+        page = 0;
+    }
+    
+    var data_str = 'shop_id='+shop_id+'&page='+page+'&sel_goods='+sel_goods+'&sort_type='+goods_sort_type;
+    if(filter_goods_id) {
+        data_str += '&filter_goods_id='+filter_goods_id;
+    }else{
+        data_str += '&name='+encodeURIComponent(goods_search_key)+'&name2='+encodeURIComponent(goods_search_key2)+'&sign='+good_name_sign+'&bn='+good_bn;
+    }
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecorder&ctl=admin_goods&act=ajaxGet',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            var total_page = 0;
+            if(responseText != 'null') {
+                var obj = eval('(' + responseText + ')');
+                
+                //设置页码
+                var total = obj[obj.length-1];
+                if(total > 0){
+                    total_page = Math.ceil(total/10);
+                    $('page_no').set('html','第 '+(page+1)+'/'+total_page+' 页');
+                }
+                
+                for(var i=0;i<obj.length-1;i++){
+                
+                    if((sel_goods+',').indexOf(','+obj[i].goods_id+',')== -1){
+                        templates = template_active;
+                    }else{
+                        templates = template_disabled;
+                    }
+                
+                    //关键词描红
+                    obj[i].name = obj[i].name.replace(goods_search_key,'<font color=red>'+goods_search_key+'</font>');
+                    
+                    if(goods_search_key2){
+                        obj[i].name = obj[i].name.replace(goods_search_key2,'<font color=blue>'+goods_search_key2+'</font>');
+                    }
+                
+                    new_node = templates.replace('{$bn}',obj[i].bn).replace('{$name}',obj[i].name).replace('{$price}',obj[i].price).replace('{$goods_id}',obj[i].goods_id);
+                    var new_tr = new Element('tr');
+                    new_tr.set('html',new_node);
+                    new_tr.inject(proNode);
+                }
+                
+                //首次加载时，预先选中上次商品
+                if(filter_goods_id) {
+                    var goods_checkbox = $('proNode').getElements('input');
+                    goods_checkbox.each(function(obj){
+                        if(filter_goods_id.indexOf(','+obj.value+',')>=0){
+                            obj.set('checked','checked');
+                        }
+                    });
+                }
+                
+                if((page+1)>=total_page) {
+                    $('next').hide();
+                    $('no_next').show();
+                }
+                
+                $$('#proNode input[name="filter[goods_id][]"]').addEvent('click',function(){
+                    set_good_bgcolor();
+                });
+                
+                set_good_bgcolor();
+                
+            }else{
+                $('next').hide();
+                $('no_next').show();
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+function set_good_bgcolor(){
+    $$('#proNode input[name="filter[goods_id][]"]').each(function(ele){
+        var pe = (ele.parentNode.parentNode);
+        if(ele.checked == true){
+            pe.style.backgroundColor = '#FFFFCC';
+        }else{
+            pe.style.backgroundColor = '';
+        }
+    });
+    
+    $$('#proNode td[name="goods_no"]').each(function(ele,idx){
+        ele.set('text', (idx+1));
+    });
+}
+
+/*
+function saveRegion(){
+    var region_list = $('region_list').getElements('input');
+    var select_region = '';
+    //alert(region_list.length);
+    for(var i=0;i<region_list.length;i++){
+        if(region_list[i].get('checked')){
+            select_region += '&'+region_list[i].get('name')+'='+region_list[i].get('value');
+        }
+    }
+    alert(select_region);
+}
+*/
+</script>
+

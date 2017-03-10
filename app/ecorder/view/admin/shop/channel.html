@@ -1,0 +1,81 @@
+<style>
+#channels {list-style:none;width:900px;}
+#channels li{margin:30px 30px 0 0;padding:10px 0 0 0; float:left;width:180px;text-align:center;border:1px solid #EEE;}
+#channels li div{background:#EEE;padding:5px 0;margin:10px 0 0 0;}
+</style>
+
+<h3 class="head-title">开通新店铺</h3>
+
+<ul id="channels">
+    <li>
+        <{img src="channel/360-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/amazon-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/dangdang-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/pp-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/qqbuy-logo.png" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/qq-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/tb-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/tmall.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/yihaodian-logo.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    
+    
+    <li>
+        <{img src="channel/shopex_485.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/shopex_ecstore.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+    <li>
+        <{img src="channel/shopex_ykd.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+     <li>
+        <{img src="channel/pos.gif" /}>
+        <div><{button label="开通店铺" }></div>
+    </li>
+</ul>
+
+<script>
+$$('#channels button').each(function(el,index){
+	
+	el.addEvent('click', function(){
+        
+		if(el.getParent().getPrevious().src.contains('pos.gif')){
+	        var shop_prop = 'offline';
+	    }else{
+	    	var shop_prop = 'online';
+	    }
+	    new Dialog('index.php?app=ecorder&ctl=admin_shop&act=addterminal&shop_prop='+shop_prop,{title:'新增店铺',width:700,height:350});
+
+    });
+	
+});
+</script>

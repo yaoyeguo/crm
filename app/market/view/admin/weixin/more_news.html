@@ -1,0 +1,292 @@
+<style>
+#sel_templates input {
+	display: none;
+}
+
+label {
+	cursor: pointer;
+}
+
+#sel_templates label {
+	margin: 0 10px 0 0;
+	overflow: hidden;
+	display: block;
+	float: left;
+}
+
+#sel_templates label img {
+	width: 140px;
+	float: left;
+}
+
+#sel_templates .checked {
+	border: 2px solid #5779BD;
+}
+
+.news-item:hover {
+	background: #f5f5f5;
+}
+
+.news-item {
+	width: 420px;
+	border-bottom: 1px dashed #ddd;
+	text-align: left;
+}
+
+#pic_list {
+	margin: 0;
+	padding: 0;
+}
+
+#pic_list li {
+	border-top: 1px solid #CCC;
+	color: #666;
+	padding: 8px;
+    zoom:1;
+    overflow:hidden;
+}
+
+#pic_list li b {
+	font-size: 14px;
+	color: #333;
+}
+</style>
+
+<form style="position: relative;" id="form_due" class="tableform"
+	action="index.php?app=market&ctl=admin_weixin&act=saveNews"
+	method="POST">
+	<input type="hidden" name="wx_news_id" value="<{$news.wx_news_id}>" />
+	<input type="hidden" name="type" value="<{$news.type}>" />
+
+
+	<div class="division">
+
+		<!--预览-->
+		<div
+			style="width: 290px; background: #FFF; border: 1px solid #CCC; float: right; font-family: Microsoft Yahei;">
+			<div
+				style="border: 1px solid #CECDC3; border-radius: 10px; margin: 10px; min-height: 200px; background: #FFF;">
+				<div
+					style="background: #FEF8C3; position: relative; border-radius: 10px; padding: 10px;">
+					<div id="big_pic" style="height: 150px;"></div>
+					<div
+						style="background: #333; height: 32px; line-height: 32px; position: absolute; bottom: 10px; width: 250px; filter: Alpha(opacity = 20); opacity: .8;"></div>
+					<div
+						style="height: 32px; line-height: 32px; font-size: 14px; font-weight: bold; color: #FFF; position: absolute; bottom: 10px; padding: 0 0 0 10px;"
+						id="big_title">这里是标题</div>
+				</div>
+				<ul id="pic_list">
+					<li>&nbsp;</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="news_list">
+			<{if $news.news_info}> <{foreach from=$news.news_info key=index_item
+			item=item}>
+			<div class="news-item">
+			<table cellspacing="0" cellpadding="0" border="0" align="center">
+				<tbody>
+					<tr class="title">
+						<th width="10%">标题：</th>
+						<td width="90%"><{input type="text" name="news[title][]"
+							value=$item.title  }></td>
+					</tr>
+					<tr class="picurl">
+						<th>封面： <br/>大图360*200<br/>小图200*200</th>
+						<td><{input type="image" name="news[picurl][]"
+							 value=$item.picurl width=160 height=100 }></td>
+					</tr>
+					<tr class="digest">
+						<th>摘要：</th>
+						<td><{input type="textarea" name="news[digest][]"
+							value=$item.digest  width="300" }></td>
+					</tr>
+					<tr class="link_type">
+						<th>链接到：</th>
+						<td><input type="radio"
+							name="news[link_type][<{$index_item}>]" value="url"
+							onClick="chooseLinkType()"<{if !$item.link_type || $item.link_type ==
+							'url'}>checked<{/if}> />链接 <input type="radio"
+							name="news[link_type][<{$index_item}>]" value="article"
+							onClick="chooseLinkType()"<{if $item.link_type ==
+							'article'}>checked<{/if}> />文章</td>
+					</tr>
+					<tr style="display: none;" class="link_type_url">
+						<th>链接地址：</th>
+						<td><{input type="text" name="news[link_type_url][]"
+							value=$item.link_type_url  size=35 }></td>
+					</tr>
+					<tr style="display: none;" class="link_type_article">
+						<th>文章内容：</th>
+						<td><{input type="html" name="news[link_type_article][]"
+							value=$item.link_type_article  }></td>
+					</tr>
+
+				</tbody>
+			</table>
+          </div>
+			<{/foreach}> <{/if}>
+		</div>
+
+		<div style="width: 100%; clear: both; height: 1px; overflow: hidden;">&nbsp;</div>
+
+	</div>
+
+	<{area inject='.mainFoot'}>
+	<div class="table-action"><{button type="button" label="保存"
+		id="survey-form-submit"}> <{button type="hidden" label="预览"
+		onclick="set_preview();" }></div>
+	<{/area}>
+</form>
+
+
+
+<script>
+var index_item = <{$index_item}>;
+
+<{if $news.wx_news_id}>
+
+<{else}>
+
+<{/if}>
+
+	(function() {
+
+		var _form = $('form_due');
+		var btn = $('survey-form-submit');
+		var finder = finderGroup['<{$env.get.finder_id}>'];
+
+		_form.store('target', {
+			onSuccess : function(response) {
+				var hash_res_obj = JSON.decode(response);
+				if (hash_res_obj.success != undefined
+						&& hash_res_obj.success != "") {
+					try {
+						var _dialogIns = btn.getParent('.dialog').retrieve(
+								'instance');
+					} catch (e) {
+					}
+					if (_dialogIns) {
+						_dialogIns.close();
+						window.finderGroup['<{$env.get.finder_id}>'].refresh();
+					}
+				}
+			}
+		});
+        
+        _form.getElements('input').addEvent('change', function() {
+			set_preview();
+		});
+        
+        //window.setInterval('set_preview()', 1000);
+
+		btn.addEvent('click', function() {
+
+			_form.fireEvent('submit', {
+				stop : $empty
+			});
+
+		});
+
+	})();
+	
+	/*function addNewsByValue(rows){
+		rows.each(function(item){
+	         var element = addNews();
+			 $E('.title input[type=text]',element).value = item.title;
+			 $E('.digest textarea',element).value = item.digest;
+			 
+			 $ES('.link_type input[type=radio]', element).each(function(itemRadio) {
+		            if(itemRadio.value == item.link_type){
+		            	itemRadio.checked = true;
+		            }
+		        });
+			 
+			 $E('.link_type_url input[type=text]',element).value = item.link_type_url;
+			// $E('.link_type_article input[type=text]',element).value = item.link_type_article;
+			
+		});
+	}*/
+	
+	function addNews(news_item){
+		var data = {'index_item':index_item};
+		if($defined(news_item) ){
+			data.news_item = news_item;	
+		}
+		index_item++;
+		var newsItemHtml = $('sample_news').get('html');
+		var element  = new Element('div',{'class':'news-item'});
+        element.set('html',newsItemHtml);
+        element.inject($('news_list'));
+          
+        set_preview();
+	}
+	
+	function chooseLinkType() {
+	
+		$ES('.link_type', $('news_list')).each(function(item){
+			var el = null;
+			$ES('input[type=radio]', item).each(function(itemRadio) {
+	            if (itemRadio.checked) {
+	                el = itemRadio;
+	            }
+	        });
+			if (el != null) {
+				var linkTypeUrl = el.getParent().getParent().getNext();
+				var linkTypeArticle = el.getParent().getParent().getNext().getNext();
+	            if (el.value == "url") {
+	            	linkTypeUrl.show();
+	            	linkTypeArticle.hide();
+	            } else if (el.value == "article") {
+	            	linkTypeUrl.hide();
+	            	linkTypeArticle.show();
+	            }
+	        }
+		});
+	}
+    
+    function refresh_img(){
+        var image = $$('div.image-input-view img');
+        var img_html = '';
+        if(image){
+            return image.get('src');
+            img_html = '<img src="'+image.get('src')+'" />';
+        }
+        return false;
+    }
+    
+    function set_background(){
+    	   $$('#news_list div').each(function(el,idx){
+    	        if(idx%2==1){
+    	            //alert(2);
+    	            el.setStyle('background-color','#eeeeee');
+    	        }else{
+    	            el.setStyle('background-color','#ffffff');
+    	        }
+    	    });
+
+   }
+    
+    function set_preview(){
+    
+        var title = $$('input[name="news[title][]"]');
+        var digest = $$('textarea[name="news[digest][]"]');
+        var image_view = $$('div.image-input-view');
+        //alert(title.length);
+        
+        var html = '';
+        for(var i=0;i<title.length;i++){
+            if(i==0){
+                $('big_pic').set('html', '<img width=250 height=150 src="'+image_view[i].getElement('img').get('src')+'" />');
+                $('big_title').set('text', title[i].value);
+            }else{
+                html += '<li><img width=50 heigt=50 align="right" src="'+image_view[i].getElement('img').get('src')+'" /><b>'+title[i].value+'</b><br/>'+digest[i].value+'</li>'; 
+            }
+        }
+        $('pic_list').setHTML(html);
+    }
+	
+    set_preview();
+	chooseLinkType();
+</script>

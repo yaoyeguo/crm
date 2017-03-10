@@ -1,0 +1,72 @@
+<style>
+#sms_log_gridlist td{border-bottom:1px solid #EAEEF4;}
+#sms_log_gridlist .f14{font-size:12px;font-family:Microsoft Yahei;color:#5779BD;}
+</style>
+<div class="tableform">
+
+        <table id="sms_log_gridlist" class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <col width="120" />
+            <thead>
+                <tr>  
+                    <th><{t}>下单付款人数<{/t}></th>
+                    <td class="f14">
+                        <{$analysis.member_num|default:'-'}> 
+                        <{$analysis.buy_ratio}>
+                        <font style="color:#666;">
+                            * 统计数据基于<b>最后发送时间</b>后15天内的付款订单
+                        </font>
+                    </td>
+                </tr>
+                <tr>  
+                    <th><{t}>付款订单数<{/t}></th>
+                    <td class="f14">
+                        <{$analysis.order_num|default:'-'}>
+                    </td>
+                </tr>
+                <tr>  
+                    <th><{t}>付款金额<{/t}></th>
+                    <td class="f14">
+                        <{$analysis.payed|default:'-'}>
+                    </td>
+                </tr>
+                <tr>  
+                    <th><{t}>发送参数<{/t}></th>
+                    <td class="f14">
+                        营销ID: <{$sms.sms_id}>　
+                        批次: <{$sms.batch_id}>　
+                        分组: <{$sms.group_id}>
+                    </td>
+                </tr>
+                <tr>  
+                    <th><{t}>短信内容<{/t}></th>
+                    <td class="f14"><{$sms.template}></td>
+                </tr>
+            </thead>
+        </table>
+
+    <{if($smsLogList)}>
+        <br/>
+        <div class="gridlist" style="border:;">
+	 	<table width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+                    <tr>
+                        <th><{t}>手机号<{/t}></th>
+                        <th><{t}>状态<{/t}></th>
+                        <th><{t}>发送时间<{/t}></th>
+                    </tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$smsLogList item=item key=key}>
+	 	<tr>
+                    <td><{$item.mobile}></td>
+	 		<td><{$item.is_send}><{if $item.reason}>[<{$item.reason}>]<{/if}></td>
+	 		<td><{if $item.send_time}><{$item.send_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+	 </div>
+    <{/if}>
+
+	 	 <{$pager}>
+</div>

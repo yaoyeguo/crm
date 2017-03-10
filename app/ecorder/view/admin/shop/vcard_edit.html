@@ -1,0 +1,145 @@
+<div class="tableform">
+  <div class="">
+    <form method="post" action="index.php?app=ecorder&ctl=admin_shop_vcard&act=saveterminal" id="terminal">
+        <{input type="hidden" name="shop[passcode]" value=$shop.passcode}>
+        <{input type="hidden" name="shop[shop_id]" value=$shop.shop_id}>
+        <{input type="hidden" name="shop[vcard_id]" value=$shop.vcard_id}>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody>
+        <tr>
+        <th ><em class="c-red">*</em> 联系人：</th>
+          <td>
+            <{input type="text&&required" size="20" name="shop[nick]" value=$shop.nick}>
+            职位：
+            <{input type="text" size="20" name="shop[title]" value=$shop.title}>
+          </td>
+        </tr>
+        <tr>
+          <th>固定电话：</th>
+          <td>
+            <{input size="20" type='text' app='ectools' id="tel" name="shop[tel]" value=$shop.tel }>
+            传真：
+            <{input size="20" type='text' app='ectools' id="tel" name="shop[fax]" value=$shop.fax }>
+          </td>
+        </tr>
+        <tr>
+          <th>手机：</th>
+          <td>
+            <{input size="20" type='text' app='ectools' id="mobile" name="shop[mobile]" value=$shop.mobile }>
+            Email：
+            <{input size="20" type='text' app='ectools' id="email" name="shop[email]" value=$shop.email }>
+            </td>
+        </tr>
+		<tr>
+          <th><em class="c-red">*</em> 地区：</th>
+          <td><{input type='region' app='ectools' name="shop[area]" value=$shop.area vtype="area" }></td>
+        </tr>
+        <tr>
+          <th><em class="c-red">*</em> 地址：</th>
+          <td>
+            <{input size="30" type='text' app='ectools' name="shop[address]" value=$shop.address }>
+            <em class="c-red">*</em> 邮编：
+            <{input size="12" maxlength="6" type='text' app='ectools' id="zip" name="shop[zip]" value=$shop.zip }>
+            </td>
+        </tr>
+        <tr>
+        <th ><em class="c-red">*</em> 公司：</th>
+          <td><{input type="text&&required" size="32" name="shop[company]" value=$shop.company}>
+          </td>
+        </tr>
+        
+        <tr>
+          <th> 网店地址：</th>
+          <td><{input type="text" size="50" name="shop[shop_url]" value=$shop.shop_url}> 
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+            <div class="table-action">
+                <{button class="btn-primary" type="submit" id="saveterminal" name="submit" label="提交"}>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+var _btn = $('saveterminal');
+var _form = $('terminal');
+
+function is_phone(str){
+	var partten = /^\d{1,4}-\d{7,8}(-\d{1,6})?$/;
+	if(partten.test(str)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function is_mobile(str){
+	var partten = /^\d{8,15}$/;
+	if(partten.test(str)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+$('saveterminal').addEvent('click',function(event){
+	if ($('zip').value.length != "6"){
+		   alert('请输入正确的邮编');
+		   $('zip').focus();
+		   return false;
+    }
+    //固定电话与手机必填一项
+    var gd_tel,mobile, channel;
+    gd_tel = $('tel').value.replace(" ","");
+    mobile = $('mobile').value.replace(' ','');
+    if (1==0 && !gd_tel && !mobile){
+		   alert('固定电话与手机号码必需填写一项');
+		   $('tel').focus();
+		   return false;
+    }
+    if (gd_tel){
+			if (is_phone(gd_tel) === false){
+				alert('请填写正确的固定电话');
+			    $('tel').focus();
+			    return false;
+			}
+    }
+    
+    if (mobile){
+		   if ( is_mobile(mobile) === false){
+			    alert('请输入正确的手机号码');
+			    $('mobile').focus();
+			    return false;
+		   }
+		   if (mobile[0] == '0'){
+			    alert('手机号码前请不要加0');
+			    $('mobile').focus();
+			    return false;
+		   }
+    }
+    $('terminal').fireEvent('submit',new Event(event));
+});
+
+$('terminal').store('target',{
+    onRequest:function(){
+       //$('saveterminal').set('disabled', 'true');
+    },
+    onComplete:function(response){
+       var hash_res_obj = JSON.decode(response);
+    
+        if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns){	
+                _dialogIns.close();
+                //window.top.location.href = 'index.php?app=plugins&ctl=admin_manage&act=index';
+                window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+</script>

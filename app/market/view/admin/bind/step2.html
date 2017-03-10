@@ -1,0 +1,191 @@
+<style>
+/* 开始设置 */
+.step-begin-bg{
+    /*background: url('<{$base_url}>/app/desktop/statics/images/begin-bg.png') repeat-x 0px 0px;*/
+    height:200px;
+    width:300px;
+}
+.step-begin-content{
+    padding:0px 0px;
+}
+.step-begin-font-title{
+    font-size:20px;
+    font-family:"黑体";
+}
+.step-begin-font-foot{
+    font-size:15px;
+}
+.step-begin-button {
+    background: url('<{$base_url}>/app/desktop/statics/images/button-begin.gif');
+    float: center;
+    display: block;
+    height: 48px;
+    line-height: 36px;
+    white-space: nowrap;
+    width:155px;
+}
+.step-begin-wangwang{
+    background: url('<{$base_url}>/app/desktop/statics/images/im.png');
+    width:180px;
+    height:42px
+}
+.step-begin-firefox{
+    background: url('<{$base_url}>/app/desktop/statics/images/firefox.png');
+    width:315px;
+    height:42px
+}
+
+
+/* 设置页面*/
+.step-set-bg{
+    /*background: url('<{$base_url}>/app/desktop/statics/images/set-bg.png') repeat-x 0px 0px;*/
+    background-repeat: no-repeat; 
+    height:300px;
+    width:600px;
+}
+.step-begin-wangwang{
+    background: url('<{$base_url}>/app/desktop/statics/images/im.png');
+    width:180px;
+    height:42px
+}
+/*完成设定*/
+.button-set{
+    background: url('<{$base_url}>/app/desktop/statics/images/button-set.gif');
+    width:154px;
+    float:right;
+    height:42px
+}
+.button-set-no{
+    background: url('<{$base_url}>/app/desktop/statics/images/button-set-no.gif');
+    width:154px;
+    float:right;
+    height:43px
+}
+/*错误信息提示*/
+.step-error-bg{
+    /*background: url('<{$base_url}>/app/desktop/statics/images/error-bg.png') repeat-x 0px 0px;*/
+    height:278px;
+    width:576px;
+}
+.step-error-return-bg{
+    background: url('<{$base_url}>/app/desktop/statics/images/button-back.gif') 0px 0px;
+    width:160px;
+    height:49px;
+}
+.step-begin-content table td{
+    padding:3px 0px;
+}
+</style>
+<script  type="text/javascript" >
+    function help_start(){
+        $('step-begin-bg').hide();
+        $('step-set-bg').show();
+        $('step-error-bg').hide();
+    }
+    
+    function checksubmit(before,after,url,ths,isbind){
+        //以前的
+        if (isbind==1)
+        {
+         alert('该步骤已经操作成功！');
+        }else{
+          if(before ==1){
+        	  if(url.contains('apply_bindrelation')){
+        		   new Dialog(url,{onClose:function(){window.location.reload();},width:576,height:400,title:'绑定店铺'});
+        	  }else{
+        		  $(ths).set('target', '_blank');
+                  $(ths).set('href', url);
+        	  }
+        	 
+            return true;
+            }else{
+                $(ths).set('target', '_self');
+                $('step-error-bg').show();
+                $('step-begin-bg').hide();
+                $('step-set-bg').hide();
+                return false;
+            }
+        }
+        $(ths).set('target', '_self');
+    }
+
+    //  返回处理
+    function return_back(){
+        $('step-begin-bg').hide();
+        $('step-set-bg').show();
+        $('step-error-bg').hide();
+    }
+
+    //设置完成
+    function set_all_over(){
+        window.location="<{$base_url}>"+"/index.php";
+    }
+    
+</script>
+<div class="step-begin-bg" style="width:100%;display:none;" id='step-begin-bg'>
+    <div class="step-begin-content" border="0" cellspacing="0" cellpadding="0">
+        <p><span class='step-begin-font-title'>欢迎使用淘CRM软件</span></p>
+        <center>本软件是电商的客户管理和营销的利器。通过对客户准确的分组和营销设计，针对<br/>不同的客户属性和购买行为，提供准确的营销渠道。短信，优惠券，EDM等。<br/><br/><br/>
+        <span class='step-begin-font-foot'>为了系统数据<span style="color:#66DD00;font-weight:bold;">准确性</span>和<span style="color:#66DD00;font-weight:bold;">完整</span>，以及<span style="color:#66DD00;font-weight:bold;">更好</span>，<span style="color:#66DD00;font-weight:bold;">更方便</span>的使用系统，<br>请先开始完成以下几个步骤的设定</span>
+        <br><br><br>
+        <img src="<{$base_url}>/app/desktop/statics/images/button-begin.gif" onClick="help_start();"/><br/><br/><br/>
+        <!-- <img class="step-begin-wangwang" src="<{$base_url}>/app/desktop/statics/images/im.png"> -->
+        <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=taoex淘易:忘忧&site=cntaobao&s=1&charset=utf-8" >
+                            <img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=taoex淘易:忘忧&site=cntaobao&s=1&charset=utf-8" alt="有问题随时都可以M我哦" width="60" height="22">
+                        </a><a href=http://wpa.qq.com/msgrd?V=1&Uin=1909839979Site=By%20Dvbbs&Menu=yes target=_blank><img src=http://wpa.qq.com/pa?p=1:1909839979:47 border=0/></a><img class="step-begin-firefox" src="<{$base_url}>/app/desktop/statics/images/firefox.png">
+        </center>
+    </div>
+</div>
+
+<!-- 设置页面 -->
+<div class="step-set-bg" style="width:100%;" id='step-set-bg'>
+    <div class="step-begin-content" border="0" cellspacing="0" cellpadding="0">
+        <table cellpadding='0px' cellspacing='0px'>
+            <tr style="background:#000000;">
+                <td colspan=2><span style="font-size:15px;color:#FFFFFF;">&nbsp;&nbsp;请<span style="color:#FFFF00;">点击按钮</span>完成以下操作</span></td>
+              </tr>
+          <tr>
+            <td>
+              <a href='#', target = '_self' onclick='return checksubmit(1,<{$steps["shop_bind"]}>,"index.php?app=ecorder&ctl=admin_shop&act=addterminal&finder_id",this,<{$steps["shop_bind"]}>);'><img src='<{$base_url}>/app/desktop/statics/images/<{if $steps["shop_bind"]==1}>button-1-over.gif<{else}>button-1.gif<{/if}>' ></a>            
+            </td>
+            <td><span style="font-size:13px;">初始化您的店铺，完成店铺信息填写，才可使用本软件进行店铺的客户管理。</span></td>
+          </tr>
+          <tr>
+            <td><a href='#', target = '_self' onclick='return  checksubmit(<{$steps["shop_bind"]}>,<{$steps["shop_checked"]}>,"<{$bind_url}>",this,<{$steps["shop_checked"]}>);'><img src='<{$base_url}>/app/desktop/statics/images/<{if $steps["shop_checked"] ==1}>button-2-over.gif<{else}>button-2.gif<{/if}>'></a></td>
+            <td><span style="font-size:13px;">绑定添加的店铺和淘宝验证，系统才能获取淘宝订单数据和客户信息，以及进行客户分析。</span></td>
+          </tr>
+          <tr>
+            <td><a href='#', target = '_self' onclick='return checksubmit(<{$steps["shop_checked"]}>,<{$steps["sms_bind"]}>,"index.php?app=market&ctl=admin_sms_active&init=1",this,<{$steps["sms_bind"]}>);'><img src='<{$base_url}>/app/desktop/statics/images/<{if $steps["sms_bind"] == 1}>button-3-over.gif<{else}>button-3.gif<{/if}>' ></a></td>
+            <td><span style="font-size:13px;">拥有一个您在系统的短信账户，有了账号您才能进行客户的行销和短信发送。</span></td>
+          </tr>
+          <tr><!--  -->
+            <td><a href='#', target = '_self' onclick="return checksubmit(<{$steps['sms_bind']}>,<{$steps['sms_buy']}>,'index.php?app=market&ctl=admin_bind&act=sms_buy',this);" id='hao'><img src='<{$base_url}>/app/desktop/statics/images/<{if $steps["sms_buy"] == 1}>button-4-over.png<{else}>button-4.gif<{/if}>' ></td>
+            <td><span style="font-size:13px;">完成一笔短信充值，进行客户营销吧！新品上市，促销，聚划算，用短信通知吧！</span></td>
+          </tr>
+          <tr>
+            <td colspan=2>
+            <span style='float:right'><!-- <button  <{if $steps['shop_bind'] !=1 || $steps['shop_checked'] !=1 || $steps['sms_bind'] !=1 || $steps['sms_buy'] !=1}>class="button-set-no" disabled <{else}> class="button-set"   onclick="set_all_over();"<{/if}> ><span></span> </button>-->
+            <{if $steps['shop_bind'] !=1 || $steps['shop_checked'] !=1 || $steps['sms_bind'] !=1 || $steps['sms_buy'] !=1}><img src="<{$base_url}>/app/desktop/statics/images/button-set-no.gif" style="float:right;" ><{else}> <img src="<{$base_url}>/app/desktop/statics/images/button-set.gif" style="float:right;" onclick="set_all_over();"><{/if}>
+            </span>
+            <div style="padding-top:15px;">
+                <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=taoex淘易:忘忧&site=cntaobao&s=1&charset=utf-8" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=taoex淘易:忘忧&site=cntaobao&s=1&charset=utf-8" alt="有问题随时都可以M我哦" ></a>
+                <a href="http://wpa.qq.com/msgrd?V=1&Uin=1909839979Site=By%20Dvbbs&Menu=yes" target="_blank"><img src="http://wpa.qq.com/pa?p=1:1909839979:47" border=0/></a>
+             </div>
+            </td>
+          </tr>
+        </table>
+    </div>
+</div>
+
+<!-- 错误信息提示页面 -->
+<div class="step-error-bg" style="width:100%;display:none;" id='step-error-bg'>
+    <div class="step-begin-content" border="0" cellspacing="0" cellpadding="0">
+        <center><span style="color:red;font-weight:bold;font-size:20px;">对不起</span><br/><br/><br/>
+        <span style="color:red;font-size:15px;">设置信息不允许跳过！</span>
+        <br><br>
+        <span>请按照1至4按钮进行设置，每一步完成后才能进行下一步设置！</span><br>
+        <img class="step-error-return-bg" src="<{$base_url}>/app/desktop/statics/images/button-back.gif" id="step-error-return-bg" onclick='return_back();'></button>
+        </center>
+    </div>
+</div>
+<span id="el_createactive_loading" style="display:none;">创建营销活动中,这可能需要点时间...</span>

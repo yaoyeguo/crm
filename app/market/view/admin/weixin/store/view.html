@@ -1,0 +1,28 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="20%">店铺名称</td>
+            <td><{$info.store_name}></td>
+            <td width="20%">联系电话</td>
+            <td><{$info.phone}></td>
+        </tr>
+        <tr>
+            <td width="20%">店铺地区</td>
+            <td><{$info.store_area|region}></td>
+            <td width="20%">营业时间</td>
+            <td><{$info.open_time}></td>
+        </tr>
+        <tr>
+            <td width="20%">店铺地址</td>
+            <td><{$info.address}></td>
+            <td width="20%">经营范围</td>
+            <td><{$info.business}></td>
+        </tr>
+        <tr>
+            <td width="20%">地图坐标</td>
+            <td><{$info.map_x}>,<{$info.map_y}></td>
+        </tr>
+    </table>
+</div>
+</div>

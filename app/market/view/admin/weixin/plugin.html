@@ -1,0 +1,81 @@
+<h4><{t}>互动插件<{/t}></h4>
+
+<style>
+span.open,span.close {padding:0 0 5px 20px;}
+span.open {background:url(<{$env.app.res_url}>/open.png) no-repeat;color:green;}
+span.close {background:url(<{$env.app.res_url}>/close.png) no-repeat;color:red;}
+
+.plugin_btn {padding:5px 20px;font-size:18px;font-family:Microsoft Yahei;}
+</style>
+
+<div class="tableform" id="page_plugins">
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>插件名称<{/t}></th>
+                    <th><{t}>说明<{/t}></th>
+                    <th><{t}>状态<{/t}></th>
+                    <th><{t}>操作<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+              <{foreach from=$plugins item=item}>
+                <tr>
+                    <td>
+                        <{img app="market" src=$item.img }>
+                        <br/>
+                        <{$item.plugin_name}>
+                    </td>
+                    <td> <{$item.desc}></td>
+                    <td>
+                    <{if $item.status == 1}>
+                        <span class="open">已启用</span>
+                      <{else}>
+                        <span class="close">已关闭</span>
+                      <{/if}>
+                    </td>
+                    <td>
+                    <{if $item.status == 1}>
+                        <button class="plugin_btn" status="0" plugin_id="<{$item.id}>">关闭</button>
+                     <{else}>
+                        <button class="plugin_btn" status="1" plugin_id="<{$item.id}>">开启</button>
+                      <{/if}>
+                    </td>
+                </tr>
+                <{/foreach}>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<{if($wx_bind_ok==false)}>
+<{include file='admin/weixin/guide/step.html'}>
+<{/if}>
+
+<script>
+$ES('.plugin_btn',$('page_plugins')).each(function(el){
+	el.addEvent('click',function(){
+		  var paras = {
+                'status':el.get('status'),
+                'id':el.get('plugin_id')
+          };
+		  new Request({
+              url: 'index.php?app=market&ctl=admin_weixin&act=changePluginStatus',
+              data: paras,
+              method: "post",
+              async: false,
+              onSuccess: function (data) {
+            	  window.location.reload();
+              },
+              onFailure: function(){
+                  finalpass=false;
+                  alert('非常抱歉，页面错误请稍候尝试。');
+              }
+          }).send();
+	});
+	
+});
+</script>

@@ -1,0 +1,132 @@
+<div class="tableform">
+    <form id="tmpl_form" action="index.php?app=market&ctl=admin_edm_email&act=edit_tempate" method="post" >
+        <div class="division" style="padding:0">
+            <div class="b-gray">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th><{t}>可使用变量标签：<{/t}></th>
+                        <td>
+                            用户名 :<a onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{$uname}&gt;")>&lt;{$uname}&gt;</a>
+                            优惠券 :<a onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{$coupon}&gt;")>&lt;{$coupon}&gt;</a>
+                            店铺 :<a onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{$shop}&gt;")>&lt;{$shop}&gt;</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <table>
+            <tr>
+                <th>所属分类：</th>
+                <td><select name="group" id="group">
+                <option value="0">选择分类</option>
+                <{foreach from=$sel_data item=item}>
+                <option value="<{$item.type_id}>" <{if $data.type_id ==$item.type_id}> selected<{/if}>><{$item.title}></option>
+                <{/foreach}>
+                </select></td>
+            </tr>        
+            <tr>
+                <th>模板名称：</th>
+                <td><{input type="text" name="theme_title" id="theme_title" style="width:360px" value=$data.theme_title}></td>
+            </tr>
+            <tr>
+                <th><div>邮件内容：</div>
+                <div style="word-break:break-all; width:122px; color:#f00; white-space:normal;"></div></th>
+                <{input type=hidden value=$data.theme_id name="theme_id"}>
+                <td><{input type=textarea id="message_text" value=$data.theme_content style="width:360px; height:60px;" name="theme_content" cols=50 rows=20}></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="edm-theme-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+// 在光标处插入字符串
+// myField 文本框对象
+// 要插入的值
+function insertAtCursor(myField, myValue)
+{
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    //MOZILLA/NETSCAPE support
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        // save scrollTop before insert
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            // restore previous scrollTop
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+
+(function(){
+	var _form = $('tmpl_form');//form_id
+	var btn =$('edm-theme-form-submit');//bt_id
+	var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+	    btn.addEvent('click',function(){
+	    	var validate = true;
+	    	if ($('group').value == '0') {
+	    		validate = false;
+	    		alert('请选择模板所属分类!');
+	    	}
+
+	    	if (validate && $('theme_title').value == '') {
+                validate = false;
+                alert('请输入模板名称!');
+	    	}
+	    	
+            if (validate && $('message_text').value == '') {
+                validate = false;
+                alert('请输入短信内容!');  
+            }	    	
+	    	
+	    	if (validate) {
+	    		_form.fireEvent('submit',{stop:$empty});
+	    	}	    
+		});
+	
+})();
+</script>

@@ -1,0 +1,61 @@
+<form id="save_form" action="index.php?<{$env.server.QUERY_STRING}>" method="post">
+<div class="tableform">
+    <input type=hidden name='type' value=<{$rs.type}>>
+    <input type=hidden name='category_id' value=<{$rs.category_id}>>
+    <div style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            
+            <tr>
+                <th><{t}>名称<{/t}></th>
+                <td>
+                    <{input size=20 type="text" name='category_name' value=$rs.category_name vtype='required' }>
+                    <font color='red'> *</font>
+                    <br/>
+                    <{$example}>
+                </td>
+            </tr>
+            
+            <tr>
+                <th><{t}>描述<{/t}></th>
+                <td><{input size=20 type="text" name='desc' value=$rs.desc }>
+                
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="保存"}>
+        </div>
+    <{/area}>
+</div>
+</form>
+<script>
+(function(){
+    
+    $('saveterminal').addEvent('click',function(event){
+        $('save_form').fireEvent('submit',new Event(event));
+    });
+    
+})();
+
+$('save_form').store('target',{
+    onRequest:function(){
+       $('saveterminal').set('disabled', 'true');
+    },
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+            }catch(e){
+            
+            }
+            if(_dialogIns) _dialogIns.close();
+        }	
+    }
+});
+</script>
+

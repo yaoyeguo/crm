@@ -1,0 +1,203 @@
+<style>
+.tr_header td{background:#EFEFEF;cursor:pointer;font-weight:bold;border-bottom:1px solid #FFF;}
+#step1_header {background:url(/app/market/statics/img/1.gif) no-repeat right #EFEFEF;}
+#step2_header {background:url(/app/market/statics/img/2.gif) no-repeat right #EFEFEF;}
+#step3_header {background:url(/app/market/statics/img/3.gif) no-repeat right #EFEFEF;}
+</style>
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tbody>
+    <tr>
+      <th><{t}>插件名称：<{/t}></th>
+      <td><b><{$plugins.title}></b></td>
+    </tr>
+    <tr>
+      <th><em class="c-red">*</em>有效店铺：</th>
+        <td>
+            <{foreach from=$items.shop_id.options item=data key=i}>
+            <label><input name="params[shop_id][]" value="<{$i}>" type="checkbox" <{if(in_array($i,$params.shop_id))}>checked<{/if}> >
+            <{$data}> 
+            </label>
+            <{/foreach}>
+       </td>
+    </tr>
+    <tr class='tr_header'>
+        <td id="step1_header">&nbsp;</td><td>下单提醒：(下单后次日发送)</td>
+    </tr>
+    </tbody>
+    <tbody id='step1'>
+        <tr>
+      <th><em class="c-red">*</em>发送时间：</th>
+      <td>
+        <{input value=$params.send_time1 type='select' name='params[send_time1]' options=$items.send_time1.options }>
+        </td>
+    </tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+        <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[send_content1]" id="params[send_content1]"><{$params.send_content1}></textarea>
+        <br>
+            <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content1]'),&quot;&lt;{用户名}&gt;&quot;)"><button class="btn" type="button"><span><span>用户名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content1]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+    <tbody>
+    <tr class='tr_header'>
+        <td id="step2_header">&nbsp;</td><td>第一次提醒：(双十一前发送)</td>
+    </tr></tbody>
+    <tbody id='step2' style='display:'>
+    
+    <tr>
+      <th><em class="c-red">*</em>发送日期：</th>
+      <td>2012-11-10</td>
+    </tr>
+        <tr>
+      <th><em class="c-red">*</em>发送时间：</th>
+      <td>
+        <{input value=$params.send_time2 type='select' name='params[send_time2]' options=$items.send_time2.options }>
+        </td>
+    </tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+        <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[send_content2]" id="params[send_content2]"><{$params.send_content2}></textarea>
+        <br>
+            <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content2]'),&quot;&lt;{用户名}&gt;&quot;)"><button class="btn" type="button"><span><span>用户名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content2]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+    
+    <tbody>
+    <tr class='tr_header'>
+        <td id="step3_header">&nbsp;</td><td>第二次提醒：(双十一当天发送)</td>
+    </tr></tbody>
+    <tbody id='step3' style='display:'>
+    <tr>
+      <th><em class="c-red">*</em>发送日期：</th>
+      <td>2012-11-11</td>
+    </tr>
+        <tr>
+      <th><em class="c-red">*</em>发送时间：</th>
+      <td>
+        <{input value=$params.send_time3 type='select' name='params[send_time3]' options=$items.send_time3.options }>
+        </td>
+    </tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+        <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[send_content3]" id="params[send_content3]"><{$params.send_content3}></textarea>
+        <br>
+        <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content3]'),&quot;&lt;{用户名}&gt;&quot;)"><button class="btn" type="button"><span><span>用户名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[send_content3]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="p-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+(function(){
+    
+    //判断字数
+    $$('textarea').each(function(el){
+        set_sms_len(el);
+        
+        el.addEvent('change',function(){
+            set_sms_len(el);
+        });
+    });
+    
+})();
+
+function set_sms_len(el){
+    el.getNext().getNext().set('html','参考字数：'+el.value.length)
+}
+
+$$('tr.tr_header').each(function(el){
+
+    el.addEvent('click',function(){
+        var next_ele = el.getParent().getNext();
+        if(next_ele.getStyle('display') == 'none'){
+            next_ele.show();
+        }else{
+            next_ele.hide();
+        }
+    });
+});
+
+
+_btn.addEvent('click',function(){
+
+    var shop_list = $$("input[name='params[shop_id][]']:checked");
+    if(shop_list.length == 0){
+        //alert('请选择至少一个店铺！');
+        //return false;
+    }
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+_form.store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+    
+        if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns){	
+                _dialogIns.close();
+                //window.top.location.href = 'index.php?app=plugins&ctl=admin_manage&act=index';
+                //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+
+function insertAtCursor(myField, myValue){
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

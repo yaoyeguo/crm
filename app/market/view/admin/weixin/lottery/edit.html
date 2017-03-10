@@ -1,0 +1,177 @@
+<{if $info}>
+    <form style="position:relative;" id="wx_lottery_frm" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=lottery_manage_edit" method="POST">
+<{else}>
+    <form style="position:relative;" id="wx_lottery_frm" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=lottery_manage_add" method="POST">
+<{/if}>
+
+<div id="my_tab_nav">
+    <span id="show_1" class="hover">
+            <b>1、活动基本信息</b>
+    </span>
+    <span id="show_2">
+            <b>2、设置活动界面</b>
+    </span>
+</div>
+
+<div id="my_tab_body">
+
+    <table id="step_1" style="width:98%;" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tr>
+            <th><em class="c-red">*</em>活动名称:</th>
+            <td>
+                <{input id="lottery_name_input" value=$info.lottery_name name="info[lottery_name]" vtype="required"}>
+            </td>
+            <th><em class="c-red">*</em>抽奖扣除积分:</th>
+            <td>
+                <{input id="minus_score_input" value=$info.minus_score name="info[minus_score]" vtype="required"}>
+            </td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em>开始时间:</th>
+            <td>
+                <{input type="date" vtype="date" name="info[start_time]" style="width:66px; font-family:arial;" value=$info.start_time}>
+            </td>
+            <th><em class="c-red">*</em>结束时间:</th>
+            <td>
+                <{input type="date" vtype="date" name="info[end_time]" style="width:66px; font-family:arial;" value=$info.end_time}>
+            </td>
+        </tr>
+        <tr>
+            <th>中奖提示语:</th>
+            <td>
+               <{input class="x-input" type="textarea" id="win_msg_input" value=$info.win_msg name="info[win_msg]" style="width:260px;height:80px;"}>
+            </td>
+
+            <th>未中奖提示语:</th>
+            <td>
+                <{input class="x-input" type="textarea" id="lose_msg_input" value=$info.lose_msg name="info[lose_msg]" style="width:260px;height:80px;"}>
+            </td>
+        </tr>
+        <tr>
+            <th>未开始提示语</th>
+            <td>
+               <{input class="x-input" type="textarea" id="start_msg_input" value=$info.start_msg name="info[start_msg]" style="width:260px;height:80px;"}>
+            </td>
+
+            <th>活动结束提示语:</th>
+            <td>
+               <{input class="x-input" type="textarea" id="end_msg_input" value=$info.end_msg name="info[end_msg]" style="width:260px;height:80px;"}>
+            </td>
+        </tr>
+    </table>
+
+    <div id="step_2" style="display:none">
+        <div style="padding:5px;">
+            <label><input type='radio' name="select_raido" class="select_raido" value='3' <{if $lotteryinfo_count eq 3 || $lotteryinfo_count eq 0}>checked<{/if}>>3个奖项</label>
+            <label><input type='radio' name="select_raido" class="select_raido" value='4' <{if $lotteryinfo_count eq 4}>checked<{/if}>>4个奖项</label>
+            <label><input type='radio' name="select_raido" class="select_raido" value='5' <{if $lotteryinfo_count eq 5}>checked<{/if}>>5个奖项</label>
+            <label><input type='radio' name="select_raido" class="select_raido" value='6' <{if $lotteryinfo_count eq 6}>checked<{/if}>>6个奖项</label>
+        </div>
+
+        <div>
+            <table id="award_list" cellspacing="0" cellpadding="0" border="0" align="left" class="gridlist">
+            <thead>
+            <tr>
+                <th><font color="#5779BD">奖项</font>(如:一等奖)</th>
+                <th><font color="#5779BD">奖品名称</font>(如:iPad mini)</th>
+                <th><font color="#5779BD">中奖概率</font></th>
+                <th><font color="#5779BD">奖品数量</font></th>
+            </tr>
+            </thead>
+            <tbody>
+            <{if $lotteryinfo}>
+                <{foreach from=$lotteryinfo key=key item=award}>
+                <tr>
+                    <td><{input size=10 id="awards_name_input" value=$award.awards_name name="awards[{$key}][awards_name]"}></td>
+                    <td><{input id="awards_name_input" value=$award.awards_info name="awards[{$key}][awards_info]"}></td>
+                    <td>1&nbsp;/&nbsp;<{input size=8 id="win_rate_input" value=$award.win_rate name="awards[{$key}][win_rate]"}></td>
+                    <td><{input size=5 id="win_rate_input" value=$award.awards_stock name="awards[{$key}][awards_stock]"}></td>
+                </tr>
+                <{/foreach}>
+            <{/if}>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <{if $info}>
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[lottery_id]" value="<{$info.lottery_id}>" type="hidden" />
+    </div>
+    <{/if}>
+
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+
+<table class="hide"><tr id="tr_templete">
+    <td><{input size=10 id="awards_name_input" name="awards[key][awards_name]"}></td>
+    <td><{input id="awards_name_input" name="awards[key][awards_info]"}></td>
+    <td>1&nbsp;/&nbsp;
+        <{input size=8 id="win_rate_input" name="awards[key][win_rate]"}></td>
+    <td><{input size=5 id="win_rate_input" name="awards[key][awards_stock]"}></td>
+</tr></table>
+
+<script>
+    var oper_type = '<{$oper_type}>';
+(function(){
+    var _form = $('wx_lottery_frm');
+	var btn =$('survey-form-submit');
+    var tr_templete = $('tr_templete').get('html');
+    if(oper_type == 'view'){
+        btn.hide();
+    }
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+
+    //选项卡
+    $$('#my_tab_nav span').addEvent('click',function(event){
+        $('step_1').hide();
+        $('step_2').hide();
+
+        $('step_'+$(this).get('id').replace('show_','')).show();
+        $(this).getParent().getElements('span').set('class', '');
+        $(this).set('class', 'hover');
+    });
+
+    if($$('#award_list tbody tr').length<3){
+        var str = '';
+        for(var i=0;i<3;i++){
+            var td_str = tr_templete.replace(/key/g,i);
+            str += '<tr>'+td_str+'</tr>';
+        }
+        $$('#award_list tbody').set('html',str);
+    }
+
+    $$('.select_raido').addEvent('click',function(event){
+        var str = '';
+        for(var i=0;i<this.value;i++){
+            var td_str = tr_templete.replace(/key/g,i);
+            str += '<tr>'+td_str+'</tr>';
+        }
+        $$('#award_list tbody').set('html',str);
+    })
+})();
+</script>

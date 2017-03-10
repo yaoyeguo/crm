@@ -1,0 +1,90 @@
+<div class="tableform1">
+    <div class="division1">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>订单总数<{/t}></th>
+                    <th><{t}>订单总金额<{/t}></th>
+                    <th><{t}>平均订单价<{/t}></th>
+                    <th><!-- <{t}>客户积分<{/t}> --></th>
+                    <th><!--<{t}>客户等级<{/t}> --></th>
+                    <th><{t}><{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.total_orders}></td>
+                     <td><{$analysis.total_amount}></td>
+                     <td><{$analysis.total_per_amount}></td>
+                     <td><!--<{$analysis.points}>--></td>
+                     <td><!--<{$analysis.lv_id}>--></td>
+                     <td></td>
+                 </tr>
+            </tbody>
+            
+            <thead>
+                <tr>  
+                    <th><{t}>退款订单数<{/t}></th>
+                    <th><{t}>退款订单金额<{/t}></th>
+                    <th><{t}>成功的订单数<{/t}></th>
+                    <th><{t}>成功的订单金额<{/t}></th>
+                    <th><{t}>成功平均订单价<{/t}></th>
+                    <th><{t}><{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.refund_orders}></td>
+                     <td><{$analysis.refund_amount}></td>
+                     <td><{$analysis.finish_orders}></td>
+                     <td><{$analysis.finish_total_amount}></td>
+                     <td><{$analysis.finish_per_amount}></td>
+                     <td></td>
+                 </tr>
+            </tbody>
+            
+            <thead>
+                <tr>  
+                    <th><{t}>未付款订单数<{/t}></th>
+                    <th><{t}>未付款订单金额<{/t}></th>
+                    <th><!--<{t}>未支付平均订单价<{/t}> --></th>
+                    <th><{t}><{/t}></th>
+                    <th><{t}><{/t}></th>
+                    <th><{t}><{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.unpay_orders}></td>
+                     <td><{$analysis.unpay_amount}></td>
+                     <td><!-- <{$analysis.unpay_per_amount}> --></td>
+                     <td></td>
+                     <td></td>
+                     <td></td>
+                 </tr>
+            </tbody>
+            
+            <thead>
+                <tr>  
+                    <th><{t}>购买频次(天)<{/t}></th>
+                    <!--th><{t}>平均购买间隔(天)<{/t}></th-->
+                    <th><{t}>购买月数<{/t}></th>
+                    <th><{t}>下单商品总数<{/t}></th>
+                   <th><{t}>第一次下单时间<{/t}></th>
+                    <th><{t}>最后下单时间<{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.buy_freq}></td>
+                     <!--td><{$analysis.avg_buy_interval}></td-->
+                     <td><{$analysis.buy_month}></td>
+                     <td><{$analysis.buy_products}></td>
+                     <td><{$analysis.first_buy_time}></td>
+                     <td><{$analysis.last_buy_time}></td>
+                 </tr>
+            </tbody>
+            
+        </table>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="division" id="group_edit_container">
+	<table width="100%" border="0" cellpadding="5" cellspacing="10">
+		<{if $shops}>
+		    <tr>
+			  <td><em class="c-red" style="padding-left:25px">*</em>
+			  <label style="font-size:13px">请选择要绑定的店铺：</label></td>
+			</tr>
+		    <{input type="hidden" name="app[id]" value=$id id="app_id"}>
+	    
+	    	<{foreach from=$shops item=item}>
+		    	<tr>
+	                 <td> 
+	                 	<label style="padding-left:20px"><input type='radio' name='shop_id' value='<{$item.shop_id}>'/> <{t}><{$item.name}><{/t}></label>　　　
+	                 </td>
+	            </tr>
+	        <{/foreach}>	
+	    <{else}>
+	    	<tr>
+                 <td> 
+                 	<label style="padding-left:20px;font-size:17px;color:red">没有需要绑定的店铺!</label>　　　
+                 </td>
+            </tr>
+	    
+	    <{/if}>
+	</table>
+</div>
+<{if $shops}>
+	<{area inject='.mainFoot'}>
+		<div class="table-action">
+			<{button id="down2" class="btn-primary" label=$___b2c="确定"|t:'b2c' type="button"}>
+			<{button id="down1" class="btn-primary" label=$___b2c="取消"|t:'b2c' type="button"}>　　
+		</div>
+	<{/area}>
+<{/if}>
+
+<script>
+
+$('down1').addEvent('click',function(){
+	$('down1').getParent('.dialog').retrieve('instance').close();
+});
+
+$('down2').addEvent('click',function(){
+	  var value="";
+	  var radio=document.getElementsByName("shop_id");
+	  for(var i=0;i<radio.length;i++){
+		if(radio[i].checked==true){
+		  value=radio[i].value;
+		  break;
+		}
+	  }
+	  if(value == ""){
+		  alert('请选择店铺!');
+		  return false;
+	  }
+
+    new Request({
+        url : 'index.php?app=taocrm&ctl=admin_app&act=bind_check',
+        method : 'post',
+        data:{'shop_id':value,'id':$('app_id').value},
+        onSuccess:function(responseText){
+        	if(responseText == 1){
+        		new Dialog('index.php?app=taocrm&ctl=admin_app&act=login&shop_id='+value,{width:400,height:130,title:'登录淘宝'});
+        		return false;
+        	}else if(responseText == 2){
+        		new Dialog('index.php?app=taocrm&ctl=admin_app&act=bind_fail',{width:500,height:160,title:'绑定失败'});
+        		return false;
+        	}else if(responseText == 3){
+        		alert('绑定成功!');
+        	}else if(responseText == 4){
+        		alert('绑定失败!');
+        		return false;
+        	}
+        	$('down2').getParent('.dialog').retrieve('instance').close();
+        	window.finderGroup['<{$env.get.finder_id}>'].refresh();
+        }
+    }).send();
+})
+</script>
+
+
+
+

@@ -1,0 +1,25 @@
+<style>
+#prompt{width: 100%; height: auto; text-align: center; line-height: 20px; margin: 0 auto; font-family: "微软雅黑";font-size: 14px;}
+
+</style>
+
+<div id="prompt">
+   <p style="margin-top: 40px;"><{$msg}></p>
+</div>
+
+
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button onclick="$(this).getParent('.dialog').retrieve('instance').close();" class="btn-primary" type="button" label="关闭"}>
+    </div>
+<{/area}>
+
+
+<script>
+(function(){
+
+})();
+
+</script>
+

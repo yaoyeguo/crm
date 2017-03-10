@@ -1,0 +1,245 @@
+<services>
+	<service id="api_login">
+		<class>taocrm_service_login</class>
+	</service>
+
+	<service id="service.order">
+		<class>taocrm_service_order</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_lv">
+		<class>taocrm_finder_member_lv</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_shop_lv">
+		<class>taocrm_finder_shop_lv</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_group">
+		<class>taocrm_finder_member_group</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_tag">
+		<class>taocrm_finder_member_tag</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_coupons">
+		<class>taocrm_finder_coupon</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_coupon_send_rules">
+		<class>taocrm_finder_coupon_send_rule</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_sms_rule_types">
+		<class>taocrm_finder_sms_rules</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_message_themes_group">
+		<class>taocrm_finder_message_themes_group</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_api_log">
+		<class>taocrm_finder_api_log</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_message_themes">
+		<class>taocrm_finder_message_themes</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_active">
+		<class>taocrm_finder_active</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_points_log">
+		<class>taocrm_finder_points_log</class>
+	</service>
+
+    <service id="desktop_finder.taocrm_mdl_all_points_log">
+        <class>taocrm_finder_all_points_log</class>
+    </service>
+
+	<service id="desktop_finder.taocrm_mdl_member_analysis">
+		<class>taocrm_finder_member_analysis</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_report">
+		<class>taocrm_finder_member_report</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_middleware_member_analysis">
+		<class>taocrm_finder_middleware_member_analysis</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_middleware_member_report">
+		<class>taocrm_finder_middleware_member_report</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_middleware_fx_member_report">
+		<class>taocrm_finder_middleware_fx_member_report</class>
+	</service>
+
+	<service id="extend_filter_taocrm_mdl_members">
+		<class>taocrm_finder_extend_filter_member</class>
+	</service>
+
+	<service id="extend_filter_taocrm_mdl_middleware_member_analysis">
+		<class>taocrm_finder_extend_filter_middleware_member_analysis</class>
+	</service>
+
+	<service id="autotask">
+		<class>taocrm_misc_task</class>
+	</service>
+
+	<service id="ecorder_shop_ex">
+		<class>taocrm_service_shop</class>
+	</service>
+
+	<service id="taocrm_analyse_day">
+		<class>taocrm_analysis_sales</class>
+		<class>taocrm_analysis_member_lvsales</class>
+		<class>taocrm_analysis_member_buyprice</class>
+		<class>taocrm_analysis_member_buynum</class>
+	</service>
+
+	<service id="taocrm_messenger">
+		<class>taocrm_messenger_sms</class>
+	</service>
+
+	<service id="desktop.widgets">
+		<class>taocrm_desktop_widgets_index</class>
+	</service>
+
+	<service id="api.taocrm.member">
+		<class>taocrm_service_member</class>
+	</service>
+
+	<service id="api.taocrm.account">
+		<class>taocrm_rpc_response_account</class>
+	</service>
+
+	<service id="api.taocrm.member_import">
+		<class>taocrm_rpc_response_member</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_import_group">
+		<class>taocrm_finder_member_import_group</class>
+	</service>
+	<service id="desktop_finder.taocrm_mdl_member_import_sms">
+		<class>taocrm_finder_member_import_sms</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_app">
+		<class>taocrm_finder_app</class>
+	</service>
+
+	<service id="submenu_taocrm_admin_wangwangjingling">
+		<class>taocrm_submenu_wangwangjingling</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_wangwang_shop_chat_log">
+		<class>taocrm_finder_wangwang_shop_chat_log</class>
+	</service>
+
+	<service
+		id="desktop_finder_detail_modifier.taocrm_mdl_wangwang_shop_chat_log.default">
+		<class>taocrm_modifier_detail_wangwang_shop_chat_log</class>
+	</service>
+
+	<service id="api.taocrm.pointtype">
+		<class>taocrm_rpc_response_pointtype</class>
+	</service>
+
+	<service id="api.taocrm.point">
+		<class>taocrm_rpc_response_point</class>
+	</service>
+    <!--修改-->
+	<service id="api.taocrm.update">
+		<class>taocrm_rpc_response_point</class>
+	</service>
+
+    <service id="api.taocrm.weibaolai_point">
+        <class>taocrm_rpc_response_point</class>
+    </service>
+
+    <!--会员同步-->
+    <service id="api.taocrm.sync_user">
+        <class>taocrm_rpc_response_point</class>
+    </service>
+
+    <!--新增物流查询-->
+    <service id="api.taocrm.trades">
+        <class>taocrm_rpc_response_orders</class>
+    </service>
+
+	<service id="api.taocrm.pointlog">
+		<class>taocrm_rpc_response_pointlog</class>
+	</service>
+
+	<service id="api.taocrm.orders">
+		<class>taocrm_rpc_response_orders</class>
+	</service>
+
+    <!--处理kv-->
+    <service id="api.taocrm.handlekv">
+        <class>taocrm_rpc_response_orders</class>
+    </service>
+
+    <!--单个订单查询-->
+    <service id="api.taocrm.single">
+        <class>taocrm_rpc_response_orders</class>
+    </service>
+
+
+	<service id="api.taocrm.members">
+		<class>taocrm_rpc_response_members</class>
+	</service>
+
+	<service id="api.taocrm.member_benefits">
+		<class>taocrm_rpc_response_member_benefits</class>
+	</service>
+
+	<service id="api.taocrm.posorder">
+		<class>taocrm_rpc_response_posorder</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_export">
+		<class>taocrm_finder_member_export</class>
+	</service>
+
+	<service id="api.taocrm.member_export">
+		<class>taocrm_rpc_response_member_export</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_caselog_category">
+		<class>taocrm_finder_member_caselog_category</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_caselog">
+		<class>taocrm_finder_member_caselog</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_members">
+		<class>taocrm_finder_members</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_level">
+		<class>taocrm_finder_member_level</class>
+	</service>
+
+	<service id="desktop_finder.taocrm_mdl_member_card_template">
+		<class>taocrm_finder_member_card_template</class>
+	</service>
+    
+    <service id="api.taocrm.membercard">
+        <class>taocrm_rpc_response_membercard</class>
+    </service>
+    
+    <service id="desktop_finder.taocrm_mdl_sms_log">
+		<class>taocrm_finder_sms_log</class>
+	</service>
+    <service id="desktop_finder.taocrm_mdl_members_recommend">
+		<class>taocrm_finder_recommend_members</class>
+	</service>
+
+</services>

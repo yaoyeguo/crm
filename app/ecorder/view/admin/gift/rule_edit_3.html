@@ -1,0 +1,52 @@
+<div class="tableform" style="display:;background:#FFF;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td>
+                商家编码：<{input type="text" id="s_gift_bn" value="" }>
+                商品名称：<{input type="text" id="s_gift_name" value="" }>
+                <{button id="giftFilterBtn" class="filterBtn btn-thirdly" label=$___ectools="查询"|t:'ectools'}>
+                <font color="#5779BD">* 库存为0的赠品不显示</font>
+            </td>
+        </tr>
+        <tr>
+          <td>
+            <table id="gift_list" class="gridlist">
+                <thead>
+                <tr>
+                    <th>选择</th>
+                    <th>序号</th>
+                    <th>商家编码</th>
+                    <th>商品名称</th>
+                    <th>成本价</th>
+                    <th>赠送数量</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr style="display:;">
+                        <td><{input onclick='set_bg_color($(this));' type="checkbox" name="gift_id[]" value="<!--gift_id-->" }></td>
+                        <td><!--gift_no--></td>
+                        <td><!--gift_bn--></td>
+                        <td><!--gift_name--></td>
+                        <td><!--gift_price--></td>
+                        <td>
+                            <{input type="text" name="gift_num[<!--gift_id-->]" value=1 size=4 }>
+                        </td>
+                    </tr>
+                    <{foreach from=$gifts item=data key=k}>
+                    <tr style="display:;background:#FFFFCC;">
+                        <td><{input onclick='set_bg_color($(this));' checked="checked" type="checkbox" name="gift_id[]" value=$data.id }></td>
+                        <td><{$k+1}></td>
+                        <td><{$data.gift_bn}></td>
+                        <td><{$data.gift_name}></td>
+                        <td><{$data.gift_price}></td>
+                        <td>
+                            <{input type="text" name="gift_num[{$data.id}]" value=$data.num size=4 }>
+                        </td>
+                    </tr>
+                    <{/foreach}>
+                </tbody>
+            </table>
+          </td>
+        </tr>
+    </table>
+</div>

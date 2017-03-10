@@ -1,0 +1,9 @@
+Product-Name = crm-flag-source
+Registered-To = developer
+Max-Concurrent = 5
+Lease-Expiration = 60
+Wait-For-Lease = no
+Expires = Never
+Hardware-Locked = No
+Produced-By = 180410
+Verification-Code = wFF8tE6DXV6H6nSwNrht71p3XRI+AhQo0ObKsQBt5ELPggyiFu5L7wxJ8Q==

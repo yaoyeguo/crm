@@ -1,0 +1,87 @@
+<div class="gridlist-action data-action" id="dataAction" style="margin-bottom:10px;padding:5px; border:0;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td nowrap="nowrap">
+        <label><{t}>时间范围:<{/t}></label>
+		<{input type="date" vtype="date" name="time_from" style="width:66px; font-family:arial;" value=$time_from}><{t}>至<{/t}>
+		<{input type="date" vtype="date" name="time_to" style="width:66px; font-family:arial;" value=$time_to}>
+
+        <{button class="filterBtn btn-thirdly" label="确定"}>&nbsp;
+
+        <{button class="dataBtn btn-fourthly" time_from='2011-01-20' time_to='2011-03-20' label="昨日"}>
+        <{button class="dataBtn btn-fourthly" time_from=$today time_to=$today label="今日"}>
+        <{button class="dataBtn btn-fourthly" time_from=$this_week_from time_to=$this_week_to label="本周"}>
+        <{button class="dataBtn btn-fourthly" time_from=$last_week_from time_to=$last_week_to label="上周"}>
+        <{button class="dataBtn btn-fourthly" time_from=$this_month_from time_to=$this_month_to label="本月"}>
+        <{button class="dataBtn btn-fourthly" time_from=$last_month_from time_to=$last_month_to label="上月"}>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  (function(){
+    var dataAction= $('dataAction'),
+        from=dataAction.getElement('input[name=time_from]'),
+        to=dataAction.getElement('input[name=time_to]');
+
+    function setChartData(flag,e){
+      if(!check_data(from,to))return;
+      $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+
+    dataAction.getElement('.filterBtn').addEvent('click',function(e){setChartData(true);});
+
+    function check_data(from,to){
+      var data=[],
+      _return=[from,to].every(function(el){
+        if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+          new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+          el.focus();
+          return false;
+        }
+        data.push(Date.parse(el.value.replace(/-/gi,"/")));
+        return true;
+      });
+
+      if(!_return)return null;
+      if(data[1]<data[0]){
+        return MessageBox.error('<{t}>选择开始时间必须早于结束时间<{/t}>');
+      }
+      return _return;
+    }
+
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+      if(el.get('time_from')==from.value && el.get('time_to')==to.value)
+          el.addClass('btn-fourthly-cur');
+      el.addEvent('click',function(e){
+        from.value=this.get('time_from');
+        to.value=this.get('time_to');
+        /* ['time_from','time_to'].each(function(v){
+         *   dataAction.getElements('input[name='+v+']').value=this.get(v);
+         * },this); */
+        dataAction.getElement('.filterBtn').fireEvent('click');
+      });
+    });
+  })();
+
+  window.addEvent('domready',function(e){
+    var lazyload = new LazyLoad();
+    if($E('.chart-tabs li')) new ItemAgg($ES('.chart-tabs li'),$ES('.chart-view .chart-items'),{
+      activeName:'current',
+      itemsClass:'chart-item-cur',
+      onActive:function(tab,item){
+        lazyload.loadCustomLazyData(item,'textarea');
+        var iframe=item.getElement('iframe'),
+        src=item.retrieve('_src',iframe.src),
+        params=$('dataAction').retrieve('_data','');
+        if(window.ie||iframe.retrieve('_params','')!=params){
+          iframe.src=src+params;
+          iframe.store('_params',params);
+        }
+      }
+    });
+
+  });
+</script>

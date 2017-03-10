@@ -1,0 +1,29 @@
+<style>
+    ul,ol,li{list-style-type:none;}
+</style>
+  <form id="computation_form" action="index.php?app=ecorder&ctl=admin_shop_credit&act=computation_rule" method="POST">
+  <div>
+      <h2>选中的店铺，按着crm积分计算</h2>
+      <div>
+          <ul>
+              <{foreach from=$shops item=item}>
+              <li><input type="checkbox" name="shops[]" value="<{$item.shop_id}>" <{if $item.check}> checked <{/if}> /> <{$item.name}></li>
+              <{/foreach}>
+          </ul>
+      </div>
+      <div style="padding-top: 20px;">
+          <label style="padding-left: 100px;"><input type="button" id="computation_submit" name="computation_submit" value="保存" /></label>
+      </div>
+  </div>
+  </form>
+<script>
+    (function(){
+        var _form = $('computation_form');
+        var btn =$('computation_submit');
+
+        btn.addEvent('click',function(){
+
+            _form.fireEvent('submit',{stop:$empty});
+        });
+    })();
+</script>

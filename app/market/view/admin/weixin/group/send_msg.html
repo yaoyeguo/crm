@@ -1,0 +1,113 @@
+<div class="tableform" style="margin: 0; padding: 0;">
+    <div align="center">
+        <h3><{$msg}></h3>
+    </div>
+</div>
+
+<form action="index.php?app=<{$app}>&ctl=<{$ctl}>&act=<{$act}>" method="post" id="tmpl_form">
+    <input type="hidden" name="id" value="<{$id}>" />
+    <table cellpadding="5">
+        <col width="35%" />
+        <col width="65%" />
+        <tr>
+            <td style="text-align:right">发送给：</td>
+            <td>
+                <label><input checked="checked" type="radio" name="send_type" value="openid" /> 指定客户</label>
+                <label><input type="radio" name="send_type" value="all" /> 全部客户</label>
+            </td>
+        </tr>
+        <tbody id="openid_tr">
+            <tr>
+            <td style="text-align:right">客户OpenID：</td>
+            <td>
+                    <{input type="text" name="openid[]" value="" size="35" }> * 
+            </td>
+        </tr>
+            <tr>
+                <td style="text-align:right">客户OpenID：</td>
+                <td>
+                    <{input type="text" name="openid[]" value="" size="35" }> * 
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">客户OpenID：</td>
+                <td>
+                    <{input type="text" name="openid[]" value="" size="35" }>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right"></td>
+                <td style="color:red;">
+                    * 微信要求群发消息不少于两个OpenID
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+    <{button type="button" label="确定" id="theme-form-submit"}>
+    <{button type="button" label="取消" id="closs_form"}>
+</div>
+<{/area}>
+
+<script>
+var _form = $('tmpl_form');
+var btn = $('theme-form-submit');
+var btn_c = $('closs_form');
+
+$$('#tmpl_form input[name="send_type"]').addEvent('click', function(){
+    if($(this).get('value') == 'all'){
+        $('openid_tr').hide();
+    }else{
+        $('openid_tr').show();
+    }
+});
+
+_form.store('target',{ onSuccess : function(response) {
+    var hash_res_obj = JSON.decode(response);
+
+    if (hash_res_obj.success != undefined && hash_res_obj.success != "") {
+        try {
+        var _dialogIns = btn.getParent('.dialog').retrieve( 'instance');
+        } catch (e) { }
+
+            if (_dialogIns) {
+            _dialogIns.close();
+            //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+btn_c.addEvent('click', function() {
+    var _dialogIns = btn_c.getParent('.dialog').retrieve( 'instance');
+    if (_dialogIns) {
+        _dialogIns.close();
+    }
+});
+
+btn.addEvent('click', function() {
+    var is_ajax = '<{$is_ajax}>';
+    var send_type = $$('#tmpl_form input[name="send_type"]:checked').get('value');
+    
+    if(is_ajax == true){
+        new Request({url:'index.php?app=<{$app}>&ctl=<{$ctl}>&act=<{$act}>',method:'post',
+            data:{'id': '<{$id}>', 'send_type' : send_type},
+            onSuccess:function(){
+            }
+        }).send(document.tmpl_form);
+        alert('<{$ajax_msg}>');
+        var _dialogIns = btn_c.getParent('.dialog').retrieve( 'instance');
+        if (_dialogIns) {
+            _dialogIns.close();
+        }
+    }else{
+        _form.fireEvent('submit', {
+            stop : $empty
+        });
+    }
+});
+</script>

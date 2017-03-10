@@ -1,0 +1,112 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+        <div class="wdgk_title"><span class="float1">标签统计</span></div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:8px">
+            <tr>
+                <td width="20%"><dl>
+                    <dt>浏览数</dt>
+                    <dd><{$data_all.page_pv}>1</dd>
+                </dl></td>
+                <td width="20%"><dl>
+                    <dt>访问数</dt>
+                    <dd><{$data_all.session_num}>2</dd>
+                </dl></td>
+                <td width="20%"><dl>
+                    <dt>独立访客</dt>
+                    <dd><{$data_all.uid_num}>3</dd>
+                </dl></td>
+                <td width="20%"><dl>
+                    <dt>每次访问页数</dt>
+                    <dd><{$data_all.page_per_visit}>3</dd>
+                </dl></td>
+                <td width="20%"><dl>
+                    <dt>每次访问页数</dt>
+                    <dd><{$data_all.page_per_visit}>3</dd>
+                </dl></td>
+            </tr>
+            <tr>
+                <td><dl>
+                    <dt>订单总额</dt>
+                    <dd>￥<{$data_all.order_price}>4</dd>
+                </dl></td>
+                <td><dl>
+                    <dt>订单总额</dt>
+                    <dd>￥<{$data_all.order_price}>4</dd>
+                </dl></td>
+                <td><dl>
+                    <dt>订单</dt>
+                    <dd><{$data_all.creat_order_num}>5</dd>
+                </dl></td>
+                <td><dl>
+                    <dt>转化率</dt>
+                    <dd><{$data_all.pay_succ_order_rate}>2</dd>
+                </dl></td>
+                <td><dl>
+                    <dt>平均单价</dt>
+                    <dd>￥<{$data_all.price_per_visit}>2</dd>
+                </dl></td>
+            </tr>
+        </table>
+
+        <div class="wdgk_title"><span class="float1 ">表格统计</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+                <tr class="list_tr">
+                    <td>网站栏目</td>
+                    <td>浏览次数</td>
+                    <td>访问次数</td>
+                    <td>IP</td>
+                    <td>跳出率</td>
+                    <td>退出率</td>
+                    <td>详情</td>
+                </tr>
+
+                <tr class="list_tr1">
+                    <td>1<{$item.name}></td>
+                    <td>2<{$item.page_pv}></td>
+                    <td>3<{$item.session_num}></td>
+                    <td>4<{$item.ip_num}></td>
+                    <td>5<{$item.jump_rate}></td>
+                    <td>6<{$item.quit_rate}></td>
+                    <td>详细</td>
+                </tr>
+
+                <{foreach from=$data item=item  key=k}>
+                <tr class="list_tr1">
+                    <td><{$item.name}></td>
+                    <td><{$item.page_pv}></td>
+                    <td><{$item.session_num}></td>
+                    <td><{$item.ip_num}></td>
+                    <td><{$item.jump_rate}></td>
+                    <td><{$item.quit_rate}></td>
+                    <td>详细</td>
+                </tr>
+                <{/foreach}>
+            </table>
+        </div>
+
+		<div class="wdgk_title"><span class="float1 ">地区分布</span></div>
+        <div class="fkfb_box">
+			<div style="float:left;">
+				<{include file="admin/analysis/map.html" app="taocrm"}>
+			</div>
+			<div class="clear"></div>
+		</div>
+
+		<div class="wdgk_title"><span class="float1 ">曲线图</span></div>
+		<div style="height:220px;overflow:hidden" class="map_box">
+			<iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_sales&act=chart_view&chart_type=line" scrolling="no" width="100%" height="100%"></iframe>
+		</div>
+
+		<div class="wdgk_title"><span class="float1 ">柱状图</span></div>
+		<div style="height:220px;overflow:hidden" class="map_box">
+			<iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_sales&act=chart_column&chart_type=column" scrolling="no" width="100%" height="100%"></iframe>
+		</div>
+
+		<div class="wdgk_title"><span class="float1 ">饼图</span></div>
+		<div style="height:220px;overflow:hidden" class="map_box">
+			<iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_sales&act=chart_pie&chart_type=pie" scrolling="no" width="100%" height="100%"></iframe>
+		</div>
+
+    </div>
+</div>

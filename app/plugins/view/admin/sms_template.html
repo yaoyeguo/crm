@@ -1,0 +1,74 @@
+<style>
+.checked {border:1px solid #F30;}
+.checked td{background:#FFC}
+.checked th{background:#FFC}
+</style>
+
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+<table id="sms_templete_tbl" width="100%" border="0" cellpadding="0" cellspacing="0" >
+
+    <{foreach from=$sms_templates item=data key=key}>
+    <tr>
+      <th width="5%"><input id="label<{$key}>" name="sms_template" type="radio" /></th>
+      <td width="95%">
+        <label for="label<{$key}>"><b style="color:#03F;cursor:pointer"><{$data.title}></b></label>
+        <div><{$data.content}></div>
+      </td>
+    </tr>
+    <{/foreach}>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="确定" id="sms_templete_save"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('sms_templete_save');
+var _form = $('p_form');
+var sms_templete_tbl_tr = document.getElementById('sms_templete_tbl').getElementsByTagName('tr');
+
+//alert(sms_templete_tbl_tr.length)
+
+for(var i=0;i<sms_templete_tbl_tr.length;i++){
+    if(i % 2 == 1){
+        sms_templete_tbl_tr[i].style.backgroundColor = '#E3EAEF';
+    }
+}
+
+$$('#sms_templete_tbl input').addEvent('click',function(){
+    $$('#sms_templete_tbl tr').set('class','');
+    this.parentNode.parentNode.className = 'checked';
+});
+
+_btn.addEvent('click',function(){
+
+    var sms_content = $$('#sms_templete_tbl input:checked').getParent().getParent().getElement('div').get('text');
+    if(sms_content){
+        $('<{$setid}>').set('value',sms_content);
+    }
+    _btn.getParent('.dialog').retrieve('instance').close();
+});
+
+(function(){
+
+    //页面载入后执行
+    
+    //预先选择
+    var sms_content = $('<{$setid}>').get('value');
+    $$('#sms_templete_tbl div').each(function(el){
+        //alert(el.get('text'))
+        if(sms_content==el.get('text')){
+            el.parentNode.parentNode.className = 'checked';
+            el.parentNode.parentNode.getElement('input').set('checked', 'checked');
+        }
+    });
+    
+})();
+</script>

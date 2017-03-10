@@ -1,0 +1,49 @@
+
+<div class="tableform">
+    
+    <div class="division">
+    
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th width="10%"><{t}>客户名称<{/t}></th>
+                    <th width="10%"><{t}>真实姓名<{/t}></th>
+                    <th width="10%"><{t}>手机号<{/t}></th>
+                    <th width="50%"><{t}>消费金额<{/t}></th>
+                    <th width="10%"><{t}>推荐时间<{/t}></th>
+                    <th width="10%"><{t}>推荐码<{/t}></th>
+                    <th width="10%"><{t}>首次来源店铺<{/t}></th>
+                    <th width="10%"><{t}>首次来源渠道<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$member_list item=data}>
+                <tr>
+                    <td><{$data.uname}></td>
+                    <td><{$data.name}></td>
+                    <td><{$data.mobile}></td>
+                    <td><{$data.money}></td>
+                    <td><{$data.create_time}></td>
+                    <td><{$data.parent_code}></td>
+                    <td><{$data.source_terminal}></td>
+                    <td><{$data.channel_type}></td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        
+        <br/>
+        <{$pager}>
+        
+    </div>
+</div>
+
+<script>
+/* 
+ $$('td.logi_info').addEvent('click',function(){
+    new Dialog('index.php?app=plugins&ctl=admin_manage&act=logi_info&tid='+this.id,{width:640,height:280,title:'物流信息'});
+    return false;
+});*/
+</script>
+

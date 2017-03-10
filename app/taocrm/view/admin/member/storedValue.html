@@ -1,0 +1,73 @@
+<style>
+    .points { font-weight:bold; font-family:Tahoma, Geneva, sans-serif;}
+    label {cursor:pointer;}
+</style>
+<form method="POST" action="index.php?app=taocrm&ctl=admin_stored_log&act=saveStoredValue" class="tableform" id="form_stored_value_log">
+    <div class="division">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+            <tr>
+                <th><em class="c-red">*</em><{t}>客户名称：<{/t}></th>
+                <td >
+                    <{$member_info[0][uname]}>
+                    <{input type="hidden" name="uname" value=$member_info[0][uname]}>
+                    <{input type="hidden" name="member_id" value=$member_info[0][member_id]}>
+                    <{input type="hidden" name="mobile" value=$member_info[0][mobile]}>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>当前预储值：<{/t}></th>
+                <td id="curr_points"><{$stored_value}></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+            <tr class="member_retail">
+                <th><em class="c-red">*</em><{t}>操作储值<{/t}>：</th>
+                <td>
+                   &nbsp;
+                    <{input type="number" name="stored_value" size="8" class="_x_input points" vtype="required&&number"}>
+                    <span class="notice-inline" style="margin:5px 0 0 5px; padding:0"><{t}>输入正数增加储值，负数扣除储值<{/t}></span>
+                </td>
+            </tr>
+            <tr class="member_retail">
+                <th><em class="c-red">*</em><{t}>备注<{/t}>：</th>
+                <td><{input type="text" name="remark" size="50" class="_x_input" vtype="required" value=$logs.remark}>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+    <{button type="button" label="保存" id="form_stored_value_log_submit"}>
+</div>
+
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('form_stored_value_log');
+        var btn =$('form_stored_value_log_submit');
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finderGroup['<{$finder_id}>'].refresh();
+                    }
+                }
+            }
+        });
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+            //btn.set('disabled','disabled');
+        });
+    })();
+</script>
+
+

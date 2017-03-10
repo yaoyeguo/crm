@@ -1,0 +1,151 @@
+<div class="tableform">
+  <div class="division">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody>
+         <tr>
+            <th><img src="<{$env.app.res_url}>/add.gif" align="absmiddle" /> 新标签：</th>
+            <td>
+                <{input type="text" id="tag_name" name="tag_name" vtype='required'  }>
+                <{button label="保存" type="submit" name="submit" id="btn-create-tag"}>
+                <!--a class="add_link" target="dialog::{width:650,height:355,title:'创建标签'}" href="index.php?app=taocrm&ctl=admin_member_tag&act=ajaxCreateTag" label="创建标签">
+　 创建标签</a--></td>
+            </tr>
+        </tbody>
+      </table>
+  </div>
+</div>
+
+<div class="tableform">
+  <div class="division">
+    <form method="post" action="index.php?app=taocrm&ctl=admin_member&act=saveMemberTag" id="form-branch">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody>        
+        <tr><th>选择标签：</th>
+            <td>
+            <div id="tag_list" >
+              <{foreach from=$taglist item=tag}>
+              <span id="tag_<{$tag.tag_id}>" tag_id="<{$tag.tag_id}>" class="m_tag"><{$tag.tag_name}></span>
+              <{/foreach}>
+           </div>
+            </td>
+         </tr>
+        </tbody>
+      </table>
+      
+      <div class="table-action">
+        <{button label="保存" type="button" name="submit" id="btn-branch"}>
+      </div>
+    
+      <{input type=hidden value=$member_ids name="member_ids"}>
+      <{input type=hidden id="hid_tag_ids" name="tag_ids"}>
+      <{input type=hidden id="old_tag_ids" name="old_tag_ids" value=$tags }>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+    (function(){     
+
+        var old_tag_ids = $('old_tag_ids').value;
+    
+    	$ES('.m_tag',$('tag_list')).each(function(el){
+    		el.addEvent('click',function(e){
+    			clickTag(el);
+    		});
+            
+            var id = ','+el.get('tag_id')+',';
+            if(old_tag_ids.indexOf(id) != -1){
+                el.set('class', 'm_tag_select');
+            }
+            
+    	});    	
+        var _form = $('form-branch');//form_id
+        var btn =$('btn-branch');//bt_id
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+        
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+            
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+                    
+                    if(_dialogIns)
+                    {   
+                        _dialogIns.close();
+                        //window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+                    }
+                }
+                
+            }
+        });
+
+            btn.addEvent('click',function(){
+                var validate = true;
+
+                var tags = new Array();
+                $ES('.m_tag_select',$('tag_list')).each(function(el){
+                    tags.push(el.get('tag_id'));
+                });    
+                if(tags.length > 0){
+                    $('hid_tag_ids').value = tags.join(',');
+                }else{
+                	 validate = false;
+                     //alert('请选择标签名称!');
+                     //return false;
+                }
+
+                if (validate || confirm('您没有选择标签，确定要删除所选客户的标签吗？删除后不能恢复！')) {
+                    _form.fireEvent('submit',{stop:$empty});
+                }else{
+                    return false;
+                }     
+            });
+            
+            $('btn-create-tag').addEvent('click',function(){
+                if($('tag_name').value == ''){
+                    alert('标签不能为空!');
+                    $('tag_name').focus();
+                    return false;
+                }
+                var data={'tag_name':$('tag_name').value};
+                new Request({
+                    url : 'index.php?app=taocrm&ctl=admin_member_tag&act=ajaxToCreateTag',
+                    method : 'post',
+                    data:data,
+                    onSuccess:function(responseText){
+                       //alert(responseText);
+                       var data = JSON.decode(responseText);
+                       if(data.status == 'fail'){
+                           alert(data.info);
+                           $("tag_name").focus();
+                           return false;
+                       }
+                       var el_tag = new Element('span',{'id':'tag_'+data.tag_id,'tag_id':data.tag_id,'class':'m_tag'});
+                       el_tag.setText($('tag_name').value);
+                       el_tag.addEvent('click',function(e){
+                           clickTag(el_tag);
+                       });
+                       el_tag.inject($('tag_list'));
+                       
+                       $('tag_name').set('value', '');
+                   }
+                }).send();
+               return true;
+            });
+            
+            
+    })();
+    
+    function clickTag(el){
+        if(el.hasClass('m_tag_select')){
+            el.set('class','m_tag');
+        }else{
+            el.set('class','m_tag_select');
+        }
+    }
+    
+</script>

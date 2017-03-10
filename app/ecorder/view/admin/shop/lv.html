@@ -1,0 +1,313 @@
+<{if !$_is_singlepage}>
+
+<form method="POST" action="index.php?app=ecorder&ctl=admin_shop_lv&act=save" class="tableform" id="form_member_lv">
+<div class="division" id="group_edit_container">
+<{input type=hidden value=$lv.is_default name="default" id="default"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+    <tr>
+	  <th><em class="c-red">*</em><{t}>适用店铺：<{/t}></th>
+	  <td><{input type="select" name="shop_id" vtype="required" options=$shops value=$lv.shop_id id="shop_id"}></td>
+	</tr>
+    
+	<tr>
+	  <th><em class="c-red">*</em><{t}>等级名称：<{/t}></th>
+	  <{if $lv.lv_id}><{input type='hidden' name='lv_id' value=$lv.lv_id}><{/if}>
+	  <td><{input type="text" name="name" size="20" vtype="required" value=$lv.name id="name"}><em class="c-red" style="margin-left:15px;">新增客户等级时,请按客户等级从低到高依次添加</em></td>
+	</tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr>
+      <th><{t}>是否为客户默认等级：<{/t}></th>
+      <td>
+          <{input type="radio" name="is_default" options=$lv.default_lv_options value=$lv.is_default separator="　　" }>
+         
+        <span class="notice-inline" style="margin:5px 0 0 5px; padding:0"><{t}>如果选择“是”，添加客户成功时，初始等级为当前等级<{/t}></span>
+      </td>
+    </tr>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>消费金额<{/t}>：</th>
+      <td>
+      	 <{input key="filter_sign" type="select" id="total_amount" name="filter[total_amount][sign]" options=$select_sign value=$lv.amount_symbol}>
+      	 <span id='total_amount_input' <{if $lv.amount_symbol=='unlimited'}>style="display:none"<{/if}>>
+        <{input type="unsigned" name="min_amount" size=10 value=$lv.min_amount id="min_amount"}>
+        <span id="filter[total_amount][sign]" <{if $data.filter.total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+        <{input type="unsigned" name="max_amount" size=10 value=$lv.max_amount id="max_amount"}>
+        </span>
+       </span>
+      </td>
+    </tr>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>消费次数<{/t}>：</th>
+      <td>
+      <{input key="filter_sign" type="select" id="buy_times" name="filter[buy_times][sign]" options=$select_sign value=$lv.buy_times_symbol}>
+      		<span id="buy_times_input" <{if $lv.buy_times_symbol=='unlimited'}>style="display:none"<{/if}>>
+	      		<{input type="unsigned"  name="min_buy_times"  size=10  value=$lv.min_buy_times id="min_buy_times"}>
+		        <span id="filter[buy_times][sign]" <{if $data.filter.buy_times.sign!='between'}>style="display:none"<{/if}>> ~ 
+		        <{input type="unsigned" name="max_buy_times" size=10 value=$lv.max_buy_times id="max_buy_times"}>
+		        </span>
+		   </span>
+      </td>
+    </tr>
+    
+</table>
+<em class="c-red" style="margin-left:50px">注意：第一次设定客户等级完成或调整等级规则后，请到数据统计——客户统计重新统计</em>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="member_lv-form-submit"}>
+</div>
+<{/area}>
+<script>
+(function(){
+
+    $$('input[name="is_default"]').addEvent('click',function(){
+        if(this.value == 1){
+            $$('.member_retail').hide();
+        }else{
+            $$('.member_retail').show();
+        }
+    });
+    
+    if($$('input[name="is_default"]:checked').get('value') == 1){
+        $$('.member_retail').hide();
+    }else{
+        $$('.member_retail').show();
+    }
+
+	 //between运算符处理
+    var between_sign = 'between';//介于运算符
+    var signs = $('group_edit_container').getElements('select[key=filter_sign]');
+    signs.each(function(obj,i){
+    	if(obj.get('value')==between_sign){
+    		 $(obj.get('name')).setStyle('display','inline');
+    	}else{
+    		 $(obj.get('name')).setStyle('display','none');
+    	}
+        obj.addEvent('change',function(){
+            if(obj.get('value')==between_sign){
+                $(obj.get('name')).setStyle('display','inline');
+            }else{
+                $(obj.get('name')).setStyle('display','none');
+            }
+        });
+        
+    });
+    if($("total_amount").value=='unlimited') {
+		 jsRemoveItemFromSelect($('buy_times'),"unlimited");
+    }
+    
+    $$("#total_amount").addEvent('change',function(){
+		 if($("total_amount").value=='unlimited') {
+			 $("total_amount_input").hide();
+			 jsRemoveItemFromSelect($('buy_times'),"unlimited");
+		 }else{
+			 $("total_amount_input").show();
+			 jsAddItemToSelect($('buy_times'),"无限制","unlimited");
+			
+		 }
+	 });
+    
+    $$("#buy_times").addEvent('change',function(){
+    	 if($("buy_times").value=='unlimited') {
+			 $("buy_times_input").hide();
+		 }else{
+			 $("buy_times_input").show();
+		 }
+    });
+	
+})();
+
+//删除select中选中的项 
+function jsRemoveItemFromSelect(objSelect, objItemValue) {   
+    //判断是否存在        
+    if (jsSelectIsExitItem(objSelect, objItemValue)) {        
+        for (var i = 0; i < objSelect.options.length; i++) {        
+            if (objSelect.options[i].value == objItemValue) {        
+                objSelect.options.remove(i);        
+                break;        
+            }        
+        }             
+    }      
+}    
+
+
+//判断select选项中 是否存在Value="paraValue"的Item 
+function jsSelectIsExitItem(objSelect, objItemValue) {        
+    var isExit = false;        
+    for (var i = 0; i < objSelect.options.length; i++) {        
+        if (objSelect.options[i].value == objItemValue) {        
+            isExit = true;        
+            break;        
+        }        
+    }        
+    return isExit;        
+} 
+
+//向select选项中 加入一个Item 
+function jsAddItemToSelect(objSelect, objItemText, objItemValue) {        
+    //判断是否存在        
+    if (jsSelectIsExitItem(objSelect, objItemValue)) {        
+             
+    } else {        
+        var varItem = new Option(objItemText, objItemValue);      
+        objSelect.options.add(varItem);         
+    }        
+}        
+</script>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function(){
+    	
+        if($$('input[name="is_default"]:checked').get('value') == 0){
+            if($('total_amount').get('value')==''){
+                alert('请选择消费金额条件');
+                return false;
+            }
+            
+            if($('buy_times').get('value')==''){
+                alert('请选择消费次数条件');
+                return false;
+            }
+        }
+        
+        
+        if($("total_amount").get('value') == 'between'){
+        	
+        	if($('min_amount').value == ''){
+        		alert('消费金额最小值不能为空!');
+        		return false;
+        	}
+        	if($('buy_times').get('value') == 'between'){
+        		if($('min_buy_times').value == ''){
+            		alert('消费次数最小值不能为空!');
+            		return false;
+            	}
+        	}
+        	var min_amount = $('min_amount').value;
+        	var max_amount = $('max_amount').value;
+        	var res = <{$res}>;
+        	if(res == 1){
+        		var data = {'shop_id':$('shop_id').get('value'),'min_amount':min_amount,'max_amount':max_amount,'res':res,'lv_id':'<{$lv.lv_id}>'};
+        	}else{
+        		var data = {'shop_id':$('shop_id').get('value'),'min_amount':min_amount,'max_amount':max_amount,'res':res};
+        	}
+        	new Request({
+	            url : 'index.php?app=ecorder&ctl=admin_shop_lv&act=check_amount_lv',
+	            method : 'post',
+	            data:data,
+	            onSuccess:function(responseText){
+	            	switch(parseInt(responseText)){
+	            		case 1:
+	            			alert('新增等级消费金额最小值必须大于等于之前等级最大值!');
+	            			return false;
+	            			break;
+	            		case 2:
+	            			alert('消费金额最小值不能大于等于最大值!');
+	            			return false;
+	            			break;
+	            		case 3:
+	            			alert('消费金额最大值将自动设置为默认值(999999元)!');
+	            			break;
+	            		case 4:
+	            			alert('消费金额最小值或最大值存在于其他等级范围之内!');
+	            			return false;
+	            			break;
+	            		case 5:
+	            			alert('消费金额最小值与最大值之间包含其他等级!');
+	            			return false;
+	            			break;
+	            		case 6:
+	            			alert('消费金额最大值已存在默认值(999999元)!');
+	            			return false;
+	            			break;
+	            	}
+                	_form.fireEvent('submit',{stop:$empty});
+	            }
+	        }).send();
+        }else{
+        	if($('buy_times').get('value') == 'between'){
+        		if($('min_buy_times').value == ''){
+            		alert('消费次数最小值不能为空!');
+            		return false;
+            	}
+        		var min_buy_times = $('min_buy_times').value;
+            	var max_buy_times = $('max_buy_times').value;
+            	var res = <{$res}>;
+            	if(res == 1){
+            		var data = {'shop_id':$('shop_id').get('value'),'min_buy_times':min_buy_times,'max_buy_times':max_buy_times,'res':res,'lv_id':'<{$lv.lv_id}>'};
+            	}else{
+            		var data = {'shop_id':$('shop_id').get('value'),'min_buy_times':min_buy_times,'max_buy_times':max_buy_times,'res':res};
+            	}
+            	new Request({
+    	            url : 'index.php?app=ecorder&ctl=admin_shop_lv&act=check_times_lv',
+    	            method : 'post',
+    	            data:data,
+    	            onSuccess:function(responseText){
+    	            	switch(parseInt(responseText)){
+    	            		case 1:
+    	            			alert('新增等级消费次数最小值必须大于等于之前等级最大值!');
+    	            			return false;
+    	            			break;
+    	            		case 2:
+    	            			alert('消费次数最小值不能大于等于最大值!');
+    	            			return false;
+    	            			break;
+    	            		case 3:
+    	            			alert('消费次数最大值将自动设置为默认值(999999次)!');
+    	            			break;
+    	            		case 4:
+    	            			alert('消费次数最大小值或最大值存在于其他等级范围之内!');
+    	            			return false;
+    	            			break;
+    	            		case 5:
+    	            			alert('消费次数最小值与最大值之间包含其他等级!');
+    	            			return false;
+    	            			break;
+    	            		case 6:
+    	            			alert('消费次数最大值已存在默认值(999999元)!');
+    	            			return false;
+    	            			break;
+    	            	}
+                    	_form.fireEvent('submit',{stop:$empty});
+    	            }
+    	        }).send();
+        	}else{
+        		_form.fireEvent('submit',{stop:$empty});
+        	}
+        }
+       
+        
+    });
+	
+})();
+</script>
+
+<{/if}>
+ 

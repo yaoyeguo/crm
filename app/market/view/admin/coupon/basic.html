@@ -1,0 +1,84 @@
+<{input type='hidden' value=$coupon.coupon_id name='coupon[coupon_id]'}>
+    
+<div class="division">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <th><{t}>活动店铺<{/t}>：</th>
+        <td><select name="coupon[shop_id]">
+            <{foreach from=$shopList item=shop}>
+                <option value='<{$shop.shop_id}>' <{if $shop.shop_id==$coupon.shop_id}>selected<{/if}>><{$shop.name}></option>
+            <{/foreach}>
+         </select></td>
+    </tr>
+    <tr>
+        <th><em class="red">*</em><{t}>优惠券名称：<{/t}></th>
+        <td><{input type="text" value=$coupon_name name="coupon[coupon_name]"}>
+        <input type='hidden' name='coupon[status]' value=1  />
+        </td>
+    </tr>
+   
+</table>
+</div>
+
+<div class="division">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+        <th><em class="red">*</em><{t}>面额<{/t}>：</th>
+        <td><select name="coupon[denominations]">
+            <option value=''>-请选择-</option>
+            <{foreach from=$couponType item=type key=key}>
+                <option value='<{$key}>' <{if $key==$coupon.denominations}>selected<{/if}>><{$type}></option>
+            <{/foreach}>
+         </select></td>
+    </tr>
+    <tr>
+        <th><{t}>开始时间<{/t}>：</th>
+        <td><{input type="time" value=$coupon.start_time name="start_time"}></td>
+    </tr>
+     <tr>
+        <th><em class="red">*</em><{t}>有效时间至<{/t}>：</th>
+        <td><{input type="time" value=$end_time name="end_time"}></td>
+    </tr>
+     <tr>
+        <th><em class="red">*</em><{t}>总领用量<{/t}>：</th>
+        <td><{input type="text" value=$coupon.coupon_count name="coupon[coupon_count]" style="width:50px;"}> 张</td>
+    </tr>
+     <tr>
+        <th><em class="red">*</em><{t}>每人限领<{/t}>：</th>
+        <td><select name="coupon[person_limit_count] ">
+            <option value='0'>不限</option>
+            <{foreach from=$limitCount item=type key=key}>
+                <option value='<{$key}>' <{if $key==$coupon.person_limit_count}>selected<{/if}>><{$type}></option>
+            <{/foreach}>
+         </select> 张</td>
+    </tr>
+    <tr>
+        <th><em class="red">*</em><{t}>使用条件<{/t}>：</th>
+        <td><input type="radio" id="user_condition_1" name="user_condition" value="1"  <{if $user_condition eq 1}>checked="checked"<{/if}> />不限 <input type="radio" id="user_condition_2" name="user_condition" value="2" <{if $user_condition eq 2}>checked="checked"<{/if}> />订单满 <{input type="text" id="conditions" value=$coupon.conditions name="coupon[conditions]" style="width:50px;" }>元
+        </td>
+    </tr>
+   
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <th><{t}>备注<{/t}>：</th>
+        <td><{input type="textarea" class="inputstyle" value=$coupon.remark name="coupon[remark]" cols="60" rows="4" }></td>
+    </tr>
+</table>
+</div>
+<script>
+function checkUserCondition(){
+	if($('user_condition_1').checked){
+		$('conditions').disabled = true;
+	}
+	
+	if($('user_condition_2').checked){
+        $('conditions').disabled = false;
+    }
+	
+}
+checkUserCondition();
+$('user_condition_1').addEvent('click',checkUserCondition);
+$('user_condition_2').addEvent('click',checkUserCondition);
+</script>

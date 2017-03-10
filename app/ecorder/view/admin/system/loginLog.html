@@ -1,0 +1,17 @@
+<div class="tableform">
+    <div class="division" style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        	<{foreach from=$data item=item key=k}>
+	           <tr>
+	                <th><{t}><{$k}><{/t}></th>
+	                <td>
+	                   <{$item}>
+	                </td>
+            	</tr>
+	        <{/foreach}>
+           
+        </table>
+    </div>
+</div>
+
+

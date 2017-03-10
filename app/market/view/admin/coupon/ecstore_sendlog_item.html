@@ -1,0 +1,29 @@
+<div>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>会员ID<{/t}></th>
+            <th><{t}>会员名称<{/t}></th>
+            <th><{t}>短信是否发送<{/t}></th>
+            <th><{t}>优惠劵是否发送<{/t}></th>
+            <th><{t}>失败原因<{/t}></th>
+            <th><{t}>发送时间<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$items item=item key=key}>
+         <tr>
+             <td><{$item.member_id}></td>
+             <td><{$item.uname}></td>
+             <td><{$item.is_sms}></td>
+             <td><{$item.is_coupon}></td>
+             <td><{$item.reason}></td>
+             <td><{$item.sendtime|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

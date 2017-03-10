@@ -1,0 +1,19 @@
+<app>
+    <name>营销系统</name>
+    <description>对后端系统的营销活动提供支持</description>
+
+    <author>
+        <name>shopex开发团队</name>
+        <email>dev@shopex.cn</email>
+        <url>http://www.shopex.cn</url>
+    </author>
+
+    <version>0.1</version>
+    <license>shopex license</license>
+
+    <depends>
+        <app>dbeav</app>
+		<app>ectools</app>
+    </depends>
+
+</app>

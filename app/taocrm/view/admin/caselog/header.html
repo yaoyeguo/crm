@@ -1,0 +1,89 @@
+<style>
+.tips {text-align:center;padding:5px;font-size:14px;font-family:Microsoft Yahei;color:#F30;}
+</style>
+
+<div style="padding:0 0 0 0;">
+	
+    <div style="margin-bottom:6px;padding:5px 15px; border:0;background:#F0F0F0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;">
+        <form id="dataAction" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                <td nowrap="nowrap">
+                <label><{t}>电话/手机：<{/t}></label>
+                <{input type="text" name="s[mobile]" value=$s.mobile size="15" }>
+
+                <label><{t}>订单号：<{/t}></label>
+                <{input type="text" name="s[order_bn]" value=$s.order_bn }>
+
+                <label><{t}>昵称/用户名/收货人：<{/t}></label>
+                <{input type="text" name="s[truename]" value=$s.truename size="15" }>
+
+                <{button type="button" class="filterBtn btn-thirdly" label=$___ectools="搜索"|t:'ectools'}>&nbsp;
+                </td>
+                </tr>
+            </table>
+        </form>
+        
+        <{if($has_member==-1)}>
+            <div id="search_tips" class="tips">
+                请输入搜索条件，添加客户信息请点击
+                <a href="<{$member_add_url}>"><{button class="filterBtn btn-thirdly" label=$___ectools="添加新客户"|t:'ectools'}></a>
+            </div>
+        <{/if}>
+
+        <div id="add_tips" style="display:none;" class="tips">
+            未找到符合条件的客户信息，请更换搜索条件或添加新客户
+            <a href="<{$member_add_url}>"><{button class="filterBtn btn-thirdly" label=$___ectools="添加新客户"|t:'ectools'}></a>
+        </div>
+        
+        <div id="more_tips" style="display:none;" class="tips">
+            找到多个符合条件的客户，请在列表中选择对应客户
+        </div>
+        
+    </div>
+	
+</div>
+
+<script>
+var has_member = <{$has_member}>;
+var dataAction = $('dataAction');
+//var _finder = finderGroup['<{$name}>'],
+
+(function(){
+
+    dataAction.getElement('.filterBtn').addEvent('click', function(){
+        setChartData();
+    });
+    
+    function setChartData(){
+        var params=dataAction.toQueryString();
+        dataAction.store('_data',params);
+        var url='index.php?<{$env.server.QUERY_STRING}>';
+        W.page(
+            url, 
+            {
+                data:params, 
+                method:'post',
+                onComplete:function(){
+                    //if(_finder) _finder.filter.value=params;
+                }
+            }
+        );
+    }
+    
+    if(has_member == 1){
+        //$('search_tips').hide();
+        //new Dialog('index.php?app=taocrm&ctl=admin_member_caselog&act=caselog_edit&member_id=<{$member_id}>',{title:'添加服务',width:650,height:300});
+    }else if(has_member == 0){
+        //$('search_tips').hide();
+        $('add_tips').show();
+    }else if(has_member > 1){
+        //$('search_tips').hide();
+        $('add_tips').hide();
+        $('more_tips').show();
+    }
+    
+    $$('form.finder-search').hide();
+    
+})();
+</script>

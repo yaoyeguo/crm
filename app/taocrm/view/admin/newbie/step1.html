@@ -1,0 +1,277 @@
+<div>
+    <ul id="nb_task_nav">
+        <li class="step1 step"><span>绑定店铺</span></li>
+        <li class="step2_off step"><span>手机验证</span></li>
+        <li class="step3_off step"><span>店铺信息</span></li>
+    </ul>
+    
+    <div id="step3_body" class="step_body">
+        <table cellpadding=6 width=100%>
+            <tr>
+                <td align="right">店铺名称：</td><td id="shop_name">
+                    <{$shop_name}>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">店铺网址：</td><td id="shop_url">
+                    <{$shop_url}>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">街道地址：</td><td>
+                    <{input size=30 type="text" name="addr" id="addr" }>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">邮政编码：</td><td>
+                    <{input size=12 maxlength=6 type="text" name="zip" id="zip" }>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">联系人：</td><td>
+                    <{input size=30 type="text" name="default_sender" id="default_sender" }>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">手机号码：</td><td>
+                    <{input size=30 type="text" name="new_mobile" id="new_mobile" }> *
+                </td>
+            </tr>
+            <tr>
+                <td align="right">固定电话：</td><td>
+                    <{input size=30 type="text" name="tel" id="tel" }>
+                </td>
+            </tr>
+            <tr>
+                <td width='30%'></td><td width='70%'>
+                    <{input size=30 type="hidden" name="new_shop_id" id="new_shop_id" }>
+                    <{button type="button" label="确定" id="save_shop"}>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div id="step2_body" class="step_body">
+        <table id="step2_body1" cellpadding=8 width=100%>
+            <tr>
+                <td colspan=2>
+                    <div style="border:1px solid #EEE;color:red;margin:0 auto;line-height:2em;padding:0 10px;background:#FFC">
+                    手机号仅作为激活短信帐号的工具，不会从您手机扣除费用。
+                    首次激活系统自动赠送您200条短信。 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">手机号：</td><td>
+                    <{input size=30 maxlength=11 type="text" name="mobile" id="mobile" }>
+						<{button type="button" label="发送验证码" id="get_passcode"}>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">验证码：</td><td>
+                    <{input size=30 maxlength=6 type="text" name="passcode" id="passcode" }>
+                </td>
+            </tr>
+            <tr>
+                <td width='30%'></td><td width='70%'>
+                    <{button type="button" label="激活" id="check_passcode"}>
+                </td>
+            </tr>
+            
+        </table>
+        
+        <div id="step2_body2" align="center" style="display:none">
+            <br/><br/>
+            您的手机号 <strong id="mobile_span"></strong> 已验证成功！
+            <br/><br/>
+            <{button type="button" label="下一步" onclick="goto_step(3);" }>
+            <br/><br/>
+        </div>
+    </div>
+    
+    <div id="step1_body" class="step_body">
+        <{$license_iframe}>
+    </div>
+</div>
+
+<script>
+
+    var shop_bind_status;
+    var li_arr;
+    var sms_bind = <{$sms_bind}>;
+    
+    (function(){
+        li_arr = $('nb_task_nav').getElements('li');
+        $('get_passcode').addEvent('click',function(){ get_passcode();});
+        $('check_passcode').addEvent('click',function(){check_passcode();});
+        $('save_shop').addEvent('click',function(){ajax_save_shop();});
+        //$$('div.dialog-box a.btn-close').hide();
+        goto_step(<{$init_step}>);
+    })();
+
+    //跳转步骤
+    function goto_step(num){
+        if(num == 3) ajax_get_shop();
+    
+        $$('div.step_body').hide();
+        li_arr[num-1].set('class','step'+(num)+' step');
+        document.getElementById('step'+num+'_body').style.display = 'block';
+        if(num == 1) chk_shop_bind();
+        if(num == 2 && sms_bind==1) goto_step(3);
+    }
+    
+    //获取手机验证码
+    function get_passcode(){
+		var mobile = $('mobile').value;
+		var _data = 'mobile='+mobile;
+		
+		var _url = 'index.php?app=market&ctl=admin_sms_active&act=send_passcode';
+		var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data:_data,
+			onSuccess : function(responseText) {
+				alert(responseText)
+			}
+		});
+        ajaxReq.send();
+	}
+	
+    //核对手机验证码
+	function check_passcode(){
+		var mobile = $('mobile').value;
+		var passcode = $('passcode').value;
+		var _data = 'mobile='+mobile+'&passcode='+passcode;
+		
+		var _url = 'index.php?app=market&ctl=admin_sms_active&act=check_passcode';
+		var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data:_data,
+			onSuccess : function(responseText) {
+				//alert(responseText)
+				if(responseText == 'succ'){
+                    $('mobile_span').set('html',mobile);
+					$('step2_body1').hide();
+					$('step2_body2').show();
+				}else{
+					alert(responseText);
+				}
+			}
+		});
+        ajaxReq.send();
+	}
+    
+    //获取已经保存的店铺信息
+    function ajax_get_shop(){
+        var _data = '';
+		var _url = 'index.php?app=taocrm&ctl=admin_newbie&act=ajax_get_shop';
+        
+		var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data:_data,
+			onSuccess : function(responseText) {
+				//alert(responseText)
+				try{
+                    var obj = eval('('+responseText+')');
+                    $('shop_name').set('html',obj.name);
+                    $('shop_url').set('html',obj.config.url);
+                    $('mobile').set('value',obj.mobile);
+                    $('new_shop_id').set('value',obj.shop_id);
+                    $('tel').set('value',obj.tel);
+                    $('new_mobile').set('value',obj.mobile);
+                    $('default_sender').set('value',obj.config.account);
+                    $('addr').set('value',obj.addr);
+                    $('zip').set('value',obj.zip);
+				}catch(err){
+					alert(responseText);
+				}
+			}
+		});
+        ajaxReq.send();
+	}
+    
+    //保存店铺信息
+    function ajax_save_shop(){
+        var addr = $('addr').value;
+		var zip = $('zip').value;
+		var default_sender = $('default_sender').value;
+		var mobile = $('new_mobile').value;
+		var tel = $('tel').value;
+		var new_shop_id = $('new_shop_id').value;
+        
+        if(mobile == '' || mobile.length!=11){
+            alert('请输入手机号码');
+            $('mobile').focus();
+            return false;
+        }
+        
+		var _data = 'addr='+addr+'&zip='+zip+'&default_sender='+default_sender+'&mobile='+mobile+'&tel='+tel+'&shop_id='+new_shop_id;
+        var _url = 'index.php?app=taocrm&ctl=admin_newbie&act=ajax_save_shop';
+        
+        var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data: _data,
+			onSuccess : function(responseText) {
+                //alert(responseText);
+                if(responseText == 'succ'){
+                    alert('保存成功！');
+                    window.location.reload();
+                }
+			}
+		});
+        ajaxReq.send();
+    }
+    
+    //每秒检查店铺是否绑定
+    function chk_shop_bind(){
+        var _url = 'index.php?app=taocrm&ctl=admin_newbie&act=ajax_chk_bind_shop';
+        
+        var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data: '',
+			onSuccess : function(responseText) {
+				if(responseText == 'succ') {
+                    //alert(bind_shop);
+                    goto_step(2);
+                }else{
+                    window.setTimeout('chk_shop_bind()',1000);
+                }
+			}
+		});
+        ajaxReq.send();
+    }
+
+    //写cookies
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+
+    //读取cookies
+    function getCookie(name)
+    {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return false;
+    }
+
+    //删除cookies
+    function delCookie(name)
+    {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+        document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    } 
+</script>

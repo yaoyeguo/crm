@@ -1,0 +1,26 @@
+<style>
+* {font-family:Arial}
+#p_id2,#p_id3,#p_id4 {color:blue;text-align:center;line-height:2em}
+#total_num {color:blue;}
+#edm_total_num {color:blue;}
+.region_list {margin: 0;padding: 0;}
+.region_list li {display: inline-block;	width: 75px;}
+.title_table {background-color: #F4F4F4;font-size: 20px}
+.title_table tr td {background-color: #F4F4F4;}
+.dialog .table-action {margin: 0px;padding: 0px;}
+
+#goods_page_nav { display:block;padding:5px 0;}
+#prev,#next {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+</style>
+
+<div class="tableform" style="margin:0;padding:0;">
+
+    <!--设置开始页面-->
+    <{if $steps.shop_bind }>
+        <{include file='admin/bind/step2.html'}>
+    <{else}>
+    <!--设置页面-->
+        <{include file='admin/bind/step1.html'}>
+    <{/if}>
+
+</div>

@@ -1,0 +1,39 @@
+
+<div class="tableform">
+    
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>插件名称<{/t}></th>
+                    <th><{t}>备注<{/t}></th>
+                    <th><{t}>创建时间<{/t}></th>
+                    <th><{t}>状态<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$logs item=data}>
+                <tr>
+                    <td><{$data.plugin_name}></td>
+                    <td><{$data.desc}></td>
+                    
+                    <td><{$data.start_time|cdate:FDATE_FTIME}></td>
+                    <td><{$data.status}></td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        
+        <br/>
+        <{$pager}>
+        
+    </div>
+</div>
+
+<script>
+$$('img.buy').addEvent('click',function(){
+    new Dialog('index.php/index.php?app=plugins&ctl=admin_buy&act=buy',{width:600,height:230,title:'购买插件'});
+});
+</script>
+

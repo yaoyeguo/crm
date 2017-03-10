@@ -1,0 +1,289 @@
+<style>
+#prop_demo {list-style:none;margin:0;padding:0;}
+#prop_demo li{float:left;width:70px;line-height:24px;margin:0 10px 10px 0;}
+#prop_demo a{display:block;text-align:center;border:1px solid #577DCA;color:#666;background:#FFF;}
+#prop_demo a:hover{background:#577DCA;color:#FFF;}
+</style>
+
+<div class="tableform">
+  <div class="division1">
+    <form method="post" action="index.php?app=ecorder&ctl=admin_shop&act=saveterminal" id="terminal">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody <{if($is_member_prop)}>style="display:none"<{/if}>>
+        <tr >
+        <th ><em class="c-red">*</em> 店铺名称：</th>
+          <td><{input type="text&&required" size="32" name="shop[name]" value=$shop.name}>
+          <{help}><{t}>前端网店在此系统需要显示的中文名称<{/t}><{/help}>
+          </td>
+        </tr>
+		<tr class="hide">
+          <th>地区：</th>
+          <td><{input type='region' app='ectools' name="shop[area]" value=$shop.area  }></td>
+        </tr>
+        <tr class="hide">
+          <th>地址：</th>
+          <td>
+            <{input size="50" type='text' app='ectools' name="shop[addr]" value=$shop.addr  }>
+            邮编：
+            <{input size="12" maxlength="6" type='text' app='ectools' id="zip" name="shop[zip]" value=$shop.zip  }>
+            </td>
+        </tr>
+        <tr class="hide">
+          <th> 联系人：</th>
+          <td>
+            <{input size="12" type='text' app='ectools' name="shop[default_sender]" value=$shop.default_sender  }>
+            </td>
+        </tr>
+        <tr class="hide">
+          <th>固定电话：</th>
+          <td>
+            <{input size="20" type='text' app='ectools' id="tel" name="shop[tel]" value=$shop.tel }>
+          <{help}><{t}>固定电话格式为：区号+电话+分机号(没有可不填)，中间用"-"隔开; <{/t}><{/help}>
+          </td>
+        </tr>
+        <tr class="hide">
+          <th>手机：</th>
+          <td>
+            <{input size="20" type='text' app='ectools' id="mobile" name="shop[mobile]" value=$shop.mobile }>
+            </td>
+        </tr>
+        <tr class="hide">
+          <th> 网店地址：</th>
+          <td><{input type="text" size="50" name="shop[config][url]" value=$shop_config.url}>
+         <{help}><{t}>前端网店在第三方平台的唯一标识（店铺的链接地址）<{/t}><{/help}>
+
+          </td>
+        </tr>
+        <tr style="display:none">
+          <th>店铺分类：</th>
+          <td>
+            <{input type="select" id="channel" options=$shop_channel name="shop[channel_id]" value=$shop.channel_id}>
+          </td>
+        </tr>
+        <tr>
+          <th>默认店铺：</th>
+          <td>
+            <label><input type="radio" name="is_default" value="1" <{if($is_default==1)}>checked<{/if}> /> 是</label>
+            <label><input type="radio" name="is_default" value="0" <{if($is_default==0)}>checked<{/if}> /> 否</label>
+            <{help}><{t}>选择“是”后，在CRM首页默认显示该店铺的统计数据<{/t}><{/help}>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>主帐号店铺：</th>
+          <td>
+            <label><input type="radio" name="is_main_accout" value="1" <{if($is_main_accout==1)}>checked<{/if}> /> 是</label>
+            <label><input type="radio" name="is_main_accout" value="0" <{if($is_main_accout==0)}>checked<{/if}> /> 否</label>
+            <{help}><{t}>选择“是”后，客户去重时会将其它店铺的帐号合并到此店铺<{/t}><{/help}>
+          </td>
+        </tr>
+        
+         <tr>
+          <th>店铺性质：</th>
+          <td>
+          
+            <label><input type="radio" name="shop[shop_prop]" value="online" <{if($shop.shop_prop=='online' || !$shop.shop_prop)}>checked<{/if}> /> 电商平台</label>　
+            
+            <label><input type="radio" name="shop[shop_prop]" value="offline" <{if($shop.shop_prop=='offline')}>checked<{/if}> /> 实体门店</label>　
+            
+            <label><input type="radio" name="shop[shop_prop]" value="wechat" <{if($shop.shop_prop=='wechat')}>checked<{/if}> /> 微信</label>　
+            
+            <{help}><{t}>选择“实体门店”后，该店铺默认是绑定状态。暂时只支持绑定一个微信帐号。<{/t}><{/help}>
+          </td>
+        </tr>
+        <tr>
+          <th>排序：</th>
+          <td>
+            <{assign var="orders_arr" value=array(0,1,2,3,4,5,6,7,8,9)}>
+            <{input name="shop[orders]" type="select" options=$orders_arr value=$shop.orders }>
+            * 数字越大越靠前
+          </td>
+        </tr>
+        
+        <tr class="x-ex" style="display:none">
+          <th><em class="c-red">*</em> 账号：</th>
+          <td><{input type="text&&required" name="shop[config][account]" size="32" value=$shop_config.account}>
+          <{help}><{t}>登陆前端网店的账号，系统用来与前端网店数据同步使用<{/t}><{/help}>
+
+          </td>
+        </tr>
+        <tr class="x-ex" style="display:none">
+          <th><em class="c-red">*</em> 密码：</th>
+          <td><{input type="password" name="shop[config][password]" size="20" value=$shop_config.password required="true"}>
+            <{help}><{t}> 登陆前端网店的密码，系统用来与前端网店数据同步使用<{/t}><{/help}>
+
+          </td>
+        </tr>
+        <tr class="hide">
+          <th> 短信签名：</th>
+          <td><{input type="text" size="20" maxlength="15" name="shop[config][sms_sign]" value=$shop_config.sms_sign}>  * 最多15字
+          <{help}><{t}>为了保障您的短信正常发送，短信内容必须包含签名，如果短信签名未输入，系统自动用店铺名称替代。<{/t}><{/help}>
+          </td>
+        </tr>
+        </tbody>
+
+        <tbody <{if(!$is_member_prop)}>style="display:none"<{/if}>>
+        <tr>
+          <th>店铺：</th>
+          <td>
+            <b><{$shop.name}></b>
+          </td>
+          </tr><tr>
+          <th> 客户自定义属性：</th>
+          <td>
+            <div style="width:250px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+            <{foreach from=$prop_name item=v key=k}>
+                <tr>
+                    <td>
+                        <{$k+1}>.<{input type="text" size="8" maxlength="8" name="shop[config][prop_name][]" value=$v}></td>
+                    <td style="text-align:left;">类型：
+                        <{input type="select" options=$conf_prop_type name="shop[config][prop_type][]" value=$prop_type[$k] }>
+                    </td>
+                </tr>
+            <{/foreach}>
+            </table>
+            </div>
+          </td>
+          </tr>
+          <tr>
+          <th> 快捷设定：</th>
+          <td>
+            <ul id="prop_demo">
+            <{assign var="prop_demo" value=array("性别","年龄","肤质","身高","上衣尺码","鞋码","爱好","体重")}>
+            <{foreach from=$prop_demo item=v key=k}>
+                <li><a href="javascript:void(0);"><{$v}></a></li>
+            <{/foreach}>
+            </ul>
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+
+    <input type='hidden' name="redirect_uri" value="<{$redirect_uri}>">
+
+    <input type='hidden' name="shop[old_shop_bn]" value="<{$shop.shop_bn}>">
+
+    <input type="hidden" id="shop_id" name="shop[shop_id]" value="<{$shop.shop_id}>">
+
+    <{if $shop.node_id}>
+        <input type="hidden" name="shop[node_id]" value="<{$shop.node_id}>">
+    <{/if}>
+
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="保存"}>
+        </div>
+    <{/area}>
+
+    <input type="hidden" name="from" value="<{$from}>">
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+
+    $$('#prop_demo a').addEvent('click', function(){
+        set_prop_val($(this).get('text'));
+    });
+
+})();
+
+function set_prop_val(prop_val){
+    var prop_name = $$('input[name="shop[config][prop_name][]"]');
+    prop_name.each(function(prop){
+        if(prop.value=='' && prop_val){
+            prop.value = prop_val;
+            prop_val = '';
+        }
+    });
+}
+
+function is_phone(str){
+	var partten = /^\d{1,4}-\d{7,8}(-\d{1,6})?$/;
+	if(partten.test(str)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function is_mobile(str){
+	var partten = /^\d{8,15}$/;
+	if(partten.test(str)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+$('saveterminal').addEvent('click',function(event){
+	/*
+	if ($('zip').value.length != "6"){
+		   alert('请输入正确的邮编');
+		   $('zip').focus();
+		   return false;
+    }
+	*/
+
+    //固定电话与手机必填一项
+    /*
+    var gd_tel,mobile, channel;
+    gd_tel = $('tel').value.replace(" ","");
+    mobile = $('mobile').value.replace(' ','');
+    channel=$('channel').value;
+    if (!gd_tel && !mobile){
+		   alert('固定电话与手机号码必需填写一项');
+		   $('shop[tel]').focus();
+		   return false;
+    }
+    if (gd_tel){
+			if (is_phone(gd_tel) === false){
+				alert('请填写正确的固定电话');
+			    $('tel').focus();
+			    return false;
+			}
+    }
+    if (mobile){
+		   if ( is_mobile(mobile) === false){
+			    alert('请输入正确的手机号码');
+			    $('mobile').focus();
+			    return false;
+		   }
+		   if (mobile[0] == '0'){
+			    alert('手机号码前请不要加0');
+			    $('mobile').focus();
+			    return false;
+		   }
+    }
+    */
+
+    var prop_name = $$('input[name="shop[config][prop_name][]"]');
+    prop_name.each(function(){
+
+    });
+
+    $('terminal').fireEvent('submit',new Event(event));
+});
+
+$('terminal').store('target',{
+    onRequest:function(){
+       $('saveterminal').set('disabled', 'true');
+    },
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if(typeof(hash_res_obj.error) != 'undefined'){
+           $('saveterminal').set('disabled', '');
+       }else{
+           $('saveterminal').set('disabled', 'true');
+            if(1==0 && $('shop_id').value == ''){
+                $('saveterminal').getParent('.dialog').retrieve('instance').close();
+                new Dialog('index.php?app=ecorder&ctl=admin_shop&act=addterminal',{title:'绑定店铺',width:900,height:460});
+            }
+
+            $('saveterminal').getParent('.dialog').retrieve('instance').close();
+       }
+    }
+    });
+</script>

@@ -1,0 +1,46 @@
+<deploy>
+	
+	<licence file="license.txt" />
+
+	<product_name>会员运营中心</product_name>
+	<product_key>ecos.taocrm</product_key>
+	<product_version>2.0</product_version>
+
+	<installer>
+		
+		<title>商派ONex会员运营中心</title>
+		
+		<banner><![CDATA[
+		<h1 id="ECstore-ver" style="font-family:Microsoft Yahei;">商派ONex会员运营中心<sup style="color:red;font-size:12px"></sup></h1>
+		]]></banner>
+
+		<style><![CDATA[
+		]]></style>
+
+		<finish>
+			<message><![CDATA[
+			<div>安装顺利完成！
+			 <div class="installer-success-txt">现在开始体验吧...</div>
+             <p>访问您的网店: <a href="%BASE_URL%">%BASE_URL%/index.php</a></p>
+             <p>管理网店: <a href="%BASE_URL%/index.php/shopadmin">%BASE_URL%/index.php/shopadmin</a></p>
+            </div>
+
+			]]></message>
+		</finish>
+	</installer>
+
+	<package>
+		<app id="taocrm" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="market" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="ecorder" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="ecgoods" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="plugins" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="entermembercenter" default="true" locked="true" hidden="false" autostart="true" />
+		<app id="marketcenter" default="true" locked="true" hidden="false" autostart="true" />
+	</package>
+	
+	<setting app="desktop" key="banner">商派ONex会员运营中心</setting>
+	<setting app="desktop" key="logo">商派ONex会员运营中心</setting>
+	<setting app="desktop" key="logo_desc">The future of shopping</setting>
+
+</deploy>

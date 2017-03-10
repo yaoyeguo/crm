@@ -1,0 +1,75 @@
+<style>
+#pop_gridlista th {text-align:right;border-bottom:1px solid #D0D2D5;}
+#pop_gridlista td {border-bottom:1px solid #D0D2D5;border-left:0 solid #D0D2D5;padding:3px 5px;}
+</style>
+
+<div class="division">
+<table id="pop_gridlista" width="100%" cellspacing="0" cellpadding="5">    
+    <tr>
+        <th width="150"><{t}>活动名称 :<{/t}></th>
+        <td><{$active.active_id}> - <{$active.active_name}></td>
+    </tr>
+    <tr>
+        <th><{t}>活动有效期 :<{/t}></th>
+        <td><{$active.start_time}> ~ <{$active.end_time}></td>
+    </tr>
+    <tr>
+        <th><{t}>活动执行时间 :<{/t}></th>
+        <td>
+            <{if($active.is_timing==1)}>
+                <{$active.plan_send_time}>
+                <font color=red>商家指定时间发送</font>
+            <{else}>
+                <{$active.exec_time}>
+            <{/if}>
+        </td>
+    </tr>
+    <tr>
+        <th><{t}>活动对照组 :<{/t}></th>
+        <td><{$active.control_group=='yes' ? '是':'否'}></td>
+    </tr>
+    <tr>
+        <th><{t}>短信对照组 :<{/t}></th>
+        <td><{$active.templete_b ? '是':'否'}></td>
+    </tr>
+    <tr>
+        <th><{t}>短信内容 :<{/t}></th>
+        <td>
+            <table>
+                <tr>
+                <td width="80" style="font-weight:bold;">短信A内容：</td>
+                <td><{$active.templete}></td>
+                </tr>
+                <{if($active.templete_b)}>
+                <tr>
+                <td style="font-weight:bold;">短信B内容：</td>
+                <td><{$active.templete_b}></td>
+                </tr>
+                <{/if}>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th><{t}>参加活动人数 :<{/t}></th>
+        <td><{$active.valid_num}></td>
+    </tr>
+    <tr>
+        <th><{t}>操作人 :<{/t}></th>
+        <td><{$active.op_user}></td>
+    </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+    <tr>
+        <td width="50%" valign="top">
+            选择条件
+            <div style="color:#03F"><{$active.include_filter}></div>
+        </td>
+        <td valign="top">
+            排除条件
+            <div style="color:#F30"><{$active.exclude_filter}></div>
+        </td>
+    </tr>
+</table>
+
+</div>

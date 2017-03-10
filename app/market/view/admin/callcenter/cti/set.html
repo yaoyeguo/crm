@@ -1,0 +1,52 @@
+<style>
+#cti_list td {border-bottom:1px dotted #CCC;padding:10px 0;}
+</style>
+
+<h3 class="head-title">软电话设置</h3>
+
+    <div style="padding:0 0 0 0;font-family:Microsoft Yahei;">
+        <h4 style="padding:10px 0;text-align:center;color:#3F4D69;border-bottom:1px dotted #CCC;">呼入弹屏地址：<{$base_url}></h4>
+        <table cellpadding="4" id="cti_list">
+            <{foreach from=$cti item=data key=k }>
+            <tr>
+                <td align="center">
+                    <{img width="80" height="80" src="cti/{$data.logo}" app="market" }>
+                    <br/>
+                    <{$data.title}>
+                </td>
+                <td>
+                    <{$data.desc}>
+                </td>
+                <td>
+                    <{if $k==$cti_type}>
+                        <{img src="tick.png" }>
+                    <{else}>
+                        &nbsp;
+                    <{/if}>
+                </td>
+                <td>
+                    <button onclick="opencti('<{$k}>');">
+                    <{if $k==$cti_type}>
+                        配置
+                    <{else}>
+                        启用
+                    <{/if}>
+                    </button>
+                </td>
+            </tr>
+            <{/foreach}>
+        </table>
+    </div>
+
+<script>
+(function(){
+
+    
+
+})();
+
+function opencti(cti_type){
+    //bird & ronghe
+    new Dialog('index.php?app=market&ctl=admin_callcenter_cti&act=dialog&cti_type='+cti_type,{title:'启用软电话支持',width:550,height:250});
+}
+</script>

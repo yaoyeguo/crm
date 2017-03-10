@@ -1,0 +1,59 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%" valign="top" bgcolor="#E4E4E4" style="padding:12px 8px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div>
+    <div class="cir_rightbox">
+        <h4>
+            <div class="title_left" >
+                <{$path}>
+             </div>
+            <{include file="admin/analysis/search.html"}>
+        </h4>
+        <div class="tj_rightbox">
+            <div class="wdgk_box">
+                
+                <div class="wdgk_title"><span class="float1">优惠券统计 <span style="font-weight:normal;">（<{$curCoupon.coupon_name}> 有效期：<{$curCoupon.end_time|cdate:'FDATE_FTIME'}>）</span></span></div>
+                <div class="list_cont">
+                    <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+                        <tr class="list_tr">
+                            <td></td>
+                            <td>发送人数</td>
+                            <td>使用人数</td>
+                            <td>订单总额</td>
+                            <td>订单总量</td>
+                        </tr>
+
+                        <{foreach from=$couponData item=item key=key}>
+                        <tr class="list_tr1">
+                            <td><{$item.name}></td>
+                            <td><{if $item.sentCount}><{$item.sentCount}><{else}>0<{/if}></td>
+                            <td><{if $item.useCount}><{$item.useCount}><{else}>0<{/if}></td>
+                            <td><{if $item.orderAmount}><{$item.orderAmount|cur}><{else}>0<{/if}></td>
+                            <td><{if $item.orderCount}><{$item.orderCount}><{else}>0<{/if}></td>
+                        </tr>
+                        <{/foreach}>
+            
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+</td>
+</tr>
+</table>

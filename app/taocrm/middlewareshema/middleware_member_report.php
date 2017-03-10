@@ -1,0 +1,90 @@
+<?php
+// 客户统计数据
+$db['middleware_member_report'] = array(
+    'columns' =>
+    array(
+        'id' =>
+        array(
+            'type' => 'int unsigned',
+            'required' => true,
+            'pkey' => true,
+            'extra' => 'auto_increment',
+            'editable' => false,
+        ),
+        'member_id' => array (
+            'type' =>'int',
+            'required' => true,
+            'label' => '客户ID',
+            'editable' => false,
+            'width' =>60,
+            'is_title' => true,
+            'orderby' => false,
+            'order'=>10,
+            'in_list' => true,
+            'default_in_list' => true,
+        ),
+        'mobile' => array (
+	        'type' => 'varchar(30)',
+	        'label' => '手机',
+	        'sdfpath' => 'contact/phone/mobile',
+	        'editable' => false,
+	        'in_list' => true,
+	        'default_in_list' => true,
+	        'width' => 105,
+	        'order' => 20,
+	    ),
+        'finish_total_amount' => array (
+            'type' => 'varchar(100)',
+            'label' => '成功订单总金额',
+            'editable' => false,
+            'orderby' => false,
+            'width' =>100,
+            'order'=>40,
+            'in_list' => true,
+            'default_in_list' => true,
+        ),
+        'total_orders' => array (
+            'type' => 'varchar(100)',
+            'label' => '订单总数',
+            'editable' => false,
+            'orderby' => false,
+            'width' =>100,
+            'order'=>50,
+            'in_list' => true,
+            'default_in_list' => true,
+        ),
+        'first_buy_time' => array (
+            'type' => 'time',
+            'label' => '第一次下单时间',
+            'editable' => false,
+            'orderby' => false,
+            'width' =>130,
+            'order'=>60,
+            'in_list' => true,
+            'default_in_list' => true,
+        ),
+        'last_buy_time' => array (
+            'type' => 'time',
+            'label' => '最后下单时间',
+            'editable' => false,
+            'orderby' => false,
+            'width' =>130,
+            'order'=>70,
+            'in_list' => true,
+            'default_in_list' => true,
+        ),
+        'shop_id' =>
+        array(
+            'type' => 'varchar(32)',
+            'label' => '来源店铺',
+            'required' => false,
+            'editable' => false,
+            'in_list' => false,
+            //'searchtype' => 'has',
+            'default_in_list' => false,
+            'width' => 120,
+            'order' => 22,
+        ),
+    ),
+); 
+

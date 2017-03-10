@@ -1,0 +1,52 @@
+<div class="tableform">
+	<div class="division">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>规则名称：<{/t}></label></th><td><{$rule.rule_name|escape:'html'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>是否启用：<{/t}></label></th><td><{if $rule.status eq 1}>启用<{else}>禁用<{/if}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>所属店铺：<{/t}></label></th><td><{$rule.shop_id}></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>发送优惠券：<{/t}></label></th><td><{$rule.coupon_name}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>消费金额：<{/t}></label></th><td><{$rule.condition}>元</td>
+					</tr>
+					<tr>
+						<th><label><{t}>客户级别：<{/t}></label></th>
+                        <td>
+                        <{foreach from=$rule.config.member_lv_ids item=lv}>
+                            <{$lv.name}>&nbsp;
+                        <{/foreach}>
+                        </td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	
+	<table class="multi-cols" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+            <th><label><{t}>发送人数：<{/t}></label></th>
+            <td><{$rule.count}></td>
+		</tr>
+		<tr>
+            <th><label><{t}>备注：<{/t}></label></th>
+            <td><{$rule.memo}></td>
+		</tr>
+	</table>
+	
+	</div>
+	</div>
+

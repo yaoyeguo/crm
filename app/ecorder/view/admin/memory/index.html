@@ -1,0 +1,67 @@
+
+<h3 class="head-title">重新加载数据</h3>
+
+    <div style="border:1px solid #FF9966;background:#FFFFCC;border-radius:5px;margin:10px;padding:10px;width:800px;">
+        为了快速准确呈现您的运营报表数据，CRM系统采用了内存数据预读模式，最新的数据需要等待数小时后才会被更新到报表。<br/>
+        如果您需要立刻查询最新报表数据，请点击下面的重新加载。
+    </div>    
+
+<div class="tableform">
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tr id="submit_tr">
+              <th>&nbsp;</th>
+              <td><{button id="repeat" class="btn-primary" label=$___b2c="重新加载"|t:'b2c' type="button"}></td>
+          </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+(function(){
+    $$('#repeat').addEvent('click',function(){
+        repeat_memory();
+    });
+})();
+
+function repeat_memory()
+{
+    if (confirm("是否需要重新加载？")){
+        var data={'repeat':1};
+        new Request({
+            url : 'index.php?app=ecorder&ctl=admin_analysis&act=repeat_load_memory',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+                var result = JSON.decode(responseText);
+                if (result.res == 'success') {
+                    if (result.info.status == 2 || result.info.status == 1) {
+                        window.location.href = result.info.url;
+                    }
+                    else if (result.info.status == 3){
+                        alert("数据正在加载中，不能重新加载");
+                    }
+                }
+                else {
+                    alert('参数不正确');
+                }
+                return false;
+                /**
+                if(responseText.indexOf('finish')>=0){
+                    alert('统计完成');
+                    $('ana_process_info').set('html','正在处理，请耐心等待。');
+                    $('ana_loading_bar').hide();
+                    $('submit_tr').show();
+                }else{
+                    $('ana_process_info').set('html','正在统计：'+responseText);
+                    run_analysis(days+1);
+                }
+                **/
+            }
+        }).send();
+    }
+    else {
+        return false;
+    }
+}
+</script>

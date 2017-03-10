@@ -1,0 +1,67 @@
+<div class="tableform">
+  <h3>创建外部客户分组</h3>
+  <div class="division">
+    <form method="post" action="index.php?app=taocrm&ctl=admin_member_import&act=saveGroup" id="form-branch">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+      <{input type=hidden value=$data.group_id name="group_id"}>
+        <tbody>
+         <tr><td></td></tr>
+         <tr>
+            <th><em class="c-red">*</em> 分组名称：</th>
+            <td>
+          <{input type="text" id="group_name" value=$data.group_name  name="group_name" vtype='required'  }>
+            </td>
+         </tr>
+        </tbody>
+      </table>
+      <div class="table-action"><{button label="保存" type="submit" name="submit" id="btn-branch"}> &nbsp;&nbsp;</div>
+      
+      <div style="background:#FFFFCC;border-top:1px solid #EEE;padding:10px;">
+        创建分组后，请<a style="color:#F30;" href="index.php?app=taocrm&ctl=admin_member&act=import" target="_parent">点击下载客户导入工具</a>，按格式要求导入外部客户数据。
+    </div>
+      
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+
+    (function(){        
+        var _form = $('form-branch');//form_id
+        var btn =$('btn-branch');//bt_id
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+        
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+            
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+                    
+                    if(_dialogIns)
+                    {   
+                        _dialogIns.close();
+                        window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+                    }
+                }
+                
+            }
+        });
+
+            btn.addEvent('click',function(){
+                var validate = true;
+                if ($('group_name').value == '') {
+                    validate = false;
+                    alert('请选择分组名称!');
+                    return false;
+                }
+
+                if (validate) {
+                    _form.fireEvent('submit',{stop:$empty});
+                }       
+            });
+            
+    })();
+</script>

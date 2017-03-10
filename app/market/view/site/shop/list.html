@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>门店查询</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+
+<body>
+
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>门店查询</h1>
+</nav>
+
+<div class="" style="padding:5px; background:#FFF;font-size:14px;">
+    <form id="search_form" method="get" style="margin:0;">
+        区域：
+        <select name="p_state" style="width:25%">
+            <option value="">请选择</option>
+            <{foreach from=$state item=data}>
+                <option value="<{$data}>" <{if($data==$p_state)}>selected<{/if}>><{$data}></option>
+            <{/foreach}>
+        </select>
+        <select name="p_city" style="width:25%">
+            <{if(!$p_state)}>
+                <option value="">请选择</option>
+            <{/if}>
+            <{foreach from=$city item=data}>
+                <option value="<{$data}>" <{if($data==$p_city)}>selected<{/if}>><{$data}></option>
+            <{/foreach}>
+        </select>
+        <select name="p_area" style="width:25%">
+            <{if(!$p_city)}>
+                <option value="">请选择</option>
+            <{/if}>
+            <{foreach from=$area item=data}>
+                <option value="<{$data}>" <{if($data==$p_area)}>selected<{/if}>><{$data}></option>
+            <{/foreach}>
+        </select>
+    </form>
+</div>
+
+<ul class="tabs bar-tabs" data-tab></ul>
+
+<div class="tabs-content">
+  <div class="mod content active" id="content1">
+  <{if $shops neq null}>
+  <{foreach from=$shops item=data key=k}>
+    <div class="mod-head clearfix">
+      <h1 class="left"><i class="icon-shop"></i><{$data.store_name}></h1>
+      <h2 class="right">&nbsp;</h2>
+    </div>
+    <div class="mod-body table-view">
+      <div class="cell">
+        <a href="site_weixin_news/store_map/?id=<{$data.store_id}>&my_xy=<{$my_xy}>" class="navigate-right icon">
+          <p><{$data.store_area}>-<{$data.address}></p>
+        </a>
+      </div>
+    </div>
+    <div class="mod-foot clearfix" style="margin:0 0 5px 0;">
+      <div class="left">电话：<{$data.phone}></div>
+      <div class="right">营业时间：<i class="text-alert"><{$data.open_time|default:'-'}></i></div>
+    </div>
+  <{/foreach}>
+  <{else}>
+      <!-- 暂无可用 -->
+      <div class="content placeholder-info">
+          <p>
+              <i class="icon-orders"></i>
+          </p>
+          <p>还没有门店信息</p>
+      </div>
+   <{/if}>
+  </div>
+
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+$('#search_form select').bind('change', function(){
+    $('#search_form').submit();
+});
+</script>
+</body>
+</html>

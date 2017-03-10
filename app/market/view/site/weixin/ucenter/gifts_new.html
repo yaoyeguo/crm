@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会员中心</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>我的积分</h1>
+</nav>
+<div class="page-header">
+  <div class="usable-coins">
+    <b><{$rs_member.points|default:0}></b>
+    <!-- <i>您的可用积分</i> -->
+  </div>
+</div>
+<div class="mod gift-info">
+  <div class="mod-head">
+    <h1>礼品信息</h1>
+  </div>
+  <div class="mod-body">
+    <{foreach from=$gifts item=data }>
+    <dl class="graphic">
+      <dt><img src="<{$data.preview}>" border="0" /></dt>
+      <dd>
+        <h2 class="ellipsis-2"><{$data.goods_name|cut:30}></h2>
+        <p><i>所需积分: <b class="coin"><{$data.minus_score}></b></i></p>
+        <p><i>剩余数量: <b class="num"><{$data.goods_stock}></b></i></p>
+      </dd>
+      <dd class="actions"><a  onclick="buy_now(<{$rs_member.all_points}>,<{$data.minus_score}>,<{$data.buy_id}>);" href="javascript:;" class="button alert small">立即兑换</a></dd>
+    </dl>
+    <{/foreach}>
+  </div>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+</body>
+<script>
+    var wx_id = '<{$wx_id}>';
+   // var gift_id = '<{$data.buy_id}>';
+    function buy_now(all_points,minus_score,gift_id){
+        if(all_points < minus_score){
+            alert('积分余额不足!');
+            return false;
+        }
+
+        //活动次数限制
+        var aj = $.ajax( {
+            url:'order_submit_ajax',// 跳转到 action
+            data:{
+                wx_id : wx_id,
+                gift_id : gift_id
+            },
+            type:'get',
+            success:function(data) {
+                if(data != 'succ'){
+                    alert(data);
+                    return false;
+                }else{
+                    if(confirm('确定要兑换该礼品吗？兑换成功后将扣除您<{$data.minus_score}>积分！')){
+                        var timestamp = (new Date()).valueOf();
+                        location.href = "order_confirm?wx_id="+wx_id+"&gift_id="+gift_id+"&rand_num="+timestamp;
+                    }else{
+                        return false;
+                    }
+                }
+            }
+        });
+
+
+    }
+</script>
+</html>

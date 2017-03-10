@@ -1,0 +1,114 @@
+<style>
+.user_active {border:2px solid #CCC;margin:-2px 0 10px -52px;width:50px;line-height:26px;background:#FFF;border-right:none;text-align:center;color:#5779BD;font-size:14px;}
+.user_inactive {border:2px solid #CCC;margin:-2px 0 10px -52px;width:48px;line-height:26px;background:#CBD5E0;text-align:center;}
+.user_inactive a{color:#666;}
+
+div.division1 {padding:10px 0 0 0;}
+</style>
+
+<form id="sms_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+
+    <{input name="sms[mobile]" type="hidden" value=$mobile size="12"}>
+    <{input name="sms[member_id]" type="hidden" value=$member_id size="12"}>
+    <{input name="sms[name]" type="hidden" value=$name size="12"}>
+
+    <div style="background:#EAEEF4;margin:0 0 10px 0;padding:10px;">
+        <table cellpadding="4">
+            <tr>
+                <th>
+                    手机号码：
+                </th>
+                <td>
+                    <strong><{$mobile}></strong>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    短信内容：
+                </th>
+                <td>
+                    <textarea id="sms_content" class="x-input" name="sms[content]" cols="60" rows="4">亲爱的<{$name}>，</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    短信签名：
+                </th>
+                <td>
+                    <select class="x-input" vtype='required' name="sms[extend_no]" id="sms_sign">
+                        <option value="">请选择</option>
+                    <{foreach from=$sign_list item=sign}>
+                        <option value="<{$sign.extend_no}>" <{if $sign.sign == $sms_sign}>selected<{/if}>><{$sign.sign}></option>
+                    <{/foreach}>
+                    </select>
+                    
+                    <span style="cursor:pointer;color:#0597E0;" id="config_sms_sign">
+                        <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                        设置签名
+                    </span>
+                    
+                    <input type="hidden" name="sms[sign]" id="sign">
+                    事件类型：<{input name="sms[category]" type="select" options=$category[2] value='' vtype="required" }>
+                </td>
+            </tr>
+            <tr><th>
+                </th>
+                <td>
+                    <{button type="button" id="send_sms_btn" name="submit" label="发送"}>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <{button type="button" id="close_sms_btn" label="取消"}>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+
+<script>
+(function(){
+
+    var sms_content = $('sms_content');
+    var sms_sign = $('sms_sign');
+    var _form = $('sms_form');
+    var _btn = $('send_sms_btn');
+    var _dlg = $('close_sms_btn').getParent('.dialog').retrieve('instance');
+
+    _btn.addEvent('click', function(){
+        if(sms_content.get('value')==''){
+            alert('请输入短信内容');
+            return false;
+        }
+
+        if(sms_sign.get('value')==''){
+            alert('请选择短信签名');
+            return false;
+        }
+
+        if(sms_content.get('value').match(/[【,】,!,@,#,$,%,^,&,*,{,},\[,\]]/) || sms_sign.get('value').match(/[【,】,!,@,#,$,%,^,&,*,{,},\[,\]]/)){
+            alert('短信内容和签名不允许包含下列字符：【】!@#$%^&*{}[]，请修改后重试');
+            return false;
+        }
+        $('sign').value = $('sms_sign').options[$('sms_sign').selectedIndex].text;
+
+        _form.fireEvent('submit',{stop:$empty});
+    });
+
+    _form.store('target',{
+        onSuccess:function(response){
+            _dlg.close();
+            //send_sms_dlg.close();
+        }
+    });
+
+    $('close_sms_btn').addEvent('click', function(){
+        _dlg.close();
+    });
+
+})();
+
+$('config_sms_sign').addEvent('click', function(){
+    window.open('index.php?app=ecorder&ctl=admin_sms_sign&act=index');
+    //new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:550,height:400,onClose:function(){refresh_sms_sign('sms_sign');}});
+});
+</script>

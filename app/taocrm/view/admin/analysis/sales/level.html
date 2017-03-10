@@ -1,0 +1,148 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<style>
+.compare_td td{background:#F0F5F7;}
+.percent_bar {border:1px solid #7796D3;margin-top:5px;width:200px;float:left}
+.percent_bar div{background:#7796D3;height:12px;overflow:hidden}
+</style>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+    
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0;">
+        <h4>
+            <{include file="admin/analysis/search.html"}>
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>客户等级</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                    
+                        <div>
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <iframe frameborder="0" src="?app=taocrm&ctl=admin_chart_member&act=level&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=2" scrolling="no" width="100%" height="300" id='line_frame1'></iframe>
+                                </td>
+                                <td width="50%">
+                                    <iframe frameborder="0" src="?app=taocrm&ctl=admin_chart_member&act=level&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=3" scrolling="no" width="100%" height="300" id='line_frame1'></iframe>
+                                </td>
+                            </tr>
+                        </table>
+                        </div>
+                        
+                        <div style="height:345px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_chart_member&act=level&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=1" scrolling="no" width="100%" height="100%" id='line_frame1'></iframe>
+                        </div> 
+                        
+                    </div>
+                    
+                    <div class="tableform" style="display:none">
+                    
+                        <{if (!$compare_data)}>
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>等级<{/t}></th>
+                                    <th><{t}>客户数<{/t}></th>
+                                    <th><{t}>比例<{/t}></th>
+                                    <th><{t}>消费金额<{/t}></th>
+                                    <th><{t}>比例<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                 <tr>
+                                     <td><{$data.lv_name}></td>
+                                     <td><{$data.total_members}></td>
+                                     <td style="text-align:left">
+                                     <div class="percent_bar"><div style="width:<{$data.total_members*100/$total_data.total_members|round:2}>%"></div></div> 　<{$data.total_members*100/$total_data.total_members|round:2}>%</td>
+                                     <td><{$data.total_amount|cur}></td>
+                                     <td style="text-align:left"><div class="percent_bar"><div style="width:<{$data.total_amount*100/$total_data.total_amount|round:2}>%"></div></div>　<{$data.total_amount*100/$total_data.total_amount|round:2}>%</td>
+                                     
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr bgcolor="#F0F5F7">
+                                     <td>合计</td>
+                                     <td><{$total_data.total_members}></td>
+                                     <td>&nbsp;</td>
+                                     <td><{$total_data.total_amount|cur}></td>
+                                     <td>&nbsp;</td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                        <{/if}>
+                        
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+(function(){
+
+    $('compare_span').hide();
+    $('date_area').hide();
+    $('date_date_cx').hide();
+    $('count_unit').hide();
+
+    var c_date_from = $('c_date_from').get('value');
+    
+    //斑马线
+    try{
+        var list_tr = $$('table.gridlist tbody tr');
+        for(var i=0;i<(list_tr.length-1);i++) {
+            if (i%2 == 1)
+            list_tr[i].setStyle('background','#EEE');
+        }
+    }catch(e){}
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+            };
+        });
+    }
+    
+    
+    
+})();
+
+function change_chart(){
+    var order_status = $('order_status').get('value');
+    var iframe1=$('line_frame1');
+    var iframe2=$('line_frame2');
+    iframe1.src += '&order_status='+order_status;
+    iframe2.src += '&order_status='+order_status;
+}
+</script>

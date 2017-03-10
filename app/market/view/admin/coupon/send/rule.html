@@ -1,0 +1,201 @@
+<h5 class="head-title">优惠券发送规则添加/编辑</h5>
+<form action="index.php?app=taocrm&ctl=admin_coupon_send_rule&act=toAdd" method="post">
+<input type="hidden" name="rule[rule_id]" value="<{$rule.rule_id}>" />
+<div class="tableform">
+<div class="division">
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tbody>
+		<tr>
+			<th width="10%"></th>
+			<td><h5>客户订购后根据客户的等级以及当次消费金额（一天内）自动发送一张优惠券并可短信发送告知。</h5></td>
+		</tr>
+        <tr>
+            <th width="10%"><label for="dom_el_bc"><em class="red">*</em><{t}>规则名称<{/t}>：</label></th>
+            <td colspan="3">
+                <{input type="text" name="rule[rule_name]" value=$rule.rule_name required='true'}>
+                <{help}><{t}>这里填写你需要添加的规则名称<{/t}><{/help}></td>
+        </tr>
+        <tr>
+            <th><{t}>所属店铺<{/t}>：</th>
+            <td><select name="rule[shop_id]" id="rule_shop">
+				<option value=''>-请选择-</option>
+                <{foreach from=$shopList item=shop}>
+                    <option value='<{$shop.shop_id}>' <{if $shop.shop_id==$rule.shop_id}>selected<{/if}>><{$shop.name}></option>
+                <{/foreach}>
+             </select></td>
+        </tr>
+        <tr>
+            <th><{t}>发送优惠券<{/t}>：</th>
+            <td id="send_coupon">
+                <{if $rule.shop_id}>
+                <select name="coupon_id">
+                    <{foreach from=$coupons item=coupon}>
+                        <option value='<{$coupon.coupon_id}>' <{if $coupon.coupon_id==$select_coupon}>selected<{/if}>><{$coupon.coupon_name}></option>
+                    <{/foreach}>
+                 </select>
+                 <{else}>
+                    <span class="red">请先选择店铺！</span>
+                 <{/if}>
+             </td>
+        </tr>
+        <tr>
+            <th><em class="red">*</em><{t}>客户级别<{/t}>：</th>
+            <td id="mLev">
+                <{if $rule.shop_id}>
+               <{foreach from=$member_level item=ml}>
+                    <input type="checkbox" value="<{$ml.shop_lv_id}>" name="config[member_lv_ids][<{$ml.shop_lv_id}>]" <{if $rule.config.member_lv_ids[$ml.shop_lv_id] || $rule.config.member_lv_ids[0]=='all'}>checked<{/if}>/><{$ml.name}>
+               <{/foreach}>
+			   <input type="checkbox" value="all" name="all_members" id="all_members" <{if $rule.config.member_lv_ids[0]=='all'}>checked<{/if}> />所有客户
+               <{else}>
+                    <span class="red">请先选择店铺！</span>
+                 <{/if}>
+            </td>
+        </tr>
+        <tr>
+            <th width="10%"><label for="dom_el_bc"><em class="red">*</em><{t}>消费金额<{/t}>：</label></th>
+            <td colspan="3">
+                <{input type="text" name="rule[condition]" value=$rule.condition required='true' style="width:50px;" }>
+                <{help}><{t}>规定时间达到的消费金额<{/t}><{/help}></td>
+        </tr>
+        <tr>
+            <th><{t}>短信提醒：<{/t}></th>
+            <td id="sms_send"><label><input type='radio' name='sms_send' value=1 <{if $rule.theme_id}>checked="checked"<{/if}> /><{t}>是<{/t}></label>
+                <label><input type='radio' name='sms_send' value=""  <{if !$rule.theme_id}>checked="checked"<{/if}> /><{t}>否<{/t}></label></td>
+        </tr>
+        <{if $rule.theme_id}>
+        <tr id="select_theme">
+            <th><{t}>选择短信模板：<{/t}></th>
+            <td>
+	            <select name="themeGroup" id="themeGroup">
+	                <option value="0">选择模板分类</option>
+	                <{foreach from=$groupList item=group}>
+	                <option value="<{$group.group_id}>" <{if $group.group_id==$select_group}>selected<{/if}>><{$group.group_title}></option>
+	                <{/foreach}>
+	            </select>
+	            <span id="theme_id"><select name="theme" id="theme">
+                    <option value="0">请选择模板</option>
+                    <{foreach from=$themes item=theme}>
+                    <option value="<{$theme.theme_id}>" <{if $theme.theme_id==$rule.theme_id}>selected<{/if}>><{$theme.theme_title}></option>
+                    <{/foreach}>
+                </select></span>
+	        </td>
+        </tr>
+        <{else}>
+        <tr id="select_theme">
+            <th><{t}>选择短信模板：<{/t}></th>
+            <td>
+	            <select name="themeGroup" id="themeGroup">
+	                <option value="0">选择模板分类</option>
+	                <{foreach from=$groupList item=group}>
+	                <option value="<{$group.group_id}>"><{$group.group_title}></option>
+	                <{/foreach}>
+	            </select>
+	            <span id="theme_id"></span>
+	        </td>
+        </tr>
+        <{/if}>
+        <tr>
+            <th><{t}>状态：<{/t}></th>
+            <td><label><input type='radio' name='rule[status]' value=1  <{if $rule.status eq 1}>checked="checked"<{/if}>/><{t}>启用<{/t}></label>
+            <label><input type='radio' name='rule[status]' value=0  <{if $rule.status eq 0}>checked="checked"<{/if}>/><{t}>禁用<{/t}></label></td>
+        </tr>
+        <tr>
+            <th><label for="dom_el">规则备注：</label></th>
+            <td colspan="3"><textarea name="rule[memo]" cols="60" rows="4" class="x-input"><{$rule.memo|escape}></textarea> <{help}><{t}>这里填写你需要添加的规则描述<{/t}><{/help}></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+<div class="table-action">
+    <{button class="btn-primary" label="保存" type="submit" id="saveCurrent"}>
+</div>
+</form>
+<script type="text/javascript">
+(function(){
+    var form = $('saveCurrent').getParents('form');
+    form.store('target',{
+        onRequest:function(e){
+            //提交按钮:disabled
+            $('saveCurrent').set('disabled', 'true');
+            $('saveCurrent').getElements('span')[1].set('text','正在保存');
+        },
+        onComplete:function(jsontext){
+            var json = Json.evaluate(jsontext);
+            if (typeof(json.error) != 'undefined'){
+                //提交按钮:enabled
+                $('saveCurrent').set('disabled', '');
+                $('saveCurrent').getElements('span')[1].set('text','保存');
+            }else{
+                //提交按钮:disabled
+                opener.finderGroup["<{$env.get.finder_id}>"].refresh.delay(400,opener.finderGroup["<{$env.get.finder_id}>"]);
+                setTimeout("window.close()",500);
+            }
+        }
+    });
+
+    window.addEvent('domready',function(){
+        $('rule_shop').addEvent('change',function(){
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_coupon&act=getShopCoupon&p[0]='+$('rule_shop').value,
+                method : 'post',
+                update : $('send_coupon')
+            }).send();
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_shop_lv&act=getShopLv&p[0]='+$('rule_shop').value,
+                method : 'post',
+                update : $('mLev')
+            }).send();
+        });
+    });
+    <{if $rule.shop_id}>
+    $('all_members').addEvent('click',function(){
+        var memberLvIds = document.getElements('input[name^=config[member_lv_ids]]'),
+        num = memberLvIds.length;
+
+        if (this.checked) {
+            for (var i = 0; i < num; i++) {
+                memberLvIds[i].checked = "checked";
+                memberLvIds[i].disabled = "true";
+            }
+        } else {
+            for (var i = 0; i < num; i++) {
+                memberLvIds[i].checked = "";
+                memberLvIds[i].disabled = "";
+            }
+        }
+    });
+    <{/if}>
+
+    <{if !$rule.theme_id}>
+    $('select_theme').hide();
+    $('select_theme').getFormElements().set('disabled',true);
+    <{/if}>
+        
+    $$("#sms_send input[name=sms_send]").addEvent('click',function(){
+        if(this.value){
+            $('select_theme').show();
+            $('select_theme').getFormElements().set('disabled',false);
+        }else{
+            $('select_theme').hide();
+            $('select_theme').getFormElements().set('disabled',true);
+        }
+    });
+
+    $('themeGroup').addEvent('change', function() {
+        if(this.value){
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_sms_themes_group&act=getThemesByGroup&p[0]='+this.value,
+                method : 'get',
+                update : $('theme_id')
+            }).send();
+        }else{
+            $('theme_id').innerHTML = '';
+        }
+	});
+    
+})();
+
+function changeTheme(){
+}
+</script>

@@ -1,0 +1,215 @@
+<script type="text/template" id="wheel_template">
+<div id="wheel_<%= id%>" class="canvas-box">
+<span class="start"></span>
+</div>
+<div class="block">
+  <div class="block-title">中奖用户</div>
+  <div class="block-content">
+    <ul class="user-list">
+    </ul>
+  </div>
+</div>
+<div class="block">
+  <div class="block-title">奖项</div>
+  <div class="block-content">
+      <table>
+        <colgroup>
+            <col width="85px"></col>
+            <col width="80px"></col>
+        </colgroup>
+        <tbody>
+      <%_.each(awards,function(item,index){%>
+            <tr>
+                <td><%=item.name%></td><td><%=item.num%>名</td><td><%=item.content%></td>
+            </tr>
+      <%});%>
+        </tbody>
+      </table>
+  </div>
+</div>
+<ul class="result">
+  <li class="result-msg" id="award_zero">
+  机会已用完，感谢您的参与！
+  </li>
+  <li class="result-msg" id="award_more">
+    感谢您的参与，请继续努力<br/>
+    还剩&nbsp;<strong>1</strong>&nbsp;次抽奖机会<br><button class="btn-b-s">继续抽奖</button>
+  </li>
+  <%_.each(awards,function(award,i){%>
+  <li class="result-msg" id="award_<%=award.id%>"><div class="title"><%=award.name%>&nbsp;&nbsp;&nbsp;&nbsp;<%= award.content%></div><div class="info_block"><%=awards_info%></div></li>
+  <%})%>
+</ul>
+<div class="contact" style="display:none;">
+    <form action="#">
+        <div class="contact-msg">请如实填写，以便中奖后能联系到您</div>
+        <% if(sex=='1'){%>
+        <div class="form-group">
+          <div class="form-label">性别</div>
+          <label><input type="radio" name="sex" value="男" checked/>男</label>
+          <label><input type="radio" name="sex" value="女"/>女</label>
+        </div>
+        <%};%>
+        <%if(birthday=='1'){%>
+        <div class="form-group">
+            <div class="form-label">出生年月</div>
+            <input type="date" class="inp-a" placeholder="出生年月" name="birthday"/>
+        </div>
+        <%}%>
+        <div class="form-group">
+        <input type="tel" class="inp-a" placeholder="手机" name="phone" maxlength="11"/>
+        </div>
+        <% if(name=='1'){%>
+        <div class="form-group">
+        <input type="text" class="inp-a" placeholder="姓名" name="name"/>
+        </div>
+        <%};%>
+        <% if(email=='1'){%>
+        <div class="form-group">
+        <input type="email" class="inp-a" placeholder="Email" name="email"/>
+        </div>
+        <%};%>
+        <% if(qq=='1'){%>
+        <div class="form-group">
+        <input type="number" class="inp-a" placeholder="QQ号" name="qq"/>
+        </div>
+        <%};%>
+        <% if(address=='1'){%>
+        <div class="form-group">
+        <input type="text" class="inp-a" placeholder="详细地址" name="address"/>
+        </div>
+        <%};%>
+        <div class="form-group">
+          <div class="btn-box">
+            <button class="btn-b" type="submit">提交</button>
+          </div>
+        </div>
+    </form>
+</div>
+</script><script type="text/template" id="share_template">
+<div class="share-padding-top"></div>
+<div class="share-layer-mask isfixed Isfixed100 Isfixed100_h" id="share-mask" style="display:none;">
+    <div class="share-to" id="share-ready" style="display:none;">你的专属页面已经Ready，马上跟朋友们分享吧~</div>
+</div>
+<div class="share-top isfixed Isfixed100" id="share-btn">
+    <button type="button" class="btn-b" <%if(style.color_btn){%>style="background:<%= style.color_btn%>"<%}%>><%= text %></button>
+</div>
+<div class="share-layer isfixed Isfixed100" id="share-share" style="display:none;">
+    <div class="share-layer-header">以你的名义转发<span class="share-close">&times;</span></div>
+    <div class="share-layer-title"><%= des %></div>
+    <form action="<%= submit_url %>" class="share-form">
+        <table>
+            <tbody>
+                <tr>
+                    <th>手机号：</th>
+                    <td><input type="number" class="inp-a" placeholder="作为你兑奖的凭证" name="mobile"/></td>
+                </tr>
+                <tr>
+                    <th>姓名：</th>
+                    <td><input type="text" class="inp-a" placeholder="你的朋友会看到是你推荐的" name="name"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn-b" style="background-color:<%= style.color_btn%>"><%= btn_text %></button>
+    </form>
+</div>
+<div class="share-layer share-shared isfixed Isfixed100" id="share-shared" style="display:none;">
+    <div class="share-shared-block">
+        <div class="share-layer-header">以你的名义转发<span class="share-close">&times;</span></div>
+        <div class="share-notice">你已经创建过分享页面</div>
+        <a class="btn-b" href="" style="background-color:<%= style.color_btn%>">查看你的分享页面</a>
+    </div>
+</div>
+</script>
+<script type="text/template" id="wheel_template">
+<div id="wheel_<%= id%>" class="canvas-box">
+<span class="start"></span>
+</div>
+<div class="block">
+  <div class="block-title">中奖用户</div>
+  <div class="block-content">
+    <ul class="user-list">
+    </ul>
+  </div>
+</div>
+<div class="block">
+  <div class="block-title">奖项</div>
+  <div class="block-content">
+      <table>
+        <colgroup>
+            <col width="85px"></col>
+            <col width="80px"></col>
+        </colgroup>
+        <tbody>
+      <%_.each(awards,function(item,index){%>
+            <tr>
+                <td><%=item.name%></td><td><%=item.num%>名</td><td><%=item.content%></td>
+            </tr>
+      <%});%>
+        </tbody>
+      </table>
+  </div>
+</div>
+<ul class="result">
+  <li class="result-msg" id="award_zero">
+  机会已用完，感谢您的参与！
+  </li>
+  <li class="result-msg" id="award_more">
+    感谢您的参与，请继续努力<br/>
+    还剩&nbsp;<strong>1</strong>&nbsp;次抽奖机会<br><button class="btn-b-s">继续抽奖</button>
+  </li>
+  <%_.each(awards,function(award,i){%>
+  <li class="result-msg" id="award_<%=award.id%>"><div class="title"><%=award.name%>&nbsp;&nbsp;&nbsp;&nbsp;<%= award.content%></div><div class="info_block"><%=awards_info%></div></li>
+  <%})%>
+</ul>
+<div class="contact" style="display:none;">
+    <form action="#">
+        <div class="contact-msg">请如实填写，以便中奖后能联系到您</div>
+        <% if(sex=='1'){%>
+        <div class="form-group">
+          <div class="form-label">性别</div>
+          <label><input type="radio" name="sex" value="男" checked/>男</label>
+          <label><input type="radio" name="sex" value="女"/>女</label>
+        </div>
+        <%};%>
+        <%if(birthday=='1'){%>
+        <div class="form-group">
+            <div class="form-label">出生年月</div>
+            <input type="date" class="inp-a" placeholder="出生年月" name="birthday"/>
+        </div>
+        <%}%>
+        <div class="form-group">
+        <input type="tel" class="inp-a" placeholder="手机" name="phone" maxlength="11"/>
+        </div>
+        <% if(name=='1'){%>
+        <div class="form-group">
+        <input type="text" class="inp-a" placeholder="姓名" name="name"/>
+        </div>
+        <%};%>
+        <% if(email=='1'){%>
+        <div class="form-group">
+        <input type="email" class="inp-a" placeholder="Email" name="email"/>
+        </div>
+        <%};%>
+        <% if(qq=='1'){%>
+        <div class="form-group">
+        <input type="number" class="inp-a" placeholder="QQ号" name="qq"/>
+        </div>
+        <%};%>
+        <% if(address=='1'){%>
+        <div class="form-group">
+        <input type="text" class="inp-a" placeholder="详细地址" name="address"/>
+        </div>
+        <%};%>
+        <div class="form-group">
+          <div class="btn-box">
+            <button class="btn-b" type="submit">提交</button>
+          </div>
+        </div>
+    </form>
+</div>
+</script><script type="text/template" id="card_detail_template">
+<div class="price">
+    <div class="title" style="color:<%=style.color_title%>;font-size:<%=style.size_title%>"><%=title%></div>
+    <div class="content" style="color:<%=style.color_text%>"><%=content%></div>
+</div>
+</script>

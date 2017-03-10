@@ -1,0 +1,188 @@
+<style>
+#intro_paid_amount {position:absolute;width:400px;top:-100px;left:400px;}
+#intro_join_num {position:absolute;width:400px;top:-58px;left:400px;}
+
+.intro {line-height:2em;padding:5px;color:#F60;}
+#rule_set tbody td{position:relative;}
+.head_title {background:#EEEEEE;border:1px solid #DDD;font-weight:bold;padding:8px 8px;}
+</style>
+
+<h3 class="head-title">返点规则设置</h3>
+
+<form action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+    <div id="rule_set" style="width:100%;">
+
+        <table cellpadding="10">
+            <tr>
+                <td>
+                    <label><input type="radio" name="rebate_type" value="paid_amount" /> 根据被推荐人消费金额</label>
+                    <label><input type="radio" name="rebate_type" value="join_num" /> 根据被推荐人数</label>
+                    <label><input type="radio" name="rebate_type" value="both" /> 两种方式都参与返点</label>
+                </td>
+            </tr>
+            
+            <tbody id="paid_amount_set">
+                <tr><td><div class="head_title">被推荐人消费金额</div></td></tr>
+                <tr>
+                    <td>
+                        <label><input type="radio" name="order_status" value="paid" /> 付款订单金额</label>
+                        &nbsp;&nbsp;　　　&nbsp;&nbsp;
+                        <label><input type="radio" name="order_status" value="finish" /> 完成订单金额</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="is_join[paid][0]" value="1" /> 本人消费参与提成</label>
+                        <span>，提成比例：<{input name="ratio[paid][0]" size="5" value=$conf.ratio.paid[0] }>%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="is_join[paid][2]" value="1" /> 二级推荐消费金额</label>
+                        <span>，提成比例：<{input name="ratio[paid][2]" size="5" value=$conf.ratio.paid[2] }>%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="is_join[paid][3]" value="1" /> 三级推荐消费金额</label>
+                        <span>，提成比例：<{input name="ratio[paid][3]" size="5" value=$conf.ratio.paid[3] }>%</span>
+
+                        <div id="intro_paid_amount" class="intro">
+                            说明：                             
+                            本人消费是指商家首级推荐人，自己的消费是否参与提成。
+                            二级推荐是指通过首级推荐人，进行推荐的客户进行的消费金额。
+                            三级推荐是指通过中间(二级推荐人)，进行推荐的客户，
+                            他们的消费额参与提成的比例。比例值：请填写数字。如：10，即提成比例为10%
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            
+            <tbody id="join_num_set">
+                <tr><td><div class="head_title">被推荐人数</div></td></tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="is_join[join][2]" value="1" /> 二级推荐人数</label>
+                        <span>，每推荐满：<{input name="join_num[2]" size="5" value=$conf.join_num[2] }> 人返点 
+                        <{input name="ratio[join][2]" size="5" value=$conf.ratio.join[2] }> 元/积分</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="is_join[join][3]" value="1" /> 三级推荐人数</label>
+                        <span>，每推荐满：<{input name="join_num[3]" size="5" value=$conf.join_num[3] }> 人返点 
+                        <{input name="ratio[join][3]" size="5" value=$conf.ratio.join[3] }> 元/积分</span>
+                        <div id="intro_join_num" class="intro">
+                            说明：
+                            二级推荐人数是指，由首级推荐人直接推荐的客户数。
+                            三级推荐人数是指，由二级推荐人简洁推荐的客户数。例如：
+                            商家首级推荐人为张三、直接推荐10人，10人中又推荐了50人，
+                            那么其中10人为二级推荐人、50人为三级推荐人
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            
+        </table>
+        <table cellpadding="10">
+            <tr><td><div class="head_title">设置返利周期统计日期</div></td></tr>
+            <tr>
+                <td>
+                    <label><input type="radio" name="set_period" value="month" /> 按月统计</label>
+                    <span id="set_date_span" style="display: none">每月：<{input id="set_date" name="set_date" size="3" value=$conf.set_date vtype="required&&number"}>号生成报表</span>
+                    <label><input type="radio" name="set_period" value="quarter" /> 按季度统计</label>
+                </td>
+            </tr>
+        </table>
+        <div style="text-align:center;padding:10px 0;border-top:1px solid #CCC;">
+            <button type="submit" style="background:#5779BD;border:none;padding:3px 10px;color:#FFF;cursor:pointer;">保存设置</button>
+        </div>
+        <div id="intro" class="">
+            <b>说明：</b>
+             当客户选择 “根据被推荐人消费金额”时，只会根据消费金额进行统计返利点数，选择根据“被推荐人数”时,只会根据推荐人数，进行返点统计。选择“两种方式都参与返点”时，系统会根据设置条件统计两种返点方式进行统计,统计结果将进行复计。根据金额返点时，系统根据商家选择订单状态的金额累计计算
+        </div>
+    </div>
+</form>
+
+<script>
+var rebate_type = '<{$conf.rebate_type}>';
+var order_status = '<{$conf.order_status}>';
+
+var is_join_paid_0 = '<{$conf.is_join.paid[0]}>';
+var is_join_paid_2 = '<{$conf.is_join.paid[2]}>';
+var is_join_paid_3 = '<{$conf.is_join.paid[3]}>';
+
+var is_join_join_2 = '<{$conf.is_join.join[2]}>';
+var is_join_join_3 = '<{$conf.is_join.join[3]}>';
+
+var set_period = '<{$conf.set_period}>';
+
+init_radio();
+
+function init_radio(){
+
+    if(is_join_paid_0 == 1) $$('input[name="is_join[paid][0]"]').set('checked', true);
+    if(is_join_paid_2 == 1) $$('input[name="is_join[paid][2]"]').set('checked', true);
+    if(is_join_paid_3 == 1) $$('input[name="is_join[paid][3]"]').set('checked', true);
+    
+    if(is_join_join_2 == 1) $$('input[name="is_join[join][2]"]').set('checked', true);
+    if(is_join_join_3 == 1) $$('input[name="is_join[join][3]"]').set('checked', true);
+
+    $$('input[name="rebate_type"][value="'+rebate_type+'"]').set('checked', true);
+
+    $$('input[name="set_period"][value="'+set_period+'"]').set('checked', true);
+    if(set_period == 'month')$('set_date_span').show();
+
+    $$('input[name="order_status"][value="'+order_status+'"]').set('checked', true);
+    if(rebate_type == 'both') return true;
+    
+    $$('div.intro').hide();
+    $('paid_amount_set').hide();
+    $('join_num_set').hide();
+    $(rebate_type+'_set').show();
+    $('intro_'+rebate_type).show();
+}
+
+$$('#rule_set input[name="rebate_type"]').addEvent('click', function(){
+    var ele = $(this);
+    $('paid_amount_set').hide();
+    $('join_num_set').hide();
+    $$('div.intro').hide();
+    if(ele.get('value') == 'both'){
+        $('paid_amount_set').show();
+        $('join_num_set').show();
+        $$('div.intro').show();
+    }else{
+        $(ele.get('value')+'_set').show();
+        $('intro_'+ele.get('value')).show();
+    }
+});
+
+$$('#rule_set input[type="checkbox"]').addEvent('click', function(){
+    var ele = $(this);
+    if(ele.get('checked')){
+        ele.getParent().getNext().show();
+    }else{
+        ele.getParent().getNext().hide();
+    }
+});
+
+$$('#rule_set input[type="checkbox"]').each(function(ele){
+    if(ele.get('checked')){
+        ele.getParent().getNext().show();
+    }else{
+        ele.getParent().getNext().hide();
+    }
+});
+
+$$('#rule_set input[name="set_period"]').addEvent('click', function(){
+    var ele = $(this);
+    if(ele.get('value') == 'month'){
+        $('set_date_span').show();
+    }else{
+        $('set_date_span').hide();
+        $('set_date').set('value','');
+    }
+});
+
+</script>

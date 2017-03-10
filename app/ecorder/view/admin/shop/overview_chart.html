@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>amCharts examples</title>
+        <style>h4{margin:0;padding:0 0 10px 0;font-size:14px;}</style>
+        <{script src="../amcharts/amcharts.js" app="taocrm" }> 
+        <style>
+        h4 {
+            margin:0 0 10px 0;
+            padding:0;
+            
+        }
+        h4 .tips{
+            background:url(<{$env.app.res_url}>/arr_bg.gif) no-repeat 0 2px;            
+            font-size:12px;
+            font-weight:normal;
+            overflow:hidden;
+            zoom:1;
+            padding:6px 0 6px 10px;
+        }
+        h4 .tips a{
+            background:url(<{$env.app.res_url}>/arr_bg.gif) no-repeat right bottom;
+            padding:6px 5px 6px 0;
+        }
+        </style>
+        </head>
+    
+    <body>
+        <table>
+            <tr>
+                <td>
+                    <h4>
+                        店铺销售额 Top5 
+                        <span class="tips"><a>全部下单金额合计</a></span>
+                    </h4>
+                    <div id="chartdiv" style="width: 400px; height: 220px;"><{if(!$chart_amount)}><div style="background:#F4F4F4;border-radius:10px;height: 220px;text-align:center;font-family:Microsoft Yahei;font-size:18px;"><br/><br/><br/><br/>抱歉，暂无相关数据</div><{/if}></div>
+                </td>
+                <td>
+                    <h4>店铺客户数 Top5
+                        <span class="tips"><a>全部下单客户合计</a></span>
+                    </h4>
+                    <div id="chartdiv2" style="width: 400px; height: 220px;"><{if(!$chart_member)}><div style="background:#F4F4F4;border-radius:10px;height: 220px;text-align:center;font-family:Microsoft Yahei;font-size:18px;"><br/><br/><br/><br/>抱歉，暂无相关数据</div><{/if}></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:20px 0 0 0;">
+                    <h4>一周店铺销售概览
+                        <span class="tips"><a>最近7天所有店铺付款订单合计</a></span>
+                    </h4>
+                    <div id="chartdiv3" style="width: 800px; height: 300px;"><{if(!$chart_shop)}><div style="background:#F4F4F4;border-radius:10px;height: 300px;text-align:center;font-family:Microsoft Yahei;font-size:18px;"><br/><br/><br/><br/><br/>抱歉，暂无相关数据</div><{/if}></div>
+                </td>
+            </tr>
+        </table>
+        
+        <script type="text/javascript">
+            var chart;
+            var chartData = [<{$chart_amount}>];
+            AmCharts.ready(function () {
+                // PIE CHART
+                chart = new AmCharts.AmPieChart();
+                //chart.addTitle('销售额 Top5', 14);
+                chart.dataProvider = chartData;
+                chart.titleField = "x";
+                chart.valueField = "y";
+                chart.outlineColor = "#FFFFFF";
+                chart.outlineAlpha = 0;
+                chart.outlineThickness = 0;
+                //chart.startEffect = '>';
+                chart.angle = 10;
+                chart.depth3D = 4;
+                chart.startDuration = 0;
+                chart.fontSize = 12;
+                chart.labelsEnabled = false;
+                chart.innerRadius = 25;
+                chart.colors = ['#7DDEF8','#5CCDF7','#02B2FD','#3399CC','#006699','#003333'];
+                chart.pieY = 110;
+                
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.fontSize = 12;//图例
+                legend.position = 'right';
+                legend.valueWidth = 80;
+                legend.switchable = false;
+                chart.addLegend(legend); 
+
+                // WRITE
+                chart.write("chartdiv");
+            });
+            
+            var chart2;
+            var chartData2 = [<{$chart_member}>];
+            AmCharts.ready(function () {
+                // PIE CHART
+                chart2 = new AmCharts.AmPieChart();
+                chart2.dataProvider = chartData2;
+                chart2.titleField = "x";
+                chart2.valueField = "y";
+                chart2.outlineColor = "#FFFFFF";
+                chart2.outlineAlpha = 0;
+                chart2.outlineThickness = 0;
+                //chart.startEffect = '>';
+                chart2.angle = 10;
+                chart2.depth3D = 4;
+                chart2.startDuration = 0;
+                chart2.fontSize = 12;
+                chart2.labelsEnabled = false;
+                chart2.innerRadius = 25;
+                chart2.colors = ['#7DDEF8','#5CCDF7','#02B2FD','#3399CC','#006699','#003333'];
+                chart2.pieY = 110;
+                
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.fontSize = 12;//图例
+                legend.position = 'right';
+                legend.switchable = false;
+                //legend.valueWidth = 90;
+                //legend.valueWidth = 80;
+                chart2.addLegend(legend); 
+
+                // WRITE
+                chart2.write("chartdiv2");
+            });
+            
+            var chart3;
+            var chartData3 = [<{$chart_shop}>];            
+            AmCharts.ready(function () {
+                // SERIAL CHART
+                chart3 = new AmCharts.AmSerialChart();
+                chart3.dataProvider = chartData3;
+                chart3.categoryField = "x";
+                //chart.startDuration = 1;
+                chart3.plotAreaBorderColor = "#DADADA";//边框颜色
+                chart3.plotAreaBorderAlpha = 0;
+                // this single line makes the chart a bar chart
+                chart3.rotate = false;//图标的方向
+                chart3.depth3D = 2;//立体度设置
+                chart3.angle = 30;
+                chart3.fontSize = 12;
+
+                // AXES
+                // Category
+                var categoryAxis = chart3.categoryAxis;
+                //categoryAxis.title = "客户数";
+                categoryAxis.gridPosition = "start";
+                categoryAxis.gridAlpha = 0;//横坐标
+                categoryAxis.axisAlpha = 0;
+                categoryAxis.tickLength = 0;
+                categoryAxis.dashLength = 1;
+
+                // Value
+                var valueAxis1 = new AmCharts.ValueAxis();
+                valueAxis1.axisAlpha = 0;//Y坐标1
+                valueAxis1.gridAlpha = 0.1;
+                valueAxis1.dashLength = 2;
+                valueAxis1.minimum = 0;
+                valueAxis1.position = "left";
+                chart3.addValueAxis(valueAxis1);
+                
+                // Value
+                var valueAxis2 = new AmCharts.ValueAxis();
+                //valueAxis2.title = '客户人数';
+                valueAxis2.axisAlpha = 0;//Y坐标2
+                valueAxis2.gridAlpha = 0;
+                valueAxis2.dashLength = 4;
+                valueAxis2.minimum = 0;
+                valueAxis2.position = "right";
+                chart3.addValueAxis(valueAxis2);
+                
+
+                // GRAPHS
+                // first graph
+                var graph1 = new AmCharts.AmGraph();
+                graph1.valueAxis = valueAxis1;
+                graph1.type = "column";
+                graph1.title = "付款单数";
+                graph1.valueField = "y1";
+                graph1.balloonText = "付款单数:[[value]]";
+                graph1.bulletAlpha = 0;
+                graph1.lineAlpha = 0;
+                graph1.lineThickness = 2;
+                graph1.fillColors = "#0D8ECF";
+                graph1.fillAlphas = 1;
+                chart3.addGraph(graph1);
+                
+                var graph1 = new AmCharts.AmGraph();
+                graph1.valueAxis = valueAxis1;
+                graph1.type = "column";
+                graph1.title = "客户数";
+                graph1.valueField = "y3";
+                graph1.balloonText = "客户数:[[value]]";
+                graph1.bulletAlpha = 0;
+                graph1.lineAlpha = 0;
+                graph1.lineThickness = 2;
+                graph1.fillColors = "#CC0E70";
+                graph1.fillAlphas = 1;
+                chart3.addGraph(graph1);
+
+                // second graph
+                var graph1 = new AmCharts.AmGraph();
+                graph1.valueAxis = valueAxis2;
+                graph1.title = "付款金额";
+                graph1.valueField = "y2";
+                graph1.type = "line";//线形图
+                graph1.lineColor = "#AFDE09";
+                graph1.balloonText = "付款金额:[[value]]";
+                graph1.lineThickness = 3;//线宽
+                graph1.legendValueText = "[[value]]";
+                graph1.bullet = "round";//坐标点的形状：square
+                graph1.bulletColor = "#FFFFFF";
+                graph1.bulletBorderColor = "#006699";
+                chart3.addGraph(graph1);
+                
+                // LEGEND
+                var legend3 = new AmCharts.AmLegend();
+                legend3.fontSize = 12;//图例
+                legend3.equalWidths = false;
+                legend3.switchable = false;
+                chart3.addLegend(legend3);
+                
+                // CURSOR
+                var chartCursor = new AmCharts.ChartCursor();//鼠标线
+                //chartCursor.cursorPosition = "mouse";//鼠标线的位置，跟随鼠标或自动对齐
+                chart3.addChartCursor(chartCursor);
+
+                // WRITE
+                chart3.write("chartdiv3");
+            });
+        </script>
+    </body>
+
+</html>

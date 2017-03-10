@@ -1,0 +1,48 @@
+<div style="padding:20px;"><h3>Email书写规范总结</h3><br />
+<hr />
+为了保证最大的兼容性，在制作HTML的email页面时，请严格按照规范来书写：<br />
+<br />
+1．页面宽度推荐500px，最大不要超过600px；<br />
+<br />
+2．制作HTML的email页面时，不使用css+div来布局，最好请使用table表格来布局。<br />
+<br />
+3．定义文字或图片的样式时，请不要使用外链的css样式（外链的css样式在邮件里将不能被读取，所以发送出去的邮件因为没有链接到样式，将会使你的邮件看起来很难看），正确的做法请将样式书写在&lt;td&gt;或&lt;font&gt;里，写法如下： &lt;td style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#000000;" &gt;文字&lt;/td&gt;&lt;font style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#000000;" &gt;文字&lt;/font&gt;<br />
+<br />
+4．不使用Flash、Java、Javascript、frames、i-frames、ActiveX 以及 DHTML，如果页面中的图片一定要是动态的，请将FLASH文件转换成GIF动画使用。（Outlook 2007限制GIF动画，在Outlook 2007里，GIF将不能正常显示）<br />
+<br />
+5．&lt;table&gt;&lt;/table&gt;以外的body、meta和html之类的标签是可以无视的，邮箱系统里会把这些过滤掉。<br />
+<br />
+6．有背景图时，代码写法如下：&lt;table background="background.gif" cellspacing="0" cellpadding="0"&gt;（在outlook中查看邮件时，背景图片不显示，这是因为outlook中对背景图片无法识别。）<br />
+<br />
+7．如果文字内容是写在&lt;li&gt;里，那么样式请尽量写在&lt;ul&gt;里，在sohu中写在&lt;td&gt;或&lt;tr&gt;里的样式会被过滤，其它邮箱没有问题。例如：&lt;ul style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#000000;"&gt;&lt;li&gt;你的文字&lt;/li&gt;&lt;/ul&gt;<br />
+<br />
+8．在同一个&lt;td&gt;里最好只放一个图片。如&lt;td&gt;&lt;img src=" photo.JPG" &gt;&lt;/td&gt;；所有的图片都要定义高和宽。<br />
+<br />
+9．邮件内容里不要出现鼠标经过的事件"onMouseOut" "onMouseOver"，即使在&lt;td&gt;里设置了，发送到邮箱后也将被过滤，将不能显示设定鼠标经过所显示的内容。<br />
+<br />
+10．同一段文字请尽可能放在同一&lt;td&gt;里。<br />
+<br />
+11．制作一份和邮件内容一样的web页面，然后在邮件顶部写一句话：“如果您无法查看邮件内容，请点击这里查看”， 链到放有同样内容的web页面，这样即使用户收到的邮件图片无法浏览，通过链接也能正常查看内容；<br />
+<br />
+12．HTML代码和图片尽量不要超过50kb（各个邮箱的收件标准不一样，如果超出50kb您的邮件很有可能会进入垃圾邮件箱里）。<br />
+<br />
+13．邮件模板内的图片地址请不要写成本地路径，例如：&lt;img src="image/menu-5.gif" alt="" /&gt;，（这样发送出去的邮件，收件人将没办法看到您的图片）；正确的写法请写成：&lt;img src="http://放置图片的网络空间绝对地址/menu-5.gif" alt="" /&gt;。<br />
+<br />
+14．邮件模板内的所有超链接请写成绝对地址，例如：&lt;a href="http://www.shopex.cn "&gt;文字或图片&lt;/a&gt;；（以确保收信人在点击超链接时能够正常浏览您的内容）。<br />
+<br />
+15．在样式表中，可以省略font-family属性，如果font-family：后属性为空，会被QQ屏蔽为垃圾邮件。<br />
+<br />
+16．在制作HTML邮件内容时，请尽量保持您的链接数量不要超过10个，如果同一模板内所有图片的链接地址一样，请将所有的小图拼和成一张大图加链接。<br />
+<br />
+17．制作模板时，希望邮件内容全部左右居中显示的话，请在设定table里设align="center"，而不要使用&lt;div align="center"&gt;设定居中。<br />
+<br />
+18．设定邮件主题时，请不要在主题中加入带有网站地址的信息，比如“shopex.cn商派公司祝您新年好”<br />
+<br />
+19．页面的文字中不要出现网站地址，例如： http://www.shopex.cn，此类文字即使加了超链接，被屏蔽为垃圾邮件的风险也是及高的。<br />
+<br />
+20．为避免文字在各个主流邮箱中的显示有所不同，尽量使用图片。显示有区别的在于qq和gmail。<br />
+<br />
+21．书写标题时，在中文输入法下输入的标点符号在21CN中标题会显示乱码，请大家尽量将标点符号转化成英文输入法下的标点符号。<br />
+<br />
+22．如果在图片上加map连接时，请不要使map重叠放置。<br />
+</div>

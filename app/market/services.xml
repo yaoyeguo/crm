@@ -1,0 +1,149 @@
+<services>
+
+	<service id="desktop_finder.market_mdl_edm_template_type">
+		<class>market_finder_edm_template_type</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_edm_tclass">
+		<class>market_finder_edm_tclass</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_edm">
+		<class>market_finder_edm</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_edm_templates">
+		<class>market_finder_edm_templates</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_active_assess">
+		<class>market_finder_active_assess</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_sms_template_type">
+		<class>market_finder_sms_template_type</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_sms_templates">
+		<class>market_finder_sms_templates</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_active">
+		<class>market_finder_active</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_coupons">
+		<class>market_finder_coupon</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_sms">
+		<class>market_finder_sms</class>
+	</service>
+
+	<service id="openapi.market.edm">
+		<class>market_service_tempinterface</class>
+	</service>
+
+	<!-- <service id="desktop_finder.market_mdl_sms"> <class>market_finder_sms</class> 
+		</service> -->
+	<service id="openapi.market.edm">
+		<class>market_service_tempinterface</class>
+	</service>
+
+	<service id="extend_filter_market_mdl_active_assess">
+		<class>market_finder_extend_filter_active_assess</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_fx_activity">
+		<class>market_finder_fx_activity</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_fx_sms">
+		<class>market_finder_fx_sms</class>
+	</service>
+
+	<service id="openapi.weixin">
+		<class>market_service_weixin</class>
+	</service>
+
+	<service id="desktop_finder.market_mdl_wx_keywords_autoreply">
+		<class>market_finder_wx_keywords_autoreply</class>
+	</service>
+    
+	<service id="desktop_finder.market_mdl_wx_msg_send_all">
+		<class>market_finder_wx_sendmsg_all</class>
+	</service>
+    
+    <service id="desktop_finder.market_mdl_wx_survey_items">
+		<class>market_finder_wx_survey_items</class>
+	</service>
+    
+    <service id="desktop_finder.market_mdl_wx_survey">
+		<class>market_finder_wx_survey</class>
+	</service>
+    
+    <service id="desktop_finder.market_mdl_wx_vote">
+		<class>market_finder_wx_vote</class>
+	</service>
+    
+    <service id="desktop_finder.market_mdl_wx_due">
+		<class>market_finder_wx_due</class>
+	</service>
+	
+	<service id="desktop_finder.market_mdl_wx_member">
+        <class>market_finder_wx_member</class>
+    </service>
+	
+    <service id="desktop_finder.market_mdl_wx_news">
+        <class>market_finder_wx_news</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_coupon_ecstore">
+        <class>market_finder_coupon_ecstore</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_callplan">
+        <class>market_finder_callcenter_callplan</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_callplan_members">
+        <class>market_finder_callcenter_callplan_members</class>
+    </service>
+
+	<service id="desktop_finder.market_mdl_wx_store_subbranch">
+        <class>market_finder_wx_store_subbranch</class>
+    </service>
+    
+	<service id="desktop_finder.market_mdl_wx_integral_lottery">
+        <class>market_finder_wx_lottery_manage</class>
+    </service>
+	
+	<service id="desktop_finder.market_mdl_wx_points_buy">
+        <class>market_finder_wx_points_buy</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_active_cycle">
+        <class>market_finder_active_cycle</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_active_plan">
+        <class>market_finder_active_plan</class>
+    </service>
+
+	<service id="desktop_finder.market_mdl_wx_chat">
+        <class>market_finder_wx_chat</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_active_review">
+        <class>market_finder_active_review</class>
+    </service>
+    
+    <service id="desktop_finder.market_mdl_wx_point_log">
+        <class>market_finder_wx_points_log</class>
+    </service>
+    
+    <service id="desktop_view_helper">
+        <class>market_view_helper</class>
+    </service>
+    
+</services>

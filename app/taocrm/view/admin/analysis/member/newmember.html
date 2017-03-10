@@ -1,0 +1,38 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+
+        <div class="wdgk_title"><span class="float1">新增客户统计</span></div>
+        <div class="fkfb_box">
+            <div style="float:left;width:260px;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:8px">
+                    <{foreach from=$lvMember item=member key=key}>
+                    <tr>
+                        <td class="label">
+                            <{$member.name}>
+                        </td>
+                        <td class="value">
+                            <{$member.count}>
+                        </td>
+                    </tr>
+                    <{/foreach}>
+                </table>
+            </div>
+
+            <div style="height:220px;overflow:hidden">
+                <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=pie_lv&time_from=<{$time_from}>&time_to=<{$time_to}>&shop_id=<{$select_type}>" scrolling="no" width="100%" height="100%"></iframe>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="wdgk_title"><span class="float1 ">新增客户平均购买单价</span></div>
+        <div style="height:220px;overflow:hidden">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=chart_line&service=<{$servicePrice}>&target=1&time_from=<{$time_from}>&time_to=<{$time_to}>&shopId=<{$select_type}>" scrolling="no" width="100%" height="100%" id='line_frame'></iframe>
+        </div>
+
+        <div class="wdgk_title"><span class="float1 ">新增客户购买商品平均数量</span></div>
+        <div style="height:220px;overflow:hidden">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=chart_line&service=<{$serviceNum}>&target=1&time_from=<{$time_from}>&time_to=<{$time_to}>&shopId=<{$select_type}>" scrolling="no" width="100%" height="100%" id='line_frame'></iframe>
+        </div>
+   
+    </div>
+</div>

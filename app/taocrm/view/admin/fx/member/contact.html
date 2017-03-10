@@ -1,0 +1,28 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>姓名<{/t}></th>
+            <th><{t}>地区<{/t}></th>
+            <th><{t}>地址<{/t}></th>
+            <th><{t}>Email<{/t}></th>
+            <th><{t}>手机<{/t}></th>
+            <th><{t}>电话<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$addrs item=item key=key}>
+         <tr>
+             <td><{$item.name}></td>
+             <td><{$item.area|region}>&nbsp;</td>
+             <td><{$item.addr}>&nbsp;</td>
+             <td><{$item.email}>&nbsp;</td>
+             <td><{$item.mobile}>&nbsp;</td>
+             <td><{$item.tel}>&nbsp;</td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+</div>
+</div>

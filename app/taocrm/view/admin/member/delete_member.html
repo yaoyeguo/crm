@@ -1,0 +1,66 @@
+<div id="tmpl_form" class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+<form method="post" action="index.php?app=taocrm&ctl=admin_all_member&act=to_delete_member" id="terminal">
+	<{input type='hidden' value=$member_id name="member_id" id="member_id"}>
+    <{input type='hidden' value=$tagInfo name="tagInfo" id="tagInfo"}>
+<table align="center">
+    <{if $data.points neq 0 || $data.order_total_num neq 0 || $tagInfo}>
+    <tr>
+        <td align='center'><font style="color: red;font-size: 14px;">抱歉，该会员<{$data.uname}>有<{if $data.points}>积分<{elseif $data.order_total_num}>订单<{elseif $tagInfo}>标签<{/if}>，不支持删除!</font></td>
+    </tr>
+    <{else}>
+        <{if $member_data.is_merger neq 0 }>
+        <tr>
+            <td align='center'><font style="color: red">该<{$member_data.uname}>与另一<{$member_data.parent_uname}>已合并，是否继续删除？</font></td>
+        </tr>
+        <{/if}>
+        <tr>
+            <td class="table-action">是：<input type='radio' value='on' id="invalid_id" name="invalid_name" required='true' checked=checked> 否：<input value='off' type='radio' id="valid_id" name="invalid_name" required='true'></td>
+        </tr>
+        <tr>
+            <td class="table-action" ><{button label="确定" type="submit" id="sel_mem_btn" class="btn-primary"}></td>
+        </tr>
+    <{/if}>
+</table>
+</form>
+</div>
+
+
+<script>
+    var point = '<{$data.points}>';
+    var order_total_num = '<{$data.order_total_num}>';
+    var tagInfo = '<{$tagInfo}>';
+(function(){
+    if(point == 0 && order_total_num == 0 && tagInfo == ''){
+        var _form = $('terminal');//form_id
+        var btn =$('sel_mem_btn');//bt_id
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+                }
+
+            }
+        });
+            btn.addEvent('click',function(){
+                var validate = true;
+                if (validate) {
+                    _form.fireEvent('submit',{stop:$empty});
+                }
+            });
+    }
+})();
+
+
+</script>

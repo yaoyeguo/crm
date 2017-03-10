@@ -1,0 +1,57 @@
+<div id="tmpl_form" class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <form method="post" action="index.php?app=taocrm&ctl=admin_member&act=to_batch_delete_member" id="terminal" style="text-align:center;">
+        <{input type='hidden' value=$member_ids name="member_id" id="member_id"}>
+        
+        <br/><br/>
+        <h4>确定要删除 <font color="red"><{$member_count}></font> 个客户吗？</h4>
+        
+        <label>是：<input type='radio' value='on' id="invalid_id" name="invalid_name" required='true' checked=checked></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        
+        <label>否：<input value='off' type='radio' id="valid_id" name="invalid_name" required='true'></label>
+        
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button label="确定" type="submit" id="sel_mem_btn" class="btn-primary"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+        var _form = $('terminal');//form_id
+        var btn =$('sel_mem_btn');//bt_id
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+                    if(hash_res_obj.success != '操作成功！'){
+                        alert(hash_res_obj.success);
+                    }
+                }
+
+            }
+        });
+            btn.addEvent('click',function(){
+                var validate = true;
+                if (validate) {
+                    _form.fireEvent('submit',{stop:$empty});
+                }
+            });
+})();
+
+
+</script>

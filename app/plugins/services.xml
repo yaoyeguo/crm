@@ -1,0 +1,19 @@
+<services>
+    
+    <service id="desktop_finder.plugins_mdl_plugins">
+	    <class>plugins_finder_manage</class>
+    </service>
+    
+    <service id="openapi.plugins.order">
+        <class>plugins_rpc_response_order</class>
+    </service>
+    
+    <service id="openapi.plugins.wangwang">
+        <class>plugins_rpc_response_wangwang</class>
+    </service>
+    
+    <service id="openapi.plugins.sms">
+        <class>plugins_rpc_response_sms</class>
+    </service>
+    
+</services>

@@ -1,0 +1,103 @@
+<div class="tableform">
+  <div class="division">
+    <form method="post" action="index.php?app=taocrm&ctl=admin_member_blacklist&act=batch_save" id="terminal">
+       <input name="type" type="hidden" value="<{$type}>" />
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <tbody>
+        <tr>
+        <th ><em class="c-red">*</em> 标识匹配方式：</th>
+          <td>
+            <label><input name="filter_fields" type="radio" value="uname" /> 淘宝帐号</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label><input name="filter_fields" type="radio" value="mobile" <{if($type=='sms')}>checked<{/if}> /> 手机号</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label><input name="filter_fields" type="radio" value="email" <{if($type=='edm')}>checked<{/if}> /> 邮件地址</label>
+		  </td>
+        </tr>
+        <tr>
+        <th ><em class="c-red">*</em> 会员标识：</th>
+          <td><textarea id="blacklist" name="blacklist" cols="35" rows="10"></textarea>
+		  <br/>
+          <font color="gray">* 每行输入一个标识</font>
+		  </td>
+        </tr>
+        
+        </tbody>
+      </table>
+      
+        <div id="table-action" class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="提交"}>
+        </div>
+        
+        <div id="loading" class="table-action" style="text-align:center;display:none;">
+            <span class="loading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            正在保存，请稍等....
+        </div>
+        
+        <div id="result" class="table-action" style="text-align:center;display:none;">
+            保存成功，添加了 <font id="black_count" color="red">0</font> 个黑名单。
+            <{button class="btn-primary" type="button" id="close_batch_add" label="关闭"}>
+        </div>
+        
+    </form>
+  </div>
+</div>
+<script>
+$('close_batch_add').addEvent('click',function(event){
+    $('saveterminal').getParent('.dialog').retrieve('instance').close();
+});
+
+$('saveterminal').addEvent('click',function(event){
+
+    
+
+    //固定电话与手机必填一项
+    var blacklist;
+    blacklist = $('blacklist').value.replace('/ /g','');
+    if (!blacklist){
+		   alert('请输入会员标识');
+		   $('blacklist').focus();
+		   return false;
+    }
+    
+    $('table-action').hide();
+    $('loading').show();
+    
+    $('terminal').fireEvent('submit',new Event(event));
+    
+    
+});
+
+$('terminal').store('target',{
+    onSuccess:function(response){
+    
+        //alert(response)
+        
+        var hash_res_obj = JSON.decode(response);
+        
+        if(hash_res_obj.success == '操作成功！'){
+            hash_res_obj.success = '0';
+        }
+    
+        $('black_count').set('html', hash_res_obj.success.replace('成功：',''));
+        
+        $('result').show();
+        $('loading').hide();
+    
+        /*
+        
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns)
+            {
+                _dialogIns.close();
+                window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+        */
+    }
+});
+
+</script>

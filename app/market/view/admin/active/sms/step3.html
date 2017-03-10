@@ -1,0 +1,1116 @@
+<DIV id="select_sms_template" >
+<div>
+<table>
+    <!-- 优惠券发送 begin-->
+    <{if not $coupons_tag}>
+        <tr style="display:none;" <{if !in_array('sms',$active.type)}><{/if}> id="coupon_tmp_id">
+            <th><label><{t}>优惠券发送：<{/t}></label></th>
+            <td id="coupon_send">
+            <label><input type='radio' name='coupon_send' id="coupon_send1" value="coupon" <{if in_array('coupon',$active.type)}>checked="checked"<{/if}> onclick="coupon_send_yes();"/> <{t}>是<{/t}></label>
+            <label><input type='radio' name='coupon_send' value="" <{if !in_array('coupon',$active.type)}>checked="checked"<{/if}> onclick="coupon_send_no();"/> <{t}>否<{/t}></label></td>
+        </tr>
+        <tr style="display:none;" <{if !in_array('coupon',$active.type)}><{/if}> id="coupon_id">
+            <th></th><td>
+                <div><label><{t}>选择优惠券：<{/t}></label>
+                <select id='sele' style="width:200px;"></select></div>
+            </td>
+        </tr>
+    <{else}>
+        <tr style="display:none;">
+            <div style="display:none">
+                <input type='radio' name='coupon_send' id="coupon_send1" value="coupon" checked="checked" />
+            </div>
+            <{input type=hidden name="only_coupon_name" id="only_coupon" value=$couponslist.coupon_id}>
+            <th><label><{t}>优惠券名称：<{/t}></label></th>
+            <td><span id='coupononlyname'><{$couponslist.coupon_name}></span></td>
+        </tr>
+    <{/if}>
+    <!-- 优惠券发送 end-->
+
+    <!--活动人数对照组begin -->
+    <tr>
+        <th>
+            <{help}>开启对照后，只发送目标客户数的一半，保留一半作为对照分析用。<{/help}>
+            <label>活动人数对照组：</label>
+        </th>
+        <td>
+            <label><input type='radio' name='open_compare' value='yes' <{if($open_compare == 'yes')}>checked<{/if}> /> <{t}>是<{/t}></label>
+            <label><input type='radio' name='open_compare' value='no' <{if($open_compare == 'no')}>checked<{/if}> /> <{t}>否<{/t}></label>
+            <input id="open_compare" type="hidden" value='<{$open_compare}>' />
+        </td>
+    </tr>
+    <!-- 活动人数对照组end-->
+
+    <!-- 活动短信对照组begin -->
+    <tr  <{if  !in_array('sms',$active.type)}>style="display:none;"<{/if}> id="active_sms_id"  >
+        <th>
+            <{help}>开启对照后，A、B短信模板客户数量各占一半，进行发送。<{/help}>
+            <label>活动短信对照组：</label>
+        </th>
+        <td>
+            <label><input type='radio' name='active_sms_id' value='yes' <{if ($template_id_b !='') }>checked<{/if}> /> <{t}>是<{/t}></label>
+            <label><input type='radio' name='active_sms_id' value='no' <{if($template_id_b == '' || $template_id_b == null || $template_id_b == '0')}>checked<{/if}> /> <{t}>否<{/t}></label>
+        </td>
+    </tr>
+    <!-- 活动短信对照组end -->
+    <!--短信提醒开始-->
+	<tr id='sms_send' style="display:none;" >
+		<th><{t}>短信提醒：<{/t}></th>
+		<td id="sms_send">
+		<label><input type='radio' name='sms_send' id='sms_send_yes' value="sms" <{if in_array('sms',$active.type)}>checked="checked"<{/if}> onclick="sms_send_yes();"/> <{t}>是<{/t}></label>
+		<label><input type='radio' name='sms_send' id='sms_send_no' value=""  <{if !in_array('sms',$active.type)}>checked="checked"<{/if}> onclick="sms_send_no();"/> <{t}>否<{/t}></label>
+		</td>
+	</tr>
+	<tr <{if !in_array('sms',$active.type)}>style="display: none;"<{/if}> id='sms_template_id'>
+
+		<td id="bt_id" colspan="2">
+			<div style="margin-left:50px">
+				<span><label><{t}>短信内容A：　<{/t}></label></span>
+	            <label><input type='radio' name='sms_content' id='sms_id1' onclick="add_yes();"/> <{t}>新增&nbsp;<{/t}></label>
+	            <label style="margin-left:20px"><input type='radio' name='sms_content' id='sms_id2' checked="checked" onclick="add_no();"/></label>
+                <select name="template_sele_id" id="template_sele_id" class="x-input-select inputstyle">
+                    <option value="0">-请选择短信模板-</option>
+                    <{foreach from=$templates_data item=item}>
+                    <option <{if $active.template_id == $item.template_id}>selected<{/if}> value=<{$item.template_id}>><{$item.title}></option>
+                    <{/foreach}>
+                </select>
+            </div>
+		</td>
+	</tr>
+
+	<tr style="display:none;" id='content_id'>
+		<th>&nbsp;</th>
+		<td>
+			<div>
+				<div style='width:400px;border:1px solid #CCC;background:#EEE;border-bottom:none;padding:2px 5px;'>
+						<span style="margin-left:5px">插入参数：</span>
+
+                        <a style="margin-left:5px" onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{姓名}&gt;")>姓名</a>
+
+						<a style="margin-left:5px" onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{昵称}&gt;")>昵称</a>
+
+			            <a style="margin-left:5px" onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{店铺}&gt;")>店铺</a>
+
+                        <a style="margin-left:5px" onclick="vcard_tip('');">店铺名片</a>
+		        </div>
+				<div>
+	                <{input type=textarea id="message_text" value=$data.content style="width:400px;height:60px;border:1px solid #CCC;margin-top:0px;color:#069;padding:3px 5px;line-height:1.5em;" name="theme_content"  }>
+                    <br/>
+                    <span width="200" align="right">签名：
+                         <select class="x-input" vtype='required' name="message_sign" id="message_sign">
+                            <option value="">请选择</option>
+                        <{foreach from=$sign_list item=sign}>
+                            <option value="<{$sign.sign}>" <{if $sign.sign == $sms_sign}>selected<{/if}>><{$sign.sign}></option>
+                        <{/foreach}>
+                        </select>
+                        
+                        <span style="cursor:pointer;color:#0597E0;" id="config_sms_sign">
+                            <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                            设置签名
+                        </span>
+                        <span>
+                            <a href="http://www.dwz.cn/"style="color:#0597E0;text-decoration: none;" target='_blank'>
+                            <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                            网址缩短工具
+                            </a>
+                        </span>
+                    </span>
+                    <br/>
+                    <span width="200" align="right">预览：
+                        <em id='preview'></em>
+                    </span>
+
+                    <div style="width:416px;">
+                        <!--编辑-->
+                        <{button label="保存短信内容" type="button" id="template_btn_save" style="float:right; display:none" class="btn-primary"}>
+                        <!--新增-->
+                        <a id='template_btn_save_add' style="float:right;display:none" target="dialog::{width:350,height:120,title:'模板标题A'}" href='index.php?app=market&ctl=admin_active&act=save_template'>
+	                    	<{button label="保存短信内容" type="button" id="add_sms_btn_save" class="btn-primary"}>
+	                    </a>
+                        字符数：<b id="sms_length" class="sms_length" style="font-size:18px;color:blue;font-family:Arial">0</b>，
+                        约 <b id="sms_num" class="sms_num" style="font-size:18px;color:red;font-family:Arial">0</b> 条短信长度
+	                </div>
+	            </div>
+	    	</div>
+            
+		</td>
+	</tr>
+
+	<tr style="display:none;" id='sms_timing_id'>
+        <th></th>
+        <div id='timing_id'>
+        <td><{t}>是否定时发送：<{/t}>
+            <label><input type='radio' name='timing_name' id='timing_yes' value=1 onclick="timeyes();"/> <{t}>是<{/t}></label>
+
+            <label><input type='radio' name='timing_name' id='timing_no' value=2 checked="checked"  onclick="timeno();"/> <{t}>否<{/t}></label>
+        </td>
+        </div>
+	</tr>
+	<tr style="display:none;" id='select_timing'>
+		<th></th>
+		<td><{t}>定时发送时间：<{/t}>
+        <{input size="19" type='date' id='seltiming_id' name='seltiming_id' value=$active.timing_date }>
+        <{input id="timing_option" type="select" name="timing_option" options=$select_hour value=$active.timing_hour }>
+		</td>
+	</tr>
+    <!--短信提醒结束-->
+    <!-- 短信模板B Begin -->
+    <tr id='sms_template_id_b' style="display:none;">
+        <td id="bt_id_b" colspan="2">
+            <div style="margin-left:50px">
+                <span><label><{t}>短信内容B：　<{/t}></label></span>
+                <label><input type='radio' name='sms_content_b' id='sms_id1_b' onclick="add_yes_b();"/> <{t}>新增&nbsp;<{/t}></label>
+                <label style="margin-left:20px"><input type='radio' name='sms_content_b' id='sms_id2_b' checked="checked" onclick="add_no_b();"/></label>
+                <select name="template_sele_id_b" id="template_sele_id_b" class="x-input-select inputstyle">
+                    <option value="0">-请选择短信模板-</option>
+                    <{foreach from=$templates_data item=item_b}>
+                    <option <{if $active.template_id_b == $item_b.template_id}>selected<{/if}> value=<{$item_b.template_id}>><{$item_b.title}></option>
+                    <{/foreach}>
+                </select>
+            </div>
+        </td>
+    </tr>
+
+    <tr style="display:none;" id='content_id_b'>
+        <th>&nbsp;</th>
+        <td>
+            <div>
+                <div style='width:400px;border:1px solid #CCC;background:#EEE;border-bottom:none;padding:2px 5px;'>
+                        <span style="margin-left:5px">插入参数：</span>
+                        <a style="margin-left:5px" onclick=insertAtCursor(document.getElementById('message_text_b'),"&lt;{姓名}&gt;")>姓名</a>
+
+						<a style="margin-left:5px" onclick=insertAtCursor(document.getElementById('message_text_b'),"&lt;{昵称}&gt;")>昵称</a>
+
+                        <a style="margin-left:5px" onclick=insertAtCursor_b(document.getElementById('message_text_b'),"&lt;{店铺}&gt;")>店铺</a>
+
+                        <a style="margin-left:5px" onclick="vcard_tip('_b');">店铺名片</a>
+                </div>
+                <div>
+                    <{input type=textarea id="message_text_b" value=$data.content_b style="width:400px;height:60px;border:1px solid #CCC;margin-top:0px;color:#069;padding:3px 5px;line-height:1.5em;" name="theme_content_b"  }>
+                    <br/>
+                    <span width="200" align="right">签名：
+                        <select class="x-input" vtype='required' name="message_sign_b" id="message_sign_b">
+                            <option value="">请选择</option>
+                        <{foreach from=$sign_list item=sign}>
+                            <option value="<{$sign.sign}>" <{if $sign.sign == $sms_sign}>selected<{/if}>><{$sign.sign}></option>
+                        <{/foreach}>
+                        </select>
+                        
+                        <span style="cursor:pointer;color:#0597E0;" id="config_sms_sign_b">
+        <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+        设置签名
+    </span>
+                        <span>
+                            <a href="http://www.dwz.cn/"style="color:#0597E0;text-decoration: none;" target='_blank'>
+                            <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                            网址缩短工具
+                            </a>
+                        </span>
+                    </span>
+                    <br/>
+                    <span width="200" align="right">预览：
+                        <em id='preview_b'></em>
+                    </span>
+                    <div style="width:416px;">
+                        <!--编辑-->
+                        <{button style="float:right;display:none" label="保存短信内容" type="button" id="template_btn_save_b" class="btn-primary"}>
+                        <!--新增-->
+                        <a style="float:right;display:none" id="template_btn_save_b_add" target="dialog::{width:350,height:120,title:'模板标题'}" href='index.php?app=market&ctl=admin_active&act=save_template_b'>
+                            <{button label="保存短信内容" type="button" id="add_sms_btn_save_b" class="btn-primary"}>
+                        </a>
+                        字符数：<b id="sms_length_b" style="font-size:18px;color:blue;font-family:Arial">0</b>，
+                        约 <b id="sms_num_b" class="sms_num" style="font-size:18px;color:red;font-family:Arial">0</b> 条短信长度
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+
+    <!-- 短信模板B End -->
+    <tr>
+        <th>&nbsp;</th>
+        <td>
+        <{button  label="发条试试" type="button" id="test_send_sms" class="btn-primary"}>
+
+        <{img src="alert.gif" app="market" height="16" align="absmiddle" }>
+            <font color="#0597E0">短信内的网址请在前面加<b>http://</b>，末尾加空格，以防止手机识别错误！</font>
+
+        </td>
+    </tr>
+    
+    
+    </table>
+
+    <div class="table-action">
+        <span id="el_updateactive_loading" style="display: none;">更新营销活动中,这可能需要点时间...</span>
+        <{button label="下一步 >>" type="button" id="template_btn" class="btn-primary"}>
+        <{button label="关闭" type="button" id="template_exec_close" class="nodisabled"}>
+    </div>
+</div>
+</div>
+
+<input type="hidden" id="sms_sign" value='<{$sms_sign}>' />
+<input type="hidden" id="vcard_url" value='<{$vcard_url}>' />
+
+<script>
+$('test_send_sms').addEvent('click',function(){
+	   if($('template_sele_id').value == 0){
+            alert('请选择短信模板!');
+	   }else{
+		   var unsubscribe = 0;
+
+	        new Dialog('index.php?app=market&ctl=admin_active_sms&act=testSendSms&template_id='+$('template_sele_id').value + '&shop_id='+$('shop_id').value + '&unsubscribe='+unsubscribe,{title:'发送测试短信',width:500,height:250});
+	   }
+	});
+
+    //插入店铺名片
+    function vcard_tip(ab){
+
+        var vcard_url = $('vcard_url').get('value');
+
+        if(vcard_url != ''){
+            insertAtCursor(document.getElementById('message_text'+ab),vcard_url);
+            return true;
+        }
+
+        var _url = 'index.php?app=plugins&ctl=admin_vcard&act=index';
+        if(confirm('您还没有设置店铺名片，现在去设置吗？')){
+            window.open(_url);
+        }
+    }
+
+    var unsubscribe = 0;
+
+    var per_sms_len = 67;
+
+/*
+                    if($('half_compare').value == 'yes') {
+                        tmp_html = '活动人数对照组：'+controlGroupMembers+'<br/>';
+                        $('active_group_member').set('html', tmp_html);
+                    }else{
+                        $('active_group_member').set('html', '');
+                    }
+                    if (validMembers <= 0) {
+                    	$('exec_btn').hide();
+                    }
+
+                }else{
+                    alert(data.msg);
+                }
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+            }catch(e){
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+                alert("服务器发生了内部错误:"+responseText);
+            }
+        }
+    }).send();
+*/
+
+    function chk_compare(total_num, min_num){
+        total_num = parseInt(total_num);
+
+        var open_compare = $('open_compare').get('value');
+        if (open_compare=='yes' && total_num<=min_num){
+            return false;
+        }
+        return true;
+    }
+    if(navigator.userAgent.indexOf("MSIE")>0){
+        document.getElementById('message_text').attachEvent("onpropertychange",set_sms_length);
+        document.getElementById('message_text_b').attachEvent("onpropertychange",set_sms_length_b);
+    }else if(navigator.userAgent.indexOf("Firefox")>0){
+    	document.getElementById('message_text').addEventListener("input",set_sms_length,false);
+	    document.getElementById('message_text_b').addEventListener("input",set_sms_length_b,false);
+    }
+
+    $('message_text').addEvent('blur',function(){
+        get_sms_length();
+    });
+
+    $('message_text_b').addEvent('blur',function(){
+    	get_sms_length_b();
+    });
+
+
+
+    //短信B模版触发条件
+    var b_template_id;
+    b_template_id = parseInt("<{$template_id_b}>");
+    if (b_template_id > 0) {
+            $('sms_template_id_b').show();
+            $('content_id_b').show()
+    }
+
+    function set_sms_length(){
+        set_preview_text_a();
+        var sms = $('preview').get('text');
+
+        $('sms_length').set('html',sms.length);
+        $('sms_num').set('text', Math.ceil(sms.length/per_sms_len));
+    }
+
+    function set_sms_length_b(){
+        set_preview_text_b();
+        var sms = $('preview_b').get('text');
+        var color = '';
+
+        $('sms_length_b').set('html',sms.length);
+        $('sms_num_b').set('text', Math.ceil(sms.length/per_sms_len));
+    }
+
+    function get_sms_length(){
+        set_sms_length();
+    }
+
+    function get_sms_length_b(){
+        set_sms_length_b();
+    }
+
+    function sms_send_yes(){
+        $('sms_template_id').show();
+        $('sms_timing_id').show();
+    }
+
+    function sms_send_no(){
+        $('sms_template_id').hide();
+        $('content_id').hide();
+        $('sms_timing_id').hide();
+        $('select_timing').hide();
+    }
+
+    function sms_send_yes_b(){
+        $('sms_template_id_b').show();
+        $('sms_timing_id_b').show();
+    }
+
+
+    function sms_send_no_b(){
+        $('sms_template_id_b').hide();
+        $('content_id_b').hide();
+        $('sms_timing_id_b').hide();
+        $('select_timing_b').hide();
+    }
+
+    function add_yes(){
+        $('content_id').show();
+        var s = document.getElementById("template_sele_id");//下拉选项
+        var ops = s.options;
+        for(var i=0;i<ops.length; i++){
+            var tempValue = ops[i].value;
+            if(tempValue == "0")//默认未选择
+            {
+                ops[i].selected = true;
+                break;
+            }
+        }
+        $('message_text').value = "";
+        $('template_btn_save').hide();
+        $('template_btn_save_add').show();
+        $('template_sele_id').set('disabled',true);
+        set_sms_length();
+    }
+
+    function add_no(){
+    	$('template_sele_id').set('disabled',false);
+        $('template_btn_save_add').hide();
+        $('template_btn_save').show();
+    	$('message_text').value = "";
+    	$('sms_length').set('html','0');
+
+    	set_sms_length();
+    }
+
+    function add_yes_b(){
+    	$('content_id_b').show();
+    	var s = document.getElementById("template_sele_id_b");
+    	var ops = s.options;
+    	for(var i=0;i<ops.length; i++){
+    		var tempValue = ops[i].value;
+    		if(tempValue == "0")   //这里是你要选的值
+    		{
+    			ops[i].selected = true;
+    			break;
+    		}
+    	}
+    	$('message_text_b').value = "";
+        $('template_btn_save_b').hide();
+        $('template_btn_save_b_add').show();
+    	$('template_sele_id_b').set('disabled',true);
+        set_sms_length_b();
+    }
+
+    function add_no_b(){
+    	$('template_sele_id_b').set('disabled',false);
+    	$('content_id_b').show();
+    	$('message_text_b').value = "";
+        $('template_btn_save_b_add').hide();
+        $('template_btn_save_b').show();
+    	$('sms_length_b').set('html','0');
+        set_sms_length_b();
+    }
+
+    function validateadd(name)
+    {
+       var New=document.getElementsByName(name);
+       var strNew;
+       for(var i=0;i<New.length;i++)
+       {
+         if(New.item(i).checked){
+             strNew=New.item(i).getAttribute("value");
+             break;
+         }
+       }
+       return strNew;
+    }
+
+    function set_preview_text_a()
+    {
+        $('preview').set('html', $('message_text').value + ' 退订回N' + '【' +$('message_sign').value + '】');
+    }
+
+    function set_preview_text_b()
+    {
+        $('preview_b').set('html', $('message_text_b').value + ' 退订回N' + '【' +$('message_sign_b').value + '】');
+    }
+
+(function(){
+    $$('input[name=open_compare]').addEvent('click',function(){
+        $('open_compare').set('value',$(this).value);
+    });
+
+    $$("#message_text").addEvent('keyup',function(){
+        set_sms_length();
+    });
+    $$("#message_sign").addEvent('change',function(){
+        set_sms_length();
+    });
+
+    $$("#message_text_b").addEvent('keyup',function(){
+        set_sms_length_b();
+    });
+    $$("#message_sign_b").addEvent('change',function(){
+        set_sms_length_b();
+    });
+
+    //选择短信模板
+     $$("#template_sele_id").addEvent('change',function(){
+        if($('template_sele_id').value=="0")
+        {
+            $('content_id').hide();
+        }else{
+            $('content_id').show();
+            $('template_btn_save').show();
+            new Request({
+            url : 'index.php?app=market&ctl=admin_active_sms&act=select_template&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+            method : 'post',
+            update : $('coupon_id'),
+            data:{'test':'aaa'},
+            onSuccess:function(responseText){
+                $('message_text').value = responseText;
+                get_sms_length();
+            }
+            }).send();
+        }
+        $('active_id').hide();
+        $('select_me').hide();//content_id
+        $('select_sms_template').show();
+        return true;
+     });
+
+     //选择短信模板B
+     $$("#template_sele_id_b").addEvent('change',function(){
+        if($('template_sele_id_b').value=="0")
+        {
+            $('content_id_b').hide();
+        }else{
+            $('content_id_b').show();
+            $('template_btn_save_b').show();
+            new Request({
+                url : 'index.php?app=market&ctl=admin_active_sms&act=select_template_b&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id_b').value,
+                method : 'post',
+                update : $('coupon_id'),
+                data:{'test':'aaa'},
+                onSuccess:function(responseText){
+                    $('message_text_b').value = responseText;
+                    get_sms_length_b();
+                }
+            }).send();
+        }
+        return true;
+     });
+
+     if($('template_sele_id').value !=0){
+         $('template_sele_id').fireEvent('change');
+     }
+
+     if ($('template_sele_id_b').value !=0) {
+         $('template_sele_id_b').fireEvent('change');
+     }
+
+     //保存模板
+     $$("#template_btn_save").addEvent('click',function(){
+        if($('template_sele_id').value=="0")
+         {
+             alert('未选择模板');
+             return false;
+         }
+        if($('message_text').value==""){
+        	 alert('短信A内容不能为空!');
+        	 $("message_text").focus();
+             return false;
+         }
+
+         var data={'message_text':$('message_text').value};
+         new Request({
+             url : 'index.php?app=market&ctl=admin_active_sms&act=edit_save&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+             method : 'post',
+             update : $('coupon_id'),
+             data:data,
+             onSuccess:function(responseText){
+                alert('模板保存成功！');
+                $('message_text').value = responseText;
+            }
+         }).send();
+        $('active_id').hide();
+        $('select_me').hide();//content_id
+        $('select_sms_template').show();
+         return true;
+     });
+
+     //保存模板B
+     $$("#template_btn_save_b").addEvent('click',function(){
+        if($('template_sele_id_b').value == "0")
+         {
+             alert('未选择模板');
+             return false;
+         }
+        if($('message_text_b').value==""){
+        	 alert('短信B内容不能为空!');
+        	 $("message_text_b").focus();
+             return false;
+         }
+         var data={'message_text':$('message_text_b').value};
+             new Request({
+                 url : 'index.php?app=market&ctl=admin_active_sms&act=edit_save_b&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id_b').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:data,
+                 onSuccess:function(responseText){
+                    alert('模板保存成功！');
+                    $('message_text_b').value = responseText;
+                }
+             }).send();
+        $('active_id').hide();
+        $('select_me').hide();//content_id
+        $('select_sms_template').show();
+         return true;
+     });
+
+     $$("#add_sms_btn_save").addEvent('click',function(){
+         if($('message_text').value==""){
+        	 alert('短信A内容不能为空!');
+        	 $("message_text").focus();
+             return false;
+         }
+     });
+
+     //保存短消息B
+     $$("#add_sms_btn_save_b").addEvent('click',function(){
+         if($('message_text_b').value==""){
+        	 alert('短信B内容不能为空!');
+        	 $("message_text_b").focus();
+             return false;
+         }
+     });
+
+     //短信模板选择成功 进行下一步操作，并且活动状态改为待执行
+     $$("#template_btn").addEvent('click',function(){
+        step4();
+     });
+
+     //template_up
+     $$("#template_up_btn").addEvent('click',function(){
+             new Request.JSON({
+                 url : 'index.php?app=market&ctl=admin_active_sms&act=active_ex&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:{'tempup_tag':'uptag'},
+                 onSuccess:function(obj,responseText){
+                     var data = JSON.decode(responseText);
+                    if(data){
+                     $('order_symbol_id').value =data.order_symbol_id;
+                     if($('order_symbol_id').value==6){
+                         $("between").show();
+                         $("not_between").hide();
+                     }
+                    // $('buy_times_id').value=data.buy_times_id;
+                     $('buy_big_times').value=data.buy_big_times;
+                     $('buy_small_times').value=data.buy_small_times;
+                     $('money_id_symbol').value=data.money_id_symbol;
+                     if($('money_id_symbol').value==6){
+                         $("money_between").show();
+                         $("money_not_between").hide();
+                     }
+                    // $('money_id').value=data.money_id;
+                     $('money_from_id').value=data.money_from_id;
+                     $('money_to_id').value=data.money_to_id;
+                     $('freq_sy_id').value=data.freq_sy_id;
+                     if($('freq_sy_id').value==6){
+                         $("frequency_between").show();
+                         $("frequency_not_between").hide();
+                     }
+                     //$('frequency_id').value=data.frequency_id;
+                     $('frequency_from_id').value=data.frequency_from_id;
+                     $('frequency_to_id').value=data.frequency_to_id;
+                     $('product_id_symbol').value=data.product_id_symbol;
+                     if($('product_id_symbol').value==6){
+                         $("product_between").show();
+                         $("product_not_between").hide();
+                     }
+                    // $('product_num_id').value=data.product_num_id;
+                     $('product_num_big').value=data.product_num_big;
+                     $('product_num_small').value=data.product_num_small;
+                     $('date_id_symbol').value=data.date_id_symbol;
+                     if($('date_id_symbol').value==6){
+                         $("date_between").show();
+                         $("date_not_between").hide();
+                     }
+                     //$('date_id').value=data.date_id;
+                     $('date_from_id').value=data.date_from_id;
+                     $('date_to_id').value=data.date_to_id;
+                     $('integral_symbol').value=data.integral_symbol;
+                     if($('integral_symbol').value==6){
+                         $("integral_between").show();
+                         $("integral_not_between").hide();
+                     }
+                    // $('integral_id').value=data.integral_id;
+                     $('integral_begin_id').value=data.integral_begin_id;
+                     $('integral_end_id').value=data.integral_end_id;
+                     $('birthday_symbol').value=data.birthday_symbol;
+                     if($('birthday_symbol').value==6){
+                         $("birthday_between").show();
+                         $("birthday_not_between").hide();
+                     }
+                    // $('birthday_id').value=data.birthday_id;
+                     $('birthday_big').value=data.birthday_big;
+                     $('birthday_small').value=data.birthday_small;
+                     $('evaluate_symbol_id').value=data.evaluate_symbol_id;
+                     $('taobaolv_id').value=data.taobaolv_id;
+                     }
+                 }
+             }).send();
+             if($('test_id').value==1) {
+                $('active_id').show();
+                $('select_me').hide();
+                $('select_sms_template').hide();
+                $('exec_div').hide();
+                 return true;
+             }else{
+            $('active_id').hide();
+            $('select_me').show();
+            $('select_sms_template').hide();
+            $('exec_div').hide();
+             return true;
+             }
+     });
+
+    //发送优惠券
+    $$('#coupon_send input[name=coupon_send]').addEvent('click',function(){
+		if(this.value){
+			new Request.JSON({
+                url : 'index.php?app=market&ctl=admin_active&act=coupons_selected&p[0]='+$('active_id_id').value,
+                method : 'post',
+                update : $('coupon_id'),
+                data:{'uptag':'abc'},
+                onSuccess:function(obj,responseText){
+               	 var data_obj= JSON.decode(responseText);
+                    var selectOptions = new Array;
+                    selectOptions[0] = {text:"请选择", value:0};
+                    for (var i=0, len=data_obj.length; i < len; i++) {
+                        selectOptions[i+1] = {text:data_obj[i].coupon_name,value:data_obj[i].coupon_id};
+                    }
+                    $('sele').set('htmlOptions', selectOptions);
+
+                	$('active_id_id').value = data_obj[0].active_id;
+                	$('cou_tag').value=data_obj[0].cou_tag;
+                 }
+            }).send();
+		}
+	});
+    $$('#active_sms_id input[name=active_sms_id]').addEvent('click', function(){
+         if (this.value == "yes")
+         {
+             $('sms_template_id_b').show();
+             $('content_id_b').show();
+             if($('sms_id1_b').get('checked')){
+                $('add_template_btn_save_b').show();
+             }else{
+                $('template_btn_save_b').show();
+             }
+             $('content_id').show();
+             if($('sms_id1').get('checked')){
+                $('content_id').hide();
+             }
+         }
+         else
+         {
+            $('content_id_b').hide();
+            $('sms_template_id_b').hide();
+            $('sms_content_b').hide();
+         }
+     });
+})();
+
+//检测短信内容是否合法
+function chk_sms_content(){
+    var err_msg1 = '短信末尾缺少签名，为了保证短信正常发送，系统将自动为您添加，请确认';
+    var err_msg2 = '短信内容不能包含2个【或】，请修改后再试';
+    //短信and签名
+    var templete = $('message_text').value;
+    var message_sign = $('message_sign').value;
+
+    if(templete == ''){
+        alert('请输入短信内容');
+        $('message_text').focus();
+        return false;
+    }
+
+    if(message_sign.length < 2){
+        alert('您的签名长度不合法，最少填写两个字');
+        $('message_sign').focus();
+        return false;
+    }
+
+    if(templete.match(/[=【】@#\$%\^&\*\[\]]/) || message_sign.match(/[=【】@#\$%\^&\*\[\]]/)){
+        //alert('您输入的短信内容或签名有非法字符，如：全角：【】，半角：!@#$%^&*[]');
+        alert('您输入的短信内容或签名中包含了非法字符。\n在签名中，不得使用以下符号,=号， 全角【】，半角：! & # $ % ^ & * [ ]\n 如果您想在短信内容中发送网址，请将原始URL转换成短地址。');
+        return false;
+    }
+
+    //检查短信签名B
+    if ($$('input[name="active_sms_id"]:checked').get('value')=='yes'){
+        //短信and签名
+        var message_text_b = $('message_text_b').value;
+        var message_sign_b = $('message_sign_b').value;
+
+        if(message_text_b == ''){
+            alert('请输入短信内容');
+            $('message_text_b').focus();
+            return false;
+        }
+
+        if(message_sign_b.length < 2){
+            alert('您的签名长度不合法，最少填写两个字');
+            $('message_sign_b').focus();
+            return false;
+        }
+
+        if(message_text_b.match(/[=【】@#\$%\^&\*\[\]]/) || message_sign_b.match(/[=【】@#\$%\^&\*\[\]]/)){
+            alert('您输入的短信内容或签名中包含了非法字符。\n在签名中，不得使用以下符号，=号， 全角【】，半角：! & # $ % ^ & * [ ]\n 如果您想在短信内容中发送网址，请将原始URL转换成短地址。');
+            return false;
+        }
+    }
+}
+
+function step4(){
+
+    //检测短信内容是否合法
+    if(chk_sms_content()==false) return false;
+
+    var templete = '';
+    var templete_b = '';
+    var templete_title = '';
+    var couponvlue_id = true;
+
+    templete = $('message_text').value;
+    templete = encodeURIComponent(templete);
+
+    var sms = $$('input[name="sms_send"]:checked').get('value');
+    if(sms=="sms"){
+        if($('sms_id1').get('checked')){
+            if($('message_text').value == ""){
+                alert('短信A内容不能为空!');
+                $("message_text").focus();
+                return false;
+            }
+            if($('template_sele_id').value==0){
+                alert("请保存短信A内容");
+                return false;
+            }
+            $('final_template_name_tr').show();
+            select_value("template_sele_id","final_template_name");
+        }else{
+            if($('template_sele_id').value==0){
+                alert("请选择短信A模板");
+                return false;
+            }
+            $('final_template_name_tr').show();
+            select_value("template_sele_id","final_template_name");
+        }
+
+
+        var sms_open = $$('input[name="active_sms_id"]:checked').get('value');
+        if (sms_open == 'yes') {
+
+                //检查短信签名B
+                templete_b = $('preview_b').get('text');
+                templete_b = encodeURIComponent(templete_b);
+
+            if($('sms_id1_b').get('checked')){
+                if($('message_text_b').value == ""){
+                    alert('短信B内容不能为空!');
+                    return false;
+                }
+                if($('template_sele_id_b').value==0){
+                    alert("请保存短信B内容");
+                    return false;
+                }
+                $('final_template_name_tr_b').show();
+                select_value("template_sele_id_b","final_template_name_b");
+            }
+            else {
+                if($('template_sele_id_b').value==0){
+                    alert("请保存短信B内容");
+                    return false;
+                }
+                $('final_template_name_tr_b').show();
+                select_value("template_sele_id_b","final_template_name_b");
+            }
+        }
+        else {
+            $('final_template_name_tr_b').hide();
+            $('final_template_name_b').set('html','');
+        }
+
+		//检查短信签名A
+       // templete = $('message_text').value;
+        templete = $('preview').get('text');
+        templete = encodeURIComponent(templete);
+    }
+
+    if(!$('only_coupon')){
+        couponvlue_id=$('sele').value;
+    }else{
+        couponvlue_id=$('only_coupon').value;
+    }
+
+    var sent_type = new Array();
+    if($('coupon_send1')){
+        if($('coupon_send1').checked){
+            sent_type.push('coupon');
+            if(! couponvlue_id){
+                alert('请选择优惠券!');
+                return false;
+            }
+        }
+    }
+
+    sent_type.push('sms');
+
+    if(sent_type.length == 0){
+        alert('请选择短信提醒或者优惠券发送或邮件进行发送!');
+        return false;
+    }
+
+     $('template_btn').hide();
+     $('el_updateactive_loading').show();
+     unsubscribe = 0;
+
+     var data={'templete_title':templete_title, 'templete':templete,'templete_b':templete_b, 'timing_date':$('seltiming_id').value,'timing_hour':$('timing_option').value,'send_type':sent_type.join(','),'coupon_id':couponvlue_id,'open_compare':$('open_compare').value,'unsubscribe':unsubscribe};
+     var send_template_sele_id = $('template_sele_id').value;
+     var send_template_sele_id_b = $('template_sele_id_b').value;
+     var activeSmsId = validateadd('active_sms_id');
+     if (activeSmsId == 'no') {
+         send_template_sele_id_b = '';
+     }
+     new Request({
+         url : 'index.php?app=market&ctl=admin_active_sms&act=active_ex&p[0]='+$('active_id_id').value+'&p[1]='+send_template_sele_id+'&pb[1]='+send_template_sele_id_b,
+         method : 'post',
+         update : $('test_id'),
+         data:data,
+         onSuccess:function(responseText){
+            var tmp_html = '';
+            try{
+                var data = JSON.decode(responseText);
+                if(data.res == 'succ'){
+                    if (chk_compare(data.info.controlGroupMembers, 3000)== false){
+                        alert('您选择的客户数('+(data.info.controlGroupMembers*2)+')不足6000人，无法开启活动对照功能。');
+                        $('template_btn').show();
+                        $('el_updateactive_loading').hide();
+                        return false;
+                    }
+                    var exclude_hours = data.exclude_hours;
+                    var controlGroupMembers = data.info.controlGroupMembers;
+                    var validMembers = data.info.validMembers;
+                    var validbMembers = data.info.validbMembers;
+                    var controlGroupMembers = data.info.controlGroupMembers;
+
+                    $('active_id').hide();
+                    $('select_me').hide();
+                    $('select_sms_template').hide();
+                    $('exec_div').show();
+                    
+                    if($('el_select_sms_membernums')){
+                        $('el_select_sms_membernums').set('text',data.info.totalMembers);
+                        $('el_vaild_sms_membernums').set('text', validMembers);
+                        $('el_unvaild_sms_membernums').set('text',data.info.unvalidMembers);
+                        $('el_sent_sms_membernums').set('text',data.info.sentMembers);
+                        $('el_reality_sms_membernums').set('text', data.info.WaitSendMember);
+                    }
+
+                    $('VoidId').value = data.info.VoidId;
+
+                    if($('open_compare').value == 'yes') {
+                        tmp_html = '活动人数对照组：'+controlGroupMembers+'<br/>';
+                        $('active_group_member').set('html', tmp_html);
+
+                        if(sms_open == 'yes'){
+                            tmp_html = '活动短信对照组：A模板人数：'+data.info.SmsA;
+                            tmp_html += '　B模板人数：'+ data.info.SmsB;
+                            $('sms_compare_tips').set('html', tmp_html);
+                        }else{
+                            tmp_html = '活动短信对照组：A模板人数：'+data.info.SmsA;
+                            $('sms_compare_tips').set('html', tmp_html);
+                        }
+                    }else{
+                        if(sms_open == 'yes'){
+                            tmp_html = '活动短信对照组：A模板人数：'+ data.info.SmsA;
+                            tmp_html += '　B模板人数：'+data.info.SmsB;
+                            $('sms_compare_tips').set('html', tmp_html);
+                        }else{
+                            tmp_html = '活动短信对照组：A模板人数：'+data.info.SmsA;
+                            $('sms_compare_tips').set('html', tmp_html);
+                        }
+                        $('active_group_member').set('html', '');
+                    }
+
+                    if(sent_type.contains('sms')){
+                        $('el_send_sms_list').show();
+                        $('el_send_sms_nt7').show();
+                        $('el_send_sms_no').hide();
+                    }
+
+                    if(sent_type.length == 0){
+                        $('exec_btn').hide();
+                    }else{
+                        $('exec_btn').show();
+                    }
+
+                    if (validMembers <= 0) {
+                    	$('exec_btn').hide();
+                    }
+                    
+                    if (data.info.create_source == 'tags') {
+                    	$('shop_name_line').hide();
+                    }
+
+                    if(exclude_hours > 0){
+                        $('resend_available').hide();
+                        $('resend_disable').show();
+                        $('exclude_hours').set('text', exclude_hours);
+                    }
+
+                }else{
+                    alert(data.msg);
+                }
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+            }catch(e){
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+                alert("服务器发生了内部错误:"+responseText);
+            }
+        }
+    }).send();
+
+    return true;
+}
+
+
+
+
+ function getEditorHtml(value){
+   var obj=$$('[id$=_frm]')[0].contentWindow;
+   var obji1=obj.document.getElementsByTagName("body")[0];
+
+   if (value==null)
+   {
+	return obji1.innerHTML;
+   }else{
+     obji1.innerHTML = value;
+   }
+   return true;
+ }
+
+
+ function insertAtCursor(myField, myValue)
+ {
+     //IE support
+     if (document.selection)
+     {
+         myField.focus();
+         sel = document.selection.createRange();
+         sel.text = myValue;
+         sel.select();
+     }
+     else if (myField.selectionStart || myField.selectionStart == '0')
+     {
+         var startPos = myField.selectionStart;
+         var endPos = myField.selectionEnd;
+         var restoreTop = myField.scrollTop;
+         myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+         if (restoreTop > 0)
+         {
+             myField.scrollTop = restoreTop;
+         }
+         myField.focus();
+         myField.selectionStart = startPos + myValue.length;
+         myField.selectionEnd = startPos + myValue.length;
+     } else {
+         myField.value += myValue;
+         myField.focus();
+     }
+ }
+
+ function insertAtCursor_b(myField, myValue)
+ {
+     //IE support
+     if (document.selection)
+     {
+         myField.focus();
+         sel = document.selection.createRange();
+         sel.text = myValue;
+         sel.select();
+     }
+     else if (myField.selectionStart || myField.selectionStart == '0')
+     {
+         var startPos = myField.selectionStart;
+         var endPos = myField.selectionEnd;
+         var restoreTop = myField.scrollTop;
+         myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+         if (restoreTop > 0)
+         {
+             myField.scrollTop = restoreTop;
+         }
+         myField.focus();
+         myField.selectionStart = startPos + myValue.length;
+         myField.selectionEnd = startPos + myValue.length;
+     } else {
+         myField.value += myValue;
+         myField.focus();
+     }
+ }
+
+    var sms_sign_url = 'index.php?app=ecorder&ctl=admin_sms_sign&act=index';
+$('config_sms_sign').addEvent('click', function(){
+        window.open(sms_sign_url);
+        //new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:550,height:400,onClose:function(){refresh_sms_sign('message_sign');}});
+    });
+    
+$('config_sms_sign_b').addEvent('click', function(){
+        window.open(sms_sign_url);
+        new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:550,height:400,onClose:function(){refresh_sms_sign('message_sign_b');}});
+    });    
+</script>

@@ -1,0 +1,75 @@
+ <div style="padding-top:2px;" class="division">
+    <!--h4>营销活动评估</h4-->
+        <table  class="gridlist" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <thead>
+                <tr>   
+                    <th>名称</th>
+                    <th>参与活动客户数</th>
+                    <th>下单人数</th>
+                    <th>未下单人数</th>
+                    <th>付款人数</th>
+                    <th>交易完成人数</th>
+                    <th>回头客比率</th>
+                    <th>投资回报率</th>
+                    <th>付款金额</th>
+                    <th>执行时间</th>
+                    <th>结束时间</th>
+                    <th>标题</th>
+                </tr>
+            </thead>
+            <tbody>
+            <{foreach from=$data item=item key=key}>
+                <tr>
+                    <td><{$item.title}></td>
+                    <td>
+                        <{$item.MemberCount}>
+                        <{if $item.MemberCount > 0}>
+                            <a onclick="show_members('&filter_type=active&active_id=<{$assessInfo.active_id}>&shop_id=<{$assessInfo.shop_id}>&exec_time=<{$item.exec_time}>&group_type=<{$item.group_type}>&order_status=ALLMEMBER')" href="###"><{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                        <{/if}>
+                    </td>
+                    <td>
+                        <{$item.BuyMember}>
+                        <{if $item.BuyMember > 0}>
+                            <a onclick="show_members('&filter_type=active&active_id=<{$assessInfo.active_id}>&shop_id=<{$assessInfo.shop_id}>&exec_time=<{$item.exec_time}>&group_type=<{$item.group_type}>&order_status=ALL')" href="###"><{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                        <{/if}>
+                    </td>
+                    <td>
+                        <{$item.UnBuyMember}>
+                        <{if $item.UnBuyMember > 0}>
+                            <a onclick="show_members('&filter_type=active&active_id=<{$assessInfo.active_id}>&shop_id=<{$assessInfo.shop_id}>&exec_time=<{$item.exec_time}>&group_type=<{$item.group_type}>&order_status=UNBUY')" href="###"><{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                        <{/if}>
+                    </td>
+                    <td>
+                        <{$item.PayMember}>
+                        <{if $item.PayMember > 0}>
+                            <a onclick="show_members('&filter_type=active&active_id=<{$assessInfo.active_id}>&shop_id=<{$assessInfo.shop_id}>&exec_time=<{$item.exec_time}>&group_type=<{$item.group_type}>&order_status=PAY')" href="###"><{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                        <{/if}>
+                    </td>
+                    <td>
+                        <{$item.FinishMember}>
+                        <{if $item.FinishMember > 0}>
+                            <a onclick="show_members('&filter_type=active&active_id=<{$assessInfo.active_id}>&shop_id=<{$assessInfo.shop_id}>&exec_time=<{$item.exec_time}>&group_type=<{$item.group_type}>&order_status=FINISH')" href="###"><{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                        <{/if}>
+                    </td>
+                    <td><{$item.ratio}></td>
+                    <td><{$item.ReturnRatio}></td>
+                    <td><{$item.AmountCount}></td>
+                    <td><{$item.exec_time|cdate:FDATE_FTIME}></td>
+                    <td><{$item.end_time|cdate:FDATE_FTIME}></td>
+                    <td title="<{$item.desc}>"><{$item.message}></td>
+                </tr>
+            <{/foreach}>
+            </tbody>
+        </table>
+</div>
+
+<script>
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>
+

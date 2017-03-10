@@ -1,0 +1,265 @@
+<style>
+.user_active {border:2px solid #CCC;margin:-2px 0 10px -52px;width:50px;line-height:26px;background:#FFF;border-right:none;text-align:center;color:#5779BD;font-size:14px;}
+.user_inactive {border:2px solid #CCC;margin:-2px 0 10px -52px;width:48px;line-height:26px;background:#CBD5E0;text-align:center;}
+.user_inactive a{color:#666;}
+
+div.division1 {padding:10px 0 0 0;}
+</style>
+
+<!-- ▲▲▲注意： 该文件已经废弃不使用▲▲▲ -->
+
+    <div style="padding:0 0 10px 50px;font-size:18px;font-family:Microsoft Yahei;background:#FBFBFB;">
+        电话号码：
+        <b style="color:#03F;font-family:Arial;"><{$rs_members[$select_index].mobile}></b>
+        <{button class="btn-primary" type="button" id="call_btn" label="拨打电话"}>
+        <{button class="btn-primary" type="button" id="sms_btn" label="发送短信"}>
+    </div>
+    
+    <div style="border:2px solid #CCC;margin:0 0 10px 50px;position:relative;background:#FFF;">
+    
+        <div style="position:absolute;">
+            <{foreach from=$rs_members item=data key=k }>
+            <div title="<{$data.uname}>" class="<{if($k==$select_index)}>user_active<{else}>user_inactive<{/if}>"><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$k}>"><{$data.name}></a></div>
+            <{/foreach}>
+        </div>
+        
+        <div style="margin:10px;">
+            <form id="callplan_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+            <div style="background:#EAEEF4;margin:0 0 10px 0;padding:10px;">
+                <table id="member_tab" cellpadding="4">
+                    <tr>
+                        <td colspan="2">
+                            帐号：<{$rs_members[$select_index].uname}>
+                            <{button type="button" id="set_member_tag" name="submit" label="客户标签"}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            姓名：<{$rs_members[$select_index].name}>
+                        </td>
+                        <td>
+                            生日：<{input id="birthday" type="date" value=$rs_members[$select_index].birthday }>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            座机：<{input id="tel" type="text" value=$rs_members[$select_index].tel }>
+                        </td>
+                        <td>
+                            地址：<{$rs_members[$select_index].addr}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            手机：<{input id="mobile" type="text" value=$rs_members[$select_index].mobile maxlength="11" }>
+                        </td>
+                        <td>
+                            邮件：<{input id="email" type="text" value=$rs_members[$select_index].email maxlength="11" }>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:0 0 0 34px;">
+                            <{button type="button" id="save_member" name="submit" label="保存"}>
+                            <{input id="member_id" type="hidden" value=$member_id }>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </form>
+            <div id="callin_user_tab">
+                <div class="tabs-wrap finder-tabs-wrap clearfix">
+                    <ul>
+                        <li class="tab <{if($detail=='analysis')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=analysis">统计信息</a></span></li>
+                        <li class="tab <{if($detail=='client_infor')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=client_infor">客户信息</a></span></li>
+                        <li class="tab <{if($detail=='goods')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=goods">买过的商品</a></span></li>
+                        <li class="tab <{if($detail=='orders')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=orders">历史订单</a></span></li>
+                        <li class="tab <{if($detail=='contact')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=contact">联 系 人</a></span></li>
+                        <li class="tab <{if($detail=='addr')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=addr">收货地址</a></span></li>
+                        <li class="tab <{if($detail=='active')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=active">营销活动</a></span></li>
+                        <li class="tab <{if($detail=='points')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=points">积分日志</a></span></li>
+                        <li class="tab <{if($detail=='service')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=service">接待日志</a></span></li>
+                        <li class="tab <{if($detail=='caselog')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>">服务记录</a></span></li>
+                        <li class="tab <{if($detail=='merge')}>current<{/if}>"><span><a href="index.php?app=market&ctl=admin_callcenter_callin&act=index&mobile=<{$mobile}>&select_index=<{$select_index}>&detail=merge">客户合并历史</a></span></li>
+                    </ul>
+                </div> 
+                
+                <div class="division1" style="display:<{if($detail=='caselog')}>block<{else}>none<{/if}>">
+                
+                    <form id="caselog_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+                    <{input name="member_id" type="hidden" value=$member_id }>
+                    <{input name="id" type="hidden" value=0 }>
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                服务来源：<{input name="source" type="select" options=$category[3] value=$rs.source vtype="required" }>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td width="50%">客户名称：<{input name="customer" type="text" value=$customer vtype="required" }></td>
+                            <td width="50%">所属店铺：<{input name="shop_id" type="select" options=$rs_shop value=$rs.shop_id vtype="required" }></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>服务媒体：<{input name="media" type="select" options=$category[1] value=$rs.media vtype="required" }></td>
+                            <td>事件类型：<{input name="category" type="select" options=$category[2] value=$rs.category vtype="required" }></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>服务状态：<{input id="status" name="status" type="select" options=$category[4] value=$rs.status vtype="required" }></td>
+                            <td>提醒时间：<{input id="alarm_time" name="alarm_time" type="time"  value=$rs.alarm_time }></td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2">服务内容：<{input name="content" type="textarea" style="width:98%;height:50px;" value=$rs.content }></td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2"><{button type="button" id="save_caselog" name="submit" label="保存"}></td>
+                        </tr>
+                    </table>
+                    <br/>
+                    </form>
+                
+                    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>  
+                                <th width="10%"><{t}>操作<{/t}></th>
+                                <th width="10%"><{t}>来源<{/t}></th>
+                                <th width="10%"><{t}>分类<{/t}></th>
+                                <th width="10%"><{t}>媒体<{/t}></th>
+                                <th width="10%"><{t}>状态<{/t}></th>
+                                <th width="10%"><{t}>内容<{/t}></th>
+                                <th width="50%"><{t}>创建时间<{/t}></th>
+                                <th width="10%"><{t}>创建人<{/t}></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <{foreach from=$rs_caselog item=data}>
+                            <tr>
+                                <td><a href="index.php?app=taocrm&ctl=admin_member_caselog&act=caselog_edit&id=<{$data.id}>&member_id=<{$data.member_id}>&from=callin&mobile=<{$mobile}>&select_index=<{$select_index}>" target="dialog::{title:'修改', width:650, height:300}">修改</a></td>
+                                <td><{$data.source}></td>
+                                <td><{$data.category}></td>
+                                <td><{$data.media}></td>
+                                <td><{$data.status}></td>
+                                <td><{$data.content}></td>
+                                <td><{$data.create_time}></td>
+                                <td><{$data.agent}></td>
+                            </tr>
+                            <{/foreach}>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="division1" style="display:<{if($detail=='orders')}>block<{else}>none<{/if}>"><{include file="admin/member/order.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='analysis')}>block<{else}>none<{/if}>"><{include file="admin/member/analysis.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='client_infor')}>block<{else}>none<{/if}>"><{include file="admin/member/all/edit.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='goods')}>block<{else}>none<{/if}>"><{include file="admin/member/goods.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='contact')}>block<{else}>none<{/if}>"><{include file="admin/member/contact.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='addr')}>block<{else}>none<{/if}>"><{include file="admin/member/addr.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='points')}>block<{else}>none<{/if}>"><{include file="admin/member/points_log.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='active')}>block<{else}>none<{/if}>"><{include file="admin/member/active.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='service')}>block<{else}>none<{/if}>"><{include file="admin/member/service.html" app="taocrm"}></div>
+                <div class="division1" style="display:<{if($detail=='merge')}>block<{else}>none<{/if}>">
+                    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>  
+                                <th><{t}>昵称/ID<{/t}></th>
+                                <th><{t}>姓名<{/t}></th>
+                                <th><{t}>手机<{/t}></th>
+                                <th><{t}>邮箱<{/t}></th>
+                                <th><{t}>地址<{/t}></th>
+                                <th><{t}>QQ<{/t}></th>
+                                <th><{t}>微信<{/t}></th>
+                                <th><{t}>来源<{/t}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <{foreach from=$merge_members item=data key=key}>
+                             <tr>
+                                 <td><{$data.uname}></td>
+                                 <td><{$data.name}></td>
+                                 <td><{$data.mobile}></td>
+                                 <td><{$data.email}></td>
+                                 <td><{$data.addr}></td>
+                                 <td><{$data.qq}></td>
+                                 <td><{$data.weixin}></td>
+                                 <td><{$data.channel_type}></td>
+                             </tr>
+                            <{/foreach}>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+
+<script>
+var member_id = '<{$member_id}>';
+
+(function(){
+    
+    $('save_member').addEvent('click', function(){
+        ajax_save_member($(this));
+    });
+    
+    $('set_member_tag').addEvent('click', function(){
+        set_member_tag();
+    });
+    
+    $('sms_btn').addEvent('click', function(){
+        send_sms();
+    });
+    
+    $('call_btn').addEvent('click', function(){
+        alert('需要软电话的支持。');
+    });
+
+    $('save_caselog').addEvent('click', function(){
+        $('caselog_form').fireEvent('submit',{stop:$empty});
+    });
+    
+})();
+
+function ajax_save_member(ele){
+    var form = ele.getParent().getParent().getParent();
+    //alert(form.get('html'));
+    
+    var tel = form.getElement('#tel').get('value');
+    var mobile = form.getElement('#mobile').get('value');
+    var birthday = form.getElement('#birthday').get('value');
+    var email = form.getElement('#email').get('value');
+    //alert(birthday.get('value'));
+    
+    var _url = 'index.php?app=market&ctl=admin_callcenter_callin&act=ajax_save_member';
+    var _data = 'tel='+tel+'&mobile='+mobile+'&birthday='+birthday+'&email='+email+'&member_id='+member_id;
+    new Request({
+        url : _url,
+        method : 'post',
+        data : _data,
+        onSuccess : function(responseText){
+            //alert(responseText);
+            alert('保存成功');
+            /*
+            try{
+                var data = JSON.decode(responseText);
+            }catch(e){
+                alert("服务器发生了内部错误:"+responseText); 
+            }
+            */
+        }
+    }).send();
+}
+
+function send_sms(){
+    new Dialog('index.php?app=market&ctl=admin_callcenter_callin&act=send_sms&mobile='+$('mobile').get('value'),{title:'发送短信',width:650,height:260});
+}
+
+function set_member_tag(){
+    new Dialog('index.php?app=taocrm&ctl=admin_member&act=addTag&id[]='+member_id,{title:'客户标签',width:650,height:355});
+}
+</script>

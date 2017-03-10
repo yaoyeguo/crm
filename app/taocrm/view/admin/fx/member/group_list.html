@@ -1,0 +1,204 @@
+<div style="" class="content-head">
+
+    <div class="finder-title">
+        <h2 class="head-title span-auto">客户分组</h2>
+    </div>
+    
+    <div id="finder-packet-d48745" class="finder-packet" style="width: auto;height:auto">
+        <div class="packet-items clearfix" style="width:auto;height:auto">
+            <ul class="clearfix">
+                <{foreach from=$shops item=data key=i}>
+                <{if $shop_id==$data.shop_id}>
+                <li class="current" style="height:25px">
+                <{else}>
+                <li style="height:25px">
+                <{/if}>
+                <a href="index.php?app=taocrm&ctl=admin_fx_member_group&act=index&shop_id=<{$data.shop_id}>">
+                <span><{$data.name}></span>
+                </a>
+                </li>
+                <{/foreach}>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div style="padding-right:75px;" id="finder-action-d48745" class="gridlist-action finder-action clearfix">
+        <ul class="finder-action-items flt">  
+            <{if($shop_id)}>
+            <li>
+                <{button label=$___ectools="创建分组"|t:'ectools' onclick="new Dialog('index.php?app=taocrm&ctl=admin_fx_member_group&act=edit_group&shop_id={$shop_id}',{width:750,height:435,title:'创建分组'})"  }>    	
+            </li>
+            
+            <li>
+                <{button href="?app=taocrm&ctl=admin_fx_member_group&act=refresh&shop_id={$shop_id}" id="refresh_members" label=$___ectools="刷新客户数"|t:'ectools'  }>    	
+            </li>
+            <{else}>
+                <li>没有分销店铺</li>
+            <{/if}>
+        </ul> 	  
+    </div>
+</div>
+
+<div style="padding-top:2px;">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <thead>
+            <tr>   
+                <th>分组名称</th>
+                <th>客户数</th>
+                <th>更新时间</th>
+                <th colspan=5>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <{foreach from=$groups item=data key=i}>
+            <tr class="provice-bg">
+                <td style="text-align:left;font-weight:bold" width="30%">
+                <{if $data.childs>0 }>
+                <span id="<{$data.group_id}>" class="imgTree tree_close" onclick="clickTree(this,1);"> &nbsp;&nbsp; </span>
+                <{else}>
+                <span id="<{$data.group_id}>" class="imgTree tree_open"> &nbsp;&nbsp; </span>
+                <{/if}>
+                <{$data.group_name}></td>
+                <td width="10%">
+                <{$data.members}> 
+                <{if ($data.members>0)}>
+                <a onclick="show_members('&filter_type=group&group_id=<{$data.group_id}>&shop_id=<{$data.shop_id}>')">
+                <{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>
+                <{/if}>&nbsp;
+                <a href="?app=taocrm&ctl=admin_fx_member_group&act=refresh&group_id=<{$data.group_id}>&shop_id=<{$data.shop_id}>"><{img align="absmiddle" app="taocrm" src="refresh3.gif" }></a>
+                </td>
+                <td width="15%"><{$data.update_time}></td>
+                
+                <td width="20%">
+                    <a target="dialog::{width:700,height:355,title:'快捷营销'}" href="index.php?app=market&ctl=admin_fx_activity&act=create_activity&p[group_id]=<{$data.group_id}>&shop_id=<{$shop_id}>">快捷营销</a>
+                </td>
+                <td width="10%">
+                    <{if($data.childs == 0)}>
+                        <a target="dialog::{width:750,height:435,title:'编辑分组'}" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=edit_group&p[0]=<{$data.group_id}>&shop_id=<{$shop_id}>">编辑</a>
+                    <{/if}>
+                </td>
+                
+                <td width="10%"><a target="dialog::{width:700,height:355,title:'添加子分组'}" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=edit_group&p[0]=<{$data.group_id}>&p[1]=add_child&shop_id=<{$shop_id}>">添加子分组</a></td>
+                
+                <td>
+                    <{if($data.childs == 0)}>
+                    <a onclick="return del_confirm(this);" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=del_group&p[0]=<{$data.group_id}>&p[1]=<{$data.parent_id}>">删除</a>
+                    <{/if}>
+                 </td>
+            </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+</div>
+
+<script>
+(function(){
+    
+    
+})();
+
+function del_confirm(el){
+    if(confirm('确定要删除吗？删除后无法恢复！')){
+        var myRequest = new Request({
+            url: el.href, 
+            method: 'get',
+            onSuccess:function(responseText){
+                //alert('删除成功');
+                window.location.reload();
+            }
+        }).send();
+    }
+    return false;
+}
+
+function clickTree(obj,depth){
+    if(obj.get('class')=='imgTree tree_open') {
+        obj.set('class','imgTree tree_close')
+        removeChilds(obj.parentNode.parentNode.getNext(),depth);
+    }else{
+        obj.set('class','imgTree tree_open')
+        getChildGroup(obj.id,depth);
+    }
+}
+
+function removeChilds(o,depth){
+    var o_depth = o.get('depth');
+    var o_next = o.getNext();
+    if(!o_depth) return false;
+    if( o_depth != depth) {
+        o.remove();
+        removeChilds(o_next,depth);
+    }
+}
+
+function getChildGroup(parent_id,depth){
+    var o = $(parent_id).parentNode.parentNode;
+    var data_str = 'parent_id='+parent_id;
+    var templates = '<td style="text-align:left" width="30%">\
+                {$imgTree} {$group_name}</td>\
+                <td width="10%">{$members} <a onclick="show_members(\'&filter_type=group&group_id={$group_id}&shop_id=<{$shop_id}>\');">\
+                <{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}></a>\
+                <a href="?app=taocrm&ctl=admin_fx_member_group&act=refresh&group_id={$group_id}"><{img align="absmiddle" src="refresh3.gif" app="taocrm"}></a></td>\
+                <td width="15%">{$update_time}</td>\
+                <td width="7%"><a target="dialog::{width:700,height:355,title:\'快捷营销\'}" href="index.php?app=market&ctl=admin_fx_activity&act=create_activity&p[group_id]={$group_id}&shop_id=<{$shop_id}>">快捷营销</a></td>\
+                <td width="10%"><a style="display:{$display}" target="dialog::{width:700,height:355,title:\'编辑分组\'}" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=edit_group&p[0]={$group_id}&shop_id=<{$shop_id}>">编辑</a></td>\
+                <td width="10%"><a target="dialog::{width:700,height:355,title:\'添加子分组\'}" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=edit_group&p[0]={$group_id}&p[1]=add_child&shop_id=<{$shop_id}>">添加子分组</a></td>\
+                <td width="10%"><a style="display:{$display}" onclick="return del_confirm(this);" href="index.php?app=taocrm&ctl=admin_fx_member_group&act=del_group&p[0]={$group_id}&p[1]={$parent_id}">删除</a></td>';
+    
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=taocrm&ctl=admin_fx_member_group&act=getChildGroup',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                var imgTree;
+                var obj = eval('(' + responseText + ')');
+                for(var i=0;i<obj.length;i++){
+                    new_node = templates.replace(/\{\$parent_id\}/g,obj[i].parent_id).replace(/\{\$group_id\}/g,obj[i].group_id).replace('{$group_name}',obj[i].group_name).replace('{$members}',obj[i].members).replace('{$update_time}',obj[i].update_time).replace('{$op_user}',obj[i].op_user);
+                    
+                    if(parseInt(obj[i].members)==0) {
+                        new_node = new_node.replace('<{img align="absmiddle" src="bundle/zoom_btn.gif" app="desktop"}>','');
+                    }
+                    
+                    if(parseInt(obj[i].childs)>0) {
+                        new_node = new_node.replace(/\{\$display\}/g,'none');
+                    }
+                    
+                    //替换节点图标
+                    if(obj[i].childs>0) {
+                        imgTree = '<span id="'+obj[i].group_id+'" class="imgTree tree_close" onclick="clickTree(this,'+(depth+1)+');"> &nbsp;&nbsp; </span>';
+                    }else{
+                        imgTree = '<span class="imgTree tree_open"> &nbsp;&nbsp; </span>';
+                    }
+                    for(var j=1;j<=depth;j++){
+                        imgTree = '　　'+imgTree;
+                    }
+                    new_node = new_node.replace('{$imgTree}',imgTree);
+                    
+                    var e = new Element('tr');
+                    e.set('depth',depth+1);
+                    e.set('id','tr'+obj[i].group_id);
+                    e.set('class','provice-bg');
+                    e.set('html',new_node);
+                    e.inject(o, 'after');
+                }
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_fx_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+
+
+</script>

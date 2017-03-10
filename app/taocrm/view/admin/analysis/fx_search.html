@@ -1,0 +1,162 @@
+<div class="title_right" id="dataAction">
+<form action="<{$form_action}>" method="post" id="filter_form">
+    <{if $timeFilter != 'false'}>
+    <div class="date_area" id="date_area">
+        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.yesterday date_to=$timeBtn.yesterday label="昨日"}>
+        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.sevenday_from date_to=$timeBtn.sevenday_to label="最近7天"}>
+        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.this_month_from date_to=$timeBtn.this_month_to label="本月"}>
+        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.this_week_from date_to=$timeBtn.this_week_to label="本周"}>
+    </div>
+    <div class="date_date_cx" style="font-size:12px">
+        <span id="date_date_cx">
+            <{input type="date" vtype="date" name="date_from" id="date_from" style="width:66px; font-family:arial;" value=$date_from}>
+            <span>至</span>
+            <{input type="date" vtype="date" name="date_to" id="date_to" style="width:66px; font-family:arial;" value=$date_to}>
+        </span>
+            
+        <span id="compare_span">
+            <input type="checkbox" id="setCompareDate" <{if ($c_date_from!='')}>checked="checked"<{/if}> /> 
+            <label for="setCompareDate" style="color:#03F">设置对比时间段</label>
+            <span id="compare_input" <{if ($c_date_from=='')}>style="display:none"<{/if}>>
+                <{input type="date" vtype="date" id="c_date_from" name="c_date_from" style="width:66px; font-family:arial;" value=$c_date_from }>
+            </span>
+        </span>
+
+        <span id="count_unit">
+            单位：<{assign var="count_bys" value=array('DAY'=>'天','WEEK'=>'周','MONTH'=>'月','YEAR'=>'年')}>
+            <{input type="select" name="count_by" options=$count_bys value=$count_by}>
+        </span>
+        
+        店铺：
+        <{input style="width:180px" type="select" name="shop_id" options=$shops value=$shop_id}>
+        
+        <{button class="filterBtn btn-thirdly" label="查询"}>
+    </div>
+    <{/if}>
+    <{if $extTypeData}>
+    <div class="date_date_cx" style="float:right">
+        <select name="ext_type_id" id="ext_select_type" style="width:260px;">
+            <{foreach from=$extTypeData key=key item=item}>
+                <option value="<{$item.coupon_id}>" <{if $ext_select_type == $item.coupon_id}>selected="selected"<{/if}>><{$item.coupon_name}></option>
+            <{/foreach}>
+        </select>
+    </div>
+    <{/if}>
+    <{if $typeData}>
+    <div class="date_date_cx" style="float:right">
+        <select name="type_id" id="select_type">
+            <{foreach from=$typeData key=key item=item}>
+                <option value="<{$item.type_id}>" <{if $select_type == $item.type_id}>selected="selected"<{/if}>><{$item.name}></option>
+            <{/foreach}>
+        </select>
+    </div>
+    <{/if}>
+</form>
+</div>
+<script>
+(function(){
+
+    $('setCompareDate').addEvent('click',function(){
+        if($('setCompareDate').get('checked')){
+            $('compare_input').setStyle('display','inline');
+        }else{
+            $('compare_input').setStyle('display','none');
+            $('c_date_from').set('value','');
+        }
+    })
+
+    var dataAction= $('dataAction');
+    <{if $timeFilter != 'false'}>
+    var from=dataAction.getElement('input[name=date_from]');
+    var to=dataAction.getElement('input[name=date_to]');
+    dataAction.getElement('.filterBtn').addEvent('click',function(e){setChartData(true);});
+    <{/if}>
+
+    function setChartData(flag,e){
+        <{if $timeFilter != 'false'}>
+        if(from && to){
+            if(!check_data(from,to))return;
+            if(!chk_date_area()) return false;
+        }
+        <{/if}>
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+
+    if($('select_type')) $('select_type').addEvent('change',function(e){setChartData(true);});
+    if($('ext_select_type')) $('ext_select_type').addEvent('change',function(e){setChartData(true);});
+
+    function check_data(from,to){
+          var data=[],
+          _return=[from,to].every(function(el){
+            if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+              new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+              el.focus();
+              return false;
+            }
+            data.push(Date.parse(el.value.replace(/-/gi,"/")));
+            return true;
+          });
+
+          if(!_return)return null;
+          if(data[1]<data[0]){
+            return MessageBox.error('<{t}>选择开始时间必须早于结束时间<{/t}>');
+          }
+          return _return;
+    }
+
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+      if(el.get('date_from')==from.value && el.get('date_to')==to.value)
+          el.addClass('btn-fourthly-cur');
+      el.addEvent('click',function(e){
+        from.value=this.get('date_from');
+        to.value=this.get('date_to');
+        /* ['time_from','time_to'].each(function(v){
+         *   dataAction.getElements('input[name='+v+']').value=this.get(v);
+         * },this); */
+        dataAction.getElement('.filterBtn').fireEvent('click');
+      });
+    });
+
+})();
+
+
+function chk_date_area(){
+    var count_unit = $('count_unit').getStyle('display');
+    
+    if(count_unit == 'none') return true;//如果时间单位不显示，不做判断
+    
+    var count_by = $$('select[name=count_by]').get('value');
+    var days = dateDiff('D',$('date_from').get('value'),$('date_to').get('value'));
+    days = parseInt(days);
+
+    if(count_by=='date' && days>31) 
+        return MessageBox.error('<{t}>时间范围选择不能超过31天<{/t}>');
+    if(count_by=='week' && days>31*7) 
+        return MessageBox.error('<{t}>时间范围选择不能超过31周<{/t}>');
+    if(count_by=='month' && days>31*30) 
+        return MessageBox.error('<{t}>时间范围选择不能超过31个月<{/t}>');
+    
+    return true;    
+}
+
+function dateDiff(interval,date1,date2){ 
+	var objInterval = {'D':1000*60*60*24,'H':1000*60*60,'M':1000*60,'S':1000,'T':1}; 
+	interval = interval.toUpperCase(); 
+	var dt1 = Date.parse(date1.replace(/-/g, '/')); 
+	var dt2 = Date.parse(date2.replace(/-/g, '/')); 
+	try { 
+		return Math.round((dt2 - dt1) / eval('(objInterval.' + interval + ')')); 
+	}catch (e) { 
+		return e.message; 
+	} 
+}
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_fx_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>

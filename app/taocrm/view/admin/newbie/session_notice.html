@@ -1,0 +1,45 @@
+<div class="tableform">
+    <p>
+        <span style="color:red;">以下店铺的授权session即将过期，请<a id="login"  href="javascript:;" onclick="login()" style="color: #000000;">点击此处</a>分别进行登陆。</span>
+    </p>
+    
+    <div style="text-align:center">
+        <table class="gridlist">
+            <thead>
+                <tr>
+                    <th>店铺名称</th>
+                    <th>店铺类型</th>
+                    <th>店铺节点</th>
+                    <th>过期时间</th>
+                    <th>过期信息</th>
+                </tr>
+            </thead>
+            <{foreach from=$shop_arr item=item}>
+            <tr>
+                <td><{$item.name}></td>
+                <td><{$item.shop_type}></td>
+                <td><{$item.node_id}></td>
+                <td><{$item.session_expire_time}></td>
+                <td>
+                    <{if($item.day>=0)}>
+                        还有<{$item.day}>天到期
+                    <{else}>
+                        <font style="color:red">已经过期<{$item.day * -1}>天</font>
+                    <{/if}>
+                </td>
+            </tr>
+            <{/foreach}>
+        </table>
+    </div>
+</div>
+<script>
+function login(){
+    var _dialogIns = $('login').getParent('.dialog')
+            .retrieve('instance');
+    if (_dialogIns) {
+        _dialogIns.close();
+        window.location.href="index.php?app=ecorder&ctl=admin_shop&act=index";
+    }
+}
+</script>
+

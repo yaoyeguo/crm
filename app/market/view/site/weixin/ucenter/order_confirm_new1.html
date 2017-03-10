@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>确认收货地址</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+  <script src="<{$env.app.res_url}>/js/jquery.js"></script>
+</head>
+<body>
+<!--地区js文件引用路径-->
+<script>
+    DESKTOPRESURL='<{$env.app.res_url}>';
+</script>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>填写收货地址</h1>
+</nav>
+<a href="../site_weixin_member/select_receiving_address?wx_id=<{$rs_orders.wx_id}>&gift_id=<{$gifts.buy_id}>">
+    选择收货地址</a>
+<!--<form action="" method="post" class="form-address" data-abide="ajax">-->
+  <ul class="form-container" id = 'addr_list'>
+    <li class="row">
+      <label>
+        <input type="text" placeholder="收货人姓名" id="receiver" name="receiver" value=<{$rs_orders.name}> >
+      </label>
+    </li>
+    <!--<li class="row">
+          <label>
+              <input type="text" placeholder="省份" id='state'  name="new_addr[state]" value=<{$rs_orders.0.state}> >
+          </label>
+    </li>
+    <li class="row">
+          <label>
+              <input type="text" placeholder="城市" id='city'  name="new_addr[city]" value=<{$rs_orders.0.city}> >
+          </label>
+    </li>
+    <li class="row">
+      <label>
+        <input type="text" placeholder="区域" id='district'  name="new_addr[district]" value=<{$rs_orders.0.district}> >
+      </label>
+    </li>-->
+      <li class="row">
+          <label class="act-selectarea" id="area" for="for_area">
+              <a href="#areaselect" class="input">
+                  <span><{if $rs_orders.area_show }> <{$rs_orders.area_show}> <{else}> 地区<{/if}></span>
+                  <i class="icon-arrow_right"></i>
+                  <input type="text" name="new_addr[area_str]" value="<{$rs_orders.area}>" id="for_area" placeholder="地区" style="width:0;height:0;opacity:0;padding:0;" required>
+              </a>
+          </label>
+      </li>
+    <li class="row">
+      <label>
+        <input type="text" placeholder="详细地址" id='addr'  name="new_addr[addr]" value=<{$rs_orders.addr}> >
+      </label>
+    </li>
+    <li class="row">
+      <label>
+        <input type="text" placeholder="联系电话" name="mobile" id="mobile" value=<{$rs_orders.mobile}>>
+        <input type="hidden" id="gift_id" name="gift_id" value=<{$gifts.buy_id}> />
+        <input type="hidden" id="wx_id" name="wx_id" value=<{$wx_id}> />
+      </label>
+    </li>
+  </ul>
+  <div class="row">
+    <div class="small-12 columns">
+      <button type="button" id="save_order" class="alert expand">提交订单</button>
+    </div>
+  </div>
+<!--</form>-->
+<div class="mod fixed bottom gift-info">
+  <div class="mod-head">
+    <h1>礼品信息</h1>
+  </div>
+  <div class="mod-body">
+    <dl class="graphic">
+      <dt><img src="<{$gifts.preview}>" alt=""></dt>
+      <dd>
+        <h2 class="ellipsis-2"><{$gifts.goods_name|cut:30}></h2>
+        <p><em>数量 x1</em><i>所需积分 <b class="price"><{$gifts.minus_score}></b></i></p>
+      </dd>
+    </dl>
+  </div>
+</div>
+<!--地区弹出框隐藏div-->
+<div id="areaselect" class="area-select" style="display:none;">
+    <ul class="table-view act-selected"></ul>
+    <ul class="table-view act-forselect"></ul>
+</div>
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    $(function(){
+
+        $('#addr_list input[type="radio"]').click(function(){
+            $('#addr_list label').css({'font-weight':'normal','color':'#333'});
+            if($(this).attr('id')!='new_addr'){
+                $(this).parent().next().find('label').css({'font-weight':'bold','color':'#5779BD'});
+                $('#new_addr').parent().next().hide();
+            }else{
+                $(this).parent().css({'font-weight':'bold','color':'#5779BD'});
+                $(this).parent().next().slideDown(500);
+            }
+        });
+
+        $('#addr_list input').eq(0).trigger('click');
+
+        $('#save_order').click(function(){
+            save_order();
+        });
+
+    });
+
+    function save_order(){
+        //alert('保存订单')
+        has_error = false;
+        if($('input[name="receiver_addr"]:checked').val() == 'new_addr'){
+            $('#new_addr').parent().next().find('input,textarea').each(function(){
+                if($(this).val() == ''){
+                    $(this).focus();
+                    alert('请输入'+$(this).attr('title'));
+                    has_error = true;
+                    return false;
+                }
+            });
+        }
+
+        if($('#receiver').val() == ''){
+            alert('请输入收货人');
+            $('#receiver').focus();
+            return false;
+        }
+        /*if($('#state').val() == ''){
+            alert('请输入省份');
+            $('#state').focus();
+            return false;
+        }
+        if($('#city').val() == ''){
+            alert('请输入城市');
+            $('#city').focus();
+            return false;
+        }
+        if($('#district').val() == ''){
+            alert('请输入区域');
+            $('#district').focus();
+            return false;
+        }*/
+        if($('#addr').val() == ''){
+            alert('请输入详细地址');
+            $('#addr').focus();
+            return false;
+        }
+
+        if($('#mobile').val() == '' || $('#mobile').val().length!=11){
+            alert('请在联系电话里输入11位手机号码');
+            $('#mobile').focus();
+            return false;
+        }
+
+        if(has_error == true) return false;
+
+        var _data = [];
+        $('#addr_list input[type=radio]:checked,#addr_list input[type=text],#addr_list input[type=hidden],#addr_list textarea').each(function(){
+            _data.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
+        });
+        //alert(_data.join('&'));
+
+        $.ajax({
+            url: "order_confirm",
+            data: _data.join('&'),
+            type: 'POST',
+            cache: false,
+            success: function(html){
+                alert(html.replace('error',''));
+                if(html.indexOf('error') == -1){
+                    window.location.href = '../site_weixin_point/point_business_record?fromusername='+$('#wx_id').val();
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

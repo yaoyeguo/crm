@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="<{$env.app.res_url}>/screen.css" type="text/css">
+<div id="body" class="wx">
+    <div class="position splitlt">
+        <div class="main kr">
+            <ul class="tabs">
+                <li><a href="weixin-distribution.html">微信营销站</a></li>
+                <li><a href="weixin-greet.html">欢迎语</a></li>
+                <li class="active"><a href="javascript:;">关键词自动回复</a></li>
+            </ul>
+            <div class="tabs-body">
+                <span class="switch"><strong>+</strong>&nbsp;增加一条自动回复</span>
+                <div class="panel">
+                    <ul>
+                      <{foreach from=$rulelist item=yunrule}>
+                        <li class="preview-mode" data-rule-id="<{$yunrule.id}>">
+                            <div class="brief">
+                                <ul>
+                                    <li>
+                                        <label>规则名：</label>
+                                        <strong><{$yunrule.rulename}></strong>
+                                    </li>
+                                    <li class="tags">
+                                        <label>关键名：</label>
+                                        <{foreach from=$yunrule[keyword] item=keyword}>
+                                            <span><{$keyword}></span>
+                                        <{/foreach}>
+                                         
+                                    </li>
+                                </ul>
+                                <div class="action">
+                                    <a href="javascript:;" class="edit toedit">[编辑]</a><br><br>
+                                    <a href="javascript:;" class="close todel" title="关闭">&nbsp;</a>
+                                </div>
+                            </div>
+                        </li>
+                        <{/foreach}>
+                     
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        <textarea id="structure" class="hide">
+            <form action="index.php?app=market&ctl=admin_weixin&act=keyreply" method="post">
+                <fieldset>
+                    <input type="hidden" name="pdata" id="procdata" />
+                    <div class="hd">
+                        <ul>
+                            <li class="text-wrap">
+                                <label>规则名：</label>
+                                <input name='regex' type="text" placeholder="输入规则名以区分其他规则" data-tip="请输入规则名。" />
+                            </li>
+                            <li class="text-wrap text-3" data-type="least-1" data-tip="请至少输入一个关键词。">
+                                <label>关键名：</label>
+                                <input name='key1' type="text" />
+                                <input name='key2' type="text" />
+                                <input name='key3' type="text" />
+                            </li>
+                        </ul>
+                        <div class="action">
+                            <a href="javascript:;" class="toclose">[收起]</a><br><br>
+                            <a href="javascript:;" class="close toclose" title="关闭">&nbsp;</a>
+                        </div>
+                    </div>
+                    <div class="bd">
+                        <ul class="tabs">
+                            <li>多商品自动回复</li>
+                        </ul>
+                        <div class="tabs-body">
+                            <div class="carrier multi">
+                                <div class="demo">
+                                    <ul class="hide" data-type="lease-1" data-tip="请至少添加一个商品。">
+                                    </ul>
+                                </div>
+                                <div class="good">
+                                    <div class="search">
+                                        <label>最新20件商品</label>
+                                        <input type="text" maxlength="30" placeholder="搜索商品" />
+                                        <button><span>search</span></button>
+                                    </div>
+                                    <div class="list">
+                                        <ul class="list-2">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <input type="submit" class="btn-save" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <fieldset>
+            </form>
+        </textarea>
+        
+        <div class="clearfix">
+        </div>
+    </div>
+</div>
+<script>
+var site = "<{$site}>";
+</script>
+<{script app="yunmall" src="utopia.js" pdir="."}>

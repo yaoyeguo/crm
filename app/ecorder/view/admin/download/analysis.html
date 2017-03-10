@@ -1,0 +1,112 @@
+<h4><{t}>统计数据<{/t}></h4>
+
+<div class="tableform">
+<div class="division">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <th><{t}>请选择店铺：<{/t}></th>
+           	<td>
+               <select class="x-input" id='shop_id' name='shop_id'>
+                    <option value="">-请选择-</option>
+                    <{foreach from=$shoplist item=item}>
+                    <option value="<{$item.shop_id}>" name="<{$item.name}>"><{$item.name}></option>
+                    <{/foreach}>
+               </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th><{t}>日期选择：<{/t}></th>
+            <td>
+                <{input size="20" type='date' id='date_from' name='date_from' value=$date_from }> ~ 
+                <{input size="20" type='date' id='date_to' name='date_to' value=$date_to }>
+            </td>
+        </tr>
+        <tr id="submit_tr">
+			<th>&nbsp;</th>
+			<td><{button id="down1" class="btn-primary" label=$___b2c="开始统计"|t:'b2c' type="button"}></td>
+		</tr>
+		<tr style="display:none;" id="ana_loading_bar">
+			<th>&nbsp;</th>
+			<td>
+                <div id="ana_process_info" style="padding:0 0 8px 10px;">正在处理，请耐心等待。</div>
+                <img src="<{$env.app.res_url}>/loading3.gif" />
+            </td>
+		</tr>
+    </table>
+    
+</div>
+</div>
+<style>
+#status {padding:0 0 8px 0;}
+#percent_bar {border:1px solid #5D84B0;padding:1px;width:400px;}
+#percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+
+    $$('#down1').addEvent('click',function(){
+        run_analysis(0);         
+    });
+
+})();
+function duibi(a, b) {
+    var arr = a.split("-");
+    var starttime = new Date(arr[0], arr[1], arr[2]);
+    var starttimes = starttime.getTime();
+    
+    var arrs = b.split("-");
+    var lktime = new Date(arrs[0], arrs[1], arrs[2]);
+    var lktimes = lktime.getTime();
+    
+    if(starttimes>lktimes){
+        return false;
+    }
+    else {
+       return true;
+    }
+}
+
+function run_analysis(days){
+    var shop_id = $('shop_id').value;
+    var date_from = $('date_from').value;
+    var date_to = $('date_to').value;
+    
+    if(shop_id==""){
+        //alert('请选择店铺');
+        $('shop_id').focus();
+        return false;
+    }
+    
+    if(date_from=="" || date_to==''){
+        alert('请选择起止日期');
+        $('date_to').focus();
+        return false;
+    }
+    
+    if(duibi(date_from, date_to)==false){
+        alert('起始时间(第1日期框)不能大于结束时间(第2个日期框');
+        return false;
+    }
+    var data={'shop_id':shop_id,'date_from':date_from,'date_to':date_to,'days':days};
+    $('ana_loading_bar').show();
+    $('submit_tr').hide();
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_analysis&act=run_analysis',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            //alert(responseText=='finish')
+            if(responseText.indexOf('finish')>=0){
+                alert('统计完成');
+                $('ana_process_info').set('html','正在处理，请耐心等待。');
+                $('ana_loading_bar').hide();
+                $('submit_tr').show();
+            }else{
+                $('ana_process_info').set('html','正在统计：'+responseText);
+                run_analysis(days+1);
+            }
+        }
+    }).send();
+}
+</script>

@@ -1,0 +1,83 @@
+<div class="tableform">
+  <div class="division">
+    <form method="post" action="index.php?app=ecgoods&ctl=admin_brand&act=sel_brand" id="terminal">
+        <{input type="hidden" id="goods_id" name="goods_id" value=$goods_id }>
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+            <tbody>
+                <tr>
+                <th><em class="c-red">*</em> 选择品牌：</th>
+                  <td>
+                    <{input type="select" id="brand_id" name="brand_id" options=$brands }>
+                    <{help}><{t}>商品品牌<{/t}><{/help}>
+                  </td>
+                </tr>
+            </tbody>
+        </table>
+      
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="提交"}>
+        </div>
+    </form>
+  </div>
+</div>
+<script>
+$('saveterminal').addEvent('click',function(event){
+
+    //固定电话与手机必填一项
+    var goods_id;
+    goods_id = $('goods_id').value.replace(' ','');
+    if (!goods_id){
+		   alert('商品ID不能为空');
+		   //$('goods_id').focus();
+		   return false;
+    }
+    
+    var brand_id;
+    brand_id = $('brand_id').value.replace(' ','');
+    if (!brand_id){
+		if(!confirm('确定要清空所选商品的品牌吗？')){
+            return false;
+        }
+    }
+    
+    var _data = 'goods_id='+goods_id;
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecgoods&ctl=admin_brand&act=chk_brand',
+        data: _data,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText == '0') {
+                $('terminal').fireEvent('submit',new Event(event));
+            }else{
+               if(confirm('您选择的'+responseText+'个商品已经设置了品牌，确定要更新吗？')){
+                    $('terminal').fireEvent('submit',new Event(event));
+               } 
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+
+});
+
+$('terminal').store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns)
+            {
+                _dialogIns.close();
+                window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+</script>

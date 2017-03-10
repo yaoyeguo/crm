@@ -1,0 +1,52 @@
+<div container='true'>
+<div class="tableform1" id="tableform1">
+<form  method="post"></form>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>批次号<{/t}></th>
+            <th><{t}>发卡数<{/t}></th>
+            <th><{t}>激活数量<{/t}></th>
+            <th><{t}>发卡渠道(会员卡类型)<{/t}></th>
+            <th><{t}>是否启用会员卡类型编码<{/t}></th>
+            <th><{t}>会员卡长度<{/t}></th>
+            <th><{t}>会员卡卡密长度<{/t}></th>
+            <th><{t}>会员卡卡密规则<{/t}></th>
+            <th><{t}>操作人<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$logs item=item key=key}>
+         <tr>
+             <td><{$item.batch_no}><a target="dialog::{width:700,height:355,title:'会员卡明细'}" href="index.php?app=taocrm&ctl=admin_member_card&act=get_log_info&p[0]=<{$item.id}>">明细</a> | 
+             <a href="javascript:void(0);" submit="index.php?app=taocrm&ctl=admin_member_card&act=export_member_card&p[0]=<{$item.id}>" class="exprotBth">导出</a></form></td>
+          
+             <td><{$item.make_count}></td>
+             <td><{$item.bind_count}></td>
+             <td><{$item.send_card_channel}></td>
+             <td><{$item.is_type_code}></td>
+             <td><{$item.card_len}></td>
+             <td><{$item.card_pwd_len}></td>
+             <td><{$item.card_pwd_rule}></td>
+             <td><{$item.op_name}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>
+
+<script>
+(function(){
+	$ES('.exprotBth',$('tableform1')).each(function(el){
+	    el.addEvent('click',function(){
+	        var tmpform = $('tableform1').getFirst();
+	        tmpform.set('action',el.get('submit'));
+	        tmpform.submit();
+	    });
+	});
+})();
+
+
+</script>

@@ -1,0 +1,160 @@
+<form action="index.php?app=market&ctl=admin_weixin&act=saveAutoReply" method="post" id="tmpl_form">
+
+    <{if $replyRule.id}><input type="hidden" name="id" value="<{$replyRule.id}>" /><{/if}>
+	<div class="tableform" style="margin: 0; padding: 0;">
+		<div>
+			<table>
+				<tr>
+					<th width="20%"><em class="c-red">*</em>规则名称：</th>
+					<td width="80%"><{input type="text" value=$replyRule.rulename
+						name="rulename" vtype="required" }></td>
+				</tr>
+				<tr>
+					<th width="20%"><em class="c-red">*</em>关键字：</th>
+                    <td width="80%">
+                        <{input type="text" value=$replyRule.keyword.0 name="keyword[]" vtype="required" style="width:50px;" }>&nbsp;
+                        <{input type="text" value=$replyRule.keyword.1 name="keyword[]" style="width:50px;" }>&nbsp; 
+                        <{input type="text" value=$replyRule.keyword.2 name="keyword[]" style="width:50px;" }>
+                    </td>
+				</tr>
+				<tr id="reply_type">
+					<th width="20%"><em class="c-red">*</em>回复方式：</th>
+                    <td width="80%">
+                        <input type="radio" name="reply_type" value="msg" onClick="chooseLinkType()" <{if !$replyRule || $replyRule.reply_type == 'msg'}>checked<{/if}> >一般消息 
+                        <input type="radio" name="reply_type" value="news" onClick="chooseLinkType()" <{if $replyRule.reply_type == 'news'}>checked<{/if}> >图文素材
+                    </td>
+				</tr>
+				<tr id="reply_type_msg" style="display: none;">
+					<th width="20%"><em class="c-red">*</em>回复内容：</th>
+                    <td width="80%">
+                        <{input type="textarea" value=$replyRule.replycontent name="replycontent" id="replycontent"  style="width:190px;height:150px;" }>
+                    </td>
+				</tr>
+				<tr id="reply_type_news" style="display: none;">
+					<th width="20%"><em class="c-red">*</em>图文素材：</th>
+					<td width="80%">
+                        <div>
+                            从图文素材中搜索<{input id="q" size=10 type="text"}> <{button id="search_items" label="搜索" }>
+                        </div>
+						<div id="search_list" class="item_list">
+                            <select name="wx_news_id" id="wx_news_id" size="10" style="width: 300px;">
+                                <{foreach from=$news_items key=k item=data}>
+                                <option value="<{$data.wx_news_id}>"<{if $replyRule.wx_news_id == $data.wx_news_id}>selected<{/if}> > 
+                                <{$data.title}>
+                                </option>
+                                <{/foreach}> 
+                            </select>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+</form>
+
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="button" label="保存"
+	id="theme-form-submit"}></div>
+<{/area}>
+
+
+<script>
+	var _form = $('tmpl_form');
+	var btn = $('theme-form-submit');
+
+_form.store('target',{ onSuccess : function(response) {
+					var hash_res_obj = JSON.decode(response);
+
+    if (hash_res_obj.success != undefined && hash_res_obj.success != "") {
+						try {
+        var _dialogIns = btn.getParent('.dialog').retrieve( 'instance');
+        } catch (e) { }
+
+						if (_dialogIns) {
+							_dialogIns.close();
+							//window.finderGroup['<{$env.get.finder_id}>'].refresh();
+						}
+					}
+				}
+			});
+
+	btn.addEvent('click', function() {
+
+		var checked = '';
+		$ES('input[type=radio]', $('reply_type')).each(function(item) {
+			if (item.checked) {
+				checked = item.value;
+			}
+		});
+		if (checked == '') {
+			alert('请选择回复方式');
+			return false;
+		}
+
+		if (checked == 'msg') {
+			if ($('replycontent').value == '') {
+				alert('请填写回复内容');
+				return false;
+			}
+		} else if (checked == 'news') {
+			if ($('wx_news_id').value == '') {
+				alert('请选择图文素材');
+				return false;
+			}
+		}
+
+		_form.fireEvent('submit', {
+			stop : $empty
+		});
+	});
+
+	function chooseLinkType() {
+		var el = null;
+		$ES('input[type=radio]', $('reply_type')).each(function(item) {
+			if (item.checked) {
+				el = item;
+			}
+		});
+
+		if (el != null) {
+			if (el.value == "msg") {
+				$('reply_type_msg').show();
+				$('reply_type_news').hide();
+			} else if (el.value == "news") {
+				$('reply_type_msg').hide();
+				$('reply_type_news').show();
+			}
+		}
+	}
+
+	(function() {
+		$('search_items').addEvent('click', function() {
+			var q = $('q').value;
+			ajax_get_items(q);
+		});
+	})();
+
+	function ajax_get_items(q) {
+		var _data = {
+			'q' : q
+		};
+		var myRequest = new Request({//建立Request对象
+			url : 'index.php?app=market&ctl=admin_weixin&act=ajaxGetNewsItem',//要请求的地址
+			method : 'post',
+			data : _data,
+			onSuccess : function(responseText) {
+				var obj = eval('(' + responseText + ')');
+				var data = new Array();
+				$('wx_news_id').options.length = 0;
+				obj.each(function(v) {
+					var varItem = new Option(v.title, v.wx_news_id);
+					$('wx_news_id').options.add(varItem);
+				});
+			}
+		}).send();//用他的send方法发送
+	}
+
+	chooseLinkType();
+</script>

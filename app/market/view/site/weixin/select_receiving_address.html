@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>选择收货地址</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>选择收货地址</h1>
+</nav>
+<div class="addr">
+  <ul class="table-view addr-sel">
+      <{if $addrs neq null}>
+      <{foreach from=$addrs item=data key=k}>
+    <li
+      <{if $is_selected }>
+          <{if $data.selected eq 'true'}>
+              class="cell active"
+          <{else}>
+              class="cell"
+          <{/if}>
+      <{else}>
+          <{if $data.default_addr eq 'true'}>
+                class="cell active"
+          <{else}>
+                class="cell"
+          <{/if}>
+
+      <{/if}>
+    >
+      <a href="javascript:;" receiver_id="<{$data.receiver_id}>" member_id="<{$data.member_id}>"  class="navigate-right icon select_submit">
+        <h5><{$data.name}>：<{$data.mobile}></h5>
+        <p>地址：<{$data.address}></p>
+      </a>
+    </li>
+      <{/foreach}>
+      <{/if}>
+  </ul>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    var gift_id = '<{$gift_id}>';
+    var wx_id = '<{$wx_id}>';
+
+    $('.select_submit').click(function(){
+        var receiver_id = $(this).attr("receiver_id");
+        var member_id = $(this).attr("member_id");
+        var timestamp = (new Date()).valueOf();
+        //修改数据库中选中的值
+        var aj = $.ajax( {
+            url:'do_selected_addr',// 跳转到 action
+            data:{
+                receiver_id : receiver_id,
+                member_id : member_id
+            },
+            type:'post',
+            success:function(data) {
+                //跳转
+                window.location.href = "../site_weixin_ucenterNew/order_confirm?wx_id="+wx_id+"&gift_id="+gift_id+"&receiver_id="+receiver_id+"&rand_num="+timestamp;
+            }
+        });
+    });
+</script>
+</body>
+</html>

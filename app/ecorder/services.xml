@@ -1,0 +1,115 @@
+<services>
+
+    <service id="api.ome.order">
+        <class>ecorder_rpc_response_order</class>
+    </service>
+    
+    <service id="api.ome.exchange.order">
+        <class>ecorder_rpc_response_exchange_order</class>
+    </service>
+    
+    <service id="api.ome.shop">
+        <class>ecorder_rpc_response_shop</class>
+    </service>
+    
+    <service id="api.ome.refund">
+        <class>ecorder_rpc_response_refund</class>
+    </service>
+    
+    <service id="api.ome.payment">
+        <class>ecorder_rpc_response_payment</class>
+    </service>
+    
+    <service id="api.ome.aftersale">
+        <class>ecorder_rpc_response_aftersale</class>
+    </service>
+    
+    <service id="api.ome.taoda.order">
+        <class>ecorder_rpc_response_taoda_order</class>
+    </service>
+    
+    <service id="api.ome.taoda.delivery">
+        <class>ecorder_rpc_response_taoda_delivery</class>
+    </service>
+    
+    <service id="api.ome.taoda.product">
+        <class>ecorder_rpc_response_taoda_product</class>
+    </service>
+    
+    <service id="openapi.ome.shop">
+        <class>ecorder_rpc_response_shop</class>
+    </service>
+    
+    <service id="api.ome.taobao.session">
+        <class>ecorder_rpc_response_taobao_session</class>
+    </service>
+    
+    <service id="openapi.ecorder.goods">
+        <class>ecorder_openapi_goods</class>
+    </service>
+    
+    <service id="api.store.gift.rule">
+        <class>ecorder_rpc_response_gift</class>
+    </service>
+   	
+    <service id="desktop_finder.ecorder_mdl_shop">
+        <class>ecorder_finder_shop</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_shop_vcard">
+        <class>ecorder_finder_shop_vcard</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_shop_channel">
+        <class>ecorder_finder_shop_channel</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_shop_lv">
+        <class>ecorder_finder_shop_lv</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_gift_rule">
+        <class>ecorder_finder_gift_rule</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_shop_credit">
+        <class>ecorder_finder_shop_credit</class>
+    </service>
+    
+    <service id="ecorder_service_incremental">
+        <class>ecorder_service_incremental</class>
+    </service>
+    
+    <service id="autotask">
+        <class>ecorder_misc_task</class>
+    </service>
+    
+    <service id="desktop_finder.ecorder_mdl_orders">
+	    <class>ecorder_finder_orders</class>
+    </service>
+     
+	<service id="desktop_finder.ecorder_mdl_login_log">
+		<class>ecorder_finder_loginLog</class>
+	</service>
+    
+    <service id="desktop_finder.ecorder_mdl_shop_gift">
+		<class>ecorder_finder_shop_gift</class>
+	</service>
+    
+    <service id="desktop_finder.ecorder_mdl_sms_sign">
+		<class>ecorder_finder_sms_sign</class>
+	</service>
+    
+    <service id="desktop_finder.ecorder_mdl_api_log">
+		<class>ecorder_finder_api_log</class>
+	</service>
+    
+    <service id="desktop_finder.ecorder_mdl_tb_refunds">
+        <class>ecorder_finder_refunds</class>
+    </service>
+    
+    <service id="order.process">
+        <class>ecorder_service_order_logistics</class>
+    </service>
+    
+</services>

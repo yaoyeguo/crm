@@ -1,0 +1,87 @@
+
+<h3 class="head-title">客户等级初始化</h3>
+
+<div class="tableform">
+<div class="division">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <th><{t}>请选择店铺：<{/t}></th>
+           	<td>
+               <select class="x-input" id='shop_id' name='shop_id'>
+                    <option value="">-请选择-</option>
+                    <{foreach from=$shoplist item=item}>
+                    <option value="<{$item.shop_id}>" name="<{$item.name}>"><{$item.name}></option>
+                    <{/foreach}>
+               </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th><{t}>统计范围：<{/t}></th>
+            <td>
+                <!-- <label><input type="radio" name="filters" value="all" /> 全部客户</label>　　　 -->
+                <label><input type="radio" name="filters" value="allmember" /> 全部客户(客户分析,客户等级)</label>　　
+                 <!--<label><input type="radio" name="filters" value="uncount" checked="checked" /> 未统计客户(total_orders为0的客户)</label> -->
+            </td>
+        </tr>
+        <tr id="submit_tr">
+			<th>&nbsp;</th>
+			<td><{button id="down1" class="btn-primary" label=$___b2c="开始统计"|t:'b2c' type="button"}></td>
+		</tr>
+		<tr style="display:none;" id="mem_loading_bar">
+			<th>&nbsp;</th>
+			<td>
+                <div id="mem_process_info" style="padding:0 0 8px 10px;">正在处理，请耐心等待。</div>
+                <img src="<{$env.app.res_url}>/loading3.gif" />
+            </td>
+		</tr>
+    </table>
+    
+</div>
+</div>
+<style>
+#status {padding:0 0 8px 0;}
+#percent_bar {border:1px solid #5D84B0;padding:1px;width:400px;}
+#percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+
+    $$('#down1').addEvent('click',function(){
+        run_analysis(0);         
+    });
+
+})();
+
+function run_analysis(days){
+    var shop_id = $('shop_id').value;
+    var filters = $$('input[name=filters]:checked').get('value');
+    var date_from = '';
+    var date_to = '';
+    
+    if(shop_id==""){
+        alert('请选择店铺');
+        $('shop_id').focus();
+        return false;
+    }
+    
+    var data={'shop_id':shop_id,'filters':filters,'date_to':date_to,'days':days};
+    $('mem_loading_bar').show();
+    $('submit_tr').hide();
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_analysis&act=run_member',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            if(responseText.indexOf('finish')>=0){
+                alert('统计完成');
+                $('mem_loading_bar').hide();
+                $('submit_tr').show();
+            }else{
+                $('mem_process_info').set('html','正在统计：'+ ( (days +1)*50 ));
+                run_analysis(days+1);
+            }
+        }
+    }).send();
+}
+</script>

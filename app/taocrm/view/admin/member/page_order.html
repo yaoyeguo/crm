@@ -1,0 +1,83 @@
+
+
+<div class="tableform1">
+
+    <{if($orders)}>
+        <{if($order_report)}>
+        <div style="padding:5px 0;color:#4F9588;">* 已付款订单统计数据</div>
+        <table style="width:auto;margin:0 0 5px 0;" class="gridlist"  border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th>年月</th>
+                     <{foreach from=$order_report item=item key=key}>
+                    <th><{t}><{$key}><{/t}></th>
+                    <{/foreach}>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>金额</td>
+                <{foreach from=$order_report item=item key=key}>
+                    <td style="background:<{$item.bgcolor}>"><{t}><{$item.amount}><{/t}></td>
+                    <{/foreach}>
+                </tr>
+                <tr>
+                    <td>订单</td>
+                <{foreach from=$order_report item=item key=key}>
+                    <td style="background:<{$item.bgcolor}>">
+                        <{t}><{$item.orders}><{/t}>
+                    </td>
+                    <{/foreach}>
+                </tr>
+                <tr>
+                    <td>单价</td>
+                <{foreach from=$order_report item=item key=key}>
+                    <td style="background:<{$item.bgcolor}>">
+                        <font color="#4F9588"><{t}><{$item.avg_amount}><{/t}></font>
+                    </td>
+                    <{/foreach}>
+            </tr>
+            </tbody>
+            </table>
+            <{/if}>
+
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>订单号<{/t}></th>
+            <th><{t}>订单状态<{/t}></th>
+            <th><{t}>支付状态<{/t}></th>
+            <th><{t}>发货状态<{/t}></th>
+            <th><{t}>总金额<{/t}></th>
+            <th><{t}>实付金额<{/t}></th>
+            <th><{t}>下单日期<{/t}></th>
+            <th><{t}>店铺<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$orders item=item key=key}>
+         <tr>
+             <td>
+                 <{$item.order_bn}>
+                 <a target="dialog::{width:700,height:355,title:'订单明细'}" href="index.php?app=taocrm&ctl=admin_member&act=getOrderInfo&p[0]=<{$item.shop_id}>&p[1]=<{$item.order_id}>">明细</a>
+                 &nbsp;|&nbsp;
+                 <a target="dialog::{width:700,height:200,title:'物流信息'}" href="index.php?app=taocrm&ctl=admin_member&act=getLogisticsInfo&order_id=<{$item.order_id}>">物流信息</a>
+             </td>
+             <td><{$item.status}></td>
+             <td><{$item.pay_status}></td>
+             <td><{$item.ship_status}></td>
+             <td><{$item.total_amount|cur}></td>
+             <td><{$item.payed|cur}></td>
+             <td><{$item.createtime|cdate:'FDATE_FTIME'}></td>
+             <td><{$item.shop_name}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     <{$pager}>
+    <{else}>
+            <div style="font-weight:bold;font-size:14px;padding:20px;color:#666;">没有相关订单</div>     
+    <{/if}>
+
+    
+</div>

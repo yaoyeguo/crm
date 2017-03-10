@@ -1,0 +1,84 @@
+<div class="tableform">    
+    <form id="cloud_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+        <table id="cloud_list" width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+            <thead>
+                <tr>   
+                    <th>选择</th>
+                    <th></th>
+                    <th>模板名称</th>
+                    <th>模板内容</th>
+                    <th>行业分布</th>
+                    <th>累计营销人数</th>
+                    <th>推荐星级</th>
+                </tr>
+            </thead>
+            <tbody>
+                <{foreach from=$data item=data }>
+                <tr>   
+                    <td>
+                        <input type="checkbox" name="cloud_id[]" value="<{$data.id}>" />
+                    </td>
+                    <td>
+                        <{if($data.has_sync>0)}>
+                            <span style="border:1px solid #F30;color:#F30;padding:1px 3px;">已下载</span>
+                        <{/if}>
+                    </td>
+                    <td style="text-align:left;">
+                        <{$data.title}>
+                    </td>
+                    <td><{help}><{t}><{$data.content}><{/t}><{/help}></td>
+                    <td><{$data.industry}></td>
+                    <td><{$data.send_num}></td>
+                    <td style="text-align:left;"><{img src="seller_credit_{$data.star}.gif" app="taocrm" }></td>
+                </tr>
+                <{/foreach}>
+            </tbody>    
+        </table>
+    </form>
+    
+    <div style="padding:5px 0 0 0;"><{$pager}></div>
+    
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="下载到系统" id="cloud_sync" }>
+    </div>
+<{/area}>
+
+<script type="text/javascript">
+var _form = $('cloud_form');
+var _btn = $('cloud_sync');
+
+function cloud_sync(){
+    var cloud_list = $$('#cloud_list input[name="cloud_id[]"]:checked');
+    if(cloud_list.length == 0){
+        alert('请至少选择一个模板');
+        return false;
+    }
+    
+    if(confirm('确定要下载 '+cloud_list.length+' 个云模板吗？')){
+        _form.fireEvent('submit',{stop:$empty});
+    }
+}
+
+_btn.addEvent('click',function(event){
+    cloud_sync();
+});
+
+_form.store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            if(_dialogIns)
+            {
+                _dialogIns.close();
+            }
+        }
+    }
+});
+</script>

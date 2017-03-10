@@ -1,0 +1,301 @@
+<div id="step2" style="display:none;">
+ <h3>2.请选择发送短信内容</h3>
+	<table>
+
+		<!-- 活动短信对照组end -->
+		<!--短信提醒开始-->
+		<tr id='sms_send' style="display:none;">
+			<th><{t}>短信提醒：<{/t}></th>
+			<td id="sms_send"><label><input type='radio'
+					name='sms_send' id='sms_send_yes' value="sms" checked="checked"
+					onclick="sms_send_yes();" /> <{t}>是<{/t}></label> <label><input
+					type='radio' name='sms_send' id='sms_send_no' value=""
+					onclick="sms_send_no();" /> <{t}>否<{/t}></label></td>
+		</tr>
+		<tr id='sms_template_id'>
+            <th><{t}>短信内容： <{/t}></th>
+			<td id="bt_id">
+				<div>
+					</span> <label><input type='radio' name='sms_content' id='sms_id1'
+						onclick="add_yes();" /> <{t}>新增&nbsp;<{/t}></label> <label
+						style="margin-left: 20px"><input type='radio'
+						name='sms_content' id='sms_id2' checked="checked"
+						onclick="add_no();" />
+					</label> <select name="template_sele_id" id="template_sele_id"
+						class="x-input-select inputstyle">
+						<option value="0">-请选择短信模板-</option> <{foreach
+						from=$templates_data item=item}>
+						<option<{if $active.template_id ==
+							$item.template_id}>selected<{/if}>
+							value=<{$item.template_id}>><{$item.title}></option> <{/foreach}>
+					</select>
+				</div></td>
+		</tr>
+
+		<tr style="display: none;" id='content_id'>
+			<th>&nbsp;</th>
+			<td>
+				<div>
+					<div
+						style='width: 400px; border: 1px solid #CCC; background: #EEE; border-bottom: none; padding: 2px 5px;'>
+						<span style="margin-left: 5px">插入参数：</span> <a
+							style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{姓名}&gt;")>姓名</a>
+
+						<a style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{昵称}&gt;")>昵称</a>
+
+						<a style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('message_text'),"&lt;{店铺}&gt;")>店铺</a>
+
+						<a style="margin-left: 5px" onclick="vcard_tip();">店铺名片</a>
+					</div>
+					<div>
+						<{input type=textarea id="message_text" value=$data.content
+						style="width:400px;height:60px;border:1px solid
+						#CCC;margin-top:0px;color:#069;padding:3px 5px;line-height:1.5em;"
+						name="theme_content" }>
+
+						<div style="width: 416px;">
+							<{button label="保存短信内容" type="button" id="template_btn_save"
+							style="float:right;" class="btn-primary"}> 字符数：<b id="sms_length"
+								class="sms_length"
+								style="font-size: 18px; color: blue; font-family: Arial">0</b>，
+							约 <b id="sms_num" class="sms_num"
+								style="font-size: 18px; color: red; font-family: Arial">0</b>
+							条短信长度
+						</div>
+					</div>
+				</div>
+
+				<div
+					style="color: red; padding: 3px 5px; margin: 5px 0 0 0; background: #FFC; display: &lt;{$ need_sign">
+					当前店铺没有设置短信签名，请<span style="cursor: pointer; color: #069;"
+						id="config_sms_sign">点击这里设置</span>。
+				</div></td>
+		</tr>
+
+		<tr style="display: none;" id='add_sms_content'>
+			<th>&nbsp;</th>
+			<td>
+				<div>
+					<div
+						style='width: 400px; border: 1px solid #CCC; background: #EEE; border-bottom: none; padding: 2px 5px;'>
+						<span style="margin-left: 5px">插入参数：</span> <a
+							style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('add_message_text'),"&lt;{姓名}&gt;")>姓名</a>
+
+						<a style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('add_message_text'),"&lt;{昵称}&gt;")>昵称</a>
+
+						<a style="margin-left: 5px"
+							onclick=insertAtCursor(document.getElementById('add_message_text'),"&lt;{店铺}&gt;")>店铺</a>
+
+						<a style="margin-left: 5px" onclick="vcard_tip();">店铺名片</a>
+					</div>
+
+					<div>
+						<{input type=textarea id="add_message_text" value=""
+						style="width:400px;height:60px;border:1px solid
+						#CCC;margin-top:0px;color:#069;padding:3px 5px;line-height:1.5em;"
+						name="theme_content" }>
+						<div style="width: 416px;">
+							<a style="float: right"
+								target="dialog::{width:350,height:120,title:'模板标题'}"
+								href='index.php?app=market&ctl=admin_active&act=save_template'>
+								<{button label="保存短信内容" type="button" id="  "
+								class="btn-primary"}> </a> 字符数：<b
+								style="font-size: 18px; color: blue; font-family: Arial"
+								id="content_length">0</b>， 约 <b id="content_length_num"
+								class="sms_num"
+								style="font-size: 18px; color: red; font-family: Arial">0</b>
+							条短信长度
+						</div>
+					</div>
+				</div></td>
+		</tr>
+
+		<!--短信提醒结束-->
+		<tr>
+			<th>&nbsp;</th>
+			<td><span><label><input id='unsubscribe'
+						type='checkbox' value='1' />退订回N </label>
+			</span></td>
+		</tr>
+	</table>
+
+	<div class="table-action">
+		<span id="el_updateactive_loading" style="display: none;">更新营销活动中,这可能需要点时间...</span>
+		<{button label="<< 上一步"  class="btn-primary" onClick="goStep1()"}> 
+		<{button label="下一步 >>" type="button" id="template_btn" onClick="goStep3()" 
+		class="btn-primary"}> <{button label="关闭" type="button" class="close_btn nodisabled"}>
+	</div>
+</div>
+
+<input type="hidden" id="sms_sign" value='<{$sms_sign}>' />
+<input type="hidden" id="vcard_url" value='<{$vcard_url}>' />
+
+<script>
+
+var unsubscribe = 0;
+
+var per_sms_len = 67;
+
+
+function sms_send_yes(){
+    $('sms_template_id').show();
+}
+
+function sms_send_no(){
+    $('sms_template_id').hide();
+    $('content_id').hide();
+}
+
+(function(){
+	  $$("#template_sele_id").addEvent('change',function(){
+	         if($('template_sele_id').value=="0") {
+	             $('content_id').hide();
+	         }else{
+	             $('content_id').show();
+	         }
+	         
+	        new Request({
+	            url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=selectTemplate&p[0]='+$('template_sele_id').value,
+	            method : 'post',
+	            data:{'test':'aaa'},
+	            onSuccess:function(responseText){
+	                $('message_text').value = responseText;
+	                get_sms_length();
+	            }
+	        }).send();
+	        
+	        return true;
+	     });
+	  
+	   $('config_sms_sign').addEvent('click', function(){
+	        new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:650,height:350});
+	    });
+	   
+	   $('message_text').addEvent('blur',function(){
+	        get_sms_length();
+	    });
+	    
+	    $('add_message_text').addEvent('blur',function(){
+	        get_sms_length();
+	    });
+	    
+	    //保存模板
+	     $$("#template_btn_save").addEvent('click',function(){
+	         var data={'message_text':$('message_text').value};
+	             new Request({
+	                 url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=edit_save&p[0]='+$('template_sele_id').value,
+	                 method : 'post',
+	                 data:data,
+	                 onSuccess:function(responseText){
+	                    alert('模板保存成功！');
+	                    $('message_text').value = responseText;
+	                }
+	             }).send();
+	         return true;
+	     });
+	    
+	     $$("#add_sms_btn_save").addEvent('click',function(){
+	         if($('add_message_text').value==""){
+	             alert('短信内容不能为空!');
+	             $("add_message_text").focus();
+	             return false;
+	         }
+	     });
+	     
+})(); 
+
+function get_sms_length(){
+  
+    set_sms_length();
+}
+
+function set_sms_length(){
+    var sms = $('message_text').value;
+    var sms_content = $('add_message_text').value;
+    
+    $('sms_length').set('html',sms.length);
+    $('sms_num').set('text', Math.ceil(sms.length/per_sms_len));
+    $('content_length').set('html',sms_content.length);
+    $('content_length_num').set('html',Math.ceil(sms_content.length/per_sms_len));
+}
+
+//插入店铺名片
+function vcard_tip(){
+
+    var vcard_url = $('vcard_url').get('value');
+
+    if(vcard_url != ''){
+        insertAtCursor(document.getElementById('message_text'),vcard_url);
+        return true;
+    }
+    
+    var _url = 'index.php?app=plugins&ctl=admin_vcard&act=index';
+    if(confirm('您还没有设置店铺名片，现在去设置吗？')){
+        window.open(_url);
+    }
+}
+
+function add_yes(){
+    $('add_sms_content').show();
+    $('content_id').hide();
+    var s = document.getElementById("template_sele_id");
+    var ops = s.options;
+    for(var i=0;i<ops.length; i++){
+        var tempValue = ops[i].value;
+        if(tempValue == "0")   //这里是你要选的值
+        {
+            ops[i].selected = true;
+            break;
+         }
+    }
+    $('add_message_text').value = "";
+    $('message_text').value = "";
+    $('template_sele_id').set('disabled',true);
+    set_sms_length();
+}
+
+function add_no(){
+    $('template_sele_id').set('disabled',false);
+    $('add_sms_content').hide();
+    $('content_id').show();
+    $('message_text').value = "";
+    $('add_message_text').value = "";
+    $('sms_length').set('html','0');
+    
+    set_sms_length();
+    
+}
+
+function insertAtCursor(myField, myValue){
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

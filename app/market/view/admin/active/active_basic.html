@@ -1,0 +1,18 @@
+<div class="division">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <th><em class="red">*</em><{t}>所属店铺：<{/t}></th>
+        <td><select name="active[shop_id]" id="shop_select">
+        <option value="">-请选择-</option>
+        <{foreach from=$shopList item=shop}>
+        <option value='<{$shop.shop_id}>' <{if $shop.shop_id==$active.shop_id}>selected<{/if}>><{$shop.name}></option>
+        <{/foreach}>
+        </select></td>
+    </tr>
+    
+    <tr>
+        <th><em class="red">*</em><{t}>活动名称：<{/t}></th>
+        <td><{input type='text' value=$active.active_name name='active[active_name]' required='true'}></td>
+    </tr>
+</table>
+</div>

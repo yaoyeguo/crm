@@ -1,0 +1,163 @@
+<h3 class="head-title">催付关怀插件</h3>
+
+<style>
+#plugin_ul li{float:left;text-align:center;cursor:pointer;margin:0 10px 0 0;}
+#plugin_ul dl{ float:right;margin:0 16px 0 0;padding:0;}
+#plugin_ul dl dt{}
+#plugin_ul dl dd{}
+
+#plugin_ul li.green {cursor:default;}
+#plugin_ul li.green dl{background:#CFC;}
+#plugin_ul li.green dl dd{background:#005500;}
+#plugin_ul li.arrow_r{background:url(<{$env.app.res_url}>/arr_r.gif) no-repeat 0 10px;width:50px;height:50px;cursor:default;}
+
+.sms_template {background:#E0E0E0;color:#666; border-radius:5px; width:350px; height:80px; line-height:1.5em; float:left; margin:0 0 0 10px;}
+.sms_template div{padding:5px;}
+
+.plugin_ico{background:url(<{$env.app.res_url}>/plugin_ico.gif) no-repeat;width:90px;height:100px;float:left;}
+	.ico0 {}
+	.ico3 {background-position:0 -128px;}
+	.ico4 {background-position:0 -256px;}
+	.ico5 {background-position:0 -384px;}
+	.ico2 {background-position:0 -512px;}
+	.ico1 {background-position:0 -640px;}
+	.ico6 {background-position:0 -770px;}
+.all_plugin{background:url(<{$env.app.res_url}>/all_plugin.gif) no-repeat;width:105px;height:117px;}
+	.plugin2 { background-position:-116px 0;}
+	.plugin3 { background-position:-230px 0;}
+	.plugin4 { background-position:-346px 0;}
+	.plugin5 { background-position:-462px 0;}
+	.plugin6 { background-position:-578px 0;}
+	.plugin7 { background-position:-692px 0;}
+.arr_left{ position:absolute; left:-10px;top:40px;background:url(<{$env.app.res_url}>/arr_left.gif) no-repeat;width:14px;height:14px;}
+
+#plugin_ul .active{background:url(<{$env.app.res_url}>/active.gif) no-repeat;width:34px;height:34px;}
+#plugin_ul .disabled{background:url(<{$env.app.res_url}>/disabled.gif) no-repeat;width:34px;height:34px;}
+.act_bar { clear:both; text-align:right;}
+.pointer {cursor:pointer;}
+</style>
+
+<div class="tableform">
+    
+    <div class="division">
+    
+    <!-- 广告 -->
+    <!--iframe src="http://pmp.shopex.cn/index.php?app=ad&ctl=display&act=index&code=02bab227172bfc6111181ea1ee84d2a8&username=<{$username}>&r=<{$time}>" frameborder="0" scrolling="no" width="960px" height="100px" marginheight="0px" marginwidth="0px"></iframe-->
+    
+    <ul id="plugin_ul">
+        <li id="<{$plug_list[0]['worker']}>" class="all_plugin" title="订单催付">
+            <dl>
+                <dt class="<{if($plug_list[0]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[3]['worker']}>" class="all_plugin plugin2" title="发货提醒">
+            <dl>
+                <dt class="<{if($plug_list[3]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[4]['worker']}>" class="all_plugin plugin3" title="送达城市提醒">
+            <dl>
+                <dt class="<{if($plug_list[4]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[5]['worker']}>" class="all_plugin plugin4" title="签收提醒">
+            <dl>
+                <dt class="<{if($plug_list[5]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[2]['worker']}>" class="all_plugin plugin5" title="订单催收">
+            <dl>
+                <dt class="<{if($plug_list[2]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[1]['worker']}>" class="all_plugin plugin6" title="客户关怀">
+            <dl>
+                <dt class="<{if($plug_list[1]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+        
+        <li id="<{$plug_list[6]['worker']}>" class="all_plugin plugin7" title="店铺名片">
+            <dl>
+                <dt class="<{if($plug_list[6]['buy_status']=='renew')}>active<{else}>disabled<{/if}>"></dt>
+                <dd></dd>
+            </dl>
+        </li>
+    </ul>
+    
+    <div style="width:100%; clear:both; overflow:hidden;"></div>    
+    
+    <div id="act_bar" style="width:825px;">
+            
+                <{foreach from=$plug_list item=data key=key }>
+            <div style="overflow:hidden; margin-top:20px;">
+                <div style="border:1px solid #BBB;border-radius:5px; width:690px; float:right; position:relative;padding:10px 0;">
+                	<div style="width:300px; float:right; line-height:1.5em;padding:0 10px 0 0;color:#666"><{$data.desc}>
+                        <div class="act_bar">
+                        <{if ($data.status=='active')}>
+                            <{if ($data.buy_status=='renew')}>
+                                <{img class="pointer" alt="禁用" id=$data.worker src="close.gif" name="close_plugin" }>
+                            <{else}>
+                                <{img class="pointer" alt="启用" id=$data.worker src="open.gif" name="open_plugin" }>
+                            <{/if}>
+                        <{/if}>
+                        </div>
+                    </div>
+                    <div class="sms_template"><div><{$data.sms_template}></div></div>
+                    
+                    <div class="arr_left"></div>
+                </div>
+                
+                <div class="plugin_ico ico<{$key}>" title="<{$data.title}>">
+                    <a name="<{$data.worker}>"></a>
+                </div>
+            </div>
+                <{/foreach}>
+
+        </div>
+        
+    </div>
+</div>
+
+<script>
+$$('#act_bar img[name="open_plugin"]').addEvent('click',function(){
+    new Dialog('index.php?app=plugins&ctl=admin_buy&act=buy&worker='+$(this).get('id'),{width:600,height:160,title:'启用插件'});
+});
+
+$$('#plugin_ul li').addEvent('click',function(){
+    new Dialog('index.php?app=plugins&ctl=admin_buy&act=buy&worker='+$(this).get('id'),{width:600,height:160,title:'启用插件'});
+});
+
+$$('#act_bar img[name="close_plugin"]').addEvent('click',function(){
+    if(confirm('确定要关闭吗？关闭后不再自动执行。')==false){
+        return false;
+    }
+    var plugin_id = $(this).get('id');
+    var _url = 'index.php?app=plugins&ctl=admin_buy&act=close_plugin&plugin_id='+plugin_id;
+    new Request({
+        url: _url,
+        method : 'post',
+        data:'',
+        onSuccess:function(responseText){
+            //alert(responseText);
+            if(responseText.indexOf('success') != -1){
+                alert('操作成功');
+                window.location.reload();
+            }else{
+                alert(responseText);
+            }
+        }
+    }).send();
+});
+</script>
+

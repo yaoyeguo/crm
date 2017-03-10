@@ -1,0 +1,130 @@
+<style>
+#sign_form label {cursor:pointer;}
+#sign_form #shop_list {margin:0;padding:0;}
+#sign_form #shop_list li{display:inline-block;width:45%;margin:0 0 5px 0;border-radius:6px;}
+#sign_form #shop_list li.hover {background:#F8D998;}
+</style>
+
+<form id="sign_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+<div style="padding-top:2px;">
+    <{input type="hidden" id="shop_ids" value=$rs.shop_ids }>
+    <{input type="hidden" name="sign_id" value=$rs.sign_id }>
+    <{input type="hidden" name="sms_sign_old" value=$rs.sms_sign }>
+    <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+        <col width="20%" />
+        <col width="80%" />
+        <thead>
+            <tr>   
+                <th style="text-align:right;">
+                    <{help}><{t}>签名长度限制2-10个字符，只能包含中文和英文字母<{/t}><{/help}>
+                    签名：
+                </th>
+                <td>
+                    <{input name="sms_sign" id="sms_sign" value=$rs.sms_sign size="25" maxlength="10" }>
+                    (3-10个字符)
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>是否验证码签名<{/t}></th>
+                <td>
+                    <label><input type="radio" name="is_code_sign" value="1" <{if($rs.is_code_sign=='true')}>checked<{/if}> /> 是</label>
+                    <label><input type="radio" name="is_code_sign" value="0" <{if($rs.is_code_sign=='false')}>checked<{/if}> /> 否</label>
+                </td>
+            </tr>
+            <tr>   
+                <th style="text-align:right;">
+                    <{help}><{t}>一个店铺只对应一个签名<{/t}><{/help}>
+                    适用店铺：
+                    <div style="padding:5px 0 0 0;">
+                        <label><input id="chk_all_shops" type="checkbox" style="vertical-align:middle;" /> 全选</label>
+                    </div>
+                </th>
+                <td>
+                    <ul id="shop_list">
+                    <{foreach from=$shops item=v key=k}>
+                        <li><input name="shop_ids[]" id="shop_list<{$k}>" type="checkbox" value="<{$k}>" /><label for="shop_list<{$k}>"><{$v}></label></li>
+                    <{/foreach}>
+                    </ul>
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button id="save_btn" class="btn-primary" type="button" label="保存"}>
+        <{button onclick="$(this).getParent('.dialog').retrieve('instance').close();" class="btn-primary" type="button" label="关闭"}>
+    </div>
+<{/area}>
+    
+<script>
+var _form = $('sign_form');
+var _btn = $('save_btn');
+
+    //全选&反选
+    $('chk_all_shops').addEvent('click', function(){
+        $$('#sign_form input[name="shop_ids[]"]').set('checked', $(this).get('checked'));
+        set_checkbox_bg();
+    });
+
+    //背景颜色初始化
+    var shop_ids = $('shop_ids').get('value');
+    $$('#sign_form input[name="shop_ids[]"]').each(function(ele){
+        if(shop_ids.indexOf(ele.get('value')) >= 0){
+            ele.set('checked', true);
+        } 
+    });
+    
+    set_checkbox_bg();
+    //绑定选择事件
+    $$('#shop_list input').addEvent('click', function(){
+        set_checkbox_bg();
+    });
+    
+    //设置选中项目的背景颜色
+    function set_checkbox_bg(){
+        $$('#shop_list input').each(function(ele){
+            if(ele.get('checked')){
+                ele.getParent().set('class','hover');
+            }else{
+                ele.getParent().set('class','');
+            }
+        });
+    }
+    
+    //检测表单
+    _btn.addEvent('click', function(){
+        var sms_sign = $('sms_sign');
+        if(sms_sign.get('value') == ''){
+            alert('请输入短信签名');
+            sms_sign.focus();
+            return false;
+        }
+        
+        _form.fireEvent('submit',{stop:$empty});
+    });
+    
+    //保存数据
+    _form.store('target',{
+        onRequest:function(){
+            //_btn.set('disabled', 'true');
+        },
+        onSuccess:function(response){
+            //_btn.set('disabled', 'false');
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+                }catch(e){
+                
+                }
+                if(_dialogIns) _dialogIns.close();
+            }
+        }
+    });
+
+</script>
+

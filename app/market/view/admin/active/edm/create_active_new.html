@@ -1,0 +1,184 @@
+<style>
+* {font-family:Arial}
+#p_id2,#p_id3,#p_id4 {color:blue;text-align:center;line-height:2em}
+#sms_total_num {color:blue;}
+#edm_total_num {color:blue;}
+.region_list {margin: 0;padding: 0;}
+.region_list li {display: inline-block;	width: 75px;}
+.title_table {background-color: #F4F4F4;font-size: 20px}
+.title_table tr td {background-color: #F4F4F4;}
+.dialog .table-action {margin: 0px;padding: 0px;}
+
+#goods_page_nav { display:block;padding:5px 0;}
+#prev,#next {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+</style>
+
+<{input type=hidden id="control_group" value=$active.control_group}>
+<{input type=hidden name="users_list" id="users_list" value=$userslist}>
+<{input type=hidden name="coupons_id" id="coupons_id" value=$coupons}> 
+<{input type=hidden value=$active_id name="active_id_name" id="active_id_id"}> 
+<{input type=hidden name="shop_id" id="shop_id" value=$data.shop_id}> 
+<{input type=hidden name="send_method" id="send_method" value=$send_method}> 
+<{input type=hidden value=$type name="type_name" id="type_id"}> 
+<{input type=hidden value=$tag name="tag_name" id="tag_id"}>
+<{input type=hidden value=$tem_value name="tem_name" id="tem_id"}>
+<{input type=hidden value=$member_list name="member_list" id="member_list"}> 
+<{input type=hidden value=$cou_tag name="cou_tag" id="cou_tag"}>
+<{input type=hidden value=$CacheId name="CacheId" id="CacheId"}>
+<{input type=hidden value=$CacheIdCreateTime name="CacheIdCreateTime" id="CacheIdCreateTime"}>
+
+<div class="tableform" style="margin:0;padding:0;">
+
+    <!--活动设置-->
+    <{include file='admin/active/edm/step1.html'}>
+
+    <!--选择客户-->
+    <{include file='admin/active/edm/step2.html'}>
+
+    <!--选择短信和优惠券模板-->
+    <{include file='admin/active/edm/step3.html'}>
+    
+    <!--发送-->
+    <{include file='admin/active/edm/step4.html'}>
+
+</div>
+
+<div id='coupon_id'></div>
+<div id='p_id'></div>
+
+<script>
+function coupon_send_yes(){
+	$('coupon_id').show();
+}
+
+function coupon_send_no () {
+	$('coupon_id').hide();
+}
+function timeyes(){
+	$('select_timing').show();
+}
+function timeno(){
+	$('select_timing').hide();
+}
+
+function select_value(p1,p2){
+	var s = document.getElementById(p1);
+	 var ops = s.options;
+	 for(var i=0;i<ops.length; i++){
+		if(ops[i].selected)
+		{	
+			var tempValue = ops[i].innerHTML;
+			$(p2).set('html',tempValue);
+			break;
+		}
+	 }
+}
+
+(function(){
+
+    var active_status = '<{$active.is_active}>';
+    if(active_status == 'finish') $$('div.table-action').set('html','<b style="font-size:14px;color:blue">活动已经完成</b>');
+    if(active_status == 'dead') $$('div.table-action').set('html','<b style="font-size:14px;color:red">活动已经作废</b>');
+    
+	var flag = true;
+	 $('exec_div').hide();
+     $('select_me').hide();
+     $('select_sms_template').hide()
+
+     //根据当前进度展示不同的界面
+	 if($('tag_id').value=='sel_member') {
+		 $('active_id').hide();
+		 $('exec_div').hide();
+         $('select_me').show();
+         $('select_sms_template').hide()
+	 }
+	 if($('tag_id').value=='sel_template') {
+		 $('active_id').hide();
+		 $('exec_div').hide();
+         $('select_me').hide();
+         $('select_sms_template').show()
+	 }
+	 if($('tag_id').value=='wait_exec') {
+		 $('active_id').hide();
+		 $('exec_div').show();
+         $('select_me').hide();
+         $('select_sms_template').hide()
+	}
+
+    var trs = document.getElementById('region_list').getElementsByTagName('tr');
+    for(var i=0;i<trs.length;i++){
+        (i%2==1)?trs[i].style.background='#EEE':trs[i].style.background='#FFF';
+    }
+    
+    function saveRegion(){
+       var region_list = $('region_list').getElements('input');
+       var j=0;
+        var select_region = new Array();
+        for(var i=0;i<region_list.length;i++){
+            if(region_list[i].get('checked')){
+            	select_region[j]=region_list[i].get('value');
+            	j++
+            }
+        }
+        return select_region
+    }
+    
+   function fun_pronode(){
+	   var product_list = $('proNode').getElements('input');
+	   var q=0;
+	   var product_array = new Array();
+	   for(var i=0;i<product_list.length;i++){
+           if(product_list[i].get('checked')){
+        	   product_array[q]=product_list[i].get('value');
+           		q++
+           }
+      }
+	   return product_array;
+    }   
+   
+   /**
+    * Descript_CN: 提供对Select控件的options的操作 
+    * Descript_EN: Offer some operations for select options 
+    * {Array} arr 选项值设置 格式：[{text:'北京',value:'010'},{text:'上海', value:'020',selected:true}] 当value没定义的时候,value=text 
+    */
+    Element.Properties.htmlOptions = {  
+       get: function(){  
+                   if(this.get('tag')!='select') return null;  
+                   var ops = this.getElements('option');  
+                   var arr = ops.map(function(item,index){  
+                       var op = {  
+                           text: item.text,  
+                           value: $pick(item.value,item.text),  
+                           selected: $pick(item.selected,false)  
+                       };  
+                       return op;  
+                   });  
+           return arr;
+       },  
+       set: function(arr){  
+               if(this.get('tag')!='select') return this;  
+               //移除旧的options  
+               this.getElements('option').destroy();  
+               //生成新的options  
+               var ops = arr.map(function(item,index){  
+                   var op = new Element('option',{  
+	                   text: item.text,  
+	                   value: $pick(item.value,item.text),  
+	                   selected: $pick(item.selected,false)  
+                   });  
+                   //console.log(index,op,op.get('html'));  
+                   return(op);  
+               });  
+               //添加  
+               this.adopt(ops);
+               return this;  
+       },  
+       erase: function() {  
+           if(this.get('tag')!='select') return null;
+           this.getElements('option').destroy();  
+           return this;  
+       }
+   };
+
+})();
+</script>

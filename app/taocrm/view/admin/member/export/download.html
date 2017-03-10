@@ -1,0 +1,89 @@
+<{if $check_export.res == 'succ'}>
+<div class="tableform">
+	<div id="bind_div" style="width: 500px">
+		<form action="<{link app=taocrm ctl=admin_member act=toDownload}>"
+			method="post" id="enterpriseBind" enctype="multipart/form-data">
+			<{input type="hidden" name="export_id" value=$export.export_id}>
+		<h4 class="head-title">ShopEx CRM系统中客户资料的下载，涉及您的数据安全，需要您的手机验证后方可下载。</h4>
+			<table border="0" cellspan="0" colspan="0">
+				<tr>
+					<th><em class="c-red">*</em> 手机号:</th>
+					<td><{input size=30 maxlength=11 type="text" name="mobile"
+						id="mobile" }> <{button type="button" label="获取验证码"
+						id="get_passcode"}></td>
+				</tr>
+				<tr>
+					<th><em class="c-red">*</em> 验证码:</th>
+                    <td>
+                        <{input size=30 maxlength=6 type="text" name="passcode"
+                        id="passcode" }>
+                        
+                        <{button type="button" id="check_passcode"
+						label=$___desktop="确定"|t:'desktop' app="desktop"
+                        icon="btn_get_world.gif"}>
+                    </td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+<{else}>
+<h4><{$check_export.msg}></h4>
+<{/if}>
+
+<script>
+    (function(){
+    
+        $('get_passcode').addEvent('click',function(){
+            get_passcode();
+        });
+        
+        $('check_passcode').addEvent('click',function(){
+            check_passcode();
+        });
+        
+    })();
+    
+    function get_passcode(){
+        var mobile = $('mobile').value;
+        var _data = 'mobile='+mobile;
+        
+        var _url = 'index.php?app=taocrm&ctl=admin_member&act=send_passcode';
+        var ajaxReq = new Request({
+            method : 'post',
+            url : _url,
+            data:_data,
+            onSuccess : function(responseText) {
+            	var object = JSON.decode(responseText);
+            	if(object.res == 'succ'){
+            		 alert('发送成功');
+            	}else{
+            		 alert(object.msg);	
+            	}
+            }
+        });
+        ajaxReq.send();
+    }
+    
+    function check_passcode(){
+        var mobile = $('mobile').value;
+        var passcode = $('passcode').value;
+        var _data = 'mobile='+mobile+'&passcode='+passcode;
+        
+        var _url = 'index.php?app=taocrm&ctl=admin_member&act=check_passcode';
+        var ajaxReq = new Request({
+            method : 'post',
+            url : _url,
+            data:_data,
+            onSuccess : function(responseText) {
+            	var object = JSON.decode(responseText);
+                if(object.res == 'succ'){
+                	$('enterpriseBind').submit();
+                }else{
+                     alert(object.msg); 
+                }
+            }
+        });
+        ajaxReq.send();
+    }
+</script>

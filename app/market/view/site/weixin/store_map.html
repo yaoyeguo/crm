@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=67bbd7b497c4664afc660f5906b44849"></script>
+<title><{$info.store_name}></title>
+<style type="text/css">
+/* CSS Document */
+html, body, form, fieldset, p, div, dl, dt, dd, h1, h2, h3, h4, h5, h6, img {
+    -webkit-text-size-adjust:none; margin:0; padding:0; border:0 none;
+}
+body {  font: normal 12px Arial,微软雅黑; line-height:1.5; text-align:center; color:#000;}
+a {text-decoration:none;}
+img {vertical-align:top;}
+
+
+.wrapper { width:320px; margin:0 auto; background:#ececec; padding-bottom:5px;}
+.shop-header { background:#f90000; border-bottom:1px solid #e00000; height:43px; line-height:43px; text-align:center; box-shadow:0px 2px 2px #d8d8d8;}
+.shop-header h2 { font-size:18px; color:#fff; }
+.shop-map { width:306px; margin:7px auto 0 auto; box-shadow:0px 1px 1px #d8d8d8; }
+
+.shop-details { background:#ffffff; width:306px; margin:5px auto 0 auto;  box-shadow:0px 1px 1px #d8d8d8; text-align:left;}
+.shop-info { padding:7px 12px; border-bottom:1px solid #eeeeee;}
+.shop-info h3 { margin-bottom:3px; font-size:14px;}
+.shop-info p { line-height:16px; color:#444444}
+.shop-flag { margin-top:3px;}
+.shop-btns { padding:7px; text-align:center; border-bottom:1px solid #eeeeee;}
+.shop-btns a { display:inline-block; background:url(<{$env.app.res_url}>/weixin/btn.png) no-repeat; width:95px; height:47px; text-align:center; margin:0 3px; line-height:46px; color:#565656; }
+.sect {color:#444444}
+.sect h4 {color:#777777}
+.shop-time {padding:7px 12px; border-bottom:1px solid #eeeeee;}
+.shop-business { padding:7px 12px;}
+
+
+.search { background:#fff; text-align:left;}
+.search-form { background:url(/images/wx/dot.gif) repeat-x center bottom; padding:18px 0 2px 12px;}
+.search-form p {margin-bottom:12px;}
+.input-position { border:1px solid #a9a9a9; height:15px; line-height:20px; width:260px; padding:3px 5px; color:#545454;  font: normal 12px Arial,微软雅黑; }
+.btn-ok { background:url(/images/wx/btn_ok.gif) no-repeat; width:25px; height:23px; border:0; vertical-align:top; }
+.serach-result dl{ text-align:left; padding:6px 12px;}
+.serach-result dt { font-weight:bold; }
+.serach-result dd { padding:0px 0 3px 0px; color:#7e7e7e;}
+
+
+
+
+.btn-slt {position: relative; display: inline-block; width: 77px;height: 21px; margin-right:4px; }
+.btn-slt .cur-select {  position: absolute; display: block; padding-right:25px; width: 52px; height: 21px; line-height: 23px; background:#fff url(/images/wx/select_arrow.gif) no-repeat right top ;  border:1px solid #a9a9a9;  color:#545454; text-indent: 5px; overflow:hidden; word-break:break-all;}
+.btn-slt select {  position: absolute;   top: 2px;   left: 0;   width: 79px;   height: 21px;   opacity: 0;   filter: alpha(opacity: 0;); }
+
+
+.btn-slt-shop,.btn-slt-shop .cur-select { padding-right:25px; width:102px;}
+.btn-slt-shop select  {width:129px;}
+#allmap {width: 310px;height: 220px;overflow: hidden;margin:0;margin-left:5px}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<!--
+	<div class="shop-header">
+		<h2><{$info.store_name}></h2>
+	</div>
+ -->
+	<div class="shop-map" onclick="login()">
+		<div id="allmap" onclick="login()"></div>
+	</div>
+	<div class="shop-details">
+		<div class="shop-info">
+			<h3><{$info.store_name}></h3>
+			<p><{$info.store_area|region}><{$info.address}><br>
+				<{$info.phone}></p>
+
+		</div>
+		<div class="shop-btns">
+			<a href="tel:<{$info.phone}>" class="btn-call">拨打电话</a>
+			<a href="javascript:login()" class="btn-gps">路线导航</a>
+		</div>
+		<div class="sect shop-time">
+			<h4>营业时间</h4>
+			<p><{$info.open_time}></p>
+		</div>
+		<div class="sect shop-business">
+			<h4>销售范围</h4>
+			<p><{$info.business}></p>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+function login(){
+	window.location.href = "http://api.map.baidu.com/direction?origin=latlng:<{$info.my_xy}>|name:起点&destination=<{$info.map_y}>,<{$info.map_x}>|name:<{$info.store_area|region}><{$info.address}>&mode=driving&region=<{$info.city}>&output=html&src=yourCompanyName|yourAppName";
+}
+
+var mp = new BMap.Map("allmap");
+mp.centerAndZoom(new BMap.Point(<{$info.map_x}>,<{$info.map_y}>), 16);
+mp.enableScrollWheelZoom();
+// 复杂的自定义覆盖物
+function ComplexCustomOverlay(point, text, mouseoverText){
+	this._point = point;
+    this._text = text;
+    this._overText = mouseoverText;
+}
+
+ComplexCustomOverlay.prototype = new BMap.Overlay();
+ComplexCustomOverlay.prototype.initialize = function(map){
+	this._map = map;
+	var div = this._div = document.createElement("div");
+	div.style.position 			= "absolute";
+	div.style.zIndex 			= BMap.Overlay.getZIndex(this._point.lat);
+	div.style.backgroundColor 	= "rgb(247,246,192)";
+	div.style.fontWeight 		= "bold";
+	div.style.border 			= "1px solid rgb(190,194,193)";
+	div.style.color 			= "black";
+	div.style.height 			= "18px";
+	div.style.padding 			= "2px";
+	div.style.lineHeight 		= "18px";
+	div.style.whiteSpace 		= "nowrap";
+	div.style.MozUserSelect 	= "none";
+	div.style.fontSize 			= "12px"
+	var span = this._span 		= document.createElement("span");
+	div.appendChild(span);
+	span.appendChild(document.createTextNode(this._text));
+	var that = this;
+
+	var arrow = this._arrow = document.createElement("div");
+	arrow.style.background 	= "url(<{$env.app.res_url}>/weixin/map_in.png) no-repeat";
+	arrow.style.position 	= "absolute";
+	arrow.style.width 		= "20px";
+	arrow.style.height 		= "38px";
+	arrow.style.top 		= "22px";
+	arrow.style.left 		= "10px";
+	arrow.style.overflow 	= "hidden";
+	arrow.style.marginTop 	= "3px";
+	div.appendChild(arrow);
+
+	div.onmouseover = function(){
+	  	this.style.backgroundColor 	= "#6BADCA";
+	  	this.style.borderColor 		= "#0000ff";
+	  	this.getElementsByTagName("span")[0].innerHTML = that._overText;
+	  	arrow.style.backgroundPosition = "0px -20px";
+	}
+
+	div.onmouseout = function(){
+		this.style.backgroundColor 	= "#EE5D5B";
+		this.style.borderColor 		= "#BC3B3A";
+		this.getElementsByTagName("span")[0].innerHTML = that._text;
+		arrow.style.backgroundPosition = "0px 0px";
+	}
+
+	mp.getPanes().labelPane.appendChild(div);
+
+	return div;
+}
+
+ComplexCustomOverlay.prototype.draw = function(){
+	var map = this._map;
+	var pixel = map.pointToOverlayPixel(this._point);
+	this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+	this._div.style.top  = pixel.y - 30 + "px";
+}
+var txt = "<{$info.store_name}>";
+var mouseoverTxt = "<{$info.store_name}> tel：<{$info.phone}>" ;
+var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(<{$info.map_x}>,<{$info.map_y}>), "<{$info.store_name}>",mouseoverTxt);
+
+mp.addOverlay(myCompOverlay);
+
+</script>
+</body>
+</html>

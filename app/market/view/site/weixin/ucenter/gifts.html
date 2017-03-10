@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="format-detection" content="telephone=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<title>积分换礼</title>
+<script src="<{$env.app.res_url}>/js/jquery.js"></script>
+<link rel="stylesheet" href="<{$env.app.res_url}>/wheel/BigWheel.css">
+<style>body {background:#F9F9F9;}
+body,ul,li,dl,dd,dt{margin:0;padding:0;}
+a {text-decoration:none;}
+ul,li{list-style:none;overflow:hidden;}
+.top_navbar {font-family:Microsoft Yahei;font-weight:bold;border:1px solid #DDDDDD;border-right:none;overflow:hidden;}
+.top_navbar ul li{float:left;width:33%;text-align:center;}
+.top_navbar ul li a{display:block;padding:8px 0;background:#F6F6F6;border-right:1px solid #DDDDDD;font-size:14px;color:#333;}
+.top_navbar ul li a:hover{background:#EDEDED;}
+.top_navbar ul li a.ui-btn-active{background:#3388CC;color:#FFF;}
+
+#gifts_li img{width:130px;height:130px;border:none;}
+#gifts_li li{float:left;width:50%;font-size:12px;}
+#gifts_li li dl{height:240px;margin:0 20px 20px 20px;border:1px solid #DDDDDD;}
+#gifts_li li h4{margin:0;padding:0;}
+#gifts_li li dt{text-align:center;background:#FFF;}
+#gifts_li li dd{padding:10px 10px 0 10px;line-height:1.5em;}
+#gifts_li li .button{text-align:center;padding:5px 0 0 0;}
+#gifts_li li span{ float:right;color:red;}
+
+.box1 {border:1px solid #DDDDDD;}
+.box1 li{float:left;}
+.box1_left {background:#3388CC;color:#FFF;line-height:1.5em;padding:10px 0;width:80px;text-align:center;}
+.box1_right {line-height:65px;text-align:center;width:215px;background:#FFF;font-family:Arial;font-size:28px;}</style>
+</head>
+<body>
+
+<div id="top_bar">
+    <div id="shop_logo"><img src="<{$ucenter.logo}>" /></div>
+    <{$ucenter.shop_name}>
+</div>
+
+<div class="top_navbar">
+    <ul>
+        <li><a href="<{$base_url}>points?wx_id=<{$wx_id}>">我的积分</a></li>
+        <li><a href="<{$base_url}>lottery?wx_id=<{$wx_id}>">抽奖</a></li>
+        <li style="width:34%;"><a href="#" class="ui-btn-active">兑礼</a></li>
+    </ul>
+</div><!-- /navbar -->
+
+<div style="padding:20px 0 20px 0;clear:both;">
+
+    <{if(!$gifts)}>
+    <div class="card_detail disabled">
+        <div class="price">
+            <div class="block-title">非常抱歉</div>
+            <div style="color:#F30;font-size:12px;" class="content">
+                暂时没有礼品兑换。更多活动在策划中，请继续关注我们哦~
+            </div>
+        </div>
+    </div>
+    <{/if}>
+
+    <ul id="gifts_li">
+        <{foreach from=$gifts item=data }>
+        <li>
+            <dl>
+                <dt>
+                    <a href="gift_view?wx_id=<{$wx_id}>&gift_id=<{$data.buy_id}>"><img src="<{$data.preview}>" border="0" /></a>
+                </dt>
+                <dd>
+                    <h4><{$data.goods_name|cut:20}></h4>
+                    <{$data.goods_name|cut:30}>
+                    <div>
+                        <span>剩余:<{$data.goods_stock}>件</span>
+                        总量:<{$data.goods_all_stock}>件
+                    </div>
+                    
+                    <div class="button">
+                        <{if($rs_member.all_points<$data.minus_score)}>
+                            积分余额不足
+                        <{else}>
+                            <a onclick="buy_now('<{$data.buy_id}>', '<{$data.minus_score}>');" href="javascript:;"><button>兑换(-<{$data.minus_score}>积分)</button></a>
+                        <{/if}>
+                    </div>
+                </dd>
+            </dl>
+        </li>
+        <{/foreach}>
+        
+    </ul>
+</div>
+
+</body>
+<script>
+    var wx_id = '<{$wx_id}>';
+    //var gift_id = '<{$data.buy_id}>';
+    function buy_now(gift_id, minus_score){
+        if(confirm('确定要兑换该礼品吗？兑换成功后将扣除您 '+minus_score+' 积分！')){
+            var timestamp = (new Date()).valueOf();
+            location.href = "order_confirm?wx_id="+wx_id+"&gift_id="+gift_id+"&rand_num="+timestamp;
+        }else{
+            return false;
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>设置</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>设置</h1>
+</nav>
+
+<ul class="table-view chevron has-icon">
+  <li class="cell">
+    <a href="javascript:;" class="navigate-right icon act-relieve">
+      <span class="reserve switch"><{$data.mobile}></span>
+      <i class="icon-mobile"> 手机号解绑</i>
+    </a>
+  </li>
+</ul>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    var fromusername = '<{$fromusername}>';
+    var mobile = '<{$data.mobile}>';
+$('.act-relieve').click(function(){
+    if(!confirm('确定解绑该号码?\n'+mobile)) {
+        return false;
+    }
+    window.location.href = "unbind?fromusername="+fromusername;
+});
+</script>
+</body>
+</html>

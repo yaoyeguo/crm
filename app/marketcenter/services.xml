@@ -1,0 +1,8 @@
+<services>
+    <service id="openapi.marketcenter.weixin">
+        <class>marketcenter_rpc_response_weixin</class>
+    </service>
+        <service id="api.marketcenter.card">
+        <class>marketcenter_rpc_response_card</class>
+    </service>
+</services>

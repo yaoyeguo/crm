@@ -1,0 +1,22 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>物流公司名称<{/t}></th>
+            <th><{t}>运单号<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+         <tr>
+             <{if $logi_info neq null }>
+             <td><{$logi_info.logi_company}></td>
+             <td><{$logi_info.logi_no}></td>
+             <{else}>
+             <td colspan="2" align='center'><font color=red>此订单不存在物流信息！</font></td>
+             <{/if}>
+         </tr>
+	</tbody>
+    </table>
+</div>
+</div>

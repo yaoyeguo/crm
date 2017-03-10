@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>填写收货地址</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+  <script src="<{$env.app.res_url}>/js/jquery.js"></script>
+</head>
+<body>
+<!--地区js文件引用路径-->
+<script>
+    DESKTOPRESURL='<{$env.app.res_url}>';
+</script>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>填写收货地址</h1>
+</nav>
+<{if $rs_orders.area_show eq null}>
+<div class="mod text-center no-address">
+  <a class="button small outline alert" href="../site_weixin_member/receiving_address_edit?member_id=<{$member_id}>&gift_id=<{$gifts.buy_id}>"><i class="icon-plus"></i> 添加收货地址</a>
+</div>
+<{else}>
+<!--<form action="" method="post">-->
+  <ul class="table-view chervon has-icon address">
+    <li class="cell">
+      <a href="<{$select_href}>" id='select_addr' class="navigate-right icon">
+        <i class="icon-locate left"></i>
+        <div class="detail">
+          <h6>收货人：<{$rs_orders.name}>   <{$rs_orders.mobile}></h6>
+          <p><{$rs_orders.area_show}><{$rs_orders.addr}></p>
+        </div>
+      </a>
+    </li> 
+  </ul>
+    <div id='addr_list'>
+        <input type="hidden" id="receiver" name="receiver" value=<{$rs_orders.name}> >
+        <input type="hidden" name="new_addr[area_str]" value="<{$rs_orders.area}>" id="for_area" >
+        <input type="hidden" id='addr'  name="new_addr[addr]" value=<{$rs_orders.addr}> >
+        <input type="hidden" name="mobile" id="mobile" value=<{$rs_orders.mobile}>>
+        <input type="hidden" id="gift_id" name="gift_id" value=<{$gifts.buy_id}> />
+        <input type="hidden" id="wx_id" name="wx_id" value=<{$wx_id}> />
+    </div>
+<{/if}>
+  <div class="columns fixed bottom"><button type="button" id="save_order" class="expand alert">提交订单</button></div>
+    <!--</form>-->
+    <div class="mod gift-info">
+      <div class="mod-head">
+        <h1>礼品信息</h1>
+      </div>
+      <div class="mod-body">
+        <dl class="graphic">
+          <dt><img src="<{$gifts.preview}>" alt=""></dt>
+          <dd>
+            <h2 class="ellipsis-2"><{$gifts.goods_name|cut:30}></h2>
+            <p><em>数量 x1</em><i>所需积分 <b class="price"><{$gifts.minus_score}></b></i></p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+    <script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+    <script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    $(function(){
+        $('#save_order').click(function(){
+            save_order();
+        });
+
+    });
+
+    function save_order(){
+        var _data = [];
+        $('#addr_list input[type=hidden]').each(function(){
+            _data.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
+        });
+        //alert(_data.join('&'));
+
+        $.ajax({
+            url: "order_confirm",
+            data: _data.join('&'),
+            type: 'POST',
+            cache: false,
+            success: function(html){
+                alert(html.replace('error',''));
+                if(html.indexOf('error') == -1){
+                    var timestamp = (new Date()).valueOf();
+                    window.location.href = '../site_weixin_point/point_business_record?fromusername='+$('#wx_id').val()+"&rand_num="+timestamp;
+                }
+            }
+        });
+    }
+</script>
+    </body>
+    </html>

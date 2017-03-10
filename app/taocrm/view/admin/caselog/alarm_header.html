@@ -1,0 +1,82 @@
+<div class="top_extra clear">
+
+    <div class="gridlist-action data-action" id="dataAction" style="padding:5px 15px; border:0;background:#F0F0F0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;">
+        
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            客户：
+            <{input name="s[customer]" type="text" value=$s.customer size="10" }>
+            
+            <label><{t}>时间范围：<{/t}></label>
+
+                <{input type="date" vtype="date" name="s[time_from]" style="width:66px; font-family:arial;" value=$s.time_from}>
+                
+                <{t}>至<{/t}>
+                
+                <{input type="date" vtype="date" name="s[time_to]" style="width:66px; font-family:arial;" value=$s.time_to}>
+
+                店铺：
+             <{input name="s[shop_id]" type="select" options=$rs_shop value=$s.shop_id vtype="required" }>
+
+            <{button id="filterBtn" class="filterBtn btn-thirdly" label=$___ectools="查询"|t:'ectools'}>&nbsp;
+
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.yesterday time_to=$timeBtn.yesterday label=$___ectools="昨日"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.today time_to=$timeBtn.today label=$___ectools="今日"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.next_3days_from time_to=$timeBtn.next_3days_to label=$___ectools="未来3天"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.next_7days_from time_to=$timeBtn.next_7days_to label=$___ectools="未来7天"|t:'ectools'}>
+
+          </td>
+
+        </tr>
+      </table>
+    </div>
+
+</div>
+
+<script>
+(function(){
+
+    var dataAction = $('dataAction');
+    var from=dataAction.getElement('input[name="s[time_from]"]');
+    var to=dataAction.getElement('input[name="s[time_to]"]');
+    
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+        if(el.get('time_from')==from.value && el.get('time_to')==to.value)
+        el.addClass('btn-fourthly-cur');
+        el.addEvent('click',function(e){
+            from.value=this.get('time_from');
+            to.value=this.get('time_to');
+            dataAction.getElement('.filterBtn').fireEvent('click');
+        });
+    });
+
+    $('filterBtn').addEvent('click', function(){
+        setChartData();
+    });
+        
+    function setChartData(){
+        var params=dataAction.toQueryString();
+        dataAction.store('_data',params);
+        var url='index.php?<{$env.server.QUERY_STRING}>';
+        W.page(
+            url, 
+            {
+                data:params, 
+                method:'post',
+                onComplete:function(){
+                    //if(_finder) _finder.filter.value=params;
+                }
+            }
+        );
+    }
+    
+    //隐藏刷新按钮
+    $$('form.finder-search').hide();
+    
+})();
+</script>

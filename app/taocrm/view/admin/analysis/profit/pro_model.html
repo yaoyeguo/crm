@@ -1,0 +1,114 @@
+
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+     <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                        <{foreach from=$shoplist item=shop}>
+                            <li class="tab" id='<{$shop.shop_id}>'><span><{$shop.name}></span></li>
+                        <{/foreach}>
+                        </ul>
+     </div>
+     <br />
+     <div>
+     预计客户数量：<{input size="19" type='text' id='num_id' name='num_id' value=""}>
+              <{button label="计算" type="button" id="close_btn" class="btn-primary" onclick='do_click();'}> (您所选择店铺的客户数量为：<span style="color:#CC0000;" id='shopnums'></span>人  ) &nbsp  &nbsp
+   <!-- 预计销售金额：<{input size="19" type='text' id='money_id' name='money_id' value=""}>
+     			<{button label="计算" type="button" id="money_btn" class="btn-primary" onclick='m_click();'}>   --> 
+     </div>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div class="tableform">
+                        
+                        <div style="height:345px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_profitmodel&act=pro_char&shop_id=<{$service}>" scrolling="no" width="100%" height="100%" id='line_frame1'></iframe>
+                        </div> 
+                        
+                    </div>
+                </div>
+            </div>
+    </div>
+<script>
+(function(){
+  var  tab_nav = $('tab_nav').getElements('li');
+  tab_nav.each(function($obj,i){
+	  $obj.onclick=function(){
+		  var shopval=$obj.get('id');
+		  tab_nav.set('class','tab');
+	     this.set('class','tab current');
+	     var shop_id=shopval;
+	     change_chart(shop_id,0,0);
+	     get_nums();
+	  }
+});
+
+var shopval=tab_nav[0].get('id');
+tab_nav.set('class','tab');
+tab_nav[0].set('class','tab current');
+var shop_id=shopval;
+change_chart(shop_id ,0,0);
+get_nums();
+
+})();
+
+function change_chart(shop_id , num ,money){
+    var iframe1=$('line_frame1');
+    if(num==0 && money==0){
+    	 iframe1.src += '&shop_id='+shop_id;
+    }else {
+    	iframe1.src += '&shop_id='+shop_id+'&nums='+num+'&money='+money;
+    }
+}
+function do_click(){
+	var shop_id = $$("li[class='tab current']").get('id');
+	var num_value=$('num_id').value;
+	var ajaxReq = new Request(
+			    {
+			        method : 'post',
+			        url : 'index.php?app=taocrm&ctl=admin_analysis_profitmodel&act=ajaxGet&shop_id='+shop_id,
+			        data:'',
+			        onSuccess : function(responseText) {
+			        	responseText=(responseText).toInt();
+			        	num_value=(num_value).toInt();
+			        	if(responseText>num_value) {
+			        		alert('客户数小于店铺的总客户数');
+			        		return false;
+			        	}else if(num_value>responseText*10){
+			        		alert('客户数超过目前客户数的十倍之多');
+			        		return false;
+			        	}else {
+			        		change_chart(shop_id,num_value,0);
+			        	}
+			        },
+			    });
+	 ajaxReq.send();
+}
+
+function m_click(){
+	var shop_id = $$("li[class='tab current']").get('id');
+	var money_val=$('money_id').value;
+	change_chart(shop_id,0,money_val);
+}
+
+function get_nums(){
+	var shop_id = $$("li[class='tab current']").get('id');
+	 var ajaxReq = new Request(
+			    {
+			        method : 'post',
+			        url : 'index.php?app=taocrm&ctl=admin_analysis_profitmodel&act=ajaxGet&shop_id='+shop_id,
+			        data:'',
+			        onSuccess : function(responseText) {
+			        	$('shopnums').set('html',responseText);
+			        },
+			    });
+	 ajaxReq.send();
+}
+</script>

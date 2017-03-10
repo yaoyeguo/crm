@@ -1,0 +1,115 @@
+<h3><{t}>基本信息<{/t}></h3>
+<div id="x-g-basic" class="goods-detail tableform">
+  <div class="division">
+    <table border="0" cellpadding="0" cellspacing="0" class="rule_list">
+      <tr>
+        <th style="width:10%"><{t}>所属店铺<{/t}>：</th>
+            <td>
+              <{if !$oneshop}>
+                <select name="card[node_id]" id="shop_select">
+                    <option value="">-请选择-</option>
+                    <{foreach from=$shop item=shopevent}>
+                      <option value=<{$shopevent.node_id}>><{$shopevent.name}></option>
+                    <{/foreach}>
+                </select>
+            <{/if}>
+            </td>
+      </tr>
+      <tr>
+        <th style="width:10%"><{t}>商家名称<{/t}>：</th>
+        <td style="width:90%"><{input type="text" value=$card.brand_name vtype='required' name="card[brand_name]" maxlength="20"}></td>
+      </tr>
+      <tr>
+        <th><{t}>商家LOGO<{/t}>：</th>
+        <td><{input type="image" name="card[logo]" width=300 height=300}></span></td>
+      </tr>
+      <tr>
+        <th><{t}>卡劵颜色<{/t}>：</th>
+        <td>
+          <select name="card[color]">
+          <option value='Color010' style="background: #63b359"></option>
+          <option value='Color020' style="background: #2c9f67"></option>
+          <option value='Color030' style="background: #509fc9"></option>
+          <option value='Color040' style="background: #5885cf"></option>
+          <option value='Color050' style="background: #9062c0"></option>
+          <option value='Color060' style="background: #d09a45"></option>
+          <option value='Color070' style="background: #e4b138"></option>
+          <option value='Color080' style="background: #ee903c"></option>
+          <option value='Color081' style="background: #f08500"></option>
+          <option value='Color082' style="background: #a9d92d"></option>
+          <option value='Color090' style="background: #dd6549"></option>
+          <option value='Color100' style="background: #cc463d"></option>
+          <option value='Color101' style="background: #cf3e36"></option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th><{t}>优惠券标题<{/t}>：</th>
+        <td>
+          <{input type="text" value=$card.title vtype='required' name="card[title]" maxlength="20"}>
+          <br><span class="notice-inline "><{t}>建议填写优惠券提供的服务或商品名称，描述卡劵提供的具体优惠<{/t}></span></td>
+      </tr>
+      <tr>
+        <th><{t}>副标题<{/t}>：<br><span class="notice-inline "><{t}>（选填）<{/t}></span></th>
+        <td>
+           <{input type="text" value=$card.sub_title name="card[sub_title]" maxlength="20"}>
+        </td>
+      </tr>
+      <tr>
+        <th><{t}>有效期<{/t}>：</th>
+        <td>
+          <input type="radio" name="card[type]" <{if $card.type != 'DATE_TYPE_FIX_TERM' }> checked="checked"<{/if}>value="DATE_TYPE_FIX_TIME_RANGE">固定日期:
+          <{if $card.type == 'DATE_TYPE_FIX_TERM' }><{input type="date" class="datetable" name="card[begin_timestamp]" value="请选择时间" disabled="disabled"}>
+          <{else}><{input type="date" class="datetable" name="card[begin_timestamp]" value="请选择时间"}><{/if}>-
+          <{if $card.type == 'DATE_TYPE_FIX_TERM' }><{input type="date" class="datetable" name="card[end_timestamp]" value="请选择时间" disabled="disabled"}>
+          <{else}><{input type="date" class="datetable" name="card[end_timestamp]" value="请选择时间"}><{/if}>
+          <br>
+          <input type="radio" name="card[type]" <{if $card.type == 'DATE_TYPE_FIX_TERM' }> checked="checked"<{/if}> value="DATE_TYPE_FIX_TERM">领取后，
+          <select class="processing" name="card[fixed_begin_term]" <{if $card.type != 'DATE_TYPE_FIX_TERM' }> disabled="disabled"<{/if}>>
+          <option value='0' checked>当天</option>
+          <option value='3'>3天</option>
+          <option value='7'>一周</option>
+          </select>
+          生效，有效天数
+          <select class="processing" name="card[fixed_term]" <{if $card.type != 'DATE_TYPE_FIX_TERM' }> disabled="disabled"<{/if}>>
+            <option value='30' checked>30</option>
+            <option value='45'>45天</option>
+            <option value='60'>60天</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script>
+validatorMap['requiredcheckbox'] = [LANG_Validate['requiredonly'], function(element) {
+    var parent =  element.getParent('td'),radio;
+    if(element.get('name')) radio = parent.getElements('input[type=checkbox][name="'+element.get('name')+'"]');
+    else radio = parent.getElements('input[type=checkbox]');
+    return radio.some(function(rd) {
+        return rd.checked == true;
+    });
+}];
+$ES('#x-g-basic input[name^=card[type]').addEvent('click',function(e){
+    var proc=$ES('#x-g-basic .processing');
+    var date=$ES('#x-g-basic .datetable');
+    var check=this.value;
+    proc.each(function(el){
+      if(check =='DATE_TYPE_FIX_TERM'){
+        el.erase('disabled');
+      }else{
+        el.set('disabled','disabled');
+      }
+    });
+    if(check =='DATE_TYPE_FIX_TERM'){
+      date.set('disabled','disabled');
+    }else{
+      date.erase('disabled');
+    }
+});
+
+</script>
+
+
+

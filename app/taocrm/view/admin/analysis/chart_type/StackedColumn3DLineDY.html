@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+        <title>Multi-Series Line 2D Chart</title>
+        <script type="text/javascript" src="<{$env.app.res_url}>/charts/FusionCharts.js?v=15"></script>
+
+    </head>   
+
+<body>
+<script type="text/javascript" >
+		var dataString = <{$data}>;
+		</script>
+        
+        <div id="chartdiv" align="center">Chart will load here</div>
+        <script type="text/javascript">
+        var GALLERY_RENDERER= 'flash';
+            if (GALLERY_RENDERER && GALLERY_RENDERER.search(/javascript|flash/i)==0)  FusionCharts.setCurrentRenderer(GALLERY_RENDERER); 
+            var chart = new FusionCharts("<{$env.app.res_url}>/charts/StackedColumn3DLineDY.swf", "ChartId", "90%", "320", "0", "0");
+		   chart.setJSONData( dataString );
+		   chart.render("chartdiv");
+		</script>
+		  <p>&nbsp;</p>
+		  <p align="center">Multi-Series 2D Line chartshowing production forecast. Click on a legend item to show/hide the data series.</p> 
+ <br/>
+        
+<div class="qua-button-holder"></div>
+        <div class="show-code-block"></div>
+     </body>
+ </html>

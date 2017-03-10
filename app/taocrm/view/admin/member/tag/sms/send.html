@@ -1,0 +1,193 @@
+<div id="exec_div">
+    <input type="hidden" id="tag_id" name="tag_id" value="<{$tag_id}>" />
+    <table>
+
+        <tr>
+            <th>短信内容：</th>
+            <td><{input type=textarea id="message_text"
+                style="width:360px;height:60px;margin-top:0px" name="theme_content"
+                }><spa id="showMsgContent"></spa></td>
+        </tr>
+        
+        <tr>
+            <th>短信签名：</th>
+            <td>
+                <select vtype='required' name="sms_sign" id="sms_sign" class="x-input">
+                    <{foreach from=$sign_list item=sign}>
+                    <option value="<{$sign.sign}>"><{$sign.sign}></option>
+                    <{/foreach}>
+                </select>
+                <span style="color:#0597E0;">* 短信内的网址前后请加空格，防止手机系统对网址识别错误！</span>
+            </td>
+        </tr>
+        
+        <!--短信发送清单：-->
+        <tr id="el_send_sms_list">
+            <th>短信发送清单：</th>
+            <td id="sms_total_num">您选择的客户数：<span
+                id="el_select_sms_membernums"><{$tagSendInfo.total_nums}></span><br />
+                有效客户数：<span id="el_vaild_sms_membernums"><{$tagSendInfo.mobile_valid_nums}></span><br />
+                无效客户数：<span style="color: #ff0000" id="el_unvaild_sms_membernums"><{$tagSendInfo.total_nums-$tagSendInfo.mobile_valid_nums}></span><br />
+                当前共待发送客户数：<span id="el_reality_sms_membernums"><{$tagSendInfo.mobile_valid_nums}></span><br />
+            </td>
+        </tr>
+
+    </table>
+
+    <div id='sms_send_id' class="table-action"
+        style="text-align: center; padding: 5px 0;"><{button label="发送"
+        type="button" id="exec_btn" class="btn-primary"}> <{button label="关闭"
+        type="button" id="sms_close_btn" class="btn-primary nodisabled"}>
+    </div>
+
+    <p id="loading_bar"
+        style="display: none; text-align: center; color: #4B5F87">
+        <br /> <br /> 正在执行，请耐心等待…… <br /> <img
+            src="<{$env.app.res_url}>/loading42.gif" />
+    </p>
+
+    <div id="sms_info_content" style="display: none; text-align:center;">
+        <p>
+            <span style="color: red;" id="difpice">您的账号可用余额不足请充值</span>
+            <br/>
+            <a href="index.php?app=market&ctl=admin_sms_account&act=index"
+                target="_blank"> <{button label="去充值>>" type="button" id=""
+                class="btn-primary"}> </a>
+        </p>
+    </div>
+
+</div>
+
+<script>
+    var sendNums = <{$tagSendInfo.mobile_valid_nums}>;
+    var failSendNums = 0;
+    var nowSendNums = 0;
+    window.addEvent('domready', function() {
+
+        $$('#sms_close_btn').addEvent(
+                'click',
+                function() {
+                    $('sms_close_btn').getParent('.dialog')
+                            .retrieve('instance').close();
+                });
+
+        $$("#exec_btn").addEvent('click', function(){
+        
+            $('sms_info_content').hide();
+        
+            if($('message_text').value == ''){
+                alert('短信内容不能为空!');
+                return false;
+            }
+            
+            if(sendNums <= 0){
+                alert('发送人数不能为0!');
+                return false;
+            }
+            
+            var sms_sign = $('sms_sign').get('value');
+            if(sms_sign.length < 2){
+                alert('请选择短信签名');
+                return false;
+            }
+
+            //检查短信A
+            var templete = $('message_text').value;
+            if(templete.test(/【|%|\$|\*|】/) == true){
+                alert('短信内容不能包含字符【,%,$,*】');
+                $('message_text').focus();
+                return false;
+            }
+            
+            $('sms_send_id').hide();
+            $('loading_bar').show();
+            $('showMsgContent').set('text',$('message_text').value);
+            $('message_text').hide();
+            
+            checkSend();
+        });
+
+    });
+
+    function checkSend() {
+        new Request({
+            url : 'index.php?app=taocrm&ctl=admin_member_tag&act=checkSend',
+            method : 'post',
+            data : {'tag_id' : $('tag_id').value},
+            onSuccess : function(responseText) {
+                try {
+                    var data = JSON.decode(responseText);
+
+                    if (data.res == 'balance_less') {
+                        alert(data.msg);
+                        $('loading_bar').hide();
+                        $('sms_info_content').show();
+                        $('sms_send_id').show();
+                        return false;
+                    } else {
+                        toSend(1);
+                    }
+                    return true;
+
+                } catch (e) {
+                    //alert(responseText);
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    alert("服务器发生了内部错误:" + responseText);
+                }
+            }
+        }).send();
+    }
+
+    function toSend(page) {
+
+        new Request({
+            url : 'index.php?app=taocrm&ctl=admin_member_tag&act=toSend',
+            method : 'post',
+            data : {
+                'sms_sign' : $('sms_sign').value,
+                'sms_content' : $('message_text').value,
+                'tag_id' : $('tag_id').value,
+                'page' : page
+            },
+            onSuccess : function(responseText) {
+                try {
+                    var data = JSON.decode(responseText);
+
+                    if (data.res == 'fail') {
+                        alert(data.msg);
+                        $('loading_bar').hide();
+                        $('sms_send_id').show();
+                        return false;
+                    }else if(data.info) {
+                    	nowSendNums += data.info.count;
+                        $('loading_bar').set('text',
+                        		nowSendNums + '/' + sendNums);
+                        if(data.info.send_status == 'fail'){
+                            failSendNums += data.info.count;
+                        }
+                        return toSend(data.info.page);
+                    }else{
+                        var msgTxt = '共发送完成('+nowSendNums+')短信';
+                        if(failSendNums != 0){
+                            msgTxt += ',失败('.failSendNums+')短信';
+                        }
+                        $('loading_bar').set('text',msgTxt);
+                        $('exec_btn').hide();
+                        $('sms_send_id').show();
+                        return true;
+                    }
+                    return true;
+
+                } catch (e) {
+                    //alert(responseText);
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    alert("服务器发生了内部错误:" + responseText);
+                }
+            }
+        }).send();
+    }
+</script>

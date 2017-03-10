@@ -1,0 +1,96 @@
+<div class="tableform">
+    <form id="tmpl_form" action="index.php?app=taocrm&ctl=admin_sms_rule&act=edit" method="post" >
+    	<input type="hidden" name="ruleTypeId" value="<{$data.ruleType.type_id}>" />
+        <table>
+            <tr>
+                <th width="30%">规则名称:</th>
+                <td width="70%"><{$data.ruleType.type_title}></td>
+            </tr>
+			<tr>
+				<th>规则条件:</td>
+				<td><{$data.ruleType.type_title}>后时间 &gt; <input type="text" name="rule_time" size="6" id="rule_time"<{if $data.rule.rule_time}> value="<{$data.rule.rule_time}>"<{/if}> /> 小时</td>
+			</tr>
+			<tr>
+				<th>所属店铺:</th>
+				<td>
+				<{foreach from=$data.shops item=shop}>
+				<input type="checkbox" name="shops[]" value="<{$shop.shop_id}>"<{if $shop.rule_status}> checked="checked"<{/if}><{if $data.allChecked}> disabled="disabled"<{/if}> /><{$shop.name}>
+				<{/foreach}>
+				<{if $data.shops}><input type="checkbox" name="allShops" id="allShops" value="1"<{if $data.allChecked}> checked="checked"<{/if}>>所有店铺<{/if}>
+				</td>
+			</tr>
+			<tr>
+				<th>状态:</th>
+				<td><input type="radio" name="status" value="1"<{if $data.ruleType.type_status == 'enable'}> checked="checked"<{/if}>> 启用 <input type="radio" name="status" value="0"<{if $data.ruleType.type_status == 'disable'}> checked="checked"<{/if}>> 禁用</td>
+			</tr>
+			<tr>
+				<th>规则备注:</th>
+				<td><textarea rows="5" cols="40" name="descriptioin"><{$data.ruleType.type_description}></textarea></td>
+			</tr>
+        </table>
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="editRule"}>
+</div>
+<{/area}>
+
+<script type="text/javascript">
+(function(){
+	var _form = $('tmpl_form');
+	var btn =$('editRule');
+	var allShops = $('allShops');
+	var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+	
+	allShops.addEvent('click', function() {
+		var shops = document.getElementsByName("shops[]");
+		num = shops.length;
+
+        if (this.checked) {
+			for (var i = 0; i < num; i++) {
+				shops[i].checked = true;
+				shops[i].disabled = true;
+			}
+		} else {
+			for (var i = 0; i < num; i++) {
+				shops[i].checked = false;
+				shops[i].disabled = false;
+			}
+		}
+	});
+	
+    btn.addEvent('click',function() {
+    	if ((parseInt($('rule_time').value) != $('rule_time').value) || $('rule_time').value < 1) {
+    		alert("<{$data.ruleType.type_title}>后时间需要为整数并且大于(含)1小时");
+    		return false;	
+    	}
+    	else {
+    		_form.fireEvent('submit',{stop:$empty});
+    	}
+	    
+	});
+	
+})();
+</script>

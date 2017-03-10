@@ -1,0 +1,62 @@
+<div class="tableform">
+    <form id="tmpl_form" action="index.php?app=taocrm&ctl=admin_sms_rule&act=chooseTemplate" method="post" >
+    	<input type="hidden" name="ruleTypeId" value="<{$data.ruleTypeId}>" />
+        <div class="division" style="padding:0">
+            <div class="b-gray">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th width="15%">&nbsp;</th>
+                        <td width="85%"><{t}>模板标题<{/t}></td>
+                    </tr>
+                </table>
+            </div>
+        </div>    	
+        <table>
+			<{foreach from=$data.templateList item=singleTemplate}>
+            <tr>
+                <td width="15%" align="right"><input type="radio" name="template" value="<{$singleTemplate.theme_id}>"<{if $data.templateId == $singleTemplate.theme_id}> checked="checked"<{/if}> />&nbsp;</td>
+				<td><{$singleTemplate.theme_title}></td>
+            </tr>
+            <{/foreach}>
+        </table>
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="chooseTemplate"}>
+</div>
+<{/area}>
+
+<script type="text/javascript">
+(function(){
+	var _form = $('tmpl_form');
+	var btn =$('chooseTemplate');
+	var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function() {
+	    _form.fireEvent('submit',{stop:$empty});
+	});
+	
+})();
+</script>

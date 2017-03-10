@@ -1,0 +1,21 @@
+<desktop>
+
+    <permissions>
+            <permission id="sales" display='false'>商品报表</permission>
+            <permission id="orders" display='false'>订单列表</permission>
+            <permission id="goods_sales" display='false'>销售商品统计</permission>
+            <permission id="hot_goods_relation" display='false'>热销商品关联</permission>
+            <permission id="goods_basket" display='false'>购物篮分析</permission>
+    </permissions>
+
+    <workground name="运营报表" id="taocrm.analysis" order="500">
+    
+        <menugroup name="商品销售分析" order="5003000">
+            <menu controller='admin_shop_goods' action='index' permission='goods_sales' display='false' order='5003100'>销售商品统计</menu>
+            <menu controller='admin_shop_goods' action='relation' permission='hot_goods_relation' display='false' order='5003200'>热销商品关联</menu>
+            <menu controller='admin_shop_basket' action='index' permission='goods_basket' display='false' order='5003300'>购物篮分析</menu>
+        </menugroup>
+        
+     </workground>     
+     
+</desktop>

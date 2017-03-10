@@ -1,0 +1,12 @@
+﻿<desktop>
+    <permissions>
+        <permission id="setting_openapi_basic">开放数据基础设置</permission>
+    </permissions>
+    <workground name="系统集成" id="channel_center" order="1100">
+        <menugroup name="开放数据管理">
+            <menu controller='admin_setting' action='index' permission='setting_openapi_basic' display='true' order='8000100'>基础设置</menu>
+            <menu controller='admin_measurement' action='test' permission='setting_openapi_basic' display='true' order='8000200'>接口测试</menu>
+            <menu controller='admin_setting' action='api_log' permission='setting_openapi_basic' display='true' order='8000300'>接口日志记录</menu>
+        </menugroup>
+    </workground>
+</desktop>

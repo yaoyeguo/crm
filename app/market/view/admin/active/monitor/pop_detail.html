@@ -1,0 +1,136 @@
+<style>
+#pop_gridlist th {text-align:right;}
+#pop_gridlist td {border-bottom:1px solid #D0D2D5;border-right:1px solid #D0D2D5;padding:3px 5px;}
+#chg_view span{cursor:pointer;color:#3367AC;}
+</style>
+
+<div style="line-height:32px;">
+    <span style="float:right;">
+        <form action="index.php?app=market&ctl=admin_active_monitor&act=detail" method="post">
+            <b>效果评估截止：</b>
+            <{input type="date" name="dead_date" value=$dead_date /}>
+            <{input type="hidden" name="id[]" value=$id /}>
+            <button type="submit">刷新数据</button>
+        </form>
+    </span>
+
+    <b>活动名称：</b> <{$active.active_name}>
+</div>
+
+<div style="line-height:32px;">
+    <span id="chg_view" style="float:right;">
+        <span onclick="show_tbl('pop_gridlist',$(this));" style="color:#F00">综合分析</span>　|
+        <span href="#" onclick="show_tbl('order_gridlist',$(this));">订单分析</span>
+    </span>
+    本次活动目标客户组共：<b><{$active.valid_num}></b>  人
+    <b>执行时间：</b> <{$active.exec_time}>
+</div>
+
+<table id="pop_gridlist" class="gridlist" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <col width="20%" />
+    <col width="25%" />
+    <col width="25%" />
+    <col width="30%" />
+    <thead>
+        <tr>
+            <th>下单客户数：</th>
+            <td><{$all_item.TotalMembers}></td>
+            <th>下单客户占活动客户比例：</th>
+            <td><{$all_item.order_member_ratio}>%</td>
+        </tr>
+        <tr>
+            <th>下单订单数：</th>
+            <td><{$all_item.TotalOrders}></td>
+            <th>付款客户占活动客户比例：</th>
+            <td><{$all_item.pay_member_ratio}>%</td>
+        </tr>
+        <tr>
+            <th>下单金额：</th>
+            <td><{$all_item.TotalAmount}></td>
+            <th>多笔付款客户占付款客户比例：</th>
+            <td><{$all_item.muti_pay_member_ratio}>%</td>
+        </tr>
+        <tr>
+            <th>付款客户数：</th>
+            <td><{$all_item.PayMembers}></td>
+            <th>人均下单订单数：</th>
+            <td><{$all_item.per_capita_placing_orders}></td>
+        </tr>
+        <tr>
+            <th>付款订单数：</th>
+            <td><{$all_item.PayOrders}></td>
+            <th>人均下单金额：</th>
+            <td><{$all_item.per_capita_amount_order}></td>
+        </tr>
+        <tr>
+            <th>付款金额：</th>
+            <td><{$all_item.PayAmount}></td>
+            <th>人均付款订单数：</th>
+            <td><{$all_item.per_capita_payment_orders}></td>
+        </tr>
+        <tr>
+            <th>多笔下单客户数：</th>
+            <td><{$all_item.MutiTotalMembers}></td>
+            <th>人均付款金额：</th>
+            <td><{$all_item.per_capita_amount_payment}></td>
+        </tr>
+        <tr>
+            <th>多笔付款客户数：</th>
+            <td><{$all_item.MutiPayMembers}></td>
+            <th>人均付款商品数：</th>
+            <td><{$all_item.payment_goods_per_person}></td>
+        </tr>
+        <tr>
+            <th>付款订单商品数：</th>
+            <td><{$all_item.TotalGoods}></td>
+            <th>平均订单付款商品数：</th>
+            <td><{$all_item.average_number_order_payment_goods}></td>
+        </tr>
+        <tr>
+            <th>付款平均订单金额：</th>
+            <td><{$all_item.AvgAmount}></td>
+            <th>投入回报比例：</th>
+            <td><{$all_item.investment_returns_ratio}></td>
+        </tr>
+    </thead>
+</table>
+
+<table id="order_gridlist" class="gridlist" width="100%" cellspacing="0" cellpadding="0" border="0" style="display:none;">
+    <thead>
+        <tr>
+            <th>商品编码</th>
+            <th>商品名称</th>
+            <th>销售数量</th>
+            <th>付款客户</th>
+            <th>付款订单</th>
+            <th>付款金额</th>
+            <th>人均购买商品</th>
+        </tr>
+    </thead>
+    <tbody>
+    <{foreach from=$goods_list item=item key=key}>
+        <tr>
+            <td><{$item.outer_id}></td>
+            <td><{$item.name|cut:33}></td>
+            <td><{$item.TotalGoods}></td>
+            <td><{$item.PayMembers}></td>
+            <td><{$item.PayOrders}></td>
+            <td><{$item.TotalAmount|round:2}></td>
+            <td><{$item.TotalGoods / $item.PayMembers |number_format:2}></td>
+        </tr>
+    <{/foreach}>
+    </tbody>
+</table>
+
+<br/>
+<script>
+function show_tbl(tbl_id,ele){
+    ele.getParent().getElements('span').setStyle('color','#3367AC');
+    ele.setStyle('color','#F00');
+
+    $('order_gridlist').hide();
+    $('pop_gridlist').hide();
+    $(tbl_id).show();
+}
+</script>
+

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>更新商品ID</title>
+</head>
+<body>
+<form method="post" action="">
+    <label>请选择需要更新的店铺：</label>
+    <select id="shop_id" name="shop_id">
+    <{foreach from=$shops item=item key=key}>
+        <option value="<{$key}>"><{$item}></option>
+    <{/foreach}>
+    </select>
+    <input type="submit" value="提交" />
+    <{if $submit != false}>
+        <div>更新成功</div>
+    <{/if}>
+</form>
+</body>
+</html>

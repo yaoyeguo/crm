@@ -1,0 +1,119 @@
+<{if !$_is_singlepage}>
+
+<form method="POST" action="index.php?app=ecorder&ctl=admin_shop_credit&act=special_save" class="tableform" id="form_member_lv">
+<{if $credit.rule_id}><{input type='hidden' name='rule_id' value=$credit.rule_id}><{/if}>
+<div class="division">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+    <tr>
+	  <th width='15%'><em class="c-red">*</em><{t}>适用店铺：<{/t}></th>
+	  <td><{input type="select" name="shop_id" vtype="required" options=$shops value=$credit.shop_id}></td>
+	</tr>
+    
+	<tr>
+	  <th><em class="c-red">*</em><{t}>规则名称：<{/t}></th>
+	  <td><{input type="text" name="name" size="20" vtype="required" value=$credit.name}></td>
+	</tr>
+    
+    <tr>
+	  <th>
+          <{if $rule.activity eq 1}>
+          <input type="radio" name="point_rule[]" value="1" checked=checked >
+          <{else}>
+          <input type="radio" name="point_rule[]" value="1" >
+          <{/if}>
+      </th>
+	  <td>
+        活动 <{input type="date" vtype="date" name="time_from" id="time_from" style="width:66px; font-family:arial;" value=$credit.time_from}>
+        <{t}>至<{/t}>
+        <{input type="date" vtype="date" name="time_to" id="time_to" style="width:66px; font-family:arial;" value=$credit.time_to}> 送
+        <{input type="select" options=$point_times name="activity_point_times" id="activity_point_times" value=$credit.activity_point_times }> 倍积分
+      </td>
+	</tr>
+    <tr>
+        <th>
+            <{if $rule.birthday eq 2}>
+            <input type="radio" name="point_rule[]" value="2" checked=checked >
+            <{else}>
+            <input type="radio" name="point_rule[]" value="2" >
+            <{/if}>
+        </th>
+        <td>
+            生日 <{input type="select" options=$birthday_type name="birthday_type" id="birthday_type" value=$credit.birthday_type }> 送
+            <{input type="select" options=$point_times name="birthday_point_times" id="birthday_point_times" value=$credit.birthday_point_times }> 倍积分
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <span style="color: red;">说明：启用特殊规则，必须先添加通用积分规则!</span>
+        </td>
+    </tr>
+</table>
+</div>
+</form>
+<div class="table-action">
+    <{button type="button" label="保存" id="member_lv-form-submit"}>
+</div>
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+	    btn.addEvent('click',function(){
+            var point_rule = $$('#form_member_lv input[type="radio"]:checked').get('value');
+            if(point_rule.length == 0){
+                alert('必须选择一个送积分规则！');
+                return;
+            }
+            for(var i = 0 ; i < point_rule.length; i++){
+                if(point_rule[i] == '1'){
+                    var time_from = $('time_from').value;
+                    var time_to = $('time_to').value;
+                    var activity_point_times = $('activity_point_times').value;
+                    if(time_from == '' || time_to == ''){
+                        alert('选择活动送积分规则，活动开始时间和结束时间不能为空！');
+                        return;
+                    }else if(activity_point_times == ''){
+                        alert('选择活动送积分规则，积分倍数不能为空！');
+                        return;
+                    }
+                }else if(point_rule[i] == '2'){
+                    var birthday_type = $('birthday_type').value;
+                    var birthday_point_times = $('birthday_point_times').value;
+                    if(birthday_type == ''){
+                        alert('选择生日送积分规则，必须选择当天或者当月！');
+                        return;
+                    }else if(birthday_point_times == ''){
+                        alert('选择生日送积分规则，积分倍数不能为空！');
+                        return;
+                    }
+                }
+            }
+		    _form.fireEvent('submit',{stop:$empty});
+		});
+	
+})();
+</script>
+
+<{/if}>
+ 

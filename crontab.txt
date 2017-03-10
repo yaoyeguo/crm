@@ -1,0 +1,4 @@
+30 2 * * * /usr/sbin/ntpdate 133.100.9.2
+* * * * * /bin/bash /data/httpd/crm/script/crontab.sh
+0 2 * * * /bin/bash /data/httpd/crm/script/crontab_day.sh
+30 * * * * /bin/bash /data/httpd/crm/script/crontab_hour.sh

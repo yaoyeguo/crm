@@ -1,0 +1,42 @@
+
+<div class="tableform">
+    
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th width="10%"><{t}>微信用户ID<{/t}></th>
+                    <th width="10%"><{t}>姓名<{/t}></th>
+                    <th width="10%"><{t}>手机<{/t}></th>
+                    <th width="60%"><{t}>选择内容<{/t}></th>
+                    <th width="10%"><{t}>创建时间<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$logs item=data}>
+                <tr>
+                    <td><{$data.wx_id}></td>
+                    <td><{$data.truename}></td>
+                    <td><{$data.mobile}></td>
+                    <td><{$data.result}></td>
+                    <td><{$data.created}></td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        
+        <br/>
+        <{$pager}>
+        
+    </div>
+</div>
+
+<script>
+$$('td.logi_info').addEvent('click',function(){
+    //alert(this.id);
+    new Dialog('index.php?app=plugins&ctl=admin_manage&act=logi_info&tid='+this.id,{width:640,height:280,title:'物流信息'});
+    return false;
+});
+</script>
+

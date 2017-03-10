@@ -1,0 +1,42 @@
+<div class="top_extra">
+
+    <div>
+        <form id="caselog_form_dlg" action="index.php?<{$env.server.QUERY_STRING}>" method="POST" style="text-align:center;color:red;">
+            <br/><br/>
+            初始化操作将会清空全部数据，所有的服务媒体和类型都会被删除。<br/>
+            确定要执行初始化吗？
+            <input type="hidden" name="task" value="init" />
+        </form>
+    </div>
+	
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="save_caselog_dlg" label="确认"}>
+        <{button class="btn-primary" type="button" id="cancel_btn" label="取消"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+    
+    $('save_caselog_dlg').addEvent('click',function(event){    
+        $('caselog_form_dlg').fireEvent('submit',new Event(event));
+    });
+    
+    $('cancel_btn').addEvent('click',function(event){    
+        $('cancel_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+})();
+
+$('caselog_form_dlg').store('target',{
+    onRequest:function(){
+       $('save_caselog_dlg').set('disabled', 'true');
+    },
+    onSuccess:function(response){
+        $('save_caselog_dlg').getParent('.dialog').retrieve('instance').close();
+    }
+});
+</script>

@@ -1,0 +1,34 @@
+<div container='true'>
+<div class="tableform">
+    <input type="button" value="导出所有" onclick="window.open('index.php?app=market&ctl=admin_weixin&act=buy_manage_export&item_id=<{$item_id}>')"/>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="10%">参与时间</td>
+            <td width="10%">参与人</td>
+            <td width="10%">手机号</td>
+            <td >收货地址</td>
+            <td width="10%">扣除积分</td>
+            <td width="20%" >商品编码</td>
+            <td width="10%">商品名称</td>
+            <td width="5%">兑换数量</td>
+        </tr>
+        <{foreach from=$buylog item=log}>
+        <tr>
+            <td><{$log.create_time|date_format:"%Y-%m-%d"}></td>
+            <td><{$log.receiver}></td>
+            <td><{$log.mobile}></td>
+            <td><{$log.addr}></td>
+            <td><{$log.minus_score}></td>
+            <td><{$log.goods_bn}></td>
+            <td><{$log.goods_name}></td>
+            <td><{$log.num}></td>
+        </tr>
+        <{foreachelse}>
+            <tr>
+                <td colspan="8">没有数据</td>
+
+            </tr>
+        <{/foreach}>
+    </table>
+</div>
+</div>

@@ -1,0 +1,212 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+
+.req_fields div{padding:0 0 5px 0;}
+span.del,span.add{color:#FFF;font-size:14px;font-weight:bold;padding:2px 5px;cursor:pointer;}
+span.del{background:#F60;}
+span.add{background:#090;}
+</style>
+    <{if $info}>
+
+<form style="position:relative;" id="form_store" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=store_manage_edit" method="POST">
+<{else}>
+<form style="position:relative;" id="form_store" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=store_manage_add" method="POST">
+<{/if}>
+<div class="division" id="division">
+
+    <!--预览-->
+    <div style="float:right;width:280px;overflow-y:auto;border:1px solid #CCC;">
+        <div id="preview_img" style="background:url(<{$env.app.res_url}>/wx_store.jpg) no-repeat #FFF;;height:497px;"></div>
+    </div>
+
+<table style="width:420px;" cellspacing="0" cellpadding="0" border="0" align="center">
+    <tbody>
+    <tr>
+      <th>
+        <em class="c-red">*</em>店铺名称:</th>
+      <td>
+        <{input id="store_name_input" value=$info.store_name name="info[store_name]" vtype="required"}>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>店铺电话:</th>
+        <td>
+            <{input id="phone_input" value=$info.phone name="info[phone]" vtype="required" maxlength='13'}>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>店铺地区:
+        </th>
+        <td>
+            <{input id='region_input' type='region' app='ectools' vtype="area"  name="info[store_area]" value=$info.store_area}>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>店铺地址:</th>
+        <td>
+        <{input id="address_input" class="123" value=$info.address name="info[address]" vtype="required" style="width:280px;" onkeyup="getDivPosition(this)"}>
+        <div id="addr" style="display:none;position:absolute; border: #54AAE5 solid 1px;width:290px;background:#fff">
+            <ul style="list-style-type:none; float:left; margin-left:0px; width:100%;" id="input_select">
+
+            </ul>
+        </div>
+        <script>
+        $("division").addEvent('click',function(event){
+           if(event.target.tagName == 'LI' || event.target.id == 'address_input' )
+           {
+                return;
+           }else{
+                var addr=document.getElementById("addr");
+                addr.style.display = "none";
+           }
+        });
+        function setDivHiddenTemp(t,map_x,map_y)
+        {
+            document.getElementById("address_input").value=t.innerHTML;
+            document.getElementById("map_input").value=map_y+','+map_x;
+            var addr=document.getElementById("addr");
+            addr.style.display = "none";
+        }
+        function getDivPosition(o)
+        {
+            var city = $$('input[name="info[store_area]"]').get('value');
+            city = city[0].split('/');
+            city = city[1];
+            var adr = o.value;
+            if(adr == '')
+                return;
+            var _url="index.php?app=market&ctl=admin_weixin&act=store_manage_ajax&adr=" + adr + '&city='+city;
+            new Request({
+                url : _url,
+                method : 'get',
+                onSuccess : function(responseText){
+                        var data = JSON.decode(responseText);
+                        var data_l = data.results.length;
+                        if(data_l > 0)
+                        {
+                            var str = '';
+                            for(var i=0;i<data_l;i++)
+                            {
+                                str += '<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'" style="cursor:pointer" onclick="setDivHiddenTemp(this,'+data.results[i].location.lat+','+data.results[i].location.lng+');">' + data.results[i].name + '</li>';
+                            }
+                            $('input_select').set('html',str);
+                        }else{
+                            $('input_select').set('html','<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'">没有更多</li>');
+                        }
+                }
+            }).send();
+
+            var addr=document.getElementById("addr")
+            addr.style.display = "block";
+        }
+        </script>
+        </td>
+    </tr>
+    <tr>
+        <th>店铺 logo:
+        </th>
+        <td>
+            <{input id="picurl" width=160 height=60 type="image" value=$info.picurl name="info[picurl]"}>
+        </td>
+    </tr>
+    <tr>
+        <th>地图坐标:</th>
+        <td>
+            <{input id="map_input" value=$info.map name="info[map]" style="width:200px;"}>
+            <input type='button' onclick="window.open('http://api.map.baidu.com/lbsapi/getpoint/index.html')" value="查看地图" target="_blank"/>
+        </td>
+    </tr>
+    <tr>
+        <th>营业时间:</th>
+        <td id="open_time">
+            <{input id="open_time_input" value=$info.open_time name="info[open_time]" style="width:280px;"}>
+        </td>
+    </tr>
+    <tr>
+        <th>经营范围:</th>
+        <td id="business" class="req_fields">
+            <{input type="textarea" id="business_input" value=$info.business name="info[business]" style="width:290px"}>
+        </td>
+    </tr>
+    </tbody></table>
+    <{if $info}>
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[store_id]" value="<{$info.store_id}>" type="hidden" />
+    </div>
+    <{/if}>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+        <{button type="button" label="预览" onclick="set_preview();" }>
+    </div>
+<{/area}>
+
+</form>
+
+<script>
+(function(){
+
+    var _form = $('form_store');
+	var btn =$('survey-form-submit');
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+
+    set_preview();
+
+})();
+
+
+
+
+function set_preview(){
+    var store_name  = $('store_name_input').get('value');
+    var phone       = $('phone_input').get('value');
+    var region      = $$('input[name="info[store_area]"]').get('value');
+    var address     = $('address_input').get('value');
+    var map         = $('map_input').get('value');
+    var open_time   = $('open_time_input').get('value');
+    var business    = $('business_input').get('value');
+
+    var region = region[0].split(':');
+    if(region != '')
+    {
+        region[1] = region[1].replace('/','');
+        region = region[1].replace('/','');
+    }
+
+    var title_div      = '<h3 style="padding:30px 0 0 0; color:#fff;text-align:center;">{微信账号}</h3>';
+    var map_img        = '<img width="280" height="190" src="http://api.map.baidu.com/staticimage?width=280&height=190&zoom=13&scale=2&center='+ map +'" />';
+    var store_name_div = '<h4 style="padding:2px 0 0 12px; color:#000;text-align:left;">'+store_name+'</h4>';
+    var address_div    = '<h4 style="padding:0 0 0 12px; color:#a8a8a8;text-align:left;">'+region+address+'</h4>';
+    var phone_div      = '<h4 style="padding:0 0 0 12px; color:#a8a8a8;text-align:left;">'+phone+'</h4>';
+    var open_time_div  = '<div style="padding:85px 0 0 18px; color:#a8a8a8;text-align:left;  font-size:10px;">'+open_time+'</div>';
+    var business_div   = '<div style="padding:30px 0 0 18px; color:#a8a8a8;text-align:left; font-size:10px;">'+business+'</div>';
+
+    var preview_div = title_div + map_img + store_name_div + address_div + phone_div + open_time_div + business_div;
+    $('preview_img').set('html', preview_div);
+}
+
+</script>

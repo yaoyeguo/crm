@@ -1,0 +1,728 @@
+<style>
+    /*系统桌面*/
+    .widgets {display:none}
+
+    h3{margin:0;padding:0;}
+    .d_bar1 {}
+    .d_bar2 {background:url(<{$env.app.res_url}>/2.jpg) no-repeat 0 20px;width:466px;float:left;}
+    .d_box1 {margin:3px 0 0 0;border:0 solid #CECECE;}
+    
+    .tbl_list td{border-top:1px solid #E6E6E6;height:30px;padding-left:5px;}
+    .tbl_list th{height:30px; background:#F5F5F5;padding-left:5px;}
+    
+    .icon {background-image:url(<{$env.app.res_url}>/num_bg.png);width:13px;height:13px;}
+    .icon1 {}
+    .icon2 {background-position:0 -15px;}
+    .icon3 {background-position:0 -30px;}
+    .icon4 {background-position:0 -45px;}
+    .icon5 {background-position:0 -60px;}
+    .icon6 {background-position:0 -75px;}
+    .icon7 {background-position:0 -90px;}
+    .icon8 {background-position:0 -105px;}
+    
+    #sel_shop  {overflow:hidden;}
+    #sel_shop select{float:left;}
+    #sel_shop div{float:left;margin-left:20px;border:1px solid #CCC;background:#EFEFEF;padding:0 10px;}
+    #sel_shop strong{color:red}
+    
+    .up_bg {background:url(<{$env.app.res_url}>/up.gif) no-repeat right;}
+    .down_bg {background:url(<{$env.app.res_url}>/down.gif) no-repeat right;}
+</style>
+<style>
+    /*使用向导*/
+    ul{list-style:none}
+    .xinput {border:1px solid #CCC;height:24px;padding:0 5px;font-weight:bold;font-family:Arial;color:#4F78C7;}
+    .xbutton {padding:0 10px;}
+    
+    .step_body {display:none;background:#FFF;padding:0 20px;}
+    
+    .step {height:40px;line-height:40px;}
+    .step1 {background:url(<{$env.app.res_url}>/newbie/1.jpg) no-repeat #7A98D6;}
+    .step2 {background:url(<{$env.app.res_url}>/newbie/2.jpg) no-repeat #7A98D6;}
+    .step3 {background:url(<{$env.app.res_url}>/newbie/3.jpg) no-repeat #7A98D6;}
+    .step2_off {background:url(<{$env.app.res_url}>/newbie/2_off.jpg) no-repeat #AAAAAA;}
+    .step3_off {background:url(<{$env.app.res_url}>/newbie/3_off.jpg) no-repeat #AAAAAA;}
+    
+    #nb_task_nav {overflow:hidden;color:#FFF;font-weight:bold;}
+    #nb_task_nav li{float:left;width:33%;border-right:1px solid #FFF}
+    #nb_task_nav li span{padding-left:50px;}
+    
+</style>
+<style>/* unitip css */
+
+.Tips1 {cursor:pointer;}
+
+#unitip {
+	position: absolute;
+	z-index: 1000;
+	top: -1000px;
+	color: #3F4D69;
+	font: normal normal 1.1em/15px Verdana, Arial, Helvetica, sans-serif;
+	display: none;
+}
+
+	#unitippoint, #unitipmid, #unitipcap {
+		position: relative;
+		top: 0px; 
+		left: 0px;
+		display: block;
+	}
+	
+	#unitippoint { 
+		height: 0px; 
+		overflow: hidden; 
+	}
+	
+	#unitipmid { 
+		background: #FFF;
+        border:1px solid #666;
+		width: 200px;
+		height: auto; 
+		padding: 5px 15px;
+        filter:alpha(opacity=90);
+        opacity: 0.9;
+        line-height:20px;
+	}
+	
+	#unitipcap { 
+		height: 0px; 
+		overflow: hidden; 
+	}
+	.bottom_box {
+	    border: 1px solid #8CAEDB;
+	    border-radius: 3px 3px 3px 3px;
+	    overflow: hidden;
+	    width: 200px;
+	    z-index: 50;
+	}
+	.bottom_notice{
+		font-size:13px;
+		padding:5px 0 0 30px;
+		display:block;
+	}
+	.bottom_red{
+		font-size:15px;
+		font-weight:bold;
+		color:red
+	}
+	
+#dashboard_body {margin:0 auto; text-align:left;padding:0 0 0 5px;}
+#dashboard_body .clear_box{width:100%;clear:both;height:10px;overflow:hidden;}
+#dashboard_body #six_num{margin:0;padding:10px 0;overflow:hidden;background:#F5F5F5;color:#666;}
+#dashboard_body #six_num li{float:left;border-right:1px solid #CCC;width:158px;text-align:center;height:60px;line-height:28px;}
+#dashboard_body #six_num strong{display:block;font-size:18px;color:#F60;}
+
+#run_data {border:1px solid #DDD;}
+#run_data ul {margin:0;padding:0;line-height:28px;}
+#run_data ul li{float:left;width:50%;!width:49%;margin:0;padding:0;border-top:1px solid #DDD;}
+#run_data ul li span{float:left;display:block;width:110px;padding:0;
+                    background:#F2F2F2;text-align:right;}
+
+#active_tab {overflow:hidden;margin:0;padding:0;}
+#active_tab li{float:left;border:1px solid #CCCCCC;padding:5px 40px;margin:0 10px 0 0;background:#DDD;font-size:12px;cursor:pointer;}
+#active_tab li.hover{border-bottom:1px solid #FFF;background:#FFF;color:#3E4E89;font-weight:bold;}
+
+#set_column_div {font-size:12px;}
+#set_column_div dt{padding:5px 10px;}
+#set_column_div dd{margin:0;padding:0;}
+#set_column_div ol{overflow:hidden;margin:0;padding:10px;list-style:none;}
+#set_column_div ol li{width:33%;float:left;font-weight:normal;padding:5px 0 0 0;}
+#set_column_div label {cursor:pointer;}
+#set_column_div input {vertical-align:middle;}
+</style>
+
+
+<div id="taokpi-default-widget" style="height:10px;"></div>
+<div id="group_edit_container" class="finder-detail-content" style="width:99%;overflow:hidden;border:none;">
+
+    <div id="dashboard_body">
+    
+        <div style="background:#FFEBE6;line-height:38px;padding:0 0 0 10px;">
+        
+            <div style="float:right;background:#F2F2F2;font-weight:bold;">
+                <a style="background:#0099FF;color:#FFF;display:block;padding:0 20px;" href="index.php?app=market&ctl=admin_sms_active&act=index">购买短信</a>
+            </div>
+        
+            <div style="float:right;background:#F2F2F2;font-size:14px;padding:0 20px;">
+                剩余短信条数：<a href="index.php?app=market&ctl=admin_sms_active&act=index"><strong id="sms_points">0</strong></a>
+            </div>
+        
+            <b style="color:red;font-size:14px;">提示：</b>
+            今日 <{$today}> &nbsp;&nbsp;&nbsp;&nbsp;
+            已完成活动：<{$total_data.active_num}>，
+            成功联络人数：<{$total_data.active_succ_num}>，
+            失败人数：<{$total_data.active_fail_num}>
+        </div>
+        
+        <div class="clear_box"></div>
+        
+        <ul id="six_num">
+            <li>
+                管理客户数<{help}><{t}>全局客户数，包含下单和未下单客户<{/t}><{/help}>
+                <strong><{$total_data.members}></strong>
+            </li>
+            <li>
+                交易订单数<{help}><{t}>订单总数，包含所有状态的订单<{/t}><{/help}>
+                <strong><{$total_data.orders}></strong>
+            </li>
+            <li>
+                7天新增客户<{help}><{t}>首次下单时间大于等于<{$start_time}><{/t}><{/help}>
+                <strong><{$total_data.7_new_members}></strong>
+            </li>
+            <li>
+                7天付款新客户<{help}><{t}>首次下单时间大于等于<{$start_time}>，且订单已付款<{/t}><{/help}>
+                <strong><{$total_data.7_new_paid_members}></strong>
+            </li>
+            <li>
+                7天付款老客户<{help}><{t}>下单付款时间大于等于<{$start_time}>，且非首次下单<{/t}><{/help}>
+                <strong><{$total_data.7_old_paid_members}></strong>
+            </li>
+            <li style="border:none;">
+                7天发送短信量<{help}><{t}><{$start_time}>至今，发送成功的短信数量(非短信费用)<{/t}><{/help}>
+                <strong><{$total_data.7_sms_count}></strong>
+            </li>
+        </ul>
+        
+        <div class="clear_box"></div>
+        
+        <div>
+            
+            <div style="background:#F2F2F2;border:1px solid #F2F2F2;float:left;width:49%;height:240px;">
+                <div style="height:36px;overflow:hidden;">
+                    <h4 style="padding:8px 5px;color:#3E4E89;">
+                        执行活动
+                    </h4>
+                </div>
+                
+                <div style="padding:0 10px;">
+                    <ul id="active_tab">
+                        <li name="active_run" class="hover">活动中</li>
+                        <li name="active_wait">未开始</li>
+                        <li name="active_end">已结束</li>
+                    </ul>
+                    
+                    <div id="active_run" style="margin-top:-1px;border:1px solid #CCCCCC;background:#FFF;height:160px;">
+                        <table cellpadding="5" border="0" cellspacing="0" >
+                            <thead style="border-bottom:2px solid #CCCCCC;color:#3E4E89;">
+                            <tr>
+                                <th>活动名称</th>
+                                <th>发送人数</th>
+                                <th>发送时间</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$active[run] item=data }>
+                            <tr>
+                                <td><{$data.title}></td>
+                                <td><{$data.send_num}></td>
+                                <td><{$data.send_time}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <td align="right" colspan="3"><a href="index.php?app=market&ctl=admin_active_analysis&act=index&tab=1">...更多</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="active_wait" style="margin-top:-1px;border:1px solid #CCCCCC;background:#FFF;height:160px;display:none;">
+                        <table cellpadding="5" border="0" cellspacing="0">
+                            <thead style="border-bottom:2px solid #CCCCCC;font-weight:bold;color:#3E4E89;">
+                            <tr>
+                                <th>活动名称</th>
+                                <th>发送人数</th>
+                                <th>创建时间</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$active[wait] item=data }>
+                            <tr>
+                                <td><{$data.title}></td>
+                                <td><{$data.send_num}></td>
+                                <td><{$data.send_time}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <td align="right" colspan="3"><a href="index.php?app=market&ctl=admin_active_analysis&act=index&tab=1">...更多</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="active_end" style="margin-top:-1px;border:1px solid #CCCCCC;background:#FFF;height:160px;display:none;">
+                        <table cellpadding="5" border="0" cellspacing="0">
+                            <thead style="border-bottom:2px solid #CCCCCC;font-weight:bold;color:#3E4E89;">
+                            <tr>
+                                <th>活动名称</th>
+                                <th>发送人数</th>
+                                <th>发送时间</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$active[end] item=data }>
+                            <tr>
+                                <td><{$data.title}></td>
+                                <td><{$data.send_num}></td>
+                                <td><{$data.send_time}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <td align="right" colspan="3"><a href="index.php?app=market&ctl=admin_active_analysis&act=index&tab=1">...更多</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="run_data" style="float:right;width:49%;height:240px;">
+                <div style="height:36px;">
+                    <h4 style="padding:8px 5px;color:#3E4E89;position:relative;">
+                        <{img height="24" src="settings.png" style="float:right;cursor:pointer;" id="set_column" }>
+                        运营数据统计
+                        
+                        <dl id="set_column_div" style="position:absolute;border:1px solid #5779BD;display:none;right:20px;top:30px;z-index:999;background:#FFF;width:575px;">
+                            <dt style="background:#5779BD;color:#FFF;">
+                                <span style="float:right;cursor:pointer;font-size:18px;" onclick="$('set_column_div').hide();">x</span>
+                                配置显示数据
+                            </dt>
+                            <dd style="padding:10px;">
+                                <form action="index.php?ctl=dashboard&act=index" method="POST">
+                                <b style="color:#F60;">最多可选择项为 12 个</b>
+                                <ol>
+                                    <{foreach from=$run_data_tags item=data key=k }>
+                                        <{if($data=='sep')}>
+                                            <li style="width:100%;clear:both;"></li>
+                                        <{else}>
+                                            <li>
+                                                <label><input name="check_tags[]" type="checkbox" value="<{$k}>" <{if(in_array($k,$check_tags))}>checked="checked"<{/if}> /> 
+                                                <{$data}></label>
+                                            </li>
+                                        <{/if}>
+                                    <{/foreach}>
+                                </ol>
+                                
+                                <div align="center">
+                                    <button type="submit" onclick="$('set_column_div').hide();">确定</button>
+                                </div>
+                                </form>
+                            </dd>
+                        </dl>
+                        
+                    </h4>
+                </div>
+                <ul>
+                    <li><span>已绑定店铺&nbsp;</span>&nbsp;<{$cache_dashboard.bind_shop_cnt}></li>
+                    <li><span>失效/未绑定店铺&nbsp;</span>&nbsp; <{$cache_dashboard.unbind_shop_cnt}></li>
+                    
+                    <{foreach from=$check_tags item=data }>
+                    <li><span><{$run_data_tags[$data]}>&nbsp;</span>&nbsp; <{$cache_dashboard[$data]}></li>
+                    <{/foreach}>
+                </ul>
+            </div>
+            
+        </div>
+        
+        <div class="clear_box"></div>
+
+        <div style="clear:both;margin:0 0 0 0;" class="clearfix">
+            <h3 style="color:#3E4E89;padding:0px 0;" title="统计所有状态的订单">近1个月订单状态</h3>
+            <div class="d_box1" style="height:330px;">
+                <iframe id="chart_frame" src="?app=taocrm&ctl=admin_analysis_chart&act=chart_line_new&service=taocrm_analysis_sales&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=date&target=1" width="100%" height="320" scrolling="no" frameborder="0"></iframe>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+  
+<script>
+//切换执行活动选项卡
+$$('#active_tab li').addEvent('click', function(){
+    $(this).getParent().getParent().getElements('div').hide();
+    $(this).getParent().getElements('li').set('class', '');
+    $(this).set('class', 'hover');
+    $($(this).get('name')).show();
+});
+
+//复选框事件
+$$('#set_column_div ol input').addEvent('click', function(){
+    set_data_tags();
+});
+
+//判断是否超过12个选项
+function set_data_tags(){
+    var max_set_num = 12;
+    var curr_set_num = $$('#set_column_div ol input:checked').length;
+    if(curr_set_num >=max_set_num ){
+        $$('#set_column_div ol input').each(function(ele){
+            if(!ele.get('checked')){
+                ele.set('disabled', true);
+                ele.getParent().setStyle('color', '#CCC');
+            }
+        });
+    }else{
+        $$('#set_column_div ol input').each(function(ele){
+            if(ele.get('disabled')){
+                ele.set('disabled', false);
+                ele.getParent().setStyle('color', '');
+            }
+        });
+    }
+}
+
+//打开弹出层
+$('set_column').addEvent('click', function(){
+    $('set_column_div').show();
+});
+
+//设置复选框的状态
+set_data_tags();
+
+//右下角弹出窗口
+var handle;
+function start()
+{
+	var obj = document.getElementById("tip");
+	if (parseInt(obj.style.height)==0)
+	{ obj.style.display="block";
+		handle = setInterval("changeH('up')",2);
+	}else
+	{
+	     handle = setInterval("changeH('down')",2) 
+	} 
+}
+
+function changeH(str)
+{
+	var obj = document.getElementById("tip");
+	if(str=="up")
+	{
+	if (parseInt(obj.style.height)>100)
+	   clearInterval(handle);
+	else
+	   obj.style.height=(parseInt(obj.style.height)+2).toString()+"px";
+	}
+	if(str=="down")
+	{
+	if (parseInt(obj.style.height)<8)
+	{ clearInterval(handle);
+	   obj.style.display="none";
+	}
+	else 
+	   obj.style.height=(parseInt(obj.style.height)-2).toString()+"px"; 
+	}
+}
+
+//window.setTimeout('start()',1000);
+
+//window.setTimeout('start()',10000);
+
+// uniTip - written by Nathan Ford for Unit Interactive
+//
+// uniTip is based on qTip:
+// qTip - CSS Tool Tips - by Craig Erskine
+// http://qrayg.com
+
+var uniTipTag = "td"; //Which tag do you want to uniTip-ize? Keep it lowercase. No spaces around commas.//
+var uniTipClass = "Tips1"; //Which classes do you want to uniTip-ize? If you leave this blank, then all the tags designated above will get uniTip-ized. Match case. No spaces around commas.
+
+var uniTipX = 0; // X offset from cursor//
+var uniTipY = 15; // Y offset from cursor//
+
+//______________________________________________There's no need to edit anything below this line//
+
+var offsetX = uniTipX, offsetY = uniTipY, elewidth = null, eleheight = null, tipid = null, tiptop = null, tipbot = null, tipcapin=null, tippointin=null, altText=false;
+
+var x=0, y=0, WinWidth=0, WinHeight=0, TipWidth=0, TipHeight=0, CapHeight=0, PointHeight=0;
+
+// first, find all the correct elements
+function init_tips() {
+	var elementList = uniTipTag.split(",");
+	for(var j = 0; j < elementList.length; j++) {	
+		var elements = document.getElementsByTagName(elementList[j]);
+		
+		if(elements) {
+			for (var i = 0; i < elements.length; i ++) {
+				if (uniTipClass != '') {
+				
+					var elClass = elements[i].className;
+					var elClassList = uniTipClass.split(",");
+					
+					for (var h=0; h < elClassList.length; h++) { if (elClass.match(elClassList[h])) unitipize(elements[i]); }
+					
+				} else unitipize(elements[i]);
+			}
+		}
+	}
+}
+
+// next, add the tooltip function to those elements
+function unitipize(element) {
+	var a = element;
+	altText = (a.alt && a.getAttribute("alt") != '' ) ? true : false;
+	var sTitle = (altText == true) ? a.getAttribute("alt") : a.getAttribute("title");				
+	if(sTitle) {
+		a.onmouseover = function() {build_tips(a, sTitle);};
+		a.onmouseout = function() {hide_tips(a, sTitle);};
+	}
+}
+
+// now, we build the tooltip
+function build_tips(a, sTitle) {
+	
+	if (a.title) a.title = "";
+	if (altText==true) a.alt = "";
+	
+	var tipContainer = document.createElement("div");
+	tipContainer.setAttribute("id", "unitip");
+	document.body.appendChild(tipContainer);
+	
+	var tipContainerTop = document.createElement("div");
+	tipContainerTop.setAttribute("id", "unitippoint");
+	tipContainer.appendChild(tipContainerTop);
+	
+	var tipContainerMid = document.createElement("div");
+	tipContainerMid.setAttribute("id", "unitipmid");
+	tipContainer.appendChild(tipContainerMid);
+	
+	var tipContainerBot = document.createElement("div");
+	tipContainerBot.setAttribute("id", "unitipcap");
+	tipContainer.appendChild(tipContainerBot);
+
+	tipid = document.getElementById("unitip");
+	tippoint = document.getElementById("unitippoint");
+	tipmid = document.getElementById("unitipmid");
+	tipcap = document.getElementById("unitipcap");
+	
+	document.getElementById("unitipmid").innerHTML = sTitle;
+	tipid.style.display = "block";
+	
+	elewidth = document.getElementById("unitipmid").offsetWidth;
+	eleheight = document.getElementById("unitip").offsetHeight;
+	
+	WinWidth = document.body.offsetWidth;
+	WinHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+	
+	CapHeight = document.getElementById('unitipcap').offsetHeight;
+	PointHeight = document.getElementById('unitippoint').offsetHeight;
+	
+	if (typeof pngfix=="function") { // if IE, rebuilds wraps unitippoint and unitipcap in outer div
+		if (tippoint.currentStyle.backgroundImage.match(/\.png/gi)) {
+			var tipP = tippoint.innerHTML;
+			
+			tippoint.id = 'unitipP'; // switch unitippoint to outer div
+			
+			tippoint.style.overflow = "hidden";
+			tippoint.style.height = PointHeight + "px";
+			tippoint.style.width = elewidth + "px";
+			tippoint.style.position = "relative";
+			tippoint.style.display = "block";
+			
+			tippoint.innerHTML = '<div id="unitippoint">' + tipP + '</div>'; // inject unitippoint
+			
+			tippointin = document.getElementById("unitippoint");  // redefine styles for unitippoint to fit filter image
+			tippointin.style.width = (elewidth * 2) + "px";
+			tippointin.style.height = (PointHeight * 2) + "px";
+			tippointin.style.backgroundImage = tippoint.style.backgroundImage;
+			tippointin.style.position = "absolute";
+			
+			tippoint.style.backgroundImage = "none";
+		}
+		if (tipcap.currentStyle.backgroundImage.match(/\.png/gi)) {
+			var tipC = tipcap.innerHTML;
+			
+			tipcap.id = 'unitipC';
+			
+			tipcap.style.overflow = "hidden";
+			tipcap.style.height = CapHeight + "px";
+			tipcap.style.width = elewidth + "px";
+			tipcap.style.position = "relative";
+			tipcap.style.display = "block";
+			
+			tipcap.innerHTML = '<div id="unitipcap">' + tipP + '</div>';
+			
+			tipcapin = document.getElementById("unitipcap");
+			tipcapin.style.height = (CapHeight * 2) + "px";
+			tipcapin.style.backgroundImage = tipcap.style.backgroundImage;
+			tipcapin.style.position = "absolute";
+			
+			tipcap.style.backgroundImage = "none";
+		}
+		
+		//pngfix(); // png fix
+		
+	}
+	
+	document.onmousemove = function (evt) {move_tips (evt)};
+}
+
+// now, we track the mouse and make the tooltip follow
+function move_tips(evt) {
+	
+	if (window.event) {
+		x = window.event.clientX;
+		y = window.event.clientY;
+		
+		if (document.documentElement.scrollLeft) tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + document.documentElement.scrollLeft) + "px" :  (x + offsetX + document.documentElement.scrollLeft) + "px";
+		else tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + document.body.scrollLeft) + "px" :  (x + offsetX + document.body.scrollLeft) + "px";
+		
+		if (document.documentElement.scrollTop) tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + document.documentElement.scrollTop) + "px" : (y + offsetY + document.documentElement.scrollTop) + "px";
+		else tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + document.body.scrollTop) + "px" : (y + offsetY + document.body.scrollTop) + "px";
+		
+	} else {
+		x = evt.clientX;
+		y = evt.clientY;	
+		
+		tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + window.scrollX) + "px" :  (x + offsetX + window.scrollX) + "px";
+		tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + window.scrollY) + "px" : (y + offsetY + window.scrollY) + "px";
+	}
+	
+	TipWidth = x + elewidth + 20;
+	TipHeight = y + eleheight + 20;
+	
+	if (TipHeight >= WinHeight ) { // rearrange the inner divs [123 to 321]
+		tipid.removeChild(tippoint);
+		tipid.removeChild(tipmid);
+		tipid.removeChild(tipcap);
+		tipid.appendChild(tipcap);
+		tipid.appendChild(tipmid);
+		tipid.appendChild(tippoint);
+	} else {  // rearrange the inner divs [321 to 123]
+		tipid.removeChild(tippoint);
+		tipid.removeChild(tipmid);
+		tipid.removeChild(tipcap);
+		tipid.appendChild(tippoint);
+		tipid.appendChild(tipmid);
+		tipid.appendChild(tipcap);
+	}
+	
+	if (TipHeight >= WinHeight) {
+		
+		if (document.getElementById('uniTipP')) {
+			tippointin.style.left = (TipWidth >= WinWidth ) ? "-" + elewidth + "px" : "0px";
+			tippointin.style.top = "-" + PointHeight + "px";
+		} else tippoint.style.backgroundPosition = (TipWidth >= WinWidth ) ? "right bottom" : "left bottom";
+		
+		if (document.getElementById('uniTipC')) tipcapin.style.top = "-" + CapHeight + "px";
+		else tipcap.style.backgroundPosition = "0 -" + CapHeight + "px";
+		
+	} else {
+		
+		if (document.getElementById('uniTipP')) {
+			tippointin.style.left = (TipWidth >= WinWidth ) ? "-" + elewidth + "px" : "0px";
+			tippointin.style.top = "0px";
+		} else tippoint.style.backgroundPosition = (TipWidth >= WinWidth ) ? "right top" : "left top";
+		
+		if (document.getElementById('uniTipC')) tipcapin.style.top = "0px";
+		else tipcap.style.backgroundPosition = "0 0";
+		
+	}
+}
+
+// lastly, hide the tooltip
+function hide_tips(a, sTitle) {
+	document.getElementById("unitipmid").innerHTML = "";
+	document.onmousemove = '';
+	document.body.removeChild(tipid);
+	tipid.style.display = "none";
+	if (altText==false) a.setAttribute("title", sTitle);
+	else a.setAttribute("alt", sTitle);
+	altText=false;
+}
+
+// add the event to the page
+//if (window.addEventListener) window.addEventListener("load", init, false);
+//if (window.attachEvent) window.attachEvent("onload", init);
+
+
+</script>
+
+<script>
+(function(){
+	
+    init_tips();
+    
+    get_sms_points();
+    
+    //load_arr();
+
+	var p = $('taokpi-default-widget').getParent('.dashbd-list').removeClass('dashbd-list');
+	var pp = p.getParent('.item');
+	p.injectTop('main');
+    pp.dispose();
+    
+    //选项卡效果
+    /*
+    var tab_container = $('group_edit_container');
+	var frame_src = '';
+    var tab_nav,tab_div;
+	var shop_id = '?app=taocrm&ctl=admin_analysis_chart&act=chart_line&service=taocrm_analysis_sales&target=1&date_from=2012-04-26&date_to=2012-05-02&line_shop=false&count_by=date&shop_id=$shop_id&c_date_from=&c_date_to=1970-01-07&target=1';
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                return false;
+                //frame_src = shop_id.replace('$shop_id',$obj.get('title'));
+                tab_nav.set('class','tab');
+                this.set('class','tab current');
+				//$('chart_frame').set('src',frame_src);
+            };
+        });
+    }
+    */
+    
+    //首页条款条件弹出效果
+    if (stat != 'agree' && shop_type == 2){
+		(function(){
+			if(flag){
+				new Dialog('index.php?app=market&ctl=admin_active&act=legal_copy&t='+$time(),{width:650,height:350,title:'条款条件'});
+				flag = false;
+			}
+		}).periodical(1);
+    }
+	//$('first-page').load('index.php?app=taobukpi&ctl=admin_fristpage&act=index');
+})();
+
+
+
+
+//异步查询短信余额
+function get_sms_points(){
+    var _data = '';
+    new Request({
+        url: 'index.php?app=market&ctl=admin_sms_account&act=get_amount',
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            var sms_points = '未绑定';
+            //var edm_points = '未绑定';
+            try{
+                var amount = eval('('+responseText+')');
+                sms_points = amount.sms_amount;
+                //edm_points = amount.edm_amount;
+            }catch(e){}
+            $('sms_points').set('html',sms_points);
+            //$('edm_points').set('html',edm_points);
+        }
+    }).send();
+}
+
+function load_arr(){
+    var td = $$('#chk_table td');
+    for(var i=7;i<12;i++){
+        var j = i+6;
+        var val1 = parseFloat(td[i].get('text').replace('￥','').replace(/,/g,''));
+        var val2 = parseFloat(td[j].get('text').replace('￥','').replace(/,/g,''));
+        if(val1 > val2){
+            td[i].set('class','up_bg');
+        }else if(val1 < val2){
+            td[i].set('class','down_bg');
+        }
+    }
+}
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>

@@ -1,0 +1,62 @@
+<h3><{t}>等级积分设置<{/t}></h3>
+<div class="tableform">
+    <form action='index.php?app=taocrm&ctl=admin_setting&act=toLvSetting' method='post' id="import_form">
+        <div class="tableform" id="lvSetting">
+            <div class="division">
+                <label><input type='radio' name='point_type' value=1  <{if $set.method == "1" || $point.type==""}>checked="checked"<{/if}>/><{t}>普通设置<{/t}></label>
+                <label style="display:none;"><input type='radio' name='point_type' value=0  <{if $set.method == "0"}>checked="checked"<{/if}>/><{t}>高级设置<{/t}></label>
+            </div>
+        </div>
+        <div class="tableform" id="normal">
+            <div class="division">
+                等级积分 = 订购金额 * <input type='text' name='normal[amount]' value="<{$set.config.normal.amount}>" style="width:50px;" /><{help}><{t}>请填写倍数<{/t}><{/help}>
+            </div>
+        </div>
+        <div class="tableform" id="advanced">
+            <div style="padding-left:10px;"><h5 style="color:#FF0000;">店铺客户超过10万以上，建议采用高级设置，Taoex免费提供高级设置的指导服务</h5></div>
+            <div class="division" >
+                等级积分 = F分值 * <input type='text' name='advanced[num]' value="<{$set.config.advanced.num}>" style="width:50px;" /><{help}><{t}>请填写倍数<{/t}><{/help}> + 
+                M分值 * <input type='text' name='advanced[amount]' value="<{$set.config.advanced.amount}>" style="width:50px;" /><{help}><{t}>请填写倍数<{/t}><{/help}>
+            </div>
+            <div class="division" >F分值设置（F是购物次数）：<br />
+                 F分值 = <input type='text' name='F[0]' value="<{$set.config.advanced.F.0}>" style="width:50px;"/> （F = 1次）<br />
+                 F分值 = <input type='text' name='F[1]' value="<{$set.config.advanced.F.1}>" style="width:50px;" /> （F = 2次）<br />
+                 F分值 = <input type='text' name='F[2]' value="<{$set.config.advanced.F.2}>" style="width:50px;" /> （F = 3次）<br />
+                 F分值 = <input type='text' name='F[3]' value="<{$set.config.advanced.F.3}>" style="width:50px;" /> （F >= 4次）
+            </div>
+            <div class="division" >M分值设置（M是购物金额）：<br />
+                 M分值 = <input type='text' name='M[0]' value="<{$set.config.advanced.M.0}>" style="width:50px;" /> （M < 100元 ）<br />
+                 M分值 = <input type='text' name='M[1]' value="<{$set.config.advanced.M.1}>" style="width:50px;" /> （100元 <= M < 500元）<br />
+                 M分值 = <input type='text' name='M[2]' value="<{$set.config.advanced.M.2}>" style="width:50px;" /> （500元 <= M < 1000元）<br />
+                 M分值 = <input type='text' name='M[3]' value="<{$set.config.advanced.M.3}>" style="width:50px;" /> （1000元 <= M）
+            </div>
+        </div>
+        <div class="table-action">
+            <{button label=$___desktop="确认"|t:'desktop' id="ImportBtn"  type="submit"}>
+        </div>
+    </form>
+</div>
+
+<script>
+(function(){
+    function settingType(radio){
+        var tradio=radio;
+        var tradioValue=tradio.get('value');
+        var tmap={
+            '1':$('normal'),
+            '0':$('advanced')
+        };
+        if(tradio.checked){
+            tmap[tradioValue].show();
+            tmap[tradioValue].getFormElements().set('disabled',false);
+        }else{
+            tmap[tradioValue].hide();
+            tmap[tradioValue].getFormElements().set('disabled',true);
+        }
+    }
+
+    $$("#lvSetting input[name=point_type]").addEvent('click',function(){
+        $$("#lvSetting input[name=point_type]").each(settingType);
+    }).each(settingType);
+})();
+</script>

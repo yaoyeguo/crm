@@ -1,0 +1,70 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+    <td width="12%" valign="top" bgcolor="#E4E4E4" style="padding:12px 5px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg"  class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div>
+    <div id="left_content">
+        <div id="main_nav"  >
+            <h2 id='sub_sort_0'  class="<{if $env.get.act eq 'index'}>c2<{else}>c1<{/if}>" style="margin:0">
+                <a href="<{link app='taocrm' ctl='admin_analysis_member' act='index'}>" >客户等级分布</a>
+            </h2>
+
+            <h2 id='sub_sort_1' class="<{if $env.get.act eq 'area'}>c2<{else}>c1<{/if}>">
+                <a href="<{link app='taocrm' ctl='admin_analysis_member' act='area'}>" >客户区域分布</a>
+            </h2>
+
+            <h2 id='sub_sort_2' class="<{if $env.get.act eq 'sales'}>c2<{else}>c1<{/if}>">
+                <a href="<{link app='taocrm' ctl='admin_analysis_member' act='sales'}>" >客户销售统计</a>
+            </h2>
+
+            <h2 id='sub_sort_3' class="<{if $env.get.act eq 'times'}>c2<{else}>c1<{/if}>">
+                <a href="<{link app='taocrm' ctl='admin_analysis_member' act='times'}>" >客户购买频次</a>
+            </h2>
+
+            <h2 id='sub_sort_3' class="<{if $env.get.act eq 'price'}>c2<{else}>c1<{/if}>">
+                <a href="<{link app='taocrm' ctl='admin_analysis_member' act='price'}>" >客户客单价</a>
+            </h2>
+
+            <h2 id='sub_sort_3' class="<{if $env.get.act eq 'newmember'}>c2<{else}>c1<{/if}>">
+               <a href="<{link app='taocrm' ctl='admin_analysis_member' act='newmember'}>" >新增客户统计</a>
+            </h2>
+        </div>
+    </div>
+	  
+    <div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+    </td>
+
+    <td width="88%" valign="top" bgcolor="#E4E4E4" style="padding:12px 8px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div>
+    <div class="cir_rightbox">
+        <h4>
+            <div class="title_left" >
+            <{$path}>
+            </div>
+            <{include file="admin/analysis/search.html"}>
+        </h4>
+        <{include file=$_MEM_PAGE_}>
+    </div>
+    <div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+    </td>
+</tr>
+</table>

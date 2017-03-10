@@ -1,0 +1,138 @@
+<div class="tableform">
+    <div id="register_div" style="border-right:1px solid #CCCCCC;display:none;">            
+     <form action="<{link app=market ctl=admin_edm_account act=register}>" method="post" id="enterpriseRegister">
+         <table border="0" cellspan="0" colspan="0">
+                <tr>
+                    <th>&nbsp;</th>
+                    <td><h2 class="head-title">邮件账户注册</h2></td>
+                </tr>	            
+             <tr>
+                 <th><em class="c-red">*</em> Email:</th>
+                 <td><{input type="text" name="email" id="email" }></td>
+             </tr>
+             <tr>
+                 <th><em class="c-red">*</em> 密码:</th>
+                 <td><{input type="password" name="password" id="password" }></td>
+             </tr>
+             <tr>
+                 <th><em class="c-red">*</em> 确认密码:</th>
+                 <td><{input type="password" name="confirm" id="confirm" }></td>
+             </tr>     
+             
+              <tr>
+                 <th><em class="c-red">*</em> 公司名称:</th>
+                 <td><{input type="text" name="company" id="company" }></td>
+             </tr>  
+             <tr>
+                 <th><em class="c-red">*</em> 联系人:</th>
+                 <td><{input type="text" name="owner" id="owner" }></td>
+             </tr>        
+             <tr>
+                 <th><em class="c-red">*</em> 旺旺号:</th>
+                 <td><{input type="text" name="wangwang" id="wangwang" }></td>
+             </tr>    
+             <tr>
+                 <th>拍拍号:</th>
+                 <td><{input type="text" name="paipai" id="paipai" }></td>
+             </tr>
+             <tr>
+                 <th><em class="c-red">*</em> 联系电话:</th>
+                 <td><{input type="text" name="tel" id="tel" }></td>
+             </tr>         
+             <tr>
+                 <th><em class="c-red">*</em> 所属地区:</th>
+                 <td><{input app=ectools type="region" name="region" id="region" }></td>
+             </tr>  
+             <tr>
+                 <th><em class="c-red">*</em> 详细地址:</th>
+                 <td><{input type="text" name="address" id="address" size="60" }></td>
+             </tr>
+             <tr>
+                 <th><em class="c-red">*</em> 邮编:</th>
+                 <td><{input type="text" name="postcode" id="postcode" size="6" }></td>
+             </tr>
+             <tr>
+                <th>&nbsp;</th>
+                <td>
+                    <{button type="button" label="注册" id="register"}>　　
+                    <{button type="button" label="返回" onclick="$('bind_div').show();$('register_div').hide();" }>
+             </td></tr>                                                                                     
+         </table>
+     </form>        
+    </div>
+    
+    <div id="bind_div" style="">
+        <input type="hidden" name="email" id="email" value="<{$account['username']}>">
+        <input type="hidden" name="entid" id="entid" value="<{$account['entid']}>">
+        <form action="<{link app=market ctl=admin_edm_account act=bind}>" method="post" id="enterpriseBind">
+            <table border="0" cellspan="0" colspan="0">
+            <tr>
+                <th>&nbsp;</th>
+                <td>
+                    <span class="c-red">提醒：请使用已有企业账号激活邮件账户开通邮件服务！ </span></td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td><h2 class="head-title">邮件账户绑定</h2></td>
+                </tr>                
+                <tr>
+                    <th><em class="c-red">*</em> Email:</th>
+                    <td><input size=30 type="text" name="bindemail" id="bindemail" value="<{$account['username']}>">
+                    <em class="">(邮箱或ShopExID)</em></td>
+                </tr>
+                <tr>
+                    <th><em class="c-red">*</em> 用户密码:</th>
+                    <td><input size=30 type="password" name="bindpassword" id="bindpassword" value=""></td>
+                </tr>
+
+               <!--  <tr>
+                    <th><em class="c-red">*</em> 发件箱:</th>
+                    <td><input type="text" name="edm_email" id="edm_email" value="<{$account['username']}>"></td>
+                </tr>
+                <tr>
+                    <th><em class="c-red">*</em> 公司名称:</th>
+                    <td><input type="text" name="company" id="company" value="<{$account['company']}>"></td>
+                </tr>
+                
+                <tr>
+                    <th><em class="c-red">*</em> 联系人:</th>
+                    <td><input type="text" name="contact" id="contact" value="<{$account['owner']}>"></td>
+                </tr>
+
+                <tr>
+                    <th><em class="c-red">*</em> 邮政编码:</th>
+                    <td><input type="text" name="cell" id="cell" value="<{$account['postalcode']}>"></td>
+                </tr> -->
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <{button type="button" label="绑定" id="bind"}>　　
+                        <{button type="button" label="注册新帐号" onclick="$('bind_div').hide();$('register_div').show();" }>
+                    </td>
+                </tr>    
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <a href="http://my.shopex.cn" target="_blank">忘记密码,请点击</a>
+                    </td>
+                </tr>                                                                                    
+            </table>                
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function(){
+        var _form = $('enterpriseRegister');
+        var btn =$('register');
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+        
+        var _bindform = $('enterpriseBind');
+        var bindbtn = $('bind');
+        bindbtn.addEvent('click', function(){
+        	_bindform.fireEvent('submit',{stop:$empty});
+        })
+    })();
+</script>

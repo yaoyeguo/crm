@@ -1,0 +1,169 @@
+<h4><{t}>下载商品<{/t}></h4>
+
+<div class="tableform">
+    
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th><{t}>请选择店铺：<{/t}></th>
+                <td>
+                   <select class="x-input" id='select_shop' name='select_shop'>
+                            <option value="">-请选择-</option>
+                            <{foreach from=$shoplist item=item}>
+                            <option value="<{$item.shop_id}>" name="<{$item.name}>"><{$item.name}></option>
+                            <{/foreach}>
+                   </select>
+                </td>
+            </tr>
+            
+            <tr style="display:none;" id="gd_loading_bar">
+                <th>&nbsp;</th>
+                <td>
+                    <div id="gd_status" style="padding:0 0 8px 0;">正在处理，请耐心等待。</div>
+                    <img src="<{$env.app.res_url}>/loading3.gif" align="absmiddle" />
+                </td>
+            </tr>
+
+            <tr id="submit_tr">
+                <th>&nbsp;</th>
+                <td><{button id="down1" class="btn-primary" label=$___b2c="开始下载"|t:'b2c' type="button"}></td>
+            </tr>
+        </table>
+    </div>
+    
+</div>
+<script>
+(function(){
+
+    var forbidden = '<{$forbidden}>';
+    if(forbidden == 'yes') {
+        $('gd_loading_bar').show();
+        $('submit_tr').hide();
+    }
+
+    $$('#down1').addEvent('click',function(){
+        get_items('ItemsOnsaleGetRequest',1,'')
+    });
+    
+})();
+
+function update_member_products(){
+    var shop_id = $('select_shop').value;
+    var _data = '';
+    $('update_member_products_status').set('html', '正在处理，请耐心等待。');
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_download&act=update_member_products&shop_id='+shop_id,
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            $('update_member_products_status').set('html', responseText);
+        }
+    }).send();
+}
+
+function create_item_goods(page){
+    var shop_id = $('select_shop').value;
+    var _data = '';
+    $('create_item_goods_status').set('html', '正在处理'+page+'，请耐心等待。');
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_download&act=create_item_goods&shop_id='+shop_id+'&page='+page,
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            if(responseText == 'finish'){
+                $('create_item_goods_status').set('html', responseText);
+            }else{
+                page++;
+                create_item_goods(page);
+            }
+        }
+    }).send();
+}
+
+function update_item_goods(page){
+    var shop_id = $('select_shop').value;
+    var _data = '';
+    $('update_item_goods_status').set('html', '正在处理'+page+'，请耐心等待。');
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_download&act=update_item_goods&shop_id='+shop_id+'&page='+page,
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            if(responseText == 'finish'){
+                $('update_item_goods_status').set('html', responseText);
+            }else{
+                page++;
+                update_item_goods(page);
+            }
+        }
+    }).send();
+}
+
+function get_items(task,page_no,shop_id){
+
+    if($('gd_status'))
+        $('gd_status').set('html',''+get_task_name(task)+'：'+page_no+' ');
+
+    var data={'date_from':'1','date_end':'2'};
+    
+    if(!shop_id) shop_id = $('select_shop').value;
+    if(shop_id == ""){
+        alert('请选择店铺');
+        return false;
+    }
+	$('select_shop').value = shop_id;
+
+    if($('gd_loading_bar')) {
+        $('gd_loading_bar').show();
+        $('submit_tr').hide();
+    }
+     //$$('.btn-primary').removeClass('btn-primary').set('disabled',true);
+     new Request({
+         url : 'index.php?app=ecorder&ctl=admin_download&act=get_items&data_type=goods&shop_id='+shop_id+'&task='+task+'&page_no='+page_no,
+         method : 'post',
+         data:data,
+         onSuccess:function(responseText){
+            //alert(responseText);
+            var obj = eval('(' + responseText + ')');
+            if((obj.task).indexOf('error')>=0){//发生错误
+                obj.task = (obj.task).replace(/<br\/>/g,'');
+                alert(obj.task);
+                if($('gd_loading_bar')) {
+                    $('gd_loading_bar').hide();
+                    $('submit_tr').show();
+                }
+                return false;
+            }
+            if((obj.task).indexOf('finish')>=0){
+                alert('数据下载完成！');
+                if($('gd_loading_bar')) {
+                    $('gd_loading_bar').hide();
+                    $('submit_tr').show();
+                }
+            }else{
+                get_items(obj.task,obj.page_no,obj.shop_id);
+            }
+          }
+     }).send();
+}
+
+function get_task_name(task){
+    switch (task){
+        case 'ItemsOnsaleGetRequest':
+            return '正在下载在售商品';break;
+        case 'ItemsInventoryGetRequest':
+            return '正在下载库存商品';break;
+        case 'ItemSkusGetRequest':
+            return '正在下载商品SKU';break;
+        case 'ItemcatsGetRequest':
+            return '正在下载商品分类';break;
+        case 'updateOrderInfo':
+            return '正在更新商品数据';break;
+        case 'updateShopInfo':
+            return '正在更新商品信息';break;
+    }
+}
+</script>

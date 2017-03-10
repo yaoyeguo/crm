@@ -1,0 +1,48 @@
+<style>
+    /*background: #ccc;*/
+    .weixin_body{width: 80%; height: 500px; margin: 0 auto;  text-align: center;}
+    .weixin_body a{display: inline-block; width: 160px; height: 50px; font-weight: bold; background: #090;color: #F2FFF8; text-align: center; border: 1px solid green;line-height: 50px;letter-spacing: 1px; text-decoration: none;margin: 40px auto 40px auto; border-radius: 3px;}
+    .weixin_body p{ font-family: "微软雅黑";font-size: 15px;line-height: 12px; }
+</style>
+
+<div class="weixin_body">
+    <h1 style="margin-top: 40px; font-family: '微软雅黑';">切换微信功能版本</h1>
+    <div style="display: block; margin-top: 60px; text-align: left;width: 60%;margin: 0 auto;">
+        <p>注意事项(认真阅读)：</p>
+        <p style="text-indent: 40px">1.微信功能高阶版本目前适合新用户或还未启动微信功能的老用户。</p>
+        <p style="text-indent: 40px">2.微信功能标准版本和高阶版本进行相互切换时目前基础数据不能同步。</p>
+        <p style="text-indent: 80px">（含：关键词、图文素材、活动信息、预约报名、积分兑换)。</p>
+        <p style="text-indent: 40px">3.微信功能标准版本和高阶版本相互切换时需要到微信后台进行消息通道设置。如下图</p>
+        <p style="text-indent: 40px"><img src="<{$env.app.res_url}>/xiugai.jpg" style="width: 500px; height: 400px;"></p>
+    </div>
+    <a href="javascript:void(0)" class="standard_weixin" version='1'>切换到标准版微信</a>
+    
+    <{if($need_buy===0)}>
+    <a href="javascript:void(0)" class="standard_weixin" version='2'>切换到增强版微信</a>
+    <{else}>
+    <a href="index.php?app=market&amp;ctl=admin_weixin&amp;act=buy_weixin" id="">切换到增强版微信</a>
+    <{/if}>
+    
+    <p>如需人工服务请拨打商派热线400-890-8858。</p>
+    <p>商派,技术驱动商业未来</p>
+</div>
+
+<script>
+(function (){
+    var _this = $$(".standard_weixin");
+    _this.addEvent('click',function(){
+        var wx_version = $(this).getProperty('version');
+        var pingRequest = new Request.JSON({
+            url:"index.php?app=ecorder&ctl=admin_shop&act=standardWeixin&wx_version="+wx_version,
+            onComplete: function(res){
+                if(res.res == 1){
+                    new Dialog('index.php?app=ecorder&ctl=admin_shop&act=prompt&msg='+encodeURI(res.msg)+'&res='+res.res,{title:'提示',width:450,height:340,onClose:function(){}});
+                    return false;
+                }
+                window.location.href = "index.php?app=market&ctl=admin_weixin&act=survey_items";
+            }
+        });
+        pingRequest.get();
+    });
+})();
+</script>

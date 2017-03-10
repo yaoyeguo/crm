@@ -1,0 +1,57 @@
+<form id="active_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+<!-----------------------step1---------------------------->
+<{input type="hidden" name="active_id" id="active_id" value=$rs_active.active_id }>
+<{input type="hidden" name="status" id="status" value=$rs_active.new_status }>
+<div id="step1">
+    <div style="text-align:center;padding:40px 0 0 0;">
+        <{if($rs_active.status)}>
+            确定要关闭 <b><{($rs_active.active_name)}></b> 活动吗？
+        <{else}>
+            确定要开启 <b><{($rs_active.active_name)}></b> 活动吗？
+        <{/if}>
+    </div>
+</div>
+</form>
+
+<!-----------------------btn 切换按钮---------------------------->
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="save_btn" label="确认" style="display:;"}>
+        <{button class="btn-primary" type="button" id="cancel_btn" label="取消" style="display:;"}>
+    </div>
+<{/area}>
+
+<script>
+//保存
+$('save_btn').addEvent('click', function(){
+    save_active();
+});
+
+//取消
+$('cancel_btn').addEvent('click', function(){
+    $(this).getParent('.dialog').retrieve('instance').close();
+});
+
+function save_active(){
+    $('active_form').fireEvent('submit',{stop:$empty});
+}
+
+$('active_form').store('target',{
+    onRequest:function(){
+       $('save_btn').set('disabled', 'disabled');
+    },
+    onSuccess:function(response){
+        $('save_btn').set('disabled', false);
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('save_btn').getParent('.dialog').retrieve('instance');
+            }catch(e){
+            
+            }
+            if(_dialogIns) _dialogIns.close();
+        }	
+    }
+});
+</script>

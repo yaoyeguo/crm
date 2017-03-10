@@ -1,0 +1,64 @@
+<div class="division">
+<table border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <th><label for="coupon_id"><{t}>优惠券发送：<{/t}></label></th>
+        <td id="coupon_send"><label><input type='radio' name='coupon_send' value=<{$shop.shop_id}> /><{t}>是<{/t}></label>
+            <label><input type='radio' name='coupon_send' value="" checked="checked" /><{t}>否<{/t}></label></td>
+    </tr>
+    <tr>
+        <th></th>
+        <td id="coupon_id"></td>
+    </tr>
+    <tr>
+        <th><{t}>短信提醒：<{/t}></th>
+        <td id="sms_send"><label><input type='radio' name='sms_send' value=<{$shop.shop_id}> /><{t}>是<{/t}></label>
+            <label><input type='radio' name='sms_send' value="" checked="checked" /><{t}>否<{/t}></label></td>
+    </tr>
+    <tr>
+        <th></th>
+        <td id="theme_id"></td>
+    </tr>
+</table>
+</div>
+<script>
+(function(){
+    window.addEvent('domready',function(){
+        var shop_id = '';
+        $('shop_select').addEvent('change',function(){
+            shop_id = $('shop_select').value;
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_member_group&act=getShopGroup&p[0]='+$('shop_select').value,
+                method : 'post',
+                update : $('group_id')
+            }).send();
+        });
+
+        $('shop_select').addEvent('change',function(){
+        });
+
+        $$("#coupon_send input[name=coupon_send]").addEvent('click',function(){
+            if(this.value){
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_coupon&act=getShopCoupon&p[0]='+shop_id,
+                    method : 'post',
+                    update : $('coupon_id')
+                }).send();
+            }else{
+                $('coupon_id').innerHTML = '';
+            }
+        });
+        
+        $$("#sms_send input[name=sms_send]").addEvent('click',function(){
+            if(this.value){
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_sms&act=getThemes&p[0]='+this.value,
+                    method : 'post',
+                    update : $('theme_id')
+                }).send();
+            }else{
+                $('theme_id').innerHTML = '';
+            }
+        });
+    });
+})();
+</script>

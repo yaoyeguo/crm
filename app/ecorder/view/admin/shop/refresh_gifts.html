@@ -1,0 +1,64 @@
+<div class="tableform">
+
+	<div class="" style="padding:30px 0 0 130px;">
+	    <{t}>请选择店铺：<{/t}>
+        <{input id='shop_id' name='shop_id' type="select" options=$shoplist value=$shop_id }>
+	</div>
+    
+    <div id="gift_status" style="display:none;text-align:center;color:red;line-height:2em;"></div>
+</div>
+
+<{area inject='.mainFoot'}>
+	<div class="table-action" id="submit_tr">
+		<{button id="down" class="btn-primary" label=$___b2c="确定"|t:'b2c' type="button"}>
+	</div>
+<{/area}>
+
+<script>
+(function(){
+	/*
+    var forbidden = '<{$forbidden}>';
+    if(forbidden == 'yes') {
+        $('gift_loading_bar').show();
+        $('submit_tr').hide();
+        $('gift_status').set('html','正在处理，请耐心等待....');
+    }
+	*/
+	
+    $('down').addEvent('click',function(){
+    
+        $('gift_status').set('text','正在更新赠品列表，请耐心等待....');
+    
+        var shop_id = $('shop_id').value;
+        if(shop_id==""){
+            alert('请选择店铺');
+            $('shop_id').focus();
+            return false;
+        }
+        var data={'shop_id':shop_id};
+        var obj = $('down').getParent('.dialog').retrieve('instance');
+        $('gift_status').show();
+        
+        new Request({
+            url : 'index.php?app=ecorder&ctl=admin_gift_list&act=get_gifts',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+            	//alert(responseText);
+                if(responseText=='succ'){
+                	//alert('更新成功');
+                	obj.close();
+                    finderGroup['<{$finder_id}>'].refresh();
+                	//window.location.reload();
+                }else{
+                	$('gift_status').set('text','发生错误：'+responseText);
+                	//obj.close();
+                    //finderGroup['<{$finder_id}>'].refresh();
+                	//window.location.reload();
+                }
+            }
+        }).send();
+    });
+
+})();
+</script>

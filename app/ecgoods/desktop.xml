@@ -1,0 +1,35 @@
+<desktop>
+
+    <permissions>
+            <permission id="sales" display='false'>商品报表</permission>
+            <permission id="orders" display='false'>订单列表</permission>
+            <permission id="goods_sales">销售商品统计</permission>
+            <permission id="hot_goods_relation">热销商品关联</permission>
+            <permission id="goods_basket">购物篮分析</permission>
+            
+            <permission id="goods_manage">商品管理</permission>
+            <permission id="goods_brand">品牌管理</permission>
+            <permission id="goods_group">分组管理</permission>
+            <permission id="goods_buy">重复购买率</permission>
+    </permissions>
+
+    <workground name="运营报表" id="taocrm.analysis" order="500">
+    
+        <menugroup name="商品销售分析" order="5003000">
+            <menu controller='admin_shop_goods' action='index' permission='goods_sales' display='true' order='5003100'>销售商品统计</menu>
+            <menu controller='admin_shop_goods' action='relation' permission='hot_goods_relation' display='true' order='5003200'>热销商品关联</menu>
+            <menu controller='admin_shop_basket' action='index' permission='goods_basket' display='true' order='5003300'>购物篮分析</menu>
+        </menugroup>
+
+        <menugroup name="商品概况" order="5004000">
+            <menu controller='admin_shop_goods' action='index_filter' permission='sales' display='false' order='5004100'>商品过滤</menu>
+            <menu controller='admin_brand' action='index' permission='goods_brand' display='true' order='5004200'>品牌管理</menu>
+            <menu controller='admin_group' action='index' permission='goods_group' display='true' order='5004300'>商品分组</menu>
+            <menu controller='admin_shop_goods_manage' action='index' permission='goods_manage' display='true' order='5004400'>商品管理</menu>
+            <menu controller='admin_goods_cycle' action='index' permission='goods_cycle' display='false' order='5004500'>商品周期</menu>
+            <menu controller='admin_goods_buy' action='index' permission='goods_buy' display='true' order='5004600'>重复购买率</menu>
+        </menugroup>
+        
+     </workground>     
+     
+</desktop>

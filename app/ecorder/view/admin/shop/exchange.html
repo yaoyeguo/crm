@@ -1,0 +1,100 @@
+
+<div class="top_extra clear">
+
+    <div class="gridlist-action data-action" id="dataAction" style="padding:5px 15px; border:0;background:#F0F0F0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;height: 60px;">
+    <!--<form method="POST" action="index.php?app=ecorder&ctl=admin_shop_credit&act=save_credit_exchange" id="form_exchange">-->
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 350px;height: 50px;">
+        <!--<tr>
+            <th width='5%'>每</th>
+            <td width='20%'><input type="text" id="consume_points_cti" name="consume_points_cti" value="<{$data.consume_points_cti}>" style="width: 60px;" /></td>
+            <td width='35%'>消费积分兑换为</td>
+            <td width='20%'><input type="text" id="interaction_points_cti" name="interaction_points_cti" value="<{$data.interaction_points_cti}>" style="width: 60px;" /></td>
+            <td width='20%'>互动积分</td>
+        </tr>-->
+        <tr>
+            <th width='5%'>每</th>
+            <td width='15%'><input type="text" id="interaction_points_itc" name="interaction_points_itc" value="<{$data.interaction_points_itc}>" style="width: 60px;" /></td>
+            <td width='32%'>互动积分兑换为</td>
+            <td width='15%'><input type="text" id="consume_points_itc" name="consume_points_itc" value="<{$data.consume_points_itc}>" style="width: 60px;" /></td>
+            <td width='18%'>消费积分</td>
+            <td width='15%'><{button id="down1" name="down1" class="btn-primary" label=$___b2c="提交"|t:'b2c' type="button"}></td>
+        </tr>
+    </table>
+    <!--</form>-->
+</div>
+</div>
+<style>
+#status {padding:0 0 8px 0;}
+#percent_bar {border:1px solid #5D84B0;padding:1px;width:400px;}
+#percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+    /*var _form = $('form_exchange');
+    $$('#down1').addEvent('click',function(){
+        var consume_points_cti = $('consume_points_cti').value;
+        var interaction_points_cti = $('interaction_points_cti').value;
+        var consume_points_itc = $('consume_points_itc').value;
+        var interaction_points_itc = $('interaction_points_itc').value;
+        consume_points_cti  =  consume_points_cti.replace(/\s+/g,"");//去除前后的空格
+        interaction_points_cti  =  interaction_points_cti.replace(/\s+/g,"");//去除前后的空格
+        consume_points_itc  =  consume_points_itc.replace(/\s+/g,"");//去除前后的空格
+        interaction_points_itc  =  interaction_points_itc.replace(/\s+/g,"");//去除前后的空格
+        if(!number_check(consume_points_cti) || !number_check(interaction_points_cti) || !number_check(consume_points_itc) || !number_check(interaction_points_itc)){
+            alert('比例不能有除数字之外的其他符号！');
+            return;
+        }
+        _form.fireEvent('submit',{stop:$empty});
+    });*/
+    $('down1').addEvent('click', function(){
+       // var consume_points_cti = $('consume_points_cti').value;
+       // var interaction_points_cti = $('interaction_points_cti').value;
+        var consume_points_itc = $('consume_points_itc').value;
+        var interaction_points_itc = $('interaction_points_itc').value;
+       // consume_points_cti  =  consume_points_cti.replace(/\s+/g,"");//去除前后的空格
+      //  interaction_points_cti  =  interaction_points_cti.replace(/\s+/g,"");//去除前后的空格
+        consume_points_itc  =  consume_points_itc.replace(/\s+/g,"");//去除前后的空格
+        interaction_points_itc  =  interaction_points_itc.replace(/\s+/g,"");//去除前后的空格
+        if(!interaction_points_itc){
+            alert('互动积分不能为空！');
+            return;
+        }
+        if(!consume_points_itc){
+            alert('消费积分不能为空！');
+            return;
+        }
+        if( !number_check(consume_points_itc) || !number_check(interaction_points_itc)){
+            alert('比例不能有除数字之外的其他符号！');
+            return;
+        }
+        setChartData();
+    });
+})();
+function setChartData(){
+    var params=dataAction.toQueryString();
+    dataAction.store('_data',params);
+    //var url='index.php?app=ecorder&ctl=admin_shop_credit&act=save_credit_exchange';
+    var url='index.php?<{$env.server.QUERY_STRING}>';
+    W.page(
+            url,
+            {
+                data:params,
+                method:'post',
+                onComplete:function(datastr){
+                    //if(_finder) _finder.filter.value=params;
+                   // alert(datastr);
+                   // location.href = 'index.php?app=ecorder&ctl=admin_shop_credit&act=credit_exchange';
+                }
+            }
+    );
+}
+//数字框验证
+function number_check(value){
+    var rex = /^[1-9]\d*$/;
+    if(rex.test(value)){
+        return true;
+    }else{
+        return false;
+    }
+}
+</script>

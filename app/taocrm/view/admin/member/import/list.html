@@ -1,0 +1,64 @@
+<div class="tableform">
+    <div class="division">
+
+        <form action="index.php?<{$env.server.QUERY_STRING}>" method="get" style="padding:0 0 5px 0;">
+            姓名：<{input size=8 type="text" name="q[uname]" value=$q['uname'] }>
+            手机号：<{input size=16 type="text" name="q[mobile]" value=$q['mobile'] maxlength=11 }>
+            <button type="submit">搜索</button>
+        </form>
+     
+	 	<table class="gridlist" width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+	 	<tr>
+            <th><{t}>批次号<{/t}></th>
+            <th><{t}>姓名<{/t}></th>
+            <th><{t}>手机<{/t}></th>
+            <th><{t}>邮件<{/t}></th>
+            <th><{t}>发送次数<{/t}></th>
+            <th><{t}>最后发送时间<{/t}></th>
+            <th><{t}>导入时间<{/t}></th>
+            <th><{t}>操作<{/t}></th>
+            </tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$batchList item=item key=key}>
+	 	<tr>
+	 	    <td><{$item.group_id}>-<{$item.batch_id}></td>
+	 		<td><{$item.uname}></td>
+	 		<td><{$item.mobile}></td>
+	 		<td><{$item.email}></td>
+	 		<td><{$item.send_count}></td>
+	 		<td><{if $item.last_send_time}><{$item.last_send_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 		<td><{if $item.create_time}><{$item.create_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 		<td>
+                <a href="###" onclick="ajax_del('<{$item.member_id}>',$(this));">删除</a>
+            </td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+	</div>
+	
+    <{$pager}>
+	 
+</div>
+
+<script>
+function ajax_del(member_id,el){
+    if(confirm('确定要删除吗？删除后不能撤销！')==false){
+        return false;
+    }
+    
+    var _url = 'index.php?app=taocrm&ctl=admin_member_import&act=del_member';
+    var _data = 'member_id='+member_id;
+    new Request({
+        url : _url,
+        method : 'post',
+        data : _data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            el.getParent().getParent().hide();
+        }
+    }).send();
+}
+</script>

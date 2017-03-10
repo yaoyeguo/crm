@@ -1,0 +1,55 @@
+<div class="tableform">
+	<div class="division">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>用户姓名：<{/t}></label></th><td><{$mem.contact.name|escape:'html'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>地区：<{/t}></label></th><td><{$mem.contact.area|region}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>地址：<{/t}></label></th><td><{$mem.contact.addr}></td>
+                    </tr>
+					<tr>
+						<th><label><{t}>手机：<{/t}></label></th><td><{$mem.contact.phone.mobile}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>固定电话：<{/t}></label></th><td><{$mem.contact.phone.telephone}></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>注册时间：<{/t}></label></th><td><{$mem.regtime|cdate:'FDATE_FTIME'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>客户等级：<{/t}></label></th><td><{$mem.shop_lv_name}></td>
+					</tr>
+					<tr>
+						<th><label>E-mail：</label></th><td><{$mem.contact.email}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>邮编：<{/t}></label></th><td><{$mem.contact.zipcode|escape:'html'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>标签：<{/t}></label></th><td><{$mem.tag}></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	
+	<table class="multi-cols" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+		<th><label><{t}>备注：<{/t}></label></th>
+		<td><{$mem.remark}></td>
+		</tr>
+	</table>
+	
+	</div>
+	</div>
+

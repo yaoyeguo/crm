@@ -1,0 +1,59 @@
+<ul class='finder-action-items flt' style='list-style:none;margin:17px 10px 10px 22px'>
+    <li>
+        <a label="储值调整" href="index.php?app=taocrm&ctl=admin_stored_log&act=edit_manual&member_id=<{$member_id}>&finder_id=<{$finder_id}>&source_page=<{$source_page}>" target="dialog::{width:650,height:250,title:'储值调整'}">
+            <span>储值调整</span>
+        </a>
+    </li>
+</ul>
+
+<div style="clear:both;">
+<div class="tableform">
+    
+        <h4>用户储值</h4>
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>储值<{/t}></th>
+                    <!--<th><{t}>来源店铺<{/t}></th>-->
+                    <th><{t}>更新时间<{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                <{foreach from=$stored_values item=item key=key}>
+                 <tr>
+                     <td><{$item.stored_value}></td>
+                     <!--<td><{$item.shop_name}></td>-->
+                     <td><{$item.last_modification_time|cdate:'FDATE_FTIME'}></td>
+                 </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+
+        <h4>储值日志</h4>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>储值<{/t}></th>
+            <th><{t}>期初值(变动前金额)<{/t}></th>
+            <th><{t}>期末值(变动后金额)<{/t}></th>
+            <th><{t}>操作人<{/t}></th>
+            <th><{t}>备注<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$logs item=item key=key}>
+         <tr>
+             <td><{$item.change_amount}></td>
+             <td><{$item.before_change_amount}></td>
+             <td><{$item.after_change_amount}></td>
+             <td><{$item.op_user}></td>
+             <td><{$item.remark}></td>
+             <td><{$item.value_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+        <{$pager}>
+</div>
+</div>

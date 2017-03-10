@@ -1,0 +1,196 @@
+<div class="guideline g-0">
+    <p class="txtcenter"><{img src="guide/g1.jpg" }></p>
+    <p>微信营销：是基于微信的一个社会化移动电商平台，通过建立与粉丝的互动，迅速帮助您在微信上开展营销活动，并实现社会化移动电子商务。</p>
+    <p class="action"><a onclick="goto_step(1);" class="btn green" href="javascript:;">立即使用</a></p>
+</div>
+
+<div class="guideline g-1" style="display:none">
+    <i></i>
+    <p>
+        <{img width="128" height="129" src="guide/g2.jpg" }>
+              <strong>开通微信公众帐号</strong><br><br>
+       <span>在使用微信营销之前，请确认您是否已经开通微信公共账号如果您还未开通，请<a href="https://mp.weixin.qq.com" target="_blank">点击这里</a>申请开通微信公共帐号。</span>
+    </p>
+    <p class="action"><a onclick="goto_step(2);" class="btn green" href="javascript:;">已经开通 | 下一步</a></p>
+</div>
+
+<div class="guideline g-2" style="display:none">
+    <i></i>
+    <p class="article">
+        <{img width="322" height="313" src="guide/g4.jpg" }>
+              <strong>设置微信营销</strong><br><br>
+       <span>简单快速的设置微信欢迎语和关键词自动回复消息，将我们的宝贝展示给粉丝。</span>
+       <a class="btn green" target="_blank" href="index.php?app=market&ctl=admin_weixin&act=autoReply&tab=1">设置欢迎语</a>
+       <a class="btn green" target="_blank" href="index.php?app=market&ctl=admin_weixin&act=keywordAutoReply&tab=2">设置关键词自动回复</a>
+    </p>
+    <p class="action"><a onclick="goto_step(3);" class="btn green" href="javascript:;">下一步（连接微信公众帐号）</a></p>
+</div>
+
+<div class="guideline g-3" style="display:none">
+    <i></i>
+    <p class="article">
+        <{img src="guide/g3.jpg" }>
+        <br>
+        <strong>连接微信公众帐号</strong><br>
+        <em>在[高级功能]中，关闭[编辑模式]并开启[开发模式]<br>成为开发者，填写接口配置信息（URL及Token）</em><br>
+            <table width="100%" cellpadding="3" cellspacing="0">
+                <tr>
+                    <th>URL：</th>
+                    <td><{input type="text" size="80" name="url" value=$wxuser.url
+                        }></td>
+                </tr>
+                <tr>
+                    <th>Token：</th>
+                    <td><{input type="text" size="80" name="token"
+                        value=$wxuser.token }></td>
+                </tr>
+            </table>
+        
+        <span>*到此您的微信公共账号完成切换，您的公共账号将执行所有您在CRM中的设置</span>
+    </p>
+    <p class="action" style="margin:0 0 0 0;"><a onclick="window.location.reload();" class="btn green" href="javascript:;">完成</a></p>
+</div>
+
+<script>
+function goto_step(no){
+    $$('div.guideline').hide();
+    $$('div.g-'+no).show();
+}
+</script>
+
+<style>
+.guideline {
+  background: none repeat scroll 0 0 #DBDCE1;
+  border: 1px solid #A8A8A8;
+  box-shadow: 3px 3px 6px #E5E5E5;
+  font-family: 'Microsoft Yahei';
+  height: 442px;
+  left: 20px;
+  overflow: hidden;
+  padding: 0 30px;
+  position: absolute;
+  top: 40px;
+  width: 608px;
+  z-index:2013;
+}
+
+.g-0 p {color: #333333;font-size: 15px;line-height: 30px;margin: 25px 8px 0;}
+.txtcenter {text-align: center;}
+
+.guideline .action {
+    clear: both;
+    text-align: center;
+}
+.guideline .action a, .guideline .action a:visited {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.guideline .btn {
+    height: 38px;
+    line-height: 38px;
+    padding: 0 20px;
+    width: auto;
+}
+input.green, a.green {
+    background: none repeat scroll 0 0 #5BAB9B;
+    border: 1px solid #429E8C;
+    color: #FFFFFF;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    width: 92px;
+}
+.btn {
+    border: 1px solid #C58A00;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
+input.green:hover, a.green:hover {
+    background: none repeat scroll 0 0 #448377;
+    text-decoration: none;
+}
+.guideline i {
+    background: url("<{$env.app.res_url}>/guide/num.jpg") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    float: left;
+    height: 90px;
+    margin: 22px 0 0;
+    width: 90px;
+}
+.g-1 i {
+    background-position: 0 0;
+}
+.g-2 i {
+    background-position: 0 -90px;
+}
+.g-3 i {
+    background-position: 0 -180px;
+}
+.g-1 p {
+    clear: both;
+    color: #333333;
+    line-height: 12px;
+    padding: 22px 0 0;
+}
+.g-1 img {
+    float: left;
+    margin: 0 18px 0 57px;
+}
+.g-1 strong, .g-2 strong, .g-3 strong {
+    font-size: 24px;
+    line-height: 40px;
+}
+.g-1 span, .g-2 span, .g-3 em {
+    font-size: 14px;
+    line-height: 30px;
+}
+.g-1 a, .g-1 a:visited {
+    color: #FF6600;
+    text-decoration: underline;
+}
+.g-1 a:hover {
+    text-decoration: none;
+}
+.g-1 .action {
+    height: 80px;
+    padding: 100px 0 0;
+}
+.g-2 p {
+    padding: 20px 0 0;
+}
+.g-2 img {
+    float: left;
+    margin: 0 22px 0 -89px;
+}
+.g-2 strong {
+    float: left;
+    margin: 50px 0 0;
+}
+.g-2 span {
+    float: left;
+    width: 260px;
+}
+.g-2 .article .btn {
+    margin: 10px 0 0;
+    width: 220px;
+}
+.g-3 .article {
+    float: left;
+    margin: -38px 0 0;
+    padding: 0 90px;
+    text-align: center;
+}
+.ie7 .g-3 .article {
+    float: none;
+    margin: 48px 0 0;
+}
+.g-3 em {
+    line-height: 24px;
+    width: 100%;
+}
+.g-3 .action {
+    float: left;
+    margin: 20px 0 0;
+    width: 100%;
+}
+</style>

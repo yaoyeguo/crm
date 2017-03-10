@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+	<title>独立部署工具</title> <{css src="framework.css"}>
+	<style>
+body {
+	margin: 0px;
+	padding: 0;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif, "宋体";
+	background: #fff;
+}
+
+.error {
+	color: red;
+}
+
+.succ {
+	color: green;
+}
+
+#install_wizzard input{width:220px;padding:5px;font-family:Arial;border:1px solid #CCC;}
+#install_wizzard input:focus{border:1px solid #F60;background:#FFC;}
+#install_wizzard td b{width:130px;display:block;float:left;text-align:right;padding:0 5px 0 0;}
+#install_wizzard td{padding:3px;}
+
+#check_res {line-height:2em;}
+.step_1 {font-size:16px;font-weight:bold;background:#DDD;padding:5px;border-radius:12px;}
+</style>
+	<{script src="moo.js"}>
+</head>
+<body>
+	<div style="margin: 0 auto; width: 800px;">
+		<table id="install_wizzard">
+			<tr>
+				<td align="left">
+                <div class="step_1">一. 请先安装所需软件</div>
+				</td>
+			</tr>
+			<tr>
+				<td align="left">1.安装会员运营中心系统</td>
+			</tr>
+			<tr>
+				<td>2.安装Redis 内存系统</td>
+			</tr>
+			<tr>
+				<td>3.安装Redis的Php扩展程序，保证Php能够调用Redis</td>
+			</tr>
+			<tr>
+				<td align="left">
+                    <div class="step_1">二.请填写下列参数,检测部署情况并自动配置文件</h1>
+					涉及文件(1.config.php,2.script/config/config.php)</div>
+                </td>
+			</tr>
+			<tr>
+				<td align="left"><b>Redis Ip:</b><input type="text" name="redis_ip"
+					value="127.0.0.1" id="redis_ip" />(例：127.0.0.1)</td>
+			</tr>
+			<tr>
+				<td align="left"><b>Redis Port:</b><input type="text"
+					name="redis_port" value="6379" id="redis_port" />(例：6379)</td>
+			</tr>
+			<tr>
+				<td align="left"><b>Java 安装服务 Url:</b><input type="text" name="java_install_url"
+					value="http://127.0.0.1:808" id="java_install_url" />(例：http://127.0.0.1:808
+					)</td>
+			</tr>
+			<tr>
+                <td align="left"><b>Java 中间件 Url:</b><input type="text" name="java_url"
+                    value="http://127.0.0.1:800" id="java_url" />(例：http://127.0.0.1:800
+                    )</td>
+            </tr>
+            <tr>
+                <td align="left"><b>会员中心 Url:</b><input type="text" name="member_center_url"
+                                                            value="http://127.0.0.1:809" id="member_center_url" />(例：http://127.0.0.1:809
+                    )</td>
+            </tr>
+			<tr>
+				<td align="left"><b>安装路径:</b></span><input type="text"
+					name="crm_dir" value="/data/httpd/crm" id="crm_dir" size="30" />(例：/data/httpd/crm)</td>
+			</tr>
+			<tr>
+                <td align="left"><b>Php 执行路径:</b></span><input type="text"
+                    name="php_bin" value="/usr/bin/php" id="php_bin" />(例：/usr/bin/php)</td>
+            </tr>
+            <tr>
+                <td align="left"><b>主网卡名称:</b><input type="text" name="netAddr" id="netAddr"  value="eth0"/>(例：eth0)</td>
+            </tr>
+            <!--<tr>
+                <td align="left"><b>数据库host:</b><input type="text" name="db_host" id="db_host"  value="127.0.0.1"/>(例：127.0.0.1)</td>
+            </tr>
+            <tr>
+                <td align="left"><b>数据库名称:</b><input type="text" name="db_name" id="db_name" value="crmdeploy" />(例：crmdeploy)</td>
+            </tr>
+			<tr>
+                <td align="left"><b>数据库账号:</b><input type="text" name="db_user" id="db_user" value="root" />(例：root)</td>
+            </tr>
+            <tr>
+                <td align="left"><b>数据库密码:</b><input type="password" name="db_password" id="db_password" value="111" /></td>
+            </tr>-->
+            <tr>
+                <td align="left"><b>java激活码:</b><input type="text" name="java_activecode" id="java_activecode" />(激活时间可能较长请耐心等待！)</td>
+            </tr>
+			<tr>
+				<td align="left">　　　　　　　　　　　<button type="button"
+					id="btnCheck" />自动检测并配置</button>
+				</td>
+			</tr>
+			<tr>
+				<td id="check_res">结果(灰色：【默认】，红色：【失败】，绿色：【成功】，蓝色：【提示】)：<br /> <span
+					id="resutl" style="display: none;"> <span id="loading"></span><br />
+						<span id="install_crm">1.检测是否安装会员运营中心系统。</span><br />  <span
+						id="install_redis">2.检测是否安装Redis 内存系统以及Redis链接参数是否设置正确。</span><br />
+						<span id="install_redisphp">3.检测是否安装Redis的Php扩展程序。</span><br /> <span
+						id="install_crmdir">4.检测CRM安装目录是否存在。</span><br /> <span
+						id="install_dir_iswrite">5.检测data,script,config是否可写。</span><br />
+					<span id="install_curl">6.检测PHP是否支持curl。</span><br />
+					<span id="install_php_bin">7.检测PHP执行路径是否有效。</span><br />
+                    <span id="activecode">8.检测java激活码是否有效。</span><br />
+						<span id="deploy_config">9.自动配置config.php</span><br /> <span
+						id="deploy_script_config">10.自动配置script/config/config.php</span><br />
+						
+						<span
+                        id="deploy_crontab_sh">11.自动配置script/crontab.sh(是否存在或者可写)</span><br />
+                        
+                        <span
+                        id="deploy_crontab_hour_sh">12.自动配置script/crontab_hour.sh</span><br />
+                        
+                        <span
+                        id="deploy_crontab_plugin_sh">13.自动配置script/crontab_plugin.sh</span><br />
+                        
+                        <span
+                        id="deploy_crontab_day_sh">14.自动配置script/crontab_day.sh</span><br />
+                        
+						<span id="deplog_linux_crontab"
+						style="color: blue; display: none;">15.请手动部署linux
+							crontab(定时)任务<br /> /********************************请部署Linux
+							Crontab脚本************************/<br /> * * * * * /bin/bash
+							{crmdir}/script/crontab.sh<br /> 0 2 * * * /bin/bash
+							{crmdir}/script/crontab_day.sh<br /> 30 * * * * /bin/bash
+							{crmdir}/script/crontab_hour.sh<br /> */15 * * * * /bin/bash
+							{crmdir}/script/crontab_plugin.sh<br />
+							/*********************************************************************************/
+					</span> </span></td>
+			</tr>
+            <tr>
+                <td align="center">
+                    <div id="finish_div" style="display: none;"><button type="button" id="finish_btn" onclick="finish_href();" />完成</button></div>
+                </td>
+            </tr>
+		</table>
+
+	</div>
+	<script>
+		var check_item_list = new Array('install_crm', 
+				'install_redis', 'install_redisphp', 'install_crmdir',
+				'install_dir_iswrite','install_curl','install_php_bin','activecode');
+		var check_finish_list = new Array();
+		var check_finish_ok_list = new Array();
+
+		var auto_item_list = new Array('deploy_config', 'deploy_script_config','deploy_crontab_sh','deploy_crontab_hour_sh','deploy_crontab_plugin_sh','deploy_crontab_day_sh');
+		var auto_finish_list = new Array();
+
+		$('btnCheck').addEvent('click', function() {
+			if ($('redis_ip').value == '') {
+				alert('Redis Ip 不能为空');
+			}
+
+			if ($('redis_port').value == '') {
+				alert('Redis Port 不能为空');
+			}
+
+			if ($('java_install_url').value == '') {
+				alert('Java 安装服务 Url 不能为空');
+			}
+
+			if ($('java_url').value == '') {
+                alert('Java 中间件 Url 不能为空');
+            }
+
+            if ($('member_center_url').value == '') {
+                alert('会员中心 Url 不能为空');
+            }
+			
+			if ($('crm_dir').value == '') {
+				alert('安装路径 不能为空');
+			}
+			
+			if ($('php_bin').value == '') {
+                alert('Php  执行路径 不能为空');
+            }
+            if ($('netAddr').value == '') {
+                alert('主网卡名称 不能为空');
+                return false;
+            }
+            /*if ($('db_host').value == '') {
+                alert('数据库host 不能为空');
+                return false;
+            }
+            if ($('db_name').value == '') {
+                alert('数据库名称 不能为空');
+                return false;
+            }
+            if ($('db_password').value == '') {
+                alert('数据库密码 不能为空');
+                return false;
+            }
+			if ($('db_user').value == '') {
+                alert('数据库账号 不能为空');
+                return false;
+            }*/
+            if ($('java_activecode').value == '') {
+                alert('java激活码 不能为空');
+                return false;
+            }
+			checkItemStart();
+		});
+		function checkItemStart() {
+			$('loading').set('html', '<h3>检测中。。。。。。</h3>');
+            $('btnCheck').set('disabled', true);
+			check_finish_list = new Array();
+			check_finish_ok_list = new Array();
+			$('resutl').style.display = '';
+			check_item_list.each(function(item) {
+				$(item).set('class', '');
+			});
+			auto_item_list.each(function(item) {
+				$(item).set('class', '');
+			});
+			check_item_list.each(function(item) {
+				checkItem(item);
+			});
+		}
+
+		function autoItemStart() {
+
+			$('loading').set('html', '<h3>检测完成!自动配置中。。。。。。</h3>');
+			auto_finish_list = new Array();
+			auto_item_list.each(function(item) {
+				$(item).set('class', '');
+			});
+			auto_item_list.each(function(item) {
+				autoItem(item);
+			});
+		}
+
+		function checkItem(item) {
+
+			var data = {
+				'redis_ip' : $('redis_ip').value,
+				'redis_port' : $('redis_port').value,
+				'java_install_url' : $('java_install_url').value,
+				'java_url' : $('java_url').value,
+                'member_center_url' : $('member_center_url').value,
+				'crm_dir' : $('crm_dir').value,
+				'php_bin' : $('php_bin').value,
+                'netAddr' : $('netAddr').value,
+               // 'db_host' : $('db_host').value,
+               // 'db_name' : $('db_name').value,
+               // 'db_user' : $('db_user').value,
+               // 'db_password' : $('db_password').value,
+                'java_activecode' : $('java_activecode').value
+			};
+
+			new Request(
+					{
+						url : '<{$base_url}>/index.php/setup/check/check_'
+								+ item,
+						method : 'post',
+						data : data,
+						onSuccess : function(responseText) {
+							check_finish_list.push(item);
+							var result = JSON.decode(responseText);
+							if (result.rsp == 'succ') {
+								check_finish_ok_list.push(item);
+								$(item).set('class', 'success');
+							} else {
+								$(item).set('class', 'error');
+							}
+							
+							if(result.errmsg){
+								$(item).set('text', result.errmsg);
+							}
+
+							if (check_finish_list.length == check_item_list.length) {
+								if (check_finish_ok_list.length == check_item_list.length) {
+									$('loading').set('html', '<h3>检测完成!</h3>');
+									autoItemStart();
+                                    document.getElementById("finish_div").style.display="";//显示
+								} else {
+									$('loading').set('html',
+											'<h3>检测完成!存在异常，请修正！</h3>');
+								}
+                                $('btnCheck').set('disabled', false);
+							}
+						}
+					}).send();
+		}
+
+		function autoItem(item) {
+
+			var data = {
+				'redis_ip' : $('redis_ip').value,
+				'redis_port' : $('redis_port').value,
+				'java_install_url' : $('java_install_url').value,
+				'java_url' : $('java_url').value,
+                'member_center_url' : $('member_center_url').value,
+				'crm_dir' : $('crm_dir').value,
+				'php_bin' : $('php_bin').value
+			};
+			
+			new Request({
+				url : '<{$base_url}>/index.php/setup/check/auto_' + item,
+				method : 'post',
+				data : data,
+				onSuccess : function(responseText) {
+					auto_finish_list.push(item);
+					if (auto_finish_list.length == auto_item_list.length) {
+						$('loading').set('html', '<h3>检测完成!自动配置完成!</h3>');
+						$('deplog_linux_crontab').style.display = '';
+						var html = $('deplog_linux_crontab').get('html');
+						var o = {
+							crmdir : $('crm_dir').value
+						};
+						html = html.substitute(o);
+						$('deplog_linux_crontab').set('html', html);
+					}
+					var result = JSON.decode(responseText);
+					if (result.rsp == 'succ') {
+						$(item).set('class', 'success');
+					} else {
+						$(item).set('class', 'error');
+					}
+				}
+			}).send();
+		}
+        function finish_href(){
+            location.href = '<{$base_url}>/index.php';
+        }
+	</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Loading memo data...</title>
+</head>
+
+<body>
+<style>
+h3 {position:relative;background:#5779BD;padding:0 10px;}
+h3 span{font-size:12px;font-weight:normal;}
+h3 .prev {position:absolute;left:10px;}
+.next {cursor:pointer;position:absolute;left:50%;top:50%;margin:95px 0 0 240px;}
+</style>
+<div style="background:#F4F4F4;width:100%;height:100%">
+    <div style="position:absolute;background:#FFF;width:600px;height:250px;left:50%;top:50%;margin:-200px 0 0 -300px;border:1px dotted #CCC;text-align:center;border-radius:5px;box-shadow:0 0 5px #CCC;">
+        <div style="color:#03F;background:#FFFFCC;padding:5px 0;border-bottom:1px dotted #CCC;border-radius:5px 5px 0 0;">
+            <img align="absmiddle" src="<{$env.app.res_url}>/loading.gif" />
+            <span id="load_tips">正在加载数据(耗时 0 s)，请稍等……</span>
+        </div>
+        
+        <{foreach from=$tips item=data key=i}>
+            <div class="tips_div" id="tips<{$i}>" <{if($i>0)}>style="display:none"<{/if}>>
+                <h3 style="color:#FFF;">
+                    <span class="prev">每日一帖</span>
+                    <{$data.title}>
+                </h3>
+                <div style="line-height:2em;text-align:left;padding:10px 20px;"><{$data.content}></div>
+            </div>
+            
+            <span class="next">下一条</span>
+        <{/foreach}>
+        
+    </div>
+</div>
+<script>
+
+    var counter = 0;
+    var wait_sec = 5000;//每次检测间隔的秒数
+    var total_tips = <{$total_tips}>;
+    var curr_index = 0;
+
+    (function(){
+    
+        ajax_reload();
+        
+        setInterval('load_seconds()', 1000);
+        
+        $$('span.prev').addEvent('click',function(){
+            go_prev();
+        });
+        
+        $$('span.next').addEvent('click',function(){
+            go_next();
+        });
+        
+    })();
+    
+    function go_prev(){
+        (curr_index==0) ? curr_index=total_tips : curr_index--;
+        $$('div.tips_div').hide();
+        $$('#tips'+curr_index).show();
+    }
+    
+    function go_next(){
+        (curr_index==total_tips) ? curr_index=0 : curr_index++;
+        $$('div.tips_div').hide();
+        $$('#tips'+curr_index).show();
+    }
+    
+    function ajax_reload(){
+    
+        var _url = 'index.php?ctl=dashboard&act=checkLoadMemory';
+        var _data= '';
+        
+        var ajaxReq = new Request(
+        {
+            method : 'post',
+            url : _url,
+            data: _data,
+            onSuccess : function(responseText) {
+                //alert(responseText);
+                try{
+                    var obj = eval('(' + responseText + ')');
+                    if(obj.status == 2) {
+                        window.location.reload();
+                    }else{
+                        setTimeout('ajax_reload()', wait_sec);
+                    }
+                }catch(e){
+                    //alert(responseText);
+                }
+            },
+            onFailure : function() {}
+        });
+        ajaxReq.send();
+    }
+    
+    function load_seconds(){
+        counter++;
+        if($('load_tips')){
+            $('load_tips').set('html', '正在加载数据(耗时 '+counter+' s)，请稍等……');
+        }
+    }
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<div class="tableform" id="tableform">
+<form action="index.php?app=taocrm&ctl=admin_member_group&act=sendCustomerSms" method="post" id="form01">
+    <textarea name="filter" style="display:none"><{$filter}></textarea>
+    <input type='hidden' name='shop_id' value="<{$shop.shop_id}>" />
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <th><{t}>短信模板选择：<{/t}></th>
+            <td>
+	            <select name="themeGroup" id="themeGroup" style="float:left;">
+	                <option value="0">选择模板分类</option>
+	                <{foreach from=$groupList item=group}>
+	                <option value="<{$group.group_id}>"><{$group.group_title}></option>
+	                <{/foreach}>
+	            </select>
+	            <div id="themeContainer" style="float:left;padding-left:8px;"></div>
+	        </td>
+        </tr>
+        <tr class="b-gray">
+            <th><{t}>可使用变量标签：<{/t}></th>
+            <td>
+                            用户名 :<a onclick=insertAtCursor(document.getElementById('smsContent'),"&lt;{$uname}&gt;")>&lt;{$uname}&gt;</a>
+                            店铺 :<a onclick=insertAtCursor(document.getElementById('smsContent'),"&lt;{$shop}&gt;")>&lt;{$shop}&gt;</a>
+            </td>
+        </tr>
+        <tr>
+            <th width="30%">
+                <div><label for="coupon_id"><{t}>短信内容：<{/t}></div>
+                <div style="word-break:break-all; width:122px; color:#f00; white-space:normal;">建议内容少于70字，超过会按照两条发送。</div>
+            </th>
+            <td width="70%" id="coupon_send"><textarea name="smsContent" id="smsContent" rows="4" cols="50"></textarea></td>
+        </tr>
+    </table>
+</form>
+</div>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label="确认" type="button" id="btn01" class="btn-primary"}>
+   </div>
+<{/area}>
+
+<script type="text/javascript">
+(function(){
+	$('themeGroup').addEvent('change', function() {
+        if(this.value){
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_sms_themes_group&act=getThemesByGroup&p[0]='+this.value,
+                method : 'get',
+                update : $('themeContainer')
+            }).send();
+        }else{
+            $('themeContainer').innerHTML = '';
+        }
+	});
+	
+    $('btn01').addEvent('click',function() {
+    	if ($('form01') == null) {
+    		this.getParent('.dialog').retrieve('instance').close();
+    	}
+    	else {
+    		if ($('smsContent').value) {
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_member_group&act=sendCustomerSms',
+                    method : 'post',
+                    data : $('form01').toQueryString(),
+                    onComplete : function() {
+                        $('tableform').innerHTML = '短信已加入发送队列，即将为您发送，谢谢!';
+                    }
+                }).send();       			
+    		}
+    		else {
+    			  alert('请输入短信内容');
+    		} 		
+    	}
+    });
+
+    window.addEvent('domready',function(){
+        $$("#coupon_send input[name=coupon_send]").addEvent('click',function(){
+            if(this.value){
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_coupon&act=getShopCoupon&p[0]='+this.value,
+                    method : 'post',
+                    update : $('coupon_id')
+                }).send();
+            }else{
+                $('coupon_id').innerHTML = '';
+            }
+        });
+        
+        $$("#sms_send input[name=sms_send]").addEvent('click',function(){
+            if(this.value){
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_sms&act=getThemes&p[0]='+this.value,
+                    method : 'post',
+                    update : $('theme_id')
+                }).send();
+            }else{
+                $('theme_id').innerHTML = '';
+            }
+        });
+    });
+})();
+
+//在光标处插入字符串
+//myField 文本框对象
+//要插入的值
+function insertAtCursor(myField, myValue)
+{
+	//IE support
+	if (document.selection)
+	{
+	   myField.focus();
+	   sel = document.selection.createRange();
+	   sel.text = myValue;
+	   sel.select();
+	}
+	//MOZILLA/NETSCAPE support
+	else if (myField.selectionStart || myField.selectionStart == '0')
+	{
+	   var startPos = myField.selectionStart;
+	   var endPos = myField.selectionEnd;
+	   // save scrollTop before insert
+	   var restoreTop = myField.scrollTop;
+	   myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+	   if (restoreTop > 0)
+	   {
+	       // restore previous scrollTop
+	       myField.scrollTop = restoreTop;
+	   }
+	   myField.focus();
+	   myField.selectionStart = startPos + myValue.length;
+	   myField.selectionEnd = startPos + myValue.length;
+	} else {
+	   myField.value += myValue;
+	   myField.focus();
+	}
+}
+
+function changeTheme() {
+  if ($('theme').value) {
+      new Request.HTML({
+          url : 'index.php?app=taocrm&ctl=admin_sms&act=getTheme&p[0]='+$('theme').value,
+          method : 'get',
+          update : $('smsContent')
+      }).send();
+  }
+  else {
+      $('smsContent').value = '';
+  }
+}
+</script>

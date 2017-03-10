@@ -1,0 +1,28 @@
+<div>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>优惠劵发送状态<{/t}></th>
+            <th><{t}>优惠劵发送总数<{/t}></th>
+            <th><{t}>优惠劵发送成功数<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+            <th><{t}>完成时间<{/t}></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$couponDetail item=item key=key}>
+         <tr>
+             <td><{$item.is_send}><a target="dialog::{width:700,height:355,title:'发送明细'}" href="index.php?app=market&ctl=admin_coupon_ecstore&act=getSendlogItemList&p[0]=<{$item.log_id}>">明细</a></td>
+             <td><{$item.coupon_total_num}></td>
+             <td><{$item.conpon_success_num}></td>
+             <td><{$item.created|cdate:'FDATE_FTIME'}></td>
+             <td><{$item.finish_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

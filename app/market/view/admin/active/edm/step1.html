@@ -1,0 +1,294 @@
+<div id="group_edit_container" style="width:100%;">
+    <div id="active_id" border="0" cellspacing="0" cellpadding="0">
+    <table>
+        <tr>
+            <th><em class="red">*</em><{t}>所属店铺：<{/t}></th>
+            <td>
+            <{if not $coupons_tag}>
+            	<{if !$oneshop}>
+	                <select name="active[shop_id]" id="shop_select">
+	                    <option value="">-请选择-</option>
+	                    <{foreach from=$shopList item=shop}>
+	                    	<option value=<{$shop.shop_id}>><{$shop.name}></option>
+	                    <{/foreach}>
+	                </select>
+	            <{else}>
+	            	<select name="active[shop_id]" id="shop_select" disabled="disabled">
+	                	<option value=<{$oneshop.shop_id}>><{$oneshop.name}></option>  
+	                </select>
+	            <{/if}>
+            <{else}>
+                <{input type=hidden name="couponshopname" id="couponshopid" value=$coushoplist.shop_id}>
+                <{$coushoplist.name}>
+            <{/if}>
+            </td>
+        </tr>
+        <tr>
+            <th><label><em class="red">*</em><{t}>活动名称：<{/t}></label></th>
+            <td><{input type='text' size="40" id='active_name_id' name='active[active_name]' value=$active.active_name  }></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动开始时间：<{/t}></label></th>
+            <td><{input size="30" type='date' id='active_time_id' name='active_time_name' value=$beigin_time}></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动结束时间：<{/t}></label></th>
+            <td><{input size="30" type='date' id='end_time_id' name='end_time_name' value=$end_time }></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动方式：<{/t}></label></th>
+            <td><{input size="30" type='text' id='active_type' name='active_type'}></td>
+        </tr>
+        <tr>
+            <th><label>活动描述：</label></th>
+            <td><{input type='text' size="30" id='active_tg_id' name='active_tg_name' value=""}></td>
+        </tr>
+        <tr>
+            <th><label>预期成本：</label></th>
+            <td><{input type='text' id='cost_id' size="30" vtype="number" name='cost_name' value=""}></td>
+        </tr>
+        <tr style='display:none'>
+            <th>
+                <{help}>开启对照后，只发送目标客户数的一半，保留一半作为对照分析用。<{/help}>
+                <label>开启活动对照：</label>
+            </th>
+            <td>
+                <label><input type='radio' name='control_name' id='c_yes' value='yes' /> <{t}>是<{/t}></label>　　　
+                <label><input type='radio' name='control_name' id='c_no' value='no' checked="checked"/> <{t}>否<{/t}></label>
+            </td>
+        </tr>
+    </table>
+    
+	<div class="table-action">
+		<{button label="下一步 >>" type="button" id="btn01" class="btn-primary"}> 
+		<{button label="关闭" type="button" id="close_btn" class="nodisabled"}>
+	</div>
+</div>
+<span id="el_createactive_loading" style="display: none;">创建营销活动中,这可能需要点时间...</span>
+<{input type=hidden name="report_filter" id="report_filter" value=$report_filter}>
+<{input type=hidden name="filter_sql" id="filter_sql" value=$filter_sql}>
+<{input type=hidden name="sale_model_id" id="sale_model_id" value=$sale_model_id}>
+<{input type=hidden name="wangwang_model" id="wangwang_model" value=$wangwang_model}>
+
+<script>
+function duibi(a, b) {
+    var arr = a.split("-");
+    var starttime = new Date(arr[0], arr[1], arr[2]);
+    var starttimes = starttime.getTime();
+    
+    var arrs = b.split("-");
+    var lktime = new Date(arrs[0], arrs[1], arrs[2]);
+    var lktimes = lktime.getTime();
+
+    if (starttimes > lktimes) {
+        return false;
+    }
+    else {
+       return true;
+    }
+}
+
+function jsAddItemToSelect(objSelect, objItemText, objItemValue) {        
+    //判断是否存在        
+	var varItem = new Option(objItemText, objItemValue);      
+    objSelect.options.add(varItem);       
+}  
+
+window.addEvent('domready',function(){
+
+    if($('control_group').value == ''){
+        $('control_group').value = 'no';
+    }
+    
+    $$('input[name="control_name"]').addEvent('click',function(){
+        $('control_group').value = ($(this).value);
+    });
+
+    //进入下一步：step2
+     $("btn01").addEvent('click',function(){
+        step2();
+    });
+
+    $$("#sel_memup_btn").addEvent('click',function(){  //.JSON
+        new Request.JSON({
+             url : 'index.php?app=market&ctl=admin_active_edm&act=select_member_data&p[0]='+$('active_id_id').value,
+             method : 'post',
+             update : $('coupon_id'),
+             data:{'uptag':'uptag'},
+             onSuccess:function(obj,responseText){
+                 var data = JSON.decode(responseText);
+                 $('shop_select').value=data.shop_id;
+                 $('active_name_id').value = data.active_name;
+                 $('active_time_id').value = data.create_time;
+                 $('end_time_id').value = data.end_time;
+                 $('active_tg_id').value = data.tags;
+                 $('cost_id').value = data.cost;
+               }
+         }).send();
+        $('active_id').show();
+        $('select_me').hide();
+        $('select_sms_template').hide();
+        $('btn01').show();
+        return true;
+    });
+    
+  	//等待执行上一步
+    $$("#exec_up_btn").addEvent('click',function(){
+    	
+	    var send_template_sele_id = $('send_method').value=='edm'? $('edm_template_sele_id').value:$('template_sele_id').value;
+        new Request.JSON({
+            url : 'index.php?app=market&ctl=admin_active_edm&act=active_ex&send_method='+$('send_method').value+'&p[0]='+$('active_id_id').value+'&p[1]='+send_template_sele_id,
+            method : 'post',
+            update : $('coupon_id'),
+            data:{'exec_tag':'uptag'},
+            onSuccess:function(obj,responseText){
+            	var data = JSON.decode(responseText);
+	            if($('send_method').value=='sms'){
+	           	 	//$('template_sele_id').value=data.template_id;
+	            	//$('template_sele_id').set('value', data.template_id);
+	            	document.getElementById('template_sele_id').options[data.template_id].selected = true;
+	            	
+	            }else{
+	            	$('edm_message_title').value = data.templete_title;
+	           	 	$('edm_template_sele_id').value = data.template_id;
+	            }
+	            
+	            
+           }
+        }).send();
+	   $('active_id').hide();
+	   $('select_me').hide();
+	   $('select_sms_template').show();
+	   $('exec_div').hide();
+	    return true;
+	});
+    
+    //关闭弹出层
+    $$('#close_btn').addEvent('click',function(){
+        $('close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $$('#member_close_btn').addEvent('click',function(){
+        $('member_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $$('#template_close_btn').addEvent('click',function(){
+        $('template_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $$('#template_exec_close').addEvent('click',function(){
+        $('template_exec_close').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $$('#sms_close_btn').addEvent('click',function(){
+        $('sms_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+});
+
+function step2(){
+     if(!$('couponshopid')){
+             if($('shop_select').value==""){
+                alert("请选择店铺");
+                return false;
+            }
+         var shop_id=$('shop_select').value;
+     }else{
+         var shop_id=$('couponshopid').value;
+     }
+     
+     $act_value=$('active_name_id').value;
+     if($act_value==""){
+         alert('请输入活动名称');
+         $('active_name_id').focus();
+         return false;
+     }
+     
+     var isCheckDate = true;
+     var active_time_id_value = $('active_time_id').value;
+     var end_time_id_value = $('end_time_id').value;
+     if (duibi(active_time_id_value, end_time_id_value) == false) {
+           alert('活动开始时间不能大于活动结束时间，请检查');
+           return false;
+     }
+     
+     var costId = $('cost_id').value;
+     if (costId != '') {
+        var re = /^[0-9]+\.?[0-9]*$/;
+        if (!re.test(costId)) {
+            alert('预期成本必须是数值');
+            return false;
+        }
+     }
+     
+     var report_filter = $('report_filter').value;
+     var filter_sql = $('filter_sql').value;
+     
+
+     select_value("shop_select","final_shop_name");
+
+     $('final_active_name').set('html',$act_value);
+     
+     var control_value =$$('input[name="control_name"]:checked').get('value');//sms_send
+     
+     var wangwang_model = $('wangwang_model').value;
+     var sale_model_id = $('sale_model_id').value;
+     var data = {'wangwang_model':wangwang_model,'sale_model_id':sale_model_id,'filter_sql':filter_sql,'report_filter':report_filter,'shop_id':shop_id,'active_name':$('active_name_id').value,'create_time':$('active_time_id').value,'type':$('active_type').value,'tags':$('active_tg_id').value,'cost':$('cost_id').value,'end_time':$('end_time_id').value,'userslist':$('users_list').value,'control_group':control_value,'coupon_id':$('coupons_id').value ,'send_method':$('send_method').value,'cache_id':$('CacheId').value,'cache_id_create_time':$('CacheIdCreateTime').value};
+     
+    $('btn01').hide();
+    $('el_createactive_loading').show();
+    new Request.JSON({
+        url: 'index.php?app=market&ctl=admin_active_edm&act=toAdd_new&p[member_list]='+$('member_list').value+'&p[active_id]='+$('active_id_id').value,
+        method : 'post',
+        update : $('coupon_id'),
+        data:data,
+        onSuccess:function(obj,responseText){
+            try{
+                var data = JSON.decode(responseText);
+                if(data.res == 'succ'){
+                    $('active_id_id').value = data.data.active_id;
+                    $('shop_id').value= data.data.shop_id;
+                    var levels = data.data.levels;
+                    if(levels){
+                    	$('levels').set('html','');
+                        for(var p in levels){
+                            jsAddItemToSelect($('levels'),levels[p],p);
+                        }
+                    }
+                    
+                    //如果存在筛选条件，跳过step2
+                    if($('member_list').value=='member_list' || $('users_list').value!='' || $('report_filter').value!='' || $('CacheId').value!='' || $('sale_model_id').value!='' || $('wangwang_model').value!=''){
+                        $('active_id').hide();
+                        $('select_me').hide();
+
+                        $('select_sms_template').show();
+                    }else{
+                        $('active_id').hide();
+                        $('select_me').show();
+                    }
+                    $('el_createactive_loading').hide();
+                    
+                    //商品预选中
+                    var filter_goods_id = $('filter_goods_id').get('value');
+                    if(filter_goods_id)
+                        filter_goods_id = ',' + filter_goods_id + ',';
+                    getProducts(filter_goods_id);//预先加载商品列表
+                    
+                }else{
+                    $('btn01').show();
+                    $('el_createactive_loading').hide();
+                    alert(data.msg);
+                }
+            }catch(e){
+                //alert(responseText);
+                $('btn01').show();
+                $('el_createactive_loading').hide();
+                alert("服务器发生了内部错误"); 
+            }
+        }
+    }).send();
+    
+  
+    return true;
+}
+</script>

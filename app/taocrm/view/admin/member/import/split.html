@@ -1,0 +1,97 @@
+<div id="exec_div">
+
+    <form id="form_split" action="index.php?app=taocrm&ctl=admin_member_import&act=split" method="post">
+        <input type="hidden" name="refresh_url" value='<{$refresh_url}>' />
+        <input type="hidden" name="group_id" value='<{$rs_batch.group_id}>' />
+        <input type="hidden" name="batch_id" value='<{$rs_batch.batch_id}>' />
+        <table cellpadding="5">
+            <tr>
+                <th width="200" align="right">当前批次：</th>
+                <td>
+                    <{$rs_group.group_name}>
+                    (<{$rs_batch.group_id}> - <{$rs_batch.batch_id}>)
+                </td>
+            </tr>
+            <tr>
+                <th align="right">当前人数：</th>
+                <td style="font-size:18px;font-style:italic;color:red;"><{$batch_count}></td>
+            </tr>
+            <tr>
+                <th align="right">把其中任意：</th>
+                <td>
+                    <{input type="text" value=$split_num name="split_num" id="split_num" size="6" style="font-size:18px;font-weight:bold;font-family:tahoma;" }>人拆分为新批次
+                </td>
+            </tr>
+            <tr>
+                <th align="right">拆分后当前批次剩余：</th>
+                <td>
+                     <b id="remain_num" style="font-size:18px;font-style:italic;color:blue;">0</b> 
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <{area inject=".mainFoot"}>
+        <div id='sms_send_id' class="table-action" style="text-align:center;padding:5px 0;">
+        <{button label="确认拆分" type="button" id="exec_btn" class="btn-primary"}>
+        <{button label="关闭" type="button" id="sms_close_btn" class="btn-primary nodisabled"}>
+        </div>
+    <{/area}>        
+</div>
+
+<script>
+var max_num = <{$batch_count}>;
+
+window.addEvent('domready',function(){
+
+    $$('#sms_close_btn').addEvent('click',function(){
+        $('sms_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    var _form = $('form_split');
+	var _btn = $('exec_btn');
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns){	
+                    _dialogIns.close();
+                }
+            }	
+        }
+    });
+
+    _btn.addEvent('click',function(){
+    
+        var split_num = $('split_num').value;
+        if(split_num == 0){
+            alert('拆分数量不能为0');
+            $('split_num').focus();
+            return false;
+        } 
+        
+        _btn.set('disabled', true);
+    
+        _form.fireEvent('submit',{stop:$empty});
+    });
+    
+    if(navigator.userAgent.indexOf("MSIE")>0){
+        document.getElementById('split_num').attachEvent("onpropertychange",set_remain_num);        
+    }else{
+    	document.getElementById('split_num').addEventListener("input",set_remain_num,false);
+    } 
+    
+    set_remain_num();
+    
+});
+
+function set_remain_num(){
+    var split_num = $('split_num').value;
+    $('remain_num').set('html',(max_num - split_num));
+}
+</script>

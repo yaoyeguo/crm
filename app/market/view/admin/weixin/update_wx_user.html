@@ -1,0 +1,99 @@
+
+<div class="division">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td></td>
+            <td><h3 id="show_msg"></h3><h4 id="show_sub_msg"></h4></td>
+        </tr>
+        <tr id="submit_tr">
+            <th>&nbsp;</th>
+            <td>
+                <div style="font-weight:bold;color:red;">注意：只支持认证服务号，不支持订阅号！</div>
+                <{button id="down1" class="btn-primary" label=$___b2c="更新微信客户"|t:'taocrm' type="button"}>
+            </td>
+        </tr>
+    </table>
+    
+</div>
+
+<style>
+#order_status {padding:0 0 8px 0;}
+#order_percent_bar {border:1px solid #5D84B0;width:400px;}
+#order_percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+var updateNums = 0;
+var failNums = 0;
+var subscribeNums = 0;
+var page = 1;
+
+(function(){
+
+    $('down1').addEvent('click',function(){
+    	$('down1').disabled = 'disabled';
+    	page = 1;
+    	updateNums = 0;
+    	failNums = 0;
+    	subscribeNums = 0;
+        $('show_msg').set('html','正在请求微信客户数据....');
+        
+        new Request({
+            url : 'index.php?app=market&ctl=admin_weixin&act=getWxUserlist',
+            method : 'post',
+            data:{},
+            onSuccess:function(responseText){
+                var data = JSON.decode(responseText);
+                if(data.status){
+                	if(data.updateTotal == 0){
+                		$('show_msg').set('html','更新完成');
+                		$('down1').disabled = '';
+                		$('show_sub_msg').set('html','');
+                		
+                	}else{
+	                	 $('show_msg').set('html','订阅用户一共有'+data.total+'人，需要更新昵称有'+data.updateTotal+'人');
+	                     $('show_sub_msg').set('html','正在更新微信客户....');
+	                     toUpdateWxUser();
+                	}
+                }else{
+                	 $('show_msg').set('html',data.msg);
+                }
+            }
+        }).send();
+         
+    });
+
+})();
+
+
+function toUpdateWxUser(){
+	var data = {'page':page};
+    new Request({
+        url : 'index.php?app=market&ctl=admin_weixin&act=toUpdateWxUser',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+        	var data = JSON.decode(responseText);
+        	if(data.status){
+	        	if(data.updateResult.total > 0){
+	        		 updateNums += data.updateResult.updated;
+	                 failNums += data.updateResult.subscribe;
+	                 subscribeNums += data.updateResult.failed;
+	        		 $('show_sub_msg').set('html','已更新微信客户昵称数:'+updateNums+'人,失败数:'+failNums+',取消订阅数:'+subscribeNums+',正在更新微信客户....');
+	        		 page++;
+	        		 toUpdateWxUser();   
+	        	}else{
+	        		$('down1').disabled = '';
+	        		 $('show_sub_msg').set('html','更新已完成,一共更新微信客户昵称数:'+updateNums+'人,失败数:'+failNums+',取消订阅数:'+subscribeNums);
+	        		return false;
+	        	}
+        	}else{
+        		$('down1').disabled = '';
+        		 $('show_msg').set('html',data.msg);
+        		 return false;
+        	}
+        }
+    }).send();
+}
+
+</script>
+

@@ -1,0 +1,281 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<style>
+.tips1 { cursor:pointer;}
+</style>
+
+<form action="<{$form_action}>" method="post" id="filter_form">
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <div class="title_left" >
+                <{$path}>
+             </div>
+            <{include file="admin/analysis/search.html"}>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>分析数据</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform" style="width:370px; float:left">
+
+                        <div class="arr_blue">全部订单
+                        <br/>
+                        <{$chart_data.analysis_data.total_orders}>
+                        </div>
+                        
+                        <div style="padding-left:40px;">
+                        <h5>全部订单：<{$chart_data.analysis_data.total_orders}>
+                        <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                        　
+                        金额:<{$chart_data.analysis_data.total_amount|cur}></h5>
+                        <div>
+                            <span class="lost_bar">
+                                流失订单 <{$chart_data.analysis_data.total_orders - $chart_data.analysis_data.paid_orders}>
+                                <br/>
+                                流失客户 <{$chart_data.analysis_data.unpaid_members}>
+                            <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=unpaid&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                            </span>
+                            <div class="bar"><div class="bar_active" style="width:<{$chart_data.analysis_data.paid_orders*100 / $chart_data.analysis_data.total_orders}>%"></div></div>
+                        </div>
+                        </div>
+                        
+                        <div class="arr_blue">付款订单<br/>
+                            <{$chart_data.analysis_data.paid_orders}>
+                            (<{$chart_data.analysis_data.paid_orders*100 / $chart_data.analysis_data.total_orders|round:2}>%)
+                            <br/>
+                            <!--<{$chart_data.analysis_data.paid_avg_time}>小时   **liaoyu  暂无数据 2013-06-18**//-->
+                        </div>
+                        
+                        <div style="padding-left:40px;">
+                            <h5>付款订单：<{$chart_data.analysis_data.paid_orders}>
+                            <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=paid&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                            金额:<{$chart_data.analysis_data.paid_amount|cur}></h5>
+                        
+                            <div><!--bar-->
+                                <span class="lost_bar">
+                                流失订单 <{$chart_data.analysis_data.paid_orders - $chart_data.analysis_data.ship_orders}>
+                                <br/>
+                                流失客户 <{$chart_data.analysis_data.unship_members}>
+                                <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=unship&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                </span>
+                                <div class="bar"><div class="bar_active" style="width:<{$chart_data.analysis_data.ship_orders*100 / $chart_data.analysis_data.paid_orders}>%"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="arr_blue">发货订单<br/>
+                            <{$chart_data.analysis_data.ship_orders}>
+                            (<{$chart_data.analysis_data.ship_orders*100 / $chart_data.analysis_data.total_orders|round:2}>%)
+                            <br/>
+                            <!-- <{$chart_data.analysis_data.ship_avg_time}>小时   **liaoyu  暂无数据 2013-06-18** //-->
+                        </div>
+                        
+                        <div style="padding-left:40px;">
+                            <h5>发货订单：<{$chart_data.analysis_data.ship_orders}>
+                            <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=ship&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                            金额:<{$chart_data.analysis_data.ship_amount|cur}></h5>
+                        
+                            <div><!--bar-->
+                                <span class="lost_bar">
+                                流失订单 <{$chart_data.analysis_data.ship_orders - $chart_data.analysis_data.finish_orders}>
+                                <br/>
+                                流失客户 <{$chart_data.analysis_data.shipunfinish_members}>
+                                <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=dead&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                </span>
+                                <div class="bar"><div class="bar_active" style="width:<{$chart_data.analysis_data.finish_orders*100 / $chart_data.analysis_data.ship_orders}>%"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="arr_blue">完成订单
+                        <br/>
+                        <{$chart_data.analysis_data.finish_orders}>
+                        (
+                        <{$chart_data.analysis_data.finish_orders*100 / $chart_data.analysis_data.paid_orders|round:2}>%)
+                        <br/>
+                        <!--<{$chart_data.analysis_data.finish_avg_time}>天   **liaoyu  暂无数据 2013-06-18**//-->
+                        </div>
+                        
+                        <h5 style="padding-left:50px;">完成订单：<{$chart_data.analysis_data.finish_orders}>
+                        <a onclick="show_members('&count_by=funnel&date_type=date&shop_id=<{$shop_id}>&filter_type=analysis&order_status=finish&date_from=<{$date_from}>&date_to=<{$date_to}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                        　
+                        金额:<{$chart_data.analysis_data.finish_amount|cur}></h5>  
+                    </div>
+                    
+                    <div style="width:450px; float:left; padding-top:5px">
+                    	<table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>&nbsp;<{/t}></th>
+                                    <th><{t}>订单数<{/t}></th>
+                                    <th><{t}>订单金额<{/t}></th>
+                                    <th><{t}>平均订单价<{/t}></th>
+                                    <th><{t}>流失订单数<{/t}></th>
+                                    <th><{t}>流失比例<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                              <tr>
+                                <td>&nbsp;下单状态</td>
+                                <td>&nbsp;<{$chart_data.analysis_data.total_orders}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.total_amount|cur}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.total_amount/$chart_data.analysis_data.total_orders)|round:2}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.total_orders - $chart_data.analysis_data.paid_orders}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.total_orders - $chart_data.analysis_data.paid_orders)*100/$chart_data.analysis_data.total_orders|round:2}>%</td>
+                              </tr>
+                              <tr>
+                                <td>&nbsp;付款状态</td>
+                                <td>&nbsp;<{$chart_data.analysis_data.paid_orders}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.paid_amount|cur}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.paid_amount/$chart_data.analysis_data.paid_orders)|round:2}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.paid_orders - $chart_data.analysis_data.ship_orders}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.paid_orders - $chart_data.analysis_data.ship_orders)*100/$chart_data.analysis_data.paid_orders|round:2}>%</td>
+                              </tr>
+                              <tr>
+                                <td>&nbsp;发货状态</td>
+                                <td>&nbsp;<{$chart_data.analysis_data.ship_orders}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.ship_amount|cur}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.ship_amount/$chart_data.analysis_data.ship_orders)|round:2}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.ship_orders - $chart_data.analysis_data.finish_orders}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.ship_orders - $chart_data.analysis_data.finish_orders)*100/$chart_data.analysis_data.ship_orders|round:2}>%</td>
+                              </tr>
+                              <tr>
+                                <td>&nbsp;完成状态</td>
+                                <td>&nbsp;<{$chart_data.analysis_data.finish_orders}></td>
+                                <td>&nbsp;<{$chart_data.analysis_data.finish_amount|cur}></td>
+                                <td>&nbsp;<{($chart_data.analysis_data.finish_amount/$chart_data.analysis_data.finish_orders)|round:2}></td>
+                                <td>&nbsp;-</td>
+                                <td>&nbsp;-</td>
+                              </tr></tbody>
+                            </table>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<style>
+.bar {width:260px;height:18px;overflow:hidden;background:url(<{$env.app.res_url}>/bar_bg.jpg);margin-bottom:5px;}
+.bar_active {height:18px;overflow:hidden;background:url(<{$env.app.res_url}>/bar_bg.jpg) 0 -50px;}
+.arr_blue { 
+    background:url(<{$env.app.res_url}>/arr_blue.gif) center no-repeat;
+    width:100%;height:80px; text-align:center;color:#0457AD;
+    font-weight:bold;margin-top:20px;
+}
+.lost_bar {
+    background: url("/crm/app/taocrm/statics/right.gif") no-repeat scroll 0 10px rgba(0, 0, 0, 0);
+    float: right;
+    font-weight: bold;
+    padding-left: 16px;
+    margin-top: -10px;
+}
+</style>
+
+<script>
+(function(){
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#F1F6F7');
+    } 
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+            };
+        });
+    }
+
+    var dataAction= $('dataAction');
+    <{if $timeFilter != 'false'}>
+    var from=dataAction.getElement('input[name=date_from]');
+    var to=dataAction.getElement('input[name=date_to]');
+    //$('filterBtn').addEvent('click',function(e){setChartData(true);});
+    <{/if}>
+
+    function setChartData(flag,e){
+        <{if $timeFilter != 'false'}>
+        if(from && to){
+            if(!check_data(from,to))return;
+        }
+        <{/if}>
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+
+    if($('select_type')) $('select_type').addEvent('change',function(e){setChartData(true);});
+    if($('ext_select_type')) $('ext_select_type').addEvent('change',function(e){setChartData(true);});
+
+    function check_data(from,to){
+      var data=[],
+      _return=[from,to].every(function(el){
+        if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+          new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+          el.focus();
+          return false;
+        }
+        data.push(Date.parse(el.value.replace(/-/gi,"/")));
+        return true;
+      });
+
+      if(!_return)return null;
+      if(data[1]<data[0]){
+        return MessageBox.error('<{t}>选择开始时间必须早于结束时间<{/t}>');
+      }
+      return _return;
+    }
+	
+	//$('shop_id').addEvent('change',function(e){$('filterBtn').fireEvent('click');});
+
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+      if(el.get('date_from')==from.value && el.get('date_to')==to.value)
+          el.addClass('btn-fourthly-cur');
+      el.addEvent('click',function(e){
+        from.value=this.get('date_from');
+        to.value=this.get('date_to');
+        /* ['time_from','time_to'].each(function(v){
+         *   dataAction.getElements('input[name='+v+']').value=this.get(v);
+         * },this); */
+        //$('filterBtn').fireEvent('click');
+      });
+    });
+
+})();
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>

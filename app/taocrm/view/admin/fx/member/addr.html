@@ -1,0 +1,28 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>收货人<{/t}></th>
+            <th><{t}>收货地区<{/t}></th>
+            <th><{t}>收货地址<{/t}></th>
+            <th><{t}>邮编<{/t}></th>
+            <th><{t}>手机<{/t}></th>
+            <th><{t}>电话<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$addrs item=item key=key}>
+         <tr>
+             <td><{$item.ship_name}></td>
+             <td><{$item.ship_area|region}></td>
+             <td><{$item.ship_addr}></td>
+             <td><{$item.ship_zip}></td>
+             <td><{$item.ship_mobile}></td>
+             <td><{$item.ship_tel}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+</div>
+</div>

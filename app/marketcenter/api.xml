@@ -1,0 +1,6 @@
+<apilist>
+    <module id='marketcenter.card' type='card' class='marketcenter_apiv_apis_response_card'>
+        <api  function='user_get_card'> 领取卡劵 </api>
+        <api  function='user_consume_card'> 核销卡劵 </api>
+    </module>
+</apilist>

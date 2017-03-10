@@ -1,0 +1,95 @@
+<div class="top_extra clear">
+
+    <div class="gridlist-action data-action" id="dataAction" style="margin-bottom:10px;padding:5px 15px; border:0;background:#F0F0F0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;">
+        
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            商品名称：
+            <{input type="text" name="s[name]" value=$s.name size="15" }>
+          
+            <label><{t}>时间范围：<{/t}></label>
+                <{input type="date" vtype="date" name="s[time_from]" style="width:66px; font-family:arial;" value=$s.time_from}>
+                
+                <{t}>至<{/t}>
+                
+                <{input type="date" vtype="date" name="s[time_to]" style="width:66px; font-family:arial;" value=$s.time_to}>
+
+                
+
+            <{button id="filterBtn" class="filterBtn btn-thirdly" label=$___ectools="查询"|t:'ectools'}>&nbsp;
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_week_from time_to=$timeBtn.this_week_to label=$___ectools="本周"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_month_from time_to=$timeBtn.this_month_to label=$___ectools="本月"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_3month_from time_to=$timeBtn.this_3month_to label=$___ectools="近3个月"|t:'ectools'}>
+            
+            <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_6month_from time_to=$timeBtn.this_6month_to label=$___ectools="近6个月"|t:'ectools'}>
+
+          </td>
+
+        </tr>
+      </table>
+    </div>
+
+</div>
+
+<script>
+(function(){
+
+    var _finder = finderGroup['<{$name}>'];
+    var dataAction = $('dataAction');
+    var data_ipt=dataAction.getElements('input');
+    var from=dataAction.getElement('input[name="s[time_from]"]');
+    var to=dataAction.getElement('input[name="s[time_to]"]');
+    
+    if(_finder&&_finder.form){
+      fdoc = document.createDocumentFragment();
+      data_ipt.each(function(ipt){
+        fdoc.appendChild(new Element('input[type=hidden]', {'name': ipt.name, value: ipt.value}));
+      });
+      _finder.form.appendChild(fdoc);
+    }
+
+    data_ipt.addEvent('change',function(e){
+      if(_finder&&_finder.form){
+        var ipt=$E('input[name='+this.name+']',_finder.form);
+        if(ipt)ipt.value=this.value;
+      }
+    });
+    
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+        if(el.get('time_from')==from.value && el.get('time_to')==to.value)
+        el.addClass('btn-fourthly-cur');
+        el.addEvent('click',function(e){
+            from.value=this.get('time_from');
+            to.value=this.get('time_to');
+            dataAction.getElement('.filterBtn').fireEvent('click');
+        });
+    });
+
+    $('filterBtn').addEvent('click', function(){
+        setChartData();
+    });
+       
+    function setChartData(){
+        var params=dataAction.toQueryString();
+        dataAction.store('_data',params);
+        var url='index.php?<{$env.server.QUERY_STRING}>';
+        W.page(
+            url, 
+            {
+                data:params, 
+                method:'post',
+                onComplete:function(){
+                    //alert(params);
+                    if(_finder) _finder.filter.value=params;
+                }
+            }
+        );
+    }
+    
+})();
+</script>

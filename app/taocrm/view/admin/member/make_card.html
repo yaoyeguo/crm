@@ -1,0 +1,52 @@
+<form id="mem_form" action="index.php?app=taocrm&ctl=admin_member_card&act=do_make_card" method="post">
+<div class="tableform">
+    <input type=hidden name="id" value="<{$id}>" />
+    <div class="division" style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th><{t}>会员卡数量<{/t}></th>
+                <td>
+                   <{input app=ectools size="10" maxlength="4" type="text" name='make_count' vtype="required" }><span style="color:#a8a8a8">每批次最多生成5000张</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-action"><{button id="save" type="button" label=$___b2c="生成"|t:'b2c' }></div>
+</div>
+</form>
+<script>
+(function(){
+    
+	 $('save').addEvent('click',function(event){
+	        $('mem_form').fireEvent('submit',new Event(event));
+     });
+	    
+	 
+    $('mem_form').store('target',{
+        onRequest:function(){
+           $('save').set('disabled', 'true');
+        },
+        onSuccess:function(response){    
+        	var hash_res_obj = JSON.decode(response);
+        	if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = $('save').getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                
+                if(_dialogIns)
+                {   
+                    _dialogIns.close();
+                }
+                
+                window.location = 'index.php?app=taocrm&ctl=admin_member_card&act=index';
+            }
+        	
+        	$('save').set('disabled', '');
+        }
+    });
+    
+})();
+
+</script>
+

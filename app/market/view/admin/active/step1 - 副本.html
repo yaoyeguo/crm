@@ -1,0 +1,595 @@
+<div id="group_edit_container" class="finder-detail-content" style="width:100%;">
+    <div id="active_id" class="tableform" border="0" cellspacing="0" cellpadding="0">
+    <table>
+        <tr>
+            <th><em class="red">*</em><{t}>所属店铺：<{/t}></th>
+            <td>
+            <{if not $coupons_tag}>
+                <select name="active[shop_id]" id="shop_select">
+                    <option value="">-请选择-</option>
+                    <{foreach from=$shopList item=shop}>
+                    <option value='<{$shop.shop_id}>' name='<{$shop.shop_name}>' <{if
+                    $shop.shop_id==$oneshop}> selected <{/if}> ><{$shop.name}></option>
+                    <{/foreach}>
+                </select>
+                <{else}>
+                <{input type=hidden name="couponshopname" id="couponshopid" value=$coushoplist.shop_id}>
+                <{$coushoplist.name}>
+            <{/if}>
+            </td>
+        </tr>
+        <tr>
+            <th><label><em class="red">*</em><{t}>活动名称：<{/t}></label></th>
+            <td><{input type='text' size="30" id='active_name_id' name='active[active_name]' value=$active.active_name  }></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动开始时间：<{/t}></label></th>
+            <td><{input size="30" type='date' id='active_time_id' name='active_time_name' value=$beigin_time}></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动结束时间：<{/t}></label></th>
+            <td><{input size="30" type='date' id='end_time_id' name='end_time_name' }></td>
+        </tr>
+        <tr>
+            <th><label><{t}>活动方式：<{/t}></label></th>
+            <td><{input size="30" type='text' id='active_type' name='active_type'}></td>
+        </tr>
+        <tr>
+            <th><label>活动描述：</label></th>
+            <td><{input type='text' size="30" id='active_tg_id' name='active_tg_name' value=""}></td>
+        </tr>
+        <tr>
+            <th><label>预期成本：</label></th>
+            <td><{input type='text' id='cost_id' size="30" vtype="number" name='cost_name' value=""}></td>
+        </tr>
+        <tr>
+            <th>
+                <{help}>开启对照后，只发送目标客户数的一半，剩下一半作为对照分析用。<{/help}>
+                <label>开启活动对照：</label>
+            </th>
+            <td>
+                <label><input type='radio' name='control_name' id='c_yes' value='yes' /> <{t}>是<{/t}></label>　　　
+                <label><input type='radio' name='control_name' id='c_no' value='no' checked="checked"/> <{t}>否<{/t}></label>
+            </td>
+        </tr>
+    </table>
+	<div class="table-action">
+		<{button label="下一步 >>" type="button" id="btn01" class="btn-primary"}> 
+		<{button label="关闭" type="button" id="close_btn" class="nodisabled"}>
+	</div>
+</div>
+
+<script>
+window.addEvent('domready',function(){
+     $("btn01").addEvent('click',function(){
+         if(!$('couponshopid')){
+                 if($('shop_select').value==""){
+                    alert("请选择店铺");
+                    return false;
+                }
+             var shop_id=$('shop_select').value;
+         }else{
+             var shop_id=$('couponshopid').value;
+         }
+         
+         $act_value=$('active_name_id').value;
+         if($act_value==""){
+             alert('请输入活动名称');
+             $('active_name_id').focus();
+             return false;
+         }
+         
+         var control_value =$$('input[name="control_name"]:checked').get('value');//sms_send
+         var data = {'shop_id':shop_id,'active_name':$('active_name_id').value,'create_time':$('active_time_id').value,'type':$('active_type').value,'tags':$('active_tg_id').value,
+                 'cost':$('cost_id').value,'end_time':$('end_time_id').value,'userslist':$('users_list').value,'control_group':control_value,'coupon_id':$('coupons_id').value};
+                new Request.JSON({
+                 url : 'index.php?app=market&ctl=admin_active&act=toAdd_new&p[member_list]='+$('member_list').value+'&p[active_id]='+$('active_id_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:data,
+                 onSuccess:function(obj,responseText){
+                     var data = JSON.decode(responseText);
+                    $('active_id_id').value = data.active_id;
+                    $('shop_id').value= data.shop_id;
+                 }
+             }).send();
+          if($('member_list').value=='member_list' || $('users_list').value!=''){
+              $('active_id').hide();
+              $('select_me').hide();
+              $('select_sms_template').show();
+          }else{
+            $('active_id').hide();
+            $('select_me').show();
+          }
+         return true;
+     });
+     $$("#order_symbol_id").addEvent('change',function(){
+         if($("order_symbol_id").value=='6') {
+             $("between").show();
+            // $("not_between").hide();
+         }else{
+             $('buy_small_times').value="";
+             $("between").hide();
+             $("not_between").show();
+         }
+     });
+     //date_id_symbol
+      $$("#date_id_symbol").addEvent('change',function(){
+         if($("date_id_symbol").value=='6') {
+             $("date_between").show();
+         }else{
+             $("date_to_id").value="";
+             $("date_between").hide();
+             $("date_not_between").show();
+         }
+     });
+     
+     //购买频次freq_sy_id
+     $$("#freq_sy_id").addEvent('change',function(){
+         if($("freq_sy_id").value=='6') {
+             $("frequency_between").show();
+            // $("frequency_not_between").hide();
+         }else{
+             $('frequency_to_id').value="";
+             $("frequency_between").hide();
+             $("frequency_not_between").show();
+         }
+     });
+    
+     $$("#product_id_symbol").addEvent('change',function(){
+         if($("product_id_symbol").value=='6') {
+             $("product_between").show();
+             //$("product_not_between").hide();
+         }else{
+             $('product_num_small').value="";
+             $("product_between").hide();
+             $("product_not_between").show();
+         }
+     });
+     
+        //购买金额
+     $$("#money_id_symbol").addEvent('change',function(){
+         if($("money_id_symbol").value=='6') {
+             $("money_between").show();
+            // $("money_not_between").hide();
+         }else{
+             $('money_to_id').value='';
+             $("money_between").hide();
+             $("money_not_between").show();
+         }
+     });
+     
+     //birthday_symbol
+     $$("#birthday_symbol").addEvent('change',function(){
+         if($("birthday_symbol").value=='6') {
+             $("birthday_between").show();
+         }else{
+             $('birthday_small').value="";
+             $("birthday_between").hide();
+             $("birthday_not_between").show();
+         }
+     });
+     
+     $$("#integral_symbol").addEvent('change',function(){
+         if($("integral_symbol").value=='6') {
+             $("integral_between").show();
+             //$("integral_not_between").hide();
+         }else{
+             $('integral_end_id').value="";
+             $("integral_between").hide();
+             $("integral_not_between").show();
+         }
+     });
+     
+     $$("#sel_mem_btn").addEvent('click',function(){
+        var area = saveRegion();
+        var product = fun_pronode();
+        if($('shop_id').value){
+            var shop_id=$('shop_id').value;
+        }else {
+            var shop_id=$('shop_select').value;
+        }
+        var data={'order_symbol_id':$('order_symbol_id').value,'buy_big_times':$('buy_big_times').value,'shop_id':shop_id,
+                'buy_small_times':$('buy_small_times').value,'money_id_symbol':$('money_id_symbol').value,'money_from_id':$('money_from_id').value,'money_to_id':$('money_to_id').value,
+                'freq_sy_id':$('freq_sy_id').value,'frequency_from_id':$('frequency_from_id').value,'frequency_to_id':$('frequency_to_id').value,'product_id_symbol':$('product_id_symbol').value,
+                'product_num_big':$('product_num_big').value,'product_num_small':$('product_num_small').value,'date_id_symbol':$('date_id_symbol').value,
+                'date_from_id':$('date_from_id').value,'date_to_id':$('date_to_id').value,'integral_symbol':$('integral_symbol').value,'integral_begin_id':$('integral_begin_id').value,
+                'birthday_symbol':$('birthday_symbol').value,'birthday_big':$('birthday_big').value,'birthday_small':$('birthday_small').value,
+                'integral_end_id':$('integral_end_id').value,'group_id':$('group_id').value,'lv_id':$('lv_id').value,'area':area,'product':product,
+                'evaluate_symbol_id':$('evaluate_symbol_id').value,'taobaolv_id':$('taobaolv_id').value
+                };
+             new Request.JSON({
+                 url : 'index.php?app=market&ctl=admin_active&act=select_member_data&p[0]='+$('active_id_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:data,
+                 onSuccess:function(obj,responseText){
+                     var data = JSON.decode(responseText);
+                     $('only_coupon').value=data.coupon_id;
+                     $('coupononlyname').set('html',"");
+                     $('coupononlyname').set('html',data.coupon_name);
+                  }
+             }).send();
+        $('active_id').hide();
+        $('select_me').hide();
+        $('select_sms_template').show();
+         return true;
+     });
+     
+
+     //ajax 选择地区
+     $$("#init_type4").addEvent('click',function(){
+          new Request.JSON({
+             url : 'index.php?app=market&ctl=admin_active&act=area_select&p[0]='+$('active_id_id').value,
+              method : 'post',
+              update : $('coupon_id'),
+              data:{'uptag':'555'},
+              onSuccess:function(obj,responseText){
+                  var data_obj= JSON.decode(responseText);
+                  for(var i=0;i<data_obj.length;i++){
+                      $('region'+data_obj[i]).set('checked','checked');
+              }
+               }
+          }).send();
+      });
+     
+     //ajax 客户分组
+     $$("#init_type5").addEvent('click',function(){
+         new Request.JSON({
+             url : 'index.php?app=market&ctl=admin_active&act=getmember_group&p[0]='+$('active_id_id').value,
+             method : 'post',
+             update : $('coupon_id'),
+             data:{'uptag':'123'},
+             onSuccess:function(obj,responseText){
+                 var data_obj= JSON.decode(responseText);
+                 var selectOptions = new Array;
+                 selectOptions[0] = {text:"请选择", value:0};
+                 for (var i=0, len=data_obj.length; i < len; i++) {
+                     var group_selected=false;
+                     if(data_obj[i].group_id==data_obj[i].group_selected){
+                         group_selected=true;
+                     }
+                     selectOptions[i+1] = {text:data_obj[i].group_name,
+                                            value:data_obj[i].group_id,
+                                            selected:group_selected,
+                                          };
+                 }
+                 $('group_id').set('htmlOptions', selectOptions);
+              }
+         }).send();
+     });
+     //ajax客户等级
+     $$("#init_type2").addEvent('click',function(){
+         new Request.JSON({
+             url : 'index.php?app=market&ctl=admin_active&act=member_lv&p[0]='+$('active_id_id').value,
+             method : 'post',
+             update : $('coupon_id'),
+             data:{'uptag':'123'},
+             onSuccess:function(obj,responseText){
+                 var data_obj= JSON.decode(responseText);
+                 var selectOptions = new Array;
+                 selectOptions[0] = {text:"请选择", value:0};
+                 for (var i=0, len=data_obj.length; i < len; i++) {
+                     var lv_selectde=false;
+                     if(data_obj[i].lv_id==data_obj[i].seletag){
+                         lv_selectde=true;
+                     }
+                     selectOptions[i+1] = {text:data_obj[i].name,
+                                           value:data_obj[i].lv_id,
+                                          selected:lv_selectde
+                                        };
+                 }
+                 $('lv_id').set('htmlOptions', selectOptions);
+              }
+         }).send();
+         
+     });
+      $('btn_search_product').addEvent('click',function(){
+            getProducts();
+        });
+     
+     $$("#sel_memup_btn").addEvent('click',function(){  //.JSON
+         new Request.JSON({
+             url : 'index.php?app=market&ctl=admin_active&act=select_member_data&p[0]='+$('active_id_id').value,
+             method : 'post',
+             update : $('coupon_id'),
+             data:{'uptag':'uptag'},
+             onSuccess:function(obj,responseText){
+                 var data = JSON.decode(responseText);
+                 $('shop_select').value=data.shop_id;
+                 $('active_name_id').value = data.active_name;
+                 $('active_time_id').value = data.create_time;
+                 $('end_time_id').value = data.end_time;
+                 $('active_tg_id').value = data.tags;
+                 $('cost_id').value = data.cost;
+               }
+         }).send();
+    $('active_id').show();
+    $('select_me').hide();
+    $('select_sms_template').hide();
+     return true;
+     });
+     $$("#assess_id").addEvent('click',function(){
+             if($('shop_id').value){
+                var shop_id=$('shop_id').value;
+            }else {
+                var shop_id=$('shop_select').value;
+            }
+                var area = saveRegion();
+                var product = fun_pronode();
+                var data={'order_symbol_id':$('order_symbol_id').value,'buy_big_times':$('buy_big_times').value,'shop_id':shop_id,
+                'buy_small_times':$('buy_small_times').value,'money_id_symbol':$('money_id_symbol').value,'money_from_id':$('money_from_id').value,'money_to_id':$('money_to_id').value,
+                'freq_sy_id':$('freq_sy_id').value,'frequency_from_id':$('frequency_from_id').value,'frequency_to_id':$('frequency_to_id').value,'product_id_symbol':$('product_id_symbol').value,
+                'product_num_big':$('product_num_big').value,'product_num_small':$('product_num_small').value,'date_id_symbol':$('date_id_symbol').value,
+                'date_from_id':$('date_from_id').value,'date_to_id':$('date_to_id').value,'integral_symbol':$('integral_symbol').value,'integral_begin_id':$('integral_begin_id').value,
+                'birthday_symbol':$('birthday_symbol').value,'birthday_big':$('birthday_big').value,'birthday_small':$('birthday_small').value,
+                'integral_end_id':$('integral_end_id').value,'group_id':$('group_id').value,'lv_id':$('lv_id').value,'area':area,'product':product,
+                'evaluate_symbol_id':$('evaluate_symbol_id').value,'taobaolv_id':$('taobaolv_id').value
+                };
+         new Request.HTML({
+             url : 'index.php?app=market&ctl=admin_active&act=assess&p[0]='+$('active_id_id').value+'&p[1]='+$('shop_id').value,
+             method : 'post',
+             update : $('p_id'),
+             data:data
+         }).send();
+        $('active_id').hide();
+        $('select_me').show();
+        $('select_sms_template').hide();
+         return true;
+     });
+     
+     //选择短信模板
+     $$("#template_sele_id").addEvent('change',function(){
+         if($('template_sele_id').value=="0") {
+             $('content_id').hide();
+         }else{
+             $('content_id').show();
+         }
+             new Request({
+                 url : 'index.php?app=market&ctl=admin_active&act=select_template&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:{'test':'aaa'},
+                 onSuccess:function(responseText){
+                    $('message_text').value = responseText;
+                  }
+             }).send();
+        $('active_id').hide();
+        $('select_me').hide();//content_id
+        $('select_sms_template').show();
+         return true;
+     });
+     //保存模板
+     $$("#template_btn_save").addEvent('click',function(){
+         var data={'message_text':$('message_text').value};
+             new Request({
+                 url : 'index.php?app=market&ctl=admin_active&act=edit_save&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:data,
+                 onSuccess:function(responseText){
+                    alert('模板保存成功！');
+                    $('message_text').value = responseText;
+                   }
+             }).send();
+        $('active_id').hide();
+        $('select_me').hide();//content_id
+        $('select_sms_template').show();
+         return true;
+     });
+     
+     //短信模板选择成功 进行下一步操作，并且活动状态改为待执行  template_btn
+     $$("#template_btn").addEvent('click',function(){
+        var sms = $$('input[name="sms_send"]:checked').get('value');
+        if(sms=="sms"){
+            if($('template_sele_id').value==0){
+                    alert("请选择短信模板");
+                    return false;
+            }
+        }
+         if(!$('only_coupon')){
+             var couponvlue_id=$('sele').value;
+         }else{
+             var couponvlue_id=$('only_coupon').value;
+         }
+         if($('coupon_send1')){
+            var coupon_type =$$('input[name="coupon_send"]:checked').get('value');//sms_send
+            var sms_type =$$('input[name="sms_send"]:checked').get('value');
+            if(coupon_type=='coupon' && sms_type=='sms'){
+                var sent_type='cousms';
+            }else if(coupon_type=='coupon' && sms_type==''){
+                var sent_type='coupon';
+            }else if(coupon_type=='' && sms_type=='sms'){
+                var sent_type='sms';
+            }
+         }else {
+            var sms_type =$$('input[name="sms_send"]:checked').get('value');
+             if(sms_type=='sms'){
+                 var sent_type='cousms';
+             }else if (sms_type==''){
+                 var sent_type='coupon';
+             }
+         }
+         var data={'timing_date':$('seltiming_id').value,'timing_hour':$('timing_option').value,'send_type':sent_type,'coupon_id':couponvlue_id};
+         new Request({
+             url : 'index.php?app=market&ctl=admin_active&act=active_ex&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+             method : 'post',
+             update : $('test_id'),
+             data:data,
+             onSuccess:function(responseText){
+             }
+             
+        }).send();
+        $('active_id').hide();
+        $('select_me').hide();
+        $('select_sms_template').hide();
+        $('exec_div').show();
+         return true;
+     });
+     
+     //template_up
+     $$("#template_up_btn").addEvent('click',function(){
+             new Request.JSON({
+                 url : 'index.php?app=market&ctl=admin_active&act=active_ex&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:{'tempup_tag':'uptag'},
+                 onSuccess:function(obj,responseText){
+                     var data = JSON.decode(responseText);
+                    if(data){
+                     $('order_symbol_id').value =data.order_symbol_id;
+                     if($('order_symbol_id').value==6){
+                         $("between").show();
+                         $("not_between").hide();
+                     }
+                    // $('buy_times_id').value=data.buy_times_id;
+                     $('buy_big_times').value=data.buy_big_times;
+                     $('buy_small_times').value=data.buy_small_times;
+                     $('money_id_symbol').value=data.money_id_symbol;
+                     if($('money_id_symbol').value==6){
+                         $("money_between").show();
+                         $("money_not_between").hide();
+                     }
+                    // $('money_id').value=data.money_id;
+                     $('money_from_id').value=data.money_from_id;
+                     $('money_to_id').value=data.money_to_id;
+                     $('freq_sy_id').value=data.freq_sy_id;
+                     if($('freq_sy_id').value==6){
+                         $("frequency_between").show();
+                         $("frequency_not_between").hide();
+                     }
+                     //$('frequency_id').value=data.frequency_id;
+                     $('frequency_from_id').value=data.frequency_from_id;
+                     $('frequency_to_id').value=data.frequency_to_id;
+                     $('product_id_symbol').value=data.product_id_symbol;
+                     if($('product_id_symbol').value==6){
+                         $("product_between").show();
+                         $("product_not_between").hide();
+                     }
+                    // $('product_num_id').value=data.product_num_id;
+                     $('product_num_big').value=data.product_num_big;
+                     $('product_num_small').value=data.product_num_small;
+                     $('date_id_symbol').value=data.date_id_symbol;
+                     if($('date_id_symbol').value==6){
+                         $("date_between").show();
+                         $("date_not_between").hide();
+                     }
+                     //$('date_id').value=data.date_id;
+                     $('date_from_id').value=data.date_from_id;
+                     $('date_to_id').value=data.date_to_id;
+                     $('integral_symbol').value=data.integral_symbol;
+                     if($('integral_symbol').value==6){
+                         $("integral_between").show();
+                         $("integral_not_between").hide();
+                     }
+                    // $('integral_id').value=data.integral_id;
+                     $('integral_begin_id').value=data.integral_begin_id;
+                     $('integral_end_id').value=data.integral_end_id;
+                     $('birthday_symbol').value=data.birthday_symbol;
+                     if($('birthday_symbol').value==6){
+                         $("birthday_between").show();
+                         $("birthday_not_between").hide();
+                     }
+                    // $('birthday_id').value=data.birthday_id;
+                     $('birthday_big').value=data.birthday_big;
+                     $('birthday_small').value=data.birthday_small;
+                     $('evaluate_symbol_id').value=data.evaluate_symbol_id;
+                     $('taobaolv_id').value=data.taobaolv_id;
+                     }
+                 }
+             }).send();
+             if($('test_id').value==1) {
+                $('active_id').show();
+                $('select_me').hide();
+                $('select_sms_template').hide();
+                $('exec_div').hide();
+                 return true;
+             }else{
+            $('active_id').hide();
+            $('select_me').show();
+            $('select_sms_template').hide();
+            $('exec_div').hide();
+             return true;
+             }
+     });
+     
+     //等待执行上一步
+     $$("#exec_up_btn").addEvent('click',function(){
+             new Request.JSON({
+                 url : 'index.php?app=market&ctl=admin_active&act=active_ex&p[0]='+$('active_id_id').value+'&p[1]='+$('template_sele_id').value,
+                 method : 'post',
+                 update : $('coupon_id'),
+                 data:{'exec_tag':'uptag'},
+                 onSuccess:function(obj,responseText){
+                 var data = JSON.decode(responseText);
+                 $('template_sele_id').value=data.template_id;
+                    }
+             }).send();
+        $('active_id').hide();
+        $('select_me').hide();
+        $('select_sms_template').show();
+        $('exec_div').hide();
+         return true;
+     });
+     
+     
+     //执行
+     var page_size = 1000;
+     var page = 0;
+     $$("#exec_btn").addEvent('click',function(){
+
+         var data={};
+         new Request({
+             url : 'index.php?app=market&ctl=admin_active&act=get_legal',
+             method : 'post',
+             data:data,
+             onSuccess:function(responseText){
+                if(responseText == 1){
+                    new Dialog('index.php?app=market&ctl=admin_active&act=legal_copy',{width:650,height:350,title:'法务公告'});
+                }else{
+                    
+                   $('sms_send_id').hide();
+                   $('loading_bar').show(); 
+                   run_send_func(0);      
+                   $('active_id').hide();
+                   $('select_me').hide();
+                   $('select_sms_template').hide();
+                   $('exec_div').show();
+                   return true;
+                }
+             }
+         }).send();
+         
+        /*
+         $('sms_send_id').hide();
+         $('loading_bar').show();
+         
+         run_send_func(0);      
+         
+        $('active_id').hide();
+        $('select_me').hide();
+        $('select_sms_template').hide();
+        $('exec_div').show();
+        return true;
+        */
+    });
+    
+    //关闭弹出层
+    $$('#close_btn').addEvent('click',function(){
+        $('close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    $$('#member_close_btn').addEvent('click',function(){
+        $('member_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    $$('#template_close_btn').addEvent('click',function(){
+        $('template_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+    $$('#sms_close_btn').addEvent('click',function(){
+        $('sms_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    $$('#template_exec_close').addEvent('click',function(){
+        $('template_exec_close').getParent('.dialog').retrieve('instance').close();
+    });
+});
+</script>

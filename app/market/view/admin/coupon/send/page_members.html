@@ -1,0 +1,25 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>用户名<{/t}></th>
+            <th><{t}>发送优惠券<{/t}></th>
+            <th><{t}>发送短信<{/t}></th>
+            <th><{t}>发送时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$members item=item key=key}>
+         <tr>
+             <td><{$item.member_id}></td>
+             <td><{if $item.coupon_id}><{$item.coupon_id}><{else}>-<{/if}></td>
+             <td><{if $item.theme_id}><{$item.theme_id}><{else}>-<{/if}></td>
+             <td><{$item.createtime|cdate:'FDATE'}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

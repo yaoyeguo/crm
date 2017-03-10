@@ -1,0 +1,6 @@
+<select name="group_id" style="width:130px;">
+    <{foreach from=$groups item=item}>
+        <option value='<{$item.group_id}>' <{if $item.group_id==$group_id}>selected<{/if}>><{$item.group_title}></option>
+    <{/foreach}>
+</select>
+<span><a href="index.php?app=taocrm&ctl=admin_member_group&act=edit_group&shop_id=<{$shop_id}>" target="dialog::{width:680,height:250,title:'添加分组'}">添加分组</a></span>

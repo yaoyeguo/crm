@@ -1,0 +1,215 @@
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" id="plugin_set">
+    <tbody><tr>
+      <th>插件名称：</th>
+      <td><b>聚划算催付</b></td>
+    </tr>
+
+    <tr id="bn">
+      <th><em class="c-red">*</em>商品货号：</th>
+      <td>
+        <{input type="text" name="params[bn]" value=$params[bn] vtype="required" }>
+        </td>
+    </tr>
+    
+        
+    <tr id="send_time">
+      <th><em class="c-red">*</em>催付时间：</th>
+      <td>
+        下单后
+        <{input type="text" name="params[send_time]" value=$params[send_time] vtype="required" size="4" }>分钟未付款 (请输入1~30之间的数字)      </td>
+    </tr>
+    
+    <{assign var="hours" value=array('07'=>'07','08'=>'08','09'=>'09',10=>10,11=>11,12=>12,13=>13,14=>14,15=>15,16=>16,17=>17,18=>18,19=>19,20=>20,21=>21)}>
+    <{assign var="mins" value=array('00'=>'00','05'=>'05',10=>10,15=>15,20=>20,25=>25,30=>30,35=>35,40=>40,45=>45,50=>50,55=>55)}>
+    
+    <tr id="start_time">
+      <th><em class="c-red">*</em>活动开始时间：</th>
+      <td>
+            <{input type="date" name="params[start_time][date]" value=$params.start_time.date vtype="required" }>　
+            <{input type="select" name="params[start_time][hour]" options=$hours value=$params.start_time.hour vtype="required" }>时　
+            <{input type="select" name="params[start_time][min]" options=$mins value=$params.start_time.min vtype="required" }>分
+        </td>
+    </tr>
+    
+        
+    <tr id="end_time">
+      <th><em class="c-red">*</em>活动结束时间：</th>
+      <td>
+            <{input type="date" name="params[end_time][date]" value=$params.end_time.date vtype="required" }>　
+            <{input type="select" name="params[end_time][hour]" options=$hours value=$params.end_time.hour vtype="required" }>时　
+            <{input type="select" name="params[end_time][min]" options=$mins value=$params.end_time.min vtype="required" }>分
+        </td>
+    </tr>
+    
+        
+    <tr>
+      <th><em class="c-red">*</em>有效淘宝店铺：</th>
+        <td>
+            <{foreach from=$items.shop_id.options item=data key=i}>
+            <label><input name="params[shop_id][]" value="<{$i}>" type="checkbox" <{if(in_array($i,$params.shop_id))}>checked<{/if}> >
+            <{$data}> 
+            </label>
+            <{/foreach}>
+       </td>
+    </tr>
+    
+            <tr><th>短信模板：</th><td>
+            <button type="button" name="sel_sms_template" class="btn" target_id="send_content"><span><span>选择模板</span></span></button>
+        </td></tr>
+        
+    <tr>
+      <th><em class="c-red">*</em>短信内容：</th>
+      <td>
+        
+            <{input type=textarea class="x-input" style="width:80%;height:60px;" vtype="required" name="params[send_content]" id="send_content" value=$params[send_content] }>
+            
+            <{if($plugins.addons=='tags')}>
+                <br/>
+                字符数：<b id="sms_length" style="font-size:18px;color:blue;font-family:Arial">0</b>，
+                约 <b id="sms_num" style="font-size:18px;color:red;font-family:Arial">0</b> 条短信长度
+                
+                <{foreach from=$plugins.tags item=tag }>
+                    <a onclick="insertAtCursor(document.getElementById('send_content'),&quot;&lt;{<{$tag}>}&gt;&quot;)"><button class="btn" type="button"><span><span><{$tag}></span></span></button></a>
+                <{/foreach}>
+            <{/if}>
+                
+            <div style="color:red;padding:3px 5px;margin:5px 0 0 0;border:1px solid #AAA;background:#FFC;display:<{$need_sign}>;">某些店铺缺少短信签名，请<a style="cursor:pointer;color:#069;" href="index.php?app=ecorder&ctl=admin_sms_sign&act=index" target="_blank">点击这里设置</a>。</div>
+        
+        </td>
+    </tr>
+    </tbody></table>
+
+</div>
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="p-form-submit"}>
+    </div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+$$('#plugin_set button[name="sel_sms_template"]').addEvent('click',function(){
+    var target_id = $(this).get('target_id');
+    var url = 'index.php?app=plugins&ctl=admin_manage&act=sel_sms_template&setid='+target_id;
+    new Dialog(url,{
+            title:'选择短信模板',width:700,height:320,
+            onShow:function(){
+                
+            }
+        }
+    );
+});
+
+_btn.addEvent('click',function(){
+    var shop_list = $$("input[name='params[shop_id][]']:checked");
+    if(shop_list.length == 0){
+        alert('您没有选择店铺，插件将不会运行。');
+    }
+    
+    var sms_sign_err = false;
+    $$('#plugin_set textarea').each(function(el){
+        var sms_content = el.value;
+        
+        if(!sms_content){
+            alert('请输入短信内容');
+            el.focus();
+            sms_sign_err = true;
+            return false;
+        }
+        
+        if(sms_content.test(/【.+】$/) == false){
+            alert('您的短信末尾缺少签名，为了保证短信正常发送，系统将自动为您添加，请确认');
+            sms_content += '【\<\{签名\}\>】';
+            el.value = sms_content;
+            sms_sign_err = true;
+        }
+    });
+    if(sms_sign_err) return false;
+    
+    if($$('#is_twice select').get('value') == 1){
+        if(parseInt($$('#send_time input').get('value')) > parseInt($$('#send_time2 input').get('value'))){
+            alert('第二次催付时间必须大于第一次催付！');
+            return false;
+        }
+    }
+
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+_form.store('target',{
+    onSuccess:function(response){
+        try{
+            var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+        }catch(e){}
+        if(_dialogIns)
+        {
+            _dialogIns.close();
+        }
+    }
+});
+
+(function(){
+
+    //判断字数
+    $$('textarea').each(function(el){
+        set_sms_len(el);
+        
+        el.addEvent('change',function(){
+            set_sms_len(el);
+        });
+        
+        el.addEvent('keyup',function(){
+            set_sms_len(el);
+        });
+    });
+    
+})();
+
+function set_sms_len(el){
+    $('sms_length').set('text',el.value.length)
+    $('sms_num').set('text',Math.ceil(el.value.length/67))
+}
+
+function insertAtCursor(myField, myValue){
+    if(myValue.indexOf('签名') != -1){
+        myValue = '【'+myValue+'】';
+        myField.value += myValue;
+        return false;
+    }
+
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的卡包</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>我的卡包</h1>
+</nav>
+<!-- 已使用/未使用 -->
+<div class="segmented-control" data-tab>
+  <a href="#content1" class="control-item active">未使用(<{$using_num}>)</a>
+  <a href="#content2" class="control-item">已使用(<{$used_num}>)</a>
+</div>
+<div class="tabs-content">
+  <div id="content1" class="content active">
+  <{if $coupons eq null }>
+    <!-- 暂无可用 -->
+    <div class="placeholder-info">
+      <p>
+        <i class="icon-coupons"></i>
+      </p>
+      <p>暂无可用的卡券</p>
+    </div>
+  <{else}>
+    <!-- 未使用 -->
+      <{foreach from=$coupons item=data key=k}>
+      <{if $data.memc_used eq 'false'}>
+    <div class="coupon <{$using_color.$k}>">
+      <div class="pos-left">
+        <h1><{$data.memc_name}></h1>
+        <h2>来源店铺：<{$data.coupon_source}></h2>
+      </div>
+      <div class="pos-right">
+        有效期：<br>
+        <{$data.from_time}><br>
+        <{$data.to_time}>
+      </div>
+      <div class="quan">券</div>
+    </div>
+      <{/if}>
+      <{/foreach}>
+    <{/if}>
+  </div>
+  <div id="content2" class="content">
+    <!-- 已使用 -->
+      <{foreach from=$coupons item=data key=k}><{}>
+      <{if $data.memc_used  eq 'true'}>
+    <div class="coupon <{$used_color.$k}>">
+      <div class="pos-left">
+        <h1><{$data.memc_name}></h1>
+        <h2>来源店铺：<{$data.coupon_source}></h2>
+      </div>
+      <div class="pos-right">
+        有效期：<br>
+        <{$data.from_time}><br>
+        <{$data.to_time}>
+      </div>
+      <div class="quan">券</div>
+      <img src="<{$env.app.res_url}>/img/stamp.svg" alt="已核销" width="70" class="stamp">
+    </div>
+      <{/if}>
+      <{/foreach}>
+    <!--<div class="coupon second">
+      <div class="pos-left">
+        <h1>优惠券标题</h1>
+        <h2>来源店铺：商派商城</h2>
+      </div>
+      <div class="pos-right">
+        有效期：<br>
+        2015-06-16 14:35<br>
+        2015-06-17 20:35 
+      </div>
+      <div class="quan">券</div>
+    </div>-->
+  </div>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+</script>
+</body>
+</html>

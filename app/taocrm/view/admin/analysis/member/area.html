@@ -1,0 +1,22 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+        <div class="wdgk_title"><span class="float1 ">客户区域分布</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">   
+                <{foreach from=$data item=data key=key}>
+                <tr class="list_tr1">
+                    <td><{$key}></td>
+                    <{foreach from=$data item=list key=key2}>
+                    <td><{$list}></td>
+                    <{/foreach}>
+                </tr>
+                <{/foreach}>
+            </table>
+        </div>
+
+        <div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=column_area&shop_id=<{$select_type}>" scrolling="no" width="100%" height="100%"></iframe>
+        </div>
+
+    </div>
+</div>

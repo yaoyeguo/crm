@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>CRM营销推广</title>
+    <meta charset="utf-8" />
+    <link href="static/styles/reset.css" rel="stylesheet" />
+    <link href="static/styles/common.css" rel="stylesheet" />
+    <link href="static/styles/index.css" rel="stylesheet" />
+</head>
+<body>
+    <!--活动时间 start-->
+    <script type="text/template" id="active_time_template">
+        <div class="icon-box active-time time-evt" data-parent="is">
+            <div class="content">
+                <i class="dire zs"></i>
+                <span class="txt">活动时间</span>
+                <span class="flag-box only-dire atime"></span>
+                <i class="del"></i>
+                <i class="edit"></i>
+                <a href="javascript:;" class="add-icon" data-parent="icon-box"><span>＋</span></a>
+            </div>
+            <div class="time-root inner" style="display: none">
+                <ul>
+                    <!--li>开始时间</li>
+                    <li>
+                        <p class="date">2012-12-22</p>
+                        <p class="tim">22:55:00</p>
+                    </li>
+                    <li>
+                        <i class="exp">每 3 天 1 次</i>
+                    </li-->
+                </ul>
+            </div>
+        </div>
+    </script>
+    <!--活动时间 end-->
+
+
+    <!--等待时间 start-->
+    <script type="text/template" id="wait_time_template">
+        <div class="icon-box wait-time time-evt" data-parent="is">
+            <div class="content">
+                <i class="dire zs"></i>
+                <!--a href="javascript:;" class="add-icon" data-parent="is"><span>＋</span></a-->
+                <span class="txt">等待时间</span>
+                <span class="flag-box only-dire wtime"></span>
+                <i class="del"></i>
+                <i class="edit"></i>
+                <a href="javascript:;" class="add-icon" data-parent="icon-box"><span>＋</span></a>
+            </div>
+            <div class="time-root inner" style="display: none">
+                <ul>
+                    <!--li>开始时间</li>
+                    <li>
+                        <p class="date">2012-12-22</p>
+                        <p class="tim">22:55:00</p>
+                    </li>
+                    <li>
+                        <i class="exp">每 2 天 1 次</i>
+                    </li-->
+                </ul>
+            </div>
+        </div>
+    </script>
+    <!--等待时间 end-->
+
+
+    <!--筛选条件 start-->
+    <script type="text/template" id="screen_template">
+        <!--div class="content clearfix" data-flag="<%= space%>">
+            <div>
+                <div class="prop">
+                    <i class="dire zs"></i>
+                    <!--a href="javascript:;" class="add-icon"><span>＋</span></a>
+                    <span class="txt">刷选条件</span>
+                    <span class="flag-box only-dire sdx"></span>
+                    <i class="del"></i>
+                    <i class="edit"></i>
+                </div>
+                <div class="val inner">
+                    <!--p>结果</p>
+                    <p>30402人</p>
+                    <i class="num-icon"></i>
+                </div>
+                <a href="javascript:;" class="add-icon" data-parent="icon-box"><span>＋</span></a>
+            </div>
+        </div-->
+    </script>
+    <!--筛选条件 end-->
+
+    <!--发送短信 start-->
+    <script type="text/template" id="dx_template">
+    </script>
+    <!--发送短信 end-->
+
+    <!--统计结果模板 start-->
+    <script type="text/template" id="group_template">
+        <div class="icon-box group" data-parent="is">
+            <div class="content">
+                <!--i class="dire zs"></i-->
+                <!--a href="javascript:;" class="add-icon"><span>＋</span></a-->
+                <span class="txt">统计结果</span>
+                <span class="flag-box only-dire sgroup"></span>
+                <i class="del"></i>
+                <i class="edit"></i>
+            </div>
+        </div>
+    </script>
+    <!--统计结果模板 end-->
+
+    <!--菜单模板 start-->
+    <script type="text/template" id="menu_template">
+        <div class="menus">
+            <div class="menus-in inner">
+                <p class="next">选择下一步</p>
+                <ul>
+                    <!--li data-val="activeTime.0" data-parent="menus">
+                        <a href="javascript:;">创建活动时间</a>
+                    </li>
+                    <li data-val="tj.1" data-parent="menus">
+                        <a href="javascript:;">创建刷选条件</a>
+                    </li>
+                    <li data-val="waitTime.2" data-parent="menus">
+                        <a href="javascript:;">创建等待时间</a>
+                    </li>
+                    <li data-val="dx.3" data-parent="menus">
+                        <a href="javascript:;">创建发送短信</a>
+                    </li>
+                    <li data-val="group.4" data-parent="menus">
+                        <a href="javascript:;">创建统计结果</a>
+                    </li-->
+                </ul>
+            </div>
+        </div>
+    </script>
+    <!--菜单模板 end-->
+
+    <div class="wrap">
+        <ul class="signup">
+            <li class="cell">
+                <label for="activity_name">活动名称：</label>
+                <input type="text" class="textfield text-muted" maxlength="30" placeholder="最多输入30个中文字符" id="activity_name" name="activity_name" />
+            </li>
+            <li class="cell">
+                预计成本：
+                <span class="text-muted">350</span>圆
+            </li>
+            <li class="cell">
+                <div class="area">
+
+                    <!--开始 start-->
+                    <div class="icon-box start-box">
+                        <div class="content">
+                            <i class="dire zs"></i>
+                            <span class="txt">开 始</span>
+                            <span class="flag-box">
+                                <i class="start dire"></i>
+                            </span>
+                            <a href="javascript:;" class="add-icon" data-parent="icon-box"><span>＋</span></a>
+                        </div>
+                    </div>
+                    <!--开始 end-->
+
+                </div>
+            </li>
+        </ul>
+    </div>
+<script src="static/scripts/lib/jquery-1.8.2.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/scripts/main.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+
+
+        /**************注册事件和所要处理的业务逻辑类别********/
+
+        function translateHeight (ele) {
+            while (ele.parent().hasClass('screen')) {
+
+               // if (ele.index() !== ele.parent().children().filter(':not(.bar)').size() - 1) {
+                    ele.height(ele.children('.icon-box').height() - 20);
+                    var top = ele.children('.icon-box').children('.content').last().position().top;
+                    ele.children('.icon-box').children('.bar').css({bottom: 'auto', height: top + 'px' });
+                //}
+                ele = ele.parent().parent();
+            }
+        }
+
+        CrmJS.util.registerEvt('click', [
+            function (x, y, template, parentEle, nextEle, bgColor, branchCount, templateType, data, tempStr) {
+                var $html = '', objArr = [], sourceEle, singleEle, i, offsetTop, spaceProp, prevEle;
+
+                if (branchCount > 0) {
+
+
+                    sourceEle = $('<div class="icon-box screen '+ templateType +'"><div class="bar"></div></div>');
+                    for (i = 0; i < branchCount; i += 1) {
+                        data[i].space = (nextEle.prev().data('flag') || '') + data[i].space;
+                        singleEle = $(template(data[i]));
+                        console.log(template(data[i]));
+                        singleEle.children('div').css({'background-color': bgColor});
+                        objArr.push(singleEle);
+                        sourceEle.prepend(singleEle);
+                    }
+                    var childFlag = singleEle.data('flag').slice(0, -2);
+                    if (childFlag === '') {
+                        childFlag = singleEle.data('flag');
+                    }
+                  var prevParent = nextEle.prev().find('[data-flag="'+childFlag+'"]');
+
+                    var container = nextEle.prev().find('[data-flag="'+ childFlag +'"]');
+
+                    if (container.size() > 0) {
+                        sourceEle.appendTo(container);
+                        x = container.get(0).offsetWidth + 45;
+                        y = 0;
+                        sourceEle.css({left: x + 'px', top: y + 'px'})
+                    } else {
+                        sourceEle.css({left: x + 'px', top: y + 'px'}).insertAfter(nextEle.prev());
+                    }
+
+                    if (container.parent().hasClass('screen')) {
+                        translateHeight(container);
+                    }
+                    sourceEle.find('.zs').css('border-left-color', bgColor);
+                    container.children().first().find('.del').hide();
+
+                } else if (branchCount === 0) {
+
+                    $html = $(template(data));
+                    if (tempStr) {
+                        $html.children('.inner').append($(tempStr));
+                    }
+                    $html.css({left: x + 'px', top: y + 'px'}).appendTo(parentEle);
+                    $html.css({'background-color': bgColor});
+                    $html.find('.zs').css('border-left-color', bgColor);
+                    if (nextEle.attr('class') === 'menus') {
+			        nextEle.prev().find('.del').hide();
+                    }
+                }
+
+            },
+
+            function (nativeEle) {
+                var $menus = nativeEle.find('.menus'),
+                     isBtnVisible = $menus.size() > 0 ? true : false,
+                     $menu = isBtnVisible ? $menus.last() : null,
+                     $addBtn = isBtnVisible ? $menu.prev('.icon-box').find('.add-icon') : null;
+
+                if (isBtnVisible) {
+                    $menus.remove();
+                    $addBtn.show();
+                }
+            },
+
+            function (isMultiBranch, nativeEle, flag, style) {
+                var promVal = confirm('确定删除？');
+                if (promVal) {
+
+
+                    if (isMultiBranch === 'branch') {
+                        nativeEle.remove();
+                        var container = $('[data-flag^="'+flag+'"]'),
+                                naEle = $('[data-flag="'+flag+'"]');
+
+                        if (flag === '') {
+                            container = $(style).children('.content');
+                            if (container.size() == 0) {
+                                $(style).find('.bar').remove();
+                                $(style).prev().find('.del').show();
+                                $(style).prev().find('.add-icon').show();
+                                $(style).remove();
+                            }
+                        }
+                        else {
+                            if (container.size() === 1) {
+                                naEle.children('.icon-box').remove();
+                                naEle.children().first().find('.del').show();
+                                naEle.children().first().find('.add-icon').show();
+                            }
+                        }
+                    } else {
+                        nativeEle.prev().find('.add-icon').show();
+                        nativeEle.prev().find('.del').show();
+                        nativeEle.remove();
+                    }
+
+                }
+            },
+            function (editFn) {
+                editFn();
+            }
+        ]);
+
+        CrmJS.util.registerEvt('mouseover',[
+            function (nativeEle) {
+                nativeEle.children('.time-root').show();
+            }
+        ]);
+
+        CrmJS.util.registerEvt('mouseleave', [
+            function (nativeEle) {
+                nativeEle.children('.time-root').hide();
+            }
+        ]);
+
+        /******************dom绑定事件********************/
+
+        //添加按钮click事件绑定
+        CrmJS.action.bind(false, true, $('.add-icon'), 'live', 'click', 0, $('.area'), 'menu.0', $('.icon-box').offset().top - $('.area').offset().top - 5);
+        //菜单项click事件绑定
+        CrmJS.action.bind(false, true, $('.menus-in li'), 'live', 'click', 0, $('.area'));
+
+        //活动时间mouseover事件绑定
+        CrmJS.action.bind(false, true, $('.time-evt'), 'live', 'mouseover', 0);
+        //活动时间mouseleave事件绑定
+        CrmJS.action.bind(false, true, $('.time-evt'), 'live', 'mouseleave', 0);
+
+        //点击区域 click事件绑定
+        CrmJS.action.bind(true, true, $('.area'), 'live', 'click', 1);
+
+        //删除 click事件绑定
+        CrmJS.action.bind('del', false, $('.del'), 'live', 'click', 2, $('.area'));
+
+
+        //编辑事件绑定
+        CrmJS.action.bind('edit', false, $('.edit'), 'live', 'click', 3);
+
+    })
+</script>
+</body>
+</html>

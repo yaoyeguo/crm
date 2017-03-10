@@ -1,0 +1,126 @@
+<div style="" class="content-head">
+
+    <div class="finder-title">
+        <h2 class="head-title span-auto"><{$wangwang_title}></h2>
+    </div>
+    <div id="finder-packet-d48745" class="finder-packet" style="width: auto">
+        <div class="packet-items clearfix" style="width:auto;">
+            <ul class="clearfix">
+                <{foreach from=$wangwang_shops item=data key=i}>
+                <{if $shop_id==$data.shop_id}>
+                <li class="current">
+                <{else}>
+                <li>
+                <{/if}>
+                <a href="index.php?app=taocrm&ctl=admin_wangwangjingling&act=index&shop_id=<{$data.shop_id}>&type=<{$type}>">
+                <span><{$data.name}></span>
+                </a>
+                </li>
+                <{/foreach}>
+            </ul>
+            
+        </div>
+    </div>
+
+<{if $wangwang_field}>
+    <form action="index.php?app=taocrm&ctl=admin_wangwangjingling&act=index&shop_id=<{$shop_id}>&type=<{$type}>" id="tmpl_form" method="post">
+    <div style="padding-right:75px;" id="finder-action-d48745" class="gridlist-action finder-action clearfix">
+        <ul id="tag_memeber" class="finder-action-items flt">
+            <li>
+                <label><{t}>标签属性：<{/t}></label>
+            </li>
+            <{foreach from=$wangwang_search_fields item=search_fields key=field}>
+            <li>
+                <label><{t}><{$field}>：<{/t}></label>
+                <select name="search[<{$field}>]" id="search[<{$field}>]">
+                    <option value="">全部</option>
+                    <{foreach from=$search_fields item=value_field key=i}>
+                        <option value="<{$value_field}>" <{if $wangwang_search_field[$field] == $value_field}> selected="selected"<{/if}>><{$value_field}></option>
+                    <{/foreach}>
+                </select>
+            </li>
+            <{/foreach}>
+        </ul>
+        <ul>
+            <li><button class="btn" id="add-shopcat-form-submit"><span><span><{t}>搜索<{/t}></span></span></button></li>
+        </ul>
+        <{if $wangwang_field_more == 'true' && $wangwang_data != ""}>
+        <ul><li><button class="btn" type="button" id="filed-more"><span><span><{t}>更多筛选条件<{/t}></span></span></button></li></ul>
+        <{/if}> 
+        
+        <{if $type == 1}>
+        <ul>
+            <li><button class="btn" type="button" id="wangwang_send_member"><span><span><{t}>创建营销活动<{/t}></span></span></button></li>
+        </ul>
+        <{/if}>
+    </div>
+    </form>
+<{/if}>
+</div>
+
+<div style="padding-top:2px;">
+    <{if $wangwang_field && $wangwang_data}>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <thead>
+            <tr>
+        <{foreach from=$wangwang_field item=data key=i}>
+                <th><{$data}></th>
+        <{/foreach}>
+            </tr>
+        </thead>
+        <tbody>
+            <{foreach from=$wangwang_data item=data key=i}>
+                <tr class="provice-bg">
+                    <{foreach from=$data.data item=ws_data key=i}>
+                        <td><{$ws_data}></td>
+                    <{/foreach}>
+                </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+    <{else}>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <tr><td><{$wangwang_message}></td></tr>
+      </table>
+    <{/if}>
+    <{$pager}>
+</div>
+<script>
+var btn =$('add-shopcat-form-submit');
+btn.addEvent('click',function() {
+    }).send();
+var send_btn = $('wangwang_send_member');
+
+var setType = '<{$type}>'
+if (setType == '1') {
+send_btn.addEvent('click', function(){
+    var val = [];
+    $$('#tag_memeber select').each(function(e){
+        val.push(e.get('id') + '=' + e.value);      
+    });
+    var type = '<{$type}>'
+    var shop_id = '<{$shop_id}>';
+    var murl = '&'+val.join('&')+'&type='+type+'&shop_id='+shop_id;
+    wangwang_show_members(murl);
+});
+}
+
+
+function wangwang_show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_wangwangjingling&act=sendinfo'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    new Dialog(murl,{title:'旺旺属性下单客户',width:600,height:400,onShow:function(){}});
+}
+
+var wangwang_field_more = '<{$wangwang_field_more}>';
+if (wangwang_field_more == 'true') {
+    var filed_more_btn = $('filed-more');
+    filed_more_btn.addEvent('click', function(){
+        var type = '<{$type}>'
+        var shop_id = '<{$shop_id}>';
+        murl = 'index.php?app=taocrm&ctl=admin_wangwangjingling&act=morefields&type='+type+'&shop_id='+shop_id;
+        var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+        new Dialog(murl,{title:'更多筛选条件',width:600,height:200,onShow:function(){}});
+    });
+}
+</script>

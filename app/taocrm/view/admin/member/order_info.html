@@ -1,0 +1,60 @@
+<div container='true'>
+<div class="tableform1">
+
+    <{if($order)}>
+    
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>订单号：<strong><{$order.order_bn}><strong></td>
+            <td>收货人：<{$order.consignee[name]}> (<strong style="color:#03F"><{$order.consignee[mobile]}></strong>)</td>
+            <td>下单时间：<{$order.createtime|date_format:"%Y-%m-%d %H:%M:%S"}></td>
+        </tr>
+        <tr>
+            <td>订单金额：<{$order.total_amount|default:0}></td>
+            <td>实付金额：<{$order.payed|default:0}></td>
+            <td>运费：<{$order.shipping.cost_shipping|default:0}></td>
+        </tr>
+        <tr>
+            <td>付款时间：<{$order.pay_time|date_format:"%Y-%m-%d %H:%M:%S"}></td>
+            <td>发货时间：<{$order.delivery_time|date_format:"%Y-%m-%d %H:%M:%S"}></td>
+            <td>完成时间：<{$order.finish_time|date_format:"%Y-%m-%d %H:%M:%S"}></td>
+        </tr>
+    </table>
+    
+    <span style="float:right;color:#999;border-left:2px solid #999;margin:5px 0;padding:0 5px;background:#E6ECF2;">数据更新时间：<{$order.f_modified|date_format:"%Y-%m-%d %H:%M:%S"}></span>
+    <{/if}>
+
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>商品名称<{/t}></th>
+            <th><{t}>货号<{/t}></th>
+            <th><{t}>销售价<{/t}></th>
+            <th><{t}>数量<{/t}></th>
+            <th><{t}>优惠<{/t}></th>
+            <th><{t}>小计<{/t}></th>
+            <th><{t}>评价<{/t}></th>
+            <th><{t}>状态<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$orderItems item=item key=key}>
+         <tr <{if $item.delete == 'true'}>style="background-color: rgb(216, 216, 216);"<{/if}>>
+             <td><{$item.name}></td>
+             <td><{$item.bn}></td>
+             <td><{$item.price|cur}></td>
+             <td><{$item.nums}></td>
+             <td><{$item.pmt_amount|cur}></td>
+             <td><{$item.amount|cur}></td>
+             <td><{$item.evaluation}></td>
+             <td><{if $item.delete == 'true'}>已删除<{else}>正常<{/if}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     
+     <{if(!$orderItems)}>
+        <div style="text-align:center;padding:20px 0;">没有找到订单明细，可能订单未下载。</div>
+     <{/if}>
+</div>
+</div>

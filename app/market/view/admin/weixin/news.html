@@ -1,0 +1,189 @@
+<style>
+#sel_templates input {
+	display: none;
+}
+
+label {
+	cursor: pointer;
+}
+
+#sel_templates label {
+	margin: 0 10px 0 0;
+	overflow: hidden;
+	display: block;
+	float: left;
+}
+
+#sel_templates label img {
+	width: 140px;
+	float: left;
+}
+
+#sel_templates .checked {
+	border: 2px solid #5779BD;
+}
+</style>
+
+<form style="position: relative;" id="form_due" class="tableform"
+	action="index.php?app=market&ctl=admin_weixin&act=saveNews"
+	method="POST">
+
+	<input type="hidden" name="wx_news_id"
+		value="<{$news.wx_news_id}>" />
+		
+    <input type="hidden" name="type"
+        value="<{$news.type}>" />
+
+<{if $news.type == 1}>
+	<div class="division">
+    
+        <!--预览-->
+        <div style="width: 290px; height: 308px; overflow-y: auto;float:right;">
+            <div id="preview_head"
+                style="background: url(<{$env.app.res_url}>/wx1.gif) no-repeat #FFF; padding: 0 0 0 30px; height: 274px;"></div>
+            <div id="preview_body"
+                style="background: url(<{$env.app.res_url}>/wx2.gif) no-repeat #FFF; padding: 0 0 10px 10px;"></div>
+        </div>
+    
+		<table style="width:420px;" cellspacing="0" cellpadding="0" border="0" align="center">
+			<tbody>
+				<tr>
+					<th width="10%"><em class="c-red">*</em>标题：</th>
+					<td width="90%"><{input type="text" value=$news.news_info.title
+						name="news[title]" id="title" vtype="required" }></td>
+				</tr>
+				<tr>
+					<th ><em class="c-red">*</em>封面：
+                    <br/>大图360*200<br/>小图200*200 
+                    </th>
+					<td ><{input type="image" value=$news.news_info.picurl
+						name="news[picurl]" vtype="required" width=160 height=100 }></td>
+				</tr>
+				<tr>
+					<th ><em class="c-red">*</em>摘要：</th>
+					<td ><{input type="textarea" value=$news.news_info.digest
+						name="news[digest]" id="digest" vtype="required" width="300" }></td>
+				</tr>
+				<tr id="link_type">
+					<th ><em class="c-red">*</em>链接到：</th>
+					<td ><input type="radio" name="news[link_type]"
+						value="url" onClick="chooseLinkType()" <{if !$news.news_info.link_type || $news.news_info.link_type == 'url'}>checked<{/if}> >链接 <input
+						type="radio" name="news[link_type]" value="article"
+						onClick="chooseLinkType()" <{if $news.news_info.link_type == 'article'}>checked<{/if}> >文章</td>
+				</tr>
+				<tr id="link_type_url" style="display: none;">
+					<th ><em class="c-red">*</em>链接地址：</th>
+					<td>
+                        <{input type="text" value=$news.news_info.link_type_url name="news[link_type_url]" vtype="required" size=35 }>
+                        <span onclick="$(this).getPrevious().set('value','<{$wx_ucenter_url}>')" style="color:#5C7BA8;cursor:pointer;" target="_blank" title="点击填充微信会员中心的链接地址">微信会员中心</span>
+                    </td>
+				</tr>
+				<tr id="link_type_article" style="display: none;">
+					<th ><em class="c-red">*</em>文章内容：</th>
+					<td ><{input type="html" value=$news.news_info.link_type_article
+						name="news[link_type_article]" vtype="required" }></td>
+				</tr>
+
+			</tbody>
+		</table>
+        
+        <div style="width:100%;clear:both;height:1px;overflow:hidden;">&nbsp;</div>
+
+	</div>
+	
+<{else}>
+
+<{/if}>
+
+	<{area inject='.mainFoot'}>
+	<div class="table-action"><{button type="button" label="保存"
+		id="survey-form-submit"}> 
+        <{button type="hidden" label="预览"
+		onclick="set_preview();" }></div>
+	<{/area}>
+
+</form>
+
+<script>
+	(function() {
+
+		var _form = $('form_due');
+		var btn = $('survey-form-submit');
+		var finder = finderGroup['<{$env.get.finder_id}>'];
+
+		_form.store('target', {
+			onSuccess : function(response) {
+				var hash_res_obj = JSON.decode(response);
+				if (hash_res_obj.success != undefined
+						&& hash_res_obj.success != "") {
+					try {
+						var _dialogIns = btn.getParent('.dialog').retrieve(
+								'instance');
+					} catch (e) {
+					}
+					if (_dialogIns) {
+						_dialogIns.close();
+						window.finderGroup['<{$env.get.finder_id}>'].refresh();
+					}
+				}
+			}
+		});
+        
+        _form.getElements('input').addEvent('change', function() {
+			set_preview();
+		});
+        
+        set_preview();
+
+		btn.addEvent('click', function() {
+
+			_form.fireEvent('submit', {
+				stop : $empty
+			});
+
+		});
+
+	})();
+
+	function chooseLinkType() {
+		var el = null;
+		$ES('input[type=radio]', $('link_type')).each(function(item) {
+			if (item.checked) {
+				el = item;
+			}
+		});
+
+		if (el != null) {
+			if (el.value == "url") {
+				$('link_type_url').show();
+				$('link_type_article').hide();
+			} else if (el.value == "article") {
+				$('link_type_url').hide();
+				$('link_type_article').show();
+			}
+		}
+	}
+    
+    function refresh_img(){
+        var image = $$('div.image-input-view img');
+        var img_html = '';
+        if(image){
+            return image.get('src');
+            img_html = '<img src="'+image.get('src')+'" />';
+        }
+        return false;
+    }
+    
+    function set_preview(){
+    
+        var picurl = refresh_img();
+        
+        var preview_head = '<h3 style="margin:0 0 20px 0;padding:70px 0 0 0;">'+$('title').value+'</h3>\
+        <img style="border:1px solid #AAA;" src="'+picurl+'" height=72 width=192 />\
+        <br/>'+$('digest').get('value')+'\
+        ';    
+        $('preview_head').set('html', preview_head);
+    }
+	
+	chooseLinkType();
+</script>

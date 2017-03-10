@@ -1,0 +1,63 @@
+<div class="tableform">
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>订单总数<{/t}></th>
+                    <th><{t}>总金额<{/t}></th>
+                    <th><{t}>客单价<{/t}></th>
+                    <th><{t}><{/t}></th>
+                    <th><{t}><{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.orders}></td>
+                     <td><{$analysis.amount}></td>
+                     <td><{$analysis.per_amount}></td>
+                     <td></td>
+                     <td></td>
+                 </tr>
+            </tbody>
+            
+            <thead>
+                <tr>  
+                    <th><{t}>退款订单数<{/t}></th>
+                    <th><{t}>退款金额<{/t}></th>
+                    <th><{t}>交易成功订单数<{/t}></th>
+                    <th><{t}>交易成功金额<{/t}></th>
+                    <th><{t}>成功客单价<{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.refund_orders}></td>
+                     <td><{$analysis.refund_amount}></td>
+                     <td><{$analysis.finish_orders}></td>
+                     <td><{$analysis.finish_amount}></td>
+                     <td><{$analysis.finish_per_amount}></td>
+                 </tr>
+            </tbody>
+            
+            <thead>
+                <tr>  
+                    <th><{t}>未付款订单数<{/t}></th>
+                    <th><{t}>未付款金额<{/t}></th>
+                    <th><{t}>未付款客单价<{/t}></th>
+                    <th><{t}><{/t}></th>
+                    <th><{t}><{/t}></th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                     <td><{$analysis.unpay_orders}></td>
+                     <td><{$analysis.unpay_amount}></td>
+                     <td><{$analysis.unpay_per_amount}></td>
+                     <td></td>
+                     <td></td>
+                 </tr>
+            </tbody>
+            
+        </table>
+    </div>
+</div>

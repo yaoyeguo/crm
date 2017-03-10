@@ -1,0 +1,36 @@
+<div class="tableform">
+	<div class="division">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>活动名称：<{/t}></label></th>
+                        <td><{$active.active_name|escape:'html'}></td>
+						<th><label><{t}>优惠券：<{/t}></label></th>
+                        <td><{$active.coupon_name}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>创建时间：<{/t}></label></th>
+                        <td><{$active.createtime|cdate:'FDATE_FTIME'}></td>
+						<th><label><{t}>短信告知：<{/t}></label></th>
+                        <td><{if $active.theme_title}>是<{else}>否<{/if}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>结束时间：<{/t}></label></th>
+                        <td><{if $active.end_time}><{$active.end_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+						<th><label><{t}>短信模板：<{/t}></label></th>
+                        <td><{if $active.theme_title}><{$active.theme_title}><{else}>-<{/if}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>活动人数：<{/t}></label></th>
+                        <td><{$active.count}></td>
+						<th></th>
+                        <td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	</div>
+</div>

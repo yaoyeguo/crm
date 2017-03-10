@@ -1,0 +1,245 @@
+<!--
+//{"rsp":"succ","info":
+{"totalMembers":6890,"validMembers":6848,"unvalidMembers":42,"sentMembers":0}}
+
+//{"rsp":"succ","info":
+{"totalMembers":6890,"validMembers":3424,"controlGroupMembers":3424,"unvalidMembers":42,"sentMembers":0}}
+
+//{"rsp":"succ","info":
+{"totalMembers":6890,"validMembers":1712,"validbMembers":1712,"controlGroupMembers":3424,"unvalidMembers":42,"sentMembers":0}}
+-->
+
+<div id="exec_div" style="display:none;">
+    
+    <table>
+        <tr>
+            <th width="20%">店铺： </th>
+            <td width="80%" id="final_shop_name"><{$activity.shop_name}></td>
+        </tr>
+        <tr>
+            <th>活动名称：</th><td id="final_activity_name"><{$activity.activity_name}></td>
+        </tr>
+        <tr id="final_template_name_tr" <{if(!$activity.template_name)}>style="display:none"<{/if}>>
+            <th>短信模板：</th><td id="final_template_name"><{$activity.template_name}></td>
+        </tr>
+        
+        <!--短信发送清单：-->
+        <tr id="el_send_sms_list" style="display:none;">
+            <th>短信发送清单：</th>
+			<td  id="sms_total_num">
+			您选择的客户数：<span id="el_select_sms_membernums"><{$activityMemberNums.totalMembers}></span><br />
+            有效客户数：<span id="el_vaild_sms_membernums"><{$activityMemberNums.validMembers}></span><br />
+            无效客户数：<span style="color:#ff0000" id="el_unvaild_sms_membernums"><{$activityMemberNums.unvalidMembers}></span><br />
+            <!-- 当天已营销客户数：<span style="color:#ff0000" id="el_sent_sms_membernums"><{$activityMemberNums.sentMembers}></span>
+                &nbsp;&nbsp;是否发送:
+                <label><input type="radio" name="sent_member_sms" value="1" checked>是</label>
+                <label><input type="radio" name="sent_member_sms" value="0">否</label>
+            <br /> -->
+            当前共待发送客户数：<span id="el_reality_sms_membernums"><{$activityMemberNums.WaitSendMember}></span><br />
+            <span id="activity_group_member"></span>
+            <span id="sms_compare_tips"></span>
+            <span id="el_vaild_sms_compareAB" style="display:none;"></span>
+            </td>
+        </tr>
+        
+        
+        <tr id="el_send_sms_no" colspan="2"><td>没有需要发送的短信</td></tr>
+        <tr id="el_send_sms_nt7"><td colspan="2">(备注:单条短信超过67个字符,可能会被拆分成两条短信)</td></tr>
+    </table>
+    
+    <div id='sms_send_id' class="table-action" style="text-align:center;padding:5px 0;">
+        <{button label="<< 上一步" id="exec_up_btn" class="btn-primary"}> 
+        <{button label="发送" type="button" id="exec_btn" class="btn-primary"}>
+        <{button label="关闭" type="button" id="sms_close_btn" class="btn-primary nodisabled"}>
+    </div>
+    
+    <p id="loading_bar" style="display:none;text-align:center;color:#4B5F87">
+        <br/><br/>
+        正在执行，请耐心等待…… 
+        <br/><img src="<{$env.app.res_url}>/loading42.gif" />
+    </p>
+    
+    <div id="sms_info_content" style="display: none;">
+        <p><span style="color:red;" id="difpice"></span></p>
+        <p>
+            <a href="index.php?app=market&ctl=admin_sms_account&act=index" target="_top">
+                <{button label="去充值>>" type="button" id="" class="btn-primary"}>
+            </a>
+        </p>
+    </div>  
+		
+</div>
+<script>
+//执行
+var page_size = 1000;
+var page = 0;
+var sendType_val = '';
+
+(function(){
+
+       sendType_val = 'sms';
+       $('el_send_sms_list').show();
+       $('el_send_sms_no').hide();
+       $('exec_btn').show();
+   
+   
+   var els = $ES('input[type=radio]',$('sms_total_num'));
+   els.each(function(el){
+        el.addEvent('click',function(){
+            //根据服务器判断显示
+            showDetail(el.checked, el.value);
+            
+            showExecBtn();
+        });
+    });
+   
+   
+//等待执行上一步
+$$("#exec_up_btn").addEvent('click',function(){
+    var send_template_sele_id = $('template_sele_id').value;
+    new Request.JSON({
+        url : 'index.php?app=market&ctl=admin_fx_activity&act=activity_ex&send_method=sms&p[0]='+$('activity_id_id').value+'&p[1]='+send_template_sele_id,
+        method : 'post',
+        data:{'exec_tag':'uptag'},
+        onSuccess:function(obj,responseText){
+        	
+       }
+    }).send();
+    
+    $('activity_id').hide();
+    $('select_me').hide();
+    $('select_sms_template').show();
+    
+    
+    $('exec_div').hide();
+
+    $('template_btn').show();
+    $('el_updateactivity_loading').hide();
+ 
+});
+
+})();
+
+
+function showDetail(status, value){
+    var activity_id = parseInt($('activity_id_id').value);
+    new Request.JSON({
+        url : 'index.php?app=market&ctl=admin_fx_activity&act=getSMSTaskInfoPage&p[0]='+activity_id,
+        method : 'post',
+        onSuccess:function(obj,responseText){
+            try{
+               var data = JSON.decode(responseText);
+               //发送选项为是
+               if (status && value == 1) {
+                   //待发送人数
+                   $('el_reality_'+sendType_val+'_membernums').set('text', data.WaitSendMember);
+               }
+               else {
+                   //选项为否的情况
+                   
+                   //待发送人数
+                   var sendMemberValidate = data.validMembers - data.sentMembers;
+                   $('el_reality_'+sendType_val+'_membernums').set('text', sendMemberValidate);
+               }
+            }catch(e){
+                alert('响应出现异常');
+            }
+       }
+    }).send();
+}
+
+showExecBtn();
+function showExecBtn(){
+	
+ var reality_membernums = parseInt($('el_reality_'+sendType_val+'_membernums').get('text'));
+ if(reality_membernums <= 0 ){
+     $('exec_btn').hide();
+ }else{
+     $('exec_btn').show();
+ }
+}
+
+function run_send_func(page){
+    var send_method = 'sms_exec';
+   
+    var all_send_members = $('el_reality_sms_membernums').get('text');
+    var shopName = $('final_shop_name').get('text');
+    new Request({
+        url : 'index.php?app=market&ctl=admin_fx_activity&act='+send_method+'&p[0]='+$('activity_id_id').value,
+        method : 'post',
+        data:{'exec_tag':'exec','page':page,'is_send_salemember':is_send_salemember,'all_send_members':all_send_members,'shopName':shopName},
+        onSuccess:function(responseText){      
+            //alert(responseText);
+            //return false;
+            try{
+                var data = JSON.decode(responseText);
+                
+                if(data.res == 'fail'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     $('sms_send_id').show();
+                     //$('exec_btn').hide();
+                     //$('exec_up_btn').hide();
+                     return false;
+                }else if(data.res == 'balance_less'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     $("difpice").set('html',"您的账号可用余额不足请充值");
+                     $('sms_info_content').show();
+                     return false;
+                }else{
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    $('exec_up_btn').hide();
+                    alert("提交成功，短信发送需要一点时间，请耐心等待。");
+                    
+                }
+                return false;
+                
+                page++;
+                var total_page = parseInt(data.selemem/1000)+1;
+                $('percent').set('html',parseInt(page*100/total_page));
+                $('total_count').set('html',data.selemem);
+                if(page<total_page) {
+                    run_send_func(page);
+                }else{
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    $('exec_up_btn').hide();
+                    alert("提交成功，短信发送需要一点时间，请耐心等待。"); 
+                }
+            }catch(e){
+                //alert(responseText);
+                $('loading_bar').hide();
+                $('sms_send_id').show();
+                $('exec_btn').hide();
+                $('exec_up_btn').hide();
+                alert("服务器发生了内部错误:"+responseText); 
+            }
+        }
+    }).send();
+}
+
+function test(){
+    $('sms_send_id').hide();
+    $('loading_bar').show(); 
+    run_send_func(0);      
+    $('activity_id').hide();
+    $('select_me').hide();
+    $('select_sms_template').hide();
+    $('exec_div').show();
+    return true;
+}
+
+var is_send_salemember;
+$$("#exec_btn").addEvent('click',function(){
+	 $ES('input[name=sent_member_sms]').each(function(el){
+         if(el.checked){
+             is_send_salemember = el.value;
+         }
+     });
+    test();
+});
+</script>

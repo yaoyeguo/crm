@@ -1,0 +1,341 @@
+<div class="tableform newOrder">
+    <h3>新建订单</h3>
+    <form  id="newOrderForm" action="index.php?app=ecorder&ctl=admin_orders&act=save_create" method="post">
+        <div class="gray_form">
+            <p>
+                <strong>1.添加会员</strong>
+                <select id="add_mem_sel" class="x-input">
+                    <option value="mobile">按手机号</option>
+                    <option value="uname">按用户名</option>
+                    <option value="name">按姓名</option>
+                </select>
+                
+                <{input type="text" name="mobile" id="ipt_data"}>
+                
+                <{button label="搜索" id="btn_search_member"}>
+                <span id='no_data_msg'></span>
+            </p>
+            <table class="gridlist" style="*width:97%;">
+                <thead>
+                <tr>
+                    <th style="width:20px;"></th>
+                    <th>会员名称</th>
+                    <th>用户名</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>地址</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody id="memNode"></tbody>
+            </table>
+        </div>
+        <div class="gray_form" style="margin-top:24px;">
+            <p class="clearfix"><strong class="fl">2.添加订单商品 </strong>
+                <{button label="选择商品" id="btn_search_goods"}>
+            </p>
+            <table class="gridlist" id="goods_list_table">
+                <thead>
+                    <tr>
+                        <th>货号</th>
+                        <th>商品名称</th>
+                        <th>规格型号</th>
+                        <th>购买数量</th>
+                        <th>销售价格</th>
+                        <th>删除商品</th>
+                    </tr>
+                </thead>
+                <tbody id="proNode">
+                </tbody>
+            </table>
+        </div>
+        <div class="gray_form" style="margin-top:24px;">
+            <p><strong>3.选择配货地址</strong></p>
+            <ul class="addrlist" id="addrlist" style="list-style-type: none;">
+
+            </ul>
+            <input type="hidden" name="consignee_area" id="consignee_area" value="" />
+            <input type="hidden" name="consignee_addr" id="consignee_addr" value="" />
+            <input type="hidden" name="consignee_name" id="consignee_name" value="" />
+            <input type="hidden" name="consignee_zip" id="consignee_zip" value="" />
+            <input type="hidden" name="consignee_mobile" id="consignee_mobile" value="" />
+            <input type="hidden" name="consignee_phone" id="consignee_phone" value="" />
+            <p>
+                <{button label="添加配货地址" id="btn_add_address" onclick="new Dialog('index.php?app=ecorder&ctl=admin_orders&act=addNewAddress',{title:'添加配货地址',width:800,height:300})" disabled="disabled"}>
+            </p>
+        </div>
+        <div class="gray_form" style="margin-top:24px;">
+            <p><strong>4.订单信息</strong></p>
+            <table border="0" style="width:auto;">
+                <tbody>
+                <tr>
+                    <th>商品金额：</th>
+                    <td><{input type="text" name="goods_amount" vtype="required" readonly="readonly" value='0'}></td>
+                    <th>订单金额：</th>
+                    <td><{input type="text" name="order_amount" vtype="required" value='0' onblur="change_price()"}></td>
+                    <th>邮费金额：</th>
+                    <td><{input type="text" name="post_price" value='0' }></td>
+                </tr>
+                <tr>
+                    <th>订单折扣：</th>
+                    <td><{input type="text" name="agio" value='0' onblur="change_price()"}></td>
+                    <th>付款金额：</th>
+                    <td><{input type="text" name="pay_amount" vtype="required" readonly="readonly" value='0'}></td>
+                    <th></th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>归属店铺：</th>
+                    <td colspan='3'>
+                        <select name="shop_id" id="shop_select" class="x-input">
+                            <option value="">-请选择-</option>
+                            <{foreach from=$shop_list item=shop}>
+                            <option value=<{$shop.shop_id}>><{$shop.name}></option>
+                            <{/foreach}>
+                        </select>
+                    </td>
+                    <th>订单类型：</th>
+                    <td><{input type="checkbox" name="order_type"}>货到付款</td>
+                </tr>
+                <tr>
+                    <th>发票抬头：</th>
+                    <td colspan='3'>
+                        <{input type="text" name="invoice_title" value=""}>
+                    </td>
+                    <th>创建订单时间：</th>
+                    <td><{$datetime}></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<input type="hidden" name="cnt" id="cnt" value="" />
+<{area inject=".mainFoot"}>
+<div class="table-action">
+    <{button type="button" class="btn-primary" id="btn_submit" label="提交" }>
+</div>
+<{/area}>
+<script>
+function delete_goods(_this)
+{
+    _this.getParent().getParent().remove();
+    count_price();
+}
+
+function change_price()
+{
+    var agio = $$('input[name="agio"]').get('value');
+    var order_amount = $$('input[name="order_amount"]').get('value');
+    if(parseFloat(order_amount)+parseFloat(agio)<0)
+    {
+        alert('应收金额不能小于0!');
+        $$('input[name="pay_amount"]').set('value',0);
+        return;
+    }
+    $$('input[name="pay_amount"]').set('value',parseFloat(order_amount)+parseFloat(agio));
+
+}
+
+function count_price()
+{
+    var goods_tr = $$('.tr_product');
+    var tr_l = goods_tr.length;
+    var sum = 0;
+    var cnt = 0;
+    for(var i=0;i<tr_l;i++)
+    {
+        var num = goods_tr[i].getElement('input[name="num[]"]').value;
+        var price = goods_tr[i].getElement('input[name="price[]"]').value;
+        if(num && price)
+            sum += num*price;
+            cnt = parseInt(cnt) + parseInt(num);
+        //console.log(goods_tr[i]);
+    }
+    $$('input[name="goods_amount"]').set('value',sum);
+    $$('input[name="order_amount"]').set('value',sum);
+    $$('input[name="cnt"]').set('value',cnt);//商品总量
+    change_price();
+}
+
+(function(){
+
+    $('add_mem_sel').addEvent('change',function(){
+        $('ipt_data').set('name', this.get('value'));
+    });
+    
+    $('btn_search_goods').addEvent('click',function(e){
+        new Dialog('index.php?app=ecorder&ctl=admin_orders&act=get_goods',{title:'选择商品',width:780,height:410});
+    });
+    
+    function create_goods(data){
+        var rows='';
+        data.each(function(item){
+            rows+=getGoods(item);
+        });
+        $('proNode').set('html',rows);
+    }
+    
+    function getGoods(j,flag){
+        return '<tr>' +
+                '<input type="hidden" name="goods_id" value="'+j.goods_id+'" />'+
+                '<td>'+'1'+'</td>' +
+                '<td>'+j.sku+'</td>' +
+                '<td>'+j.goods_name+'</td>' +
+                '<td>'+j.type+'</td>' +
+                '<td><input type="text" name="num" value="'+j.num+'" /></td>' +
+                '<td><input type="text" name="price" value="'+j.price+'" /></td>' +
+                '<td><a href="javascript:delete_goods();">删除</td>' +
+                '</tr>';
+    }
+    
+    $('btn_search_member').addEvent('click',function(e){
+        if($('add_mem_sel').value.trim() == '')
+        {
+            alert('请选择搜索类型');
+            return;
+        }
+        if($('ipt_data').value.trim() !== ''){
+            _this = $('ipt_data');
+            new Request({url:'index.php?app=ecorder&ctl=admin_orders&act=get_members',method:'post',data:_this.name+'='+_this.value.trim(),
+                onSuccess:function(json){
+                    if (!json || json == '000000'){
+                        $('memNode').set('html','');
+                        $('addrlist').set('html','');
+                        $$('.nodisabled').removeClass('nodisabled').set('disabled',true);
+                        $msg_html = '<font style="color: red;">查询数据不存在</font>，<a href="index.php?app=taocrm&ctl=admin_all_member&act=add_member">添加新客户</a> ';
+                        $('no_data_msg').set('html',$msg_html);
+                        return;
+                    }else{
+                        $('no_data_msg').set('html','');
+                    }
+                    json = JSON.decode(json);
+                    $$('.nodisabled').removeClass('nodisabled').set('disabled',true);
+                    createMember(json);
+                }
+            }).send();
+        }
+    });
+
+    function getTemp(j,flag){
+        var checked=flag?'checked="checked"':'';
+        return '<tr>' +
+                '<input type="hidden" name="member_num" value="'+j.ext_uid+'" />'+
+                '<input type="hidden" name="uname" value="'+j.uname+'" />'+
+                '<td><input type="radio" name="id" value="'+j.member_id+'" '+checked+' /></td>' +
+                '<td>'+j.uname+'</td><td>'+j.name+'</td><td>'+j.sex+'</td><td>'+j.mobile+'</td>' +
+                '<td>'+(j.area ? j.area.split(':')[1] : '')+'</td><td>'+j.email || ''+'</td>' +
+                '</tr>';
+    }
+
+    var fdoc=document.createDocumentFragment();
+    function createMember(data){
+        var rows='';
+        data.each(function(item){
+            rows+=getTemp(item);
+        });
+        if(data.length > 10){
+            rows += '<tr><td colspan="6"><font style="color: green;">所查询的数据大于10条，如需查看更多，请多添加几位信息~</font></td><tr>';
+        }
+        $('memNode').set('html',rows);
+
+        function getAddrTemp(j){
+            return '<li>' +
+                    '<input type="hidden" name="receivers_id" value="'+j.receivers_id+'" />'+
+                    '<q><input type="radio" name="address_id" value="'+j.area+'" />'+j.addr+'</q>' +
+                    ' <b>'+j.name+'</b> ' +
+                    '<i>'+j.zip+'</i> ' +
+                    '<em>'+j.mobile+'</em> &nbsp; &nbsp;' +
+                    '<span>'+j.tel+'</span>' +
+                    '</li>';
+        }
+
+        $ES('input[name=id]').addEvent('click',function(e){
+            $('btn_add_address').addClass('nodisabled').set('disabled',false);
+            new Request({
+                url:'index.php?app=ecorder&ctl=admin_orders&act=getMemberAddress',
+                method:'post',
+                data:'member_id='+this.value,
+                onSuccess:function(json){
+                    if (!json){
+                        $('addrlist').set('html','');
+                        return false;
+                    }
+                    json = JSON.decode(json);
+                    var lists='';
+                    json.each(function(j){
+                        lists+=getAddrTemp(j);
+                    });
+                    $('addrlist').set('html',lists);
+                    $$('input[name=address_id]').addEvent('click',function(){
+                        var _this=this;
+                        $('consignee_area').value=_this.getParent('li').getElement('input[name=address_id]').value;
+                        $('consignee_addr').value=_this.getParent('li').getElement('q').get('text').trim();
+                        $('consignee_name').value=_this.getParent('li').getElement('b').get('text').trim();
+                        $('consignee_zip').value=_this.getParent('li').getElement('i').get('text').trim();
+                        $('consignee_mobile').value=_this.getParent('li').getElement('em').get('text').trim();
+                        $('consignee_phone').value=_this.getParent('li').getElement('span').get('text').trim();
+                    });
+                }
+            }).send();
+        });
+    }
+    $ES('input[type="text"]','newOrderForm').each(function(el){
+        el.set({
+            events: {
+                focus: function(){
+                    el.setStyle('border','1px solid #ccc');
+                }
+            }
+        });
+    });
+
+    $('btn_submit').addEvent('click',function(e){
+        //$('btn_submit').set('disabled',true);
+        if(! validradio('input[name=id]','请先选择会员')) return;
+        if(! validradio('input[name=address_id]','请选择收货地址')) return;
+        if($('shop_select').value.trim() == ''){
+            alert('请选择归属店铺！');
+            return;
+        }
+        var flag = true;
+        var check_arr = ['uname','pay_amount'];
+        $ES('input[type="text"]','newOrderForm').each(function(el){
+            var name = el.getProperty('name');
+            if(!check_arr.contains(name) && name != 'invoice_title'){
+                if(el.getValue().trim() == ''){
+                    el.setStyle('border','1px solid #f00');
+                    flag = false;
+                }
+            }
+        });
+        if(!flag){
+            MessageBox.error("数据验证失败:请确保数据正确,完整");
+            return false;
+        }else{
+            $('newOrderForm').fireEvent('submit',{stop:$empty});
+        }
+        return true;
+    });
+
+    function validradio(el,msg){
+        el=$E(el);
+        var els=el && $ES('input[type=radio][name='+ el.get('name') +']');
+        if (!els){
+            var tip=$('addrlist').getParent('.gray_form').getElement('p .error') || new Element('span.error').inject($('addrlist').getParent('.gray_form').getElement('p'));
+            tip.setHTML('请新增收货地址');
+            tip.destroy.delay(4000,tip);
+            return false;
+        }
+        if(!els.some(function(radio){return (radio.checked == true);})) {
+            var tip=$('addrlist').getParent('.gray_form').getElement('p .error') || new Element('span.error').inject($('addrlist').getParent('.gray_form').getElement('p'));
+            tip.setHTML(msg);
+            tip.destroy.delay(4000,tip);
+            el.focus();
+            MessageBox.error("表单验证失败:"+msg);
+            return false;
+        }
+        return true;
+    }
+})();
+</script>

@@ -1,0 +1,58 @@
+<h4><{t}>插件中心<{/t}></h4>
+
+<div class="tableform">
+    
+    <div class="division">
+    
+    
+    <!-- 广告 -->
+<iframe src="http://pmp.shopex.cn/index.php?app=ad&ctl=display&act=index&code=02bab227172bfc6111181ea1ee84d2a8&username=<{$username}>&r=<{$time}>" 
+frameborder="0" scrolling="no" width="960px" height="100px" marginheight="0px" marginwidth="0px"></iframe>
+    
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>插件名称<{/t}></th>
+                    <th><{t}>说明<{/t}></th>
+                    <th><{t}>价格<{/t}></th>
+                    <th><{t}>操作<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$plug_list item=data key=key }>
+                <tr>
+                    <td><{img src=$data.icon }><br/><{$data.title}></td>
+                    <td><{$data.desc}></td>
+                    <td style="text-align:left;">
+                        <ul>
+                            <{foreach from=$data.price item=dd key=kk }>
+                            <li><b><{$dd|number_format}>条短信</b>,
+                            使用
+                            <{if($data.dead_line)}>
+                                至<{$data.dead_line}>截止
+                            <{else}>
+                                <{$data.month[$kk]}> 个月
+                            <{/if}>
+                            </li>
+                            <{/foreach}>
+                        </ul>
+                    </td>
+                    <td>
+                        <{if ($data.status=='active')}>
+                            <{img style="cursor:pointer" id=$data.worker class="buy" src="{$data.buy_status}.gif"}>
+                        <{/if}>
+                    </td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+$$('img.buy').addEvent('click',function(){
+    new Dialog('index.php?app=plugins&ctl=admin_buy&act=buy&worker='+$(this).get('id'),{width:600,height:260,title:'购买插件'});
+});
+</script>
+

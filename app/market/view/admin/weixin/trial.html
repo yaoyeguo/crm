@@ -1,0 +1,52 @@
+<style>
+    .buy_body{width: 80%; margin: 0 auto; background: #ffffff;text-align: center;}
+    .buy_body h1{font-family: "微软雅黑"; margin-top: 30px;}
+    .buy_body a{display: inline-block; width: 160px; height: 50px; font-weight: bold; background: #090;color: #F2FFF8; text-align: center; border: 1px solid green;line-height: 50px;letter-spacing: 1px; text-decoration: none;margin: 40px auto 40px auto; border-radius: 3px;}
+    .buy_body p{ font-family: "微软雅黑";color: #000000;font-size: 15px;line-height: 12px; }
+    .buy_body table{width: 60%;display: inline-table; margin: 40px 0 40px 0;}
+    .buy_body table td{border: 1px solid #000000;font-family: "微软雅黑";font-size: 14px;}
+</style>
+
+<div class="buy_body">
+    <h1>欢迎试用增强版微信</h1>
+    <div style="display: block; margin-top: 60px; text-align: left;width: 100%;margin: 0 auto;">
+        <p>试用提示</p>
+        <p style="text-indent: 40px">1.欢迎您参与商派CRM 增强版微信功能试用活动。 </p>
+        <p style="text-indent: 40px">2.试用期间不收取任何费用</p>
+        <p style="text-indent: 40px">3.您的试用期为7天，在此期间您可以免费使用所有微信互动营销功能。</p>
+        <p style="text-indent: 40px">4. 试用期间如果您有任何问题，欢迎您直接发送邮件至crmsupport@shopex.cn获得产品经理支持。</p>
+        <p style="text-indent: 40px">5. 如果您在试用结束前没有购买该增值服务，到期时您在增强版微信设置的内容将不被服务器保存。</p>
+        <p style="text-indent: 40px">6. 关闭增强版微信并不影响正常微信功能的使用，请悉知。</p>
+        <p style="text-indent: 40px">7. 可以再【系统设置】->【切换微信服务版本】来选择切换版本，此功能可能造成数据丢失，请谨慎操作！</p>
+        <p style="text-indent: 40px">8. 再次感谢您选择商派CRM，祝您使用愉快！</p>
+    </div>
+    <a href="javascript:voin(0);" id="now_trial">立即试用</a>
+    <a href="index.php?app=market&amp;ctl=admin_weixin&amp;act=buy_weixin" id="">立即开通</a>
+    <a href="index.php?app=market&amp;ctl=admin_weixin&amp;act=survey_items">返回</a>
+    <p>如需人工服务请拨打商派热线400-890-8858。</p>
+    <p>商派,技术驱动商业未来</p>
+</div>
+<script>
+(function(){
+    var _this = $("now_trial");
+    _this.addEvent('click',function(){
+        var url = "<{$url}>"+'/index.php?app=market&ctl=admin_weixin&act=trial';
+        var url2 = "<{$url}>"+'/index.php?app=ecorder&ctl=admin_shop&act=prompt&msg=';
+        var url3 = "<{$url}>"+'/index.php?app=market&ctl=admin_weixin&act=survey_items';
+        var pingRequest = new Request.JSON({
+            url:url,
+            onComplete: function(res){
+                if(res.res == 1){
+                    new Dialog(url2+encodeURI(res.msg)+'&res='+res.res,{title:'提示',width:450,height:340,onClose:function(){}});
+                    return false;
+                }
+                if(res.date.url && res.date.domain){
+                    window.location.href = url3;
+                }
+            }
+        });
+        pingRequest.get();
+    });
+})();
+</script>
+

@@ -1,0 +1,30 @@
+<div>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>订单编号<{/t}></th>
+            <th><{t}>订单金额<{/t}></th>
+            <th><{t}>购买件数<{/t}></th>
+            <th><{t}>购买日期<{/t}></th>
+            <th><{t}>优惠金额<{/t}></th>
+            <th><{t}>优惠券<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$couponDetail item=item key=key}>
+         <tr>
+             <td><{$item.oid}></td>
+             <td><{$item.total_amount}></td>
+             <td><{$item.item_num}></td>
+             
+             <td><{$item.createtime}></td>
+             <td><{$item.pmt_amount}></td>
+             <td><{$item.pmt_describe}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

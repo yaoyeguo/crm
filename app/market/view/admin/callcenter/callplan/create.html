@@ -1,0 +1,386 @@
+<style>
+#create_type {list-style:none;}
+#sel_user_p {padding:5px;border:1px solid #CCC;overflow:hidden;background:#EAEEF4;border-radius:5px;margin:5px 0 0 0;}
+    #sel_user_p label{display:block;float:left;width:120px;overflow:hidden;}
+.head-title {margin:0 0 10px 0;}
+#assign_users {background:#7695D2;color:#FFF;border-radius:5px;padding:5px;line-height:1.5em;}
+td.preview {font-weight:bold;}
+</style>
+
+<form id="callplan_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+<!------------------------step1 呼叫计划数据来源---------------------------->
+<{input type="hidden" name="callplan_id" id="callplan_id" value=$rs.callplan_id }>
+<{input type="hidden" name="source_id" id="source_id" value=$rs.source_id }>
+<div id="step1">
+    <div class="division">
+        <h3 class="head-title">选择生成方式</h3>
+        <ul id="create_type">
+            <li><label title="自定义客户组"><input type="radio" name="source" value="member_group" checked="checked" />从“自定义客户组”中生成</label></li>
+
+            <li class="hide"><label title="外部导入客户组"><input type="radio" name="source" value="member_import" />从“外部导入客户组”中生成</label></li>
+
+            <li><label title="客户标签组"><input type="radio" name="source" value="member_tags" />从“客户标签组”中生成</label></li>
+
+            <li><label title="历史呼叫计划"><input type="radio" name="source" value="old_callplan" />从“历史呼叫计划”中生成</label></li>
+        </ul>
+    </div>
+
+    <div class="division" id="sel_type">
+        <h3 class="head-title">选择</h3>
+        <div id="member_group_sel" style="display:none;">
+            客户分组：
+            <{if(!$member_groups)}>
+                <font color=red>没有客户分组</font>
+            <{else}>
+            <select id="shop_list">
+                <{foreach from=$shops_list item=shop}>
+                <option value="<{$shop.shop_id}>"><{$shop.name}></option>
+                <{/foreach}>
+            </select>
+            <select id="member_group_id">
+                    <option ></option>
+                <{foreach from=$member_groups item=group_shop key=shop_id}>
+                    <{foreach from=$group_shop item=group key=key}>
+                    <option value="<{$key}>" class="shop_<{$shop_id}>" style="display:none"><{$group}></option>
+                    <{/foreach}>
+                <{/foreach}>
+            </select>
+            <span id="member_group_msg" style="display:none">当前店铺下没有设置分组</span>
+            <{/if}>
+        </div>
+        
+        <div id="member_import_sel" style="display:none;">
+            导入分组：
+            <{if(!$import_groups)}>
+                <font color=red>没有导入分组</font>
+            <{else}>
+                <{input type="select" id="member_import_id" options=$import_groups /}>
+            <{/if}>
+        </div>
+        
+        <div id="member_tags_sel" style="display:none;">
+            客户标签：
+            <{if(!$member_tags)}>
+                <font color=red>没有客户标签</font>
+            <{else}>
+                <{input type="select" id="member_tags_id" options=$member_tags /}>
+            <{/if}>
+        </div>
+        
+        <div id="old_callplan_sel" style="display:none;">
+            呼叫计划：
+            <{if(!$callplans)}>
+                <font color=red>没有呼叫计划</font>
+            <{else}>
+                <{input type="select" id="old_callplan_id" options=$callplans /}>
+            <{/if}>
+        </div>
+    </div>
+
+</div>
+
+<!------------------------step2 呼叫计划设置---------------------------->
+<div id="step2" style="display:none;">
+    <div class="division">
+        <h3 class="head-title">呼叫计划设置</h3>
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <tr>
+			  <th align="right"><em class="c-red">*</em><{t}>计划名称：<{/t}></th>
+			  <td><{input type="text" id="callplan_name" name="callplan_name" value=$rs.callplan_name size="25" vtype="required" }></td>
+			</tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em><{t}>起止时间：<{/t}></th>
+	            <td>
+                    <{input size="30" type='date' id="start_time" name='start_time' value=$rs.start_time vtype="required" }>
+                     至 
+                    <{input size="30" type='date' id="end_time" name='end_time' value=$rs.end_time vtype="required" }>
+                </td>
+	        </tr>           
+            <tr>
+	            <th align="right"><em class="c-red">*</em><{t}>状　　态：<{/t}></th>
+	            <td id="status">
+                    <label>
+                        <input type="radio" value="1" name="status" /> 开启
+                    </label>
+                    　　　　　
+                    <label>
+                        <input type="radio" value="0" name="status" /> 关闭
+                    </label>
+                </td>
+	        </tr>
+            <tr>
+			  <th align="right"><em class="c-red">*</em><{t}>指定客服：<{/t}></th>
+			  <td>
+                <span id="assign_users"><{$rs.assign_users}></span>
+                <input type="hidden" value="<{$rs.assign_users}>" name="assign_users" />
+                <{button id="sel_user" label=$___ectools="选择"|t:'ectools'}>
+                <div id="sel_user_p" style="display:none;">
+                    <{foreach from=$users item=data key=k}>
+                        <label>
+                            <input type="checkbox" name="assign_user_id[]" value="<{$data.user_id}>" <{if(in_array($data.user_id, $rs.assign_user_id))}>checked="checked"<{/if}> /> 
+                            <{$data.name}>
+                        </label>
+                    <{/foreach}>
+                </div>
+              </td>
+			</tr>
+            <tr>
+			  <th align="right"><{t}>备注说明：<{/t}></th>
+			  <td><{input type="textarea" id="desc" name="desc" value=$rs.desc  style="width:80%;height:60px;" }></td>
+			</tr>
+		</table>
+    </div>
+</div>
+
+<!------------------------step3 预览---------------------------->
+<div id="step3" style="display:none;">
+    <div class="division">
+        <h3 class="head-title">呼叫计划预览</h3>
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <tr>
+			  <th align="right"><{t}>计划名称：<{/t}></th>
+			  <td class="preview"></td>
+			</tr>
+            <tr>
+	            <th align="right"><{t}>起止时间：<{/t}></th>
+	            <td class="preview"></td>
+	        </tr>           
+            <tr>
+	            <th align="right"><{t}>状　　态：<{/t}></th>
+	            <td class="preview"></td>
+	        </tr>
+            <tr>
+	            <th align="right"><{t}>数据来源：<{/t}></th>
+	            <td class="preview"></td>
+	        </tr>
+            <tr>
+	            <th align="right"><{t}>人数预估：<{/t}></th>
+	            <td class="preview"></td>
+	        </tr>
+            <tr>
+			  <th align="right"><{t}>指定客服：<{/t}></th>
+			  <td class="preview"></td>
+			</tr>
+            <tr>
+			  <th align="right"><{t}>备注说明：<{/t}></th>
+			  <td class="preview"></td>
+			</tr>
+		</table>
+    </div>
+</div>
+</form>
+
+<!------------------------btn 切换按钮---------------------------->
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="back_btn" name="submit" label="上一步" style="display:none;"}>
+        <{button class="btn-primary" type="button" id="step1_btn" name="submit" label="下一步"}>
+        <{button class="btn-primary" type="button" id="step2_btn" name="submit" label="下一步" style="display:none;"}>
+        <{button class="btn-primary" type="button" id="step3_btn" name="submit" label="保存" style="display:none;"}>
+    </div>
+<{/area}>
+
+<script>
+var curr_step = 1;
+var status = '<{$rs.status}>';
+var source = '<{$rs.source}>';
+var source_id = '<{$rs.source_id}>';
+var callplan_id = <{$rs.callplan_id}>;
+var callplan_form;
+
+(function(){
+
+    if(callplan_id>0){
+        goto_step(2);
+    }
+
+    callplan_form = $('callplan_form');
+    
+    callplan_form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = $('step3_btn').getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {	
+                    _dialogIns.close();
+                }
+            }	
+        }
+    });
+
+    $$('#status input[value='+status+']').set('checked','checked');
+    $$('#create_type input[value='+source+']').set('checked','checked');
+    $(source+'_sel').show();
+    if(source_id){
+        $(source+'_id').set('value', source_id);
+    }
+
+    //返回键
+    $('back_btn').addEvent('click', function(){
+        back_step();
+    });
+    
+    //下一步
+    $('step1_btn').addEvent('click', function(){
+        goto_step(2);
+    });
+    
+    //预览
+    $('step2_btn').addEvent('click', function(){
+        goto_step(3);
+    });
+    
+    //保存呼叫计划
+    $('step3_btn').addEvent('click', function(){
+        save_callplan();
+    });
+    
+    $('sel_user').addEvent('click', function(){
+        if($('sel_user_p').getStyle('display')=='none'){
+            $('sel_user_p').show();
+        }else{
+            $('sel_user_p').hide();
+        }
+    });
+    
+    $$('#sel_user_p input').addEvent('click', function(){
+        update_sel_user();
+    });
+    
+    //选择数据来源
+    $$('#create_type input').addEvent('click', function(){
+        var sel_type = $(this).value;
+        $$('#sel_type div').hide();
+        $(sel_type+'_sel').show();
+        $('source_id').set('value', '');
+    });
+    
+    $$('#sel_type select').addEvent('change', function(){
+        if($(this).get('id')!='shop_list')
+        {
+        $('source_id').value = $(this).value;
+        }
+    });
+
+    $$('.shop_<{$shops_curr_id}>').show();
+    $('shop_list').addEvent('change', function(){
+        $('source_id').value = '';
+        $('member_group_id').value = '';
+        $$('#member_group_id option').hide();
+        if($$('.shop_'+$(this).value).length == 0)
+        {
+            $('member_group_id').hide(); 
+            $('member_group_msg').show(); 
+        }else{
+            $('member_group_id').show(); 
+            $('member_group_msg').hide(); 
+            $$('.shop_'+$(this).value).show();
+        }
+    });
+    
+})();
+
+function update_sel_user(){
+    var assign_users = [];
+    var assign_users_str = '请选择';
+    $$('#sel_user_p input').each(function(ele,i){
+        if(ele.checked==true){
+            assign_users.push(ele.getParent().get('text').trim());
+        }
+    });
+    if(assign_users.length > 0){
+        assign_users_str = assign_users.join(';');
+        $('assign_users').getNext().set('value', assign_users_str);
+    }else{
+        $('assign_users').getNext().set('value', '');
+    }
+    $('assign_users').set('text', assign_users_str);
+    
+}
+
+function save_callplan(){
+    callplan_form.fireEvent('submit',{stop:$empty});
+}
+
+function get_selected_text(ele){
+    return ele.options[ele.selectedIndex].text;
+}
+
+function callplan_preview(){
+
+    var source_desc = $$('#create_type input:checked').getParent().get('text');
+    var source_num = get_selected_text($($$('#create_type input:checked').get('value')+'_id'));
+
+    var preview_td = $$('#step3 td.preview');
+    preview_td[0].set('text', $('callplan_name').value);
+    preview_td[1].set('text', $('start_time').value+' 至 '+$('end_time').value);
+    preview_td[2].set('html', $$('#step2 input[name="status"]:checked').get('value')==1 ? '开启':'<font color=red>关闭</font>');
+    preview_td[3].set('text', source_desc);
+    preview_td[4].set('html', '<font color=blue>'+source_num+'</font>');
+    preview_td[5].set('text', $('assign_users').get('text'));
+    preview_td[6].set('text', $('desc').value);
+}
+
+function back_step(){
+    goto_step(curr_step - 1);
+}
+
+function goto_step(i){
+
+    if(check_step(i)==false){
+        return false;
+    }
+
+    if(i==1 || (i==2 && callplan_id>0)){
+        $('back_btn').hide();
+    }else{
+        $('back_btn').show();
+    }
+    curr_step = i;
+
+    $('step1').hide();
+    $('step2').hide();
+    $('step3').hide();
+    
+    $('step1_btn').hide();
+    $('step2_btn').hide();
+    $('step3_btn').hide();
+    
+    $('step'+i+'_btn').show();
+    $('step'+i).show();
+}
+
+//检验表单是否完整
+function check_step(i){
+    if(curr_step > i){
+        return true;
+    }else{
+        if(i==2){
+            if($('source_id').get('value') == ''){
+                alert('请选择有效的'+$$('#create_type input:checked').getParent().get('title'));
+                return false;
+            }
+        }
+    
+        if(i==3){
+            if($('callplan_name').get('value') == ''){
+                alert('请输入计划名称');
+                return false;
+            }
+            if($('assign_users').get('text') == ''){
+                alert('请指定参与拨打的客服');
+                return false;
+            }
+            callplan_preview();
+        }
+    }
+}
+</script>

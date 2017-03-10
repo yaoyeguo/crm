@@ -1,0 +1,44 @@
+<style>
+#sms_log_gridlist td{border-bottom:1px solid #EAEEF4;}
+#sms_log_gridlist .f14{font-size:14px;font-family:Microsoft Yahei;color:#49A707;}
+</style>
+
+<div class="division">
+    <div class="tableform1">
+
+        <table id="sms_log_gridlist" class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <col width="120" />
+            <thead>
+                <tr>  
+                    <th><{t}>手机号<{/t}></th>
+                    <td class="f14"><{$sms.mobile}></td>
+                </tr>
+                <tr>  
+                    <th><{t}>短信内容<{/t}></th>
+                    <td class="f14"><{$sms.content}></td>
+                </tr>
+                <tr>  
+                    <th><{t}>短信长度<{/t}></th>
+                    <td><{$sms.sms_len}>字符，约<{$sms.sms_size}>条短信</td>
+                </tr>
+                <tr>  
+                    <th><{t}>发送操作<{/t}></th>
+                    <td><{$sms.op_user}></td>
+                </tr>
+                <tr>  
+                    <th><{t}>IP<{/t}></th>
+                    <td><{$sms.ip}></td>
+                </tr>
+                <tr>  
+                    <th><{t}>发送时间<{/t}></th>
+                    <td><{$sms.create_time}></td>
+                </tr>
+                <tr>  
+                    <th><{t}>备注<{/t}></th>
+                    <td><{$sms.remark}></td>
+                </tr>
+            </thead>
+        </table>
+        
+    </div>            
+</div>            

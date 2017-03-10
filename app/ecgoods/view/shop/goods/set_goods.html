@@ -1,0 +1,117 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+
+.req_fields div{padding:0 0 5px 0;}
+span.del,span.add{color:#FFF;font-size:14px;font-weight:bold;padding:2px 5px;cursor:pointer;}
+span.del{background:#F60;}
+span.add{background:#090;}
+
+/*选项卡效果*/
+#my_tab_nav {overflow:hidden;}
+#my_tab_nav span {display:block;padding:3px 10px;margin:0 0 0 20px;float:left;cursor:pointer;}
+#my_tab_nav span {background:#D7DCE2;}
+#my_tab_nav span.hover{background:#5779BD;color:#FFF;}
+#my_tab_body {background:#FFF;border:1px solid #D7DCE2;padding:10px;min-height:180px;}
+#award_list td{padding:3px 5px;}
+</style>
+    <form style="position:relative;" id="form_store" class="tableform" action="index.php?app=ecgoods&ctl=admin_shop_goods_manage&act=set_goods_post" method="POST">
+<div>
+
+    <table id="step_1" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tr>
+            <td width='15%'>商品类型：</td>
+            <td>
+                <input type="radio" name="info[is_full_price]" value="1" <{if $info.is_full_price neq 0}> checked <{/if}> />正价商品
+                <input type="radio" name="info[is_full_price]" value="0" <{if $info.is_full_price eq 0}> checked <{/if}> />非正价商品
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="3">积分类型：</td>
+            <td>
+                <input type="radio" name="info[point_rule][]" value="1" <{if $point_rule_bool.point_rule_1 || $point_rule_bool eq ''}> checked <{/if}>  />按金额给积分
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="radio" name="info[point_rule][]" value="2" <{if $point_rule_bool.point_rule_2  }> checked <{/if}>  />给固定积分，每一件
+                <input type="text" name="info[fixed_point_num]" style="width: 60px;" id="fixed_point_num" value="<{$info.fixed_point_num}>" />分
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="radio" name="info[point_rule][]" value="3" <{if $point_rule_bool.point_rule_3 }> checked <{/if}> />不参与送积分
+            </td>
+        </tr>
+    </table>
+
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[goods_id]" value="<{$info.goods_id}>" type="hidden" />
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+    var _form = $('form_store');
+	var btn =$('survey-form-submit');
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        var point_rule = $$('#form_store input[type="radio"]:checked').get('value');
+        var fixed_point_num = $('fixed_point_num').value;
+        fixed_point_num = fixed_point_num.replace(/\s+/g,"");//去除前后的空格
+        if(point_rule.length == 0){
+            alert('必须选择一个商品规则！');
+            return;
+        }
+        for(var i = 0 ; i < point_rule.length; i++){
+            if(point_rule[i] == '2'){
+                if(fixed_point_num){
+                    if(!number_check(fixed_point_num)){
+                        alert('积分数量只能为数字！');
+                        return;
+                    }
+                }else{
+                    alert('选择给固定积分，必须填写积分的数量！');
+                    return;
+                }
+            }
+        }
+        _form.fireEvent('submit',{stop:$empty});
+    });
+})();
+//数字框验证
+function number_check(value){
+    var rex = /^[1-9]\d*$/;
+    if(rex.test(value)){
+        return true;
+    }else{
+        return false;
+    }
+}
+</script>

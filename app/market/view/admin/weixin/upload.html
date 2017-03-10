@@ -1,0 +1,92 @@
+<style>
+    .upload_body{display: block;width: 100%;height: auto;  margin: 0 auto; text-align: center;}
+    .upload_body p{font-family: "微软雅黑"; font-size: 14px; margin: 0;padding: 0;}
+    .upload_header{}
+    .upload_body table tr td{border-bottom: 1px dashed #434343;padding:5px 0;}
+    .upload_body table { font-family: "微软雅黑";}
+    #upload_div{display: inline-block; width: 175px; height: 19px;  line-height: 19px; color: #707070;border: 1px solid #CCC;
+        border-radius: 0 3px 3px 0; text-align: center; float: left; font-family: '微软雅黑';}
+    #upload_file_weixin{width: 175px;height: 19px;position: absolute; cursor: pointer; right: 245px; margin: 0;  padding: 0; filter: alpha(opacity=0); -moz-opacity: 0; opacity: 0;border: 0;}
+    div.dialog .division{}
+    #kaitong_td input{width: 152px;}
+</style>
+<div class="upload_body">
+    <div class="upload_header">
+        <p style="text-align: left"> 尊敬的用户</p>
+        <p style="text-indent: 2em;">感谢您对商派一贯的支持与信任，我们将一如既往得为您提供优质的电子商务解决方案。</p>
+    </div>
+<form id="wx_from">
+        <div class="division" style="">
+            <table style="margin: 0 auto;width: 60%;">
+                <tbody>
+                    <tr>
+                        <td>已购增值服务</td>
+                        <td style="text-align: left;">
+                            <select style="width: 175px;" id="select_wufu">
+                                <option value="0">请选择购买的服务</option>
+                                <option value="1">会员包升级</option>
+                                <option value="2">升级微信增强版</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>支付宝支付单号</td>
+                        <td style="text-align: left;" id="payment_order">
+                            <{input type='text' name='payment_order' value='' }>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>上传购买凭证</td>
+                        <td style="text-align: left;" style="position: relative;" id="get_pic_url">
+                            <{input type="image" name="wx_upload_img" vtype="required" width=160 height=60 }>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="width:100%;clear:both;height:1px;overflow:hidden;">&nbsp;</div>
+        </div>
+    <p>祝您使用愉快，如果您想了解更多商派服务请拨打热线400-890-8858。</p>
+    <p>商派 技术驱动商业未来</p>
+    <{area inject='.mainFoot'}>
+    <div class="table-action"><{button type="button" label="保存"
+        id="wx-form-submit" }></div>
+    <{/area}>
+</form>
+</div>
+<script>
+(function() {
+   $('wx-form-submit').addEvent('click',function(){
+        var flag = true;
+        var type_val =  $$('select option:selected').get('value');
+        var pic_url = $("get_pic_url").getElement('img').get('src');
+        var payment_val  =  $$('input[name="payment_order"]').get('value');
+        if(type_val == 0 || type_val == undefined){ flag = false; }
+        if(pic_url == 0 || pic_url == undefined){ flag = false; }
+        if(payment_val == 0 || payment_val == undefined){flag = false;}
+        if(!flag){
+            //$('wx-form-submit').getParent('.dialog').retrieve('instance').close();
+            new Dialog('index.php?app=ecorder&ctl=admin_shop&act=prompt&msg='+encodeURI('请确认你的提交信息!')+'&res=1',{title:'提示',width:450,height:340,onClose:function(){}});
+            return false;
+        }
+        //检测支付宝支付单号
+        var pingRequest = new Request.JSON({
+            url:"index.php?app=market&ctl=admin_weixin&act=postmonitor&type_val="+type_val+"&payment_val="+payment_val+"&pic_url="+pic_url,
+            onComplete: function(res){
+                if(res.res == 1){
+                    //$('wx-form-submit').getParent('.dialog').retrieve('instance').close();
+                    new Dialog('index.php?app=ecorder&ctl=admin_shop&act=prompt&msg='+encodeURI(res.msg)+'&res='+res.res,{title:'提示',width:450,height:340,onClose:function(){}});
+                    return false;
+                }
+                else{
+                    $('wx-form-submit').getParent('.dialog').retrieve('instance').close();
+                    new Dialog('index.php?app=ecorder&ctl=admin_shop&act=prompt&msg='+encodeURI("提交成功!")+'&res='+res.res,{title:'提示',width:450,height:340,onClose:function(){}});
+                }
+            }
+        });
+        pingRequest.send();
+
+    });
+})();
+</script>
+
+

@@ -1,0 +1,105 @@
+
+<div style="padding:20px;overflow:hidden">
+    
+    <div style="width:220px; float:left; border:1px solid #DDD; background:#F2F2F2; line-height:2em">
+        <h3 style="background:#337FAF;font-size:14px;color:#FFF;padding:5px;font-family:'Microsoft YaHei' ! important;">其它优惠券</h3>
+        
+        <ul><{foreach from=$items item=data }>
+        
+        <li style="border-bottom:1px dashed #CCC;padding:5px"><a href="<{link app='site' ctl='site_exchange' act='index' item_id=$data.item_id }>"><{$data.title|cut:46}></a></li>
+
+    <{/foreach}></ul>
+        
+    </div>
+
+
+    <div style="width:700px; float:right; line-height:2em">
+        
+        <form action="" method="post">
+            <input name="item_id" type="hidden" id="item_id" value="<{$item.item_id}>" size="3" />
+    <table>
+        <tr>
+            <td width="280"><b style="color:#DF7A17;font-size:14px;font-family:'Microsoft YaHei' ! important;"><{$item.title}></b></td>
+            <td rowspan="5"><{img src="coupon.jpg" app="taocrm" }></td>
+        </tr>
+        <tr>
+          <td>需要积分：<span id="price"><{$item.price}></span></td>
+        </tr>
+        <tr>
+          <td>兑换数量：
+            <input type="button" id="btn_minus" value="-" />
+          <input name="num" type="text" id="num" value="1" size="3" />
+          <input type="button" id="btn_plus" value="+" /></td>
+        </tr>
+        <tr>
+          <td>
+            合计积分：<span id="amount"><{$item.price}></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="color:red;">
+            
+            <{if($points<$item.price)}>
+                您的积分余额不足。
+                <{else}>
+            <input type="submit" name="button" id="ex_btn" value="立刻兑换" />
+            <{/if}>
+            
+            </td>
+        </tr>
+    </table>
+        </form>
+
+    <p>&nbsp;</p>
+    
+        <h3 id="ex_tips">兑换须知</h3>
+        
+        <div style="line-height:2em;color:#888;padding:10px 0">
+        在购物车中输入优惠券后，生成订单，也全额付款，但并没有相应的免运费、没有增加X倍积分、没有打折<br/>
+    设置优惠券规则时，优惠内容中没有勾选，或没有设置相应内容，导致无效<br/>
+    为何购物车中的优惠券显示内容与后台设置的优惠券名称不符？<br/>
+    购物车中显示的优惠券内容是在优惠券设置时输入的描述内容，并不是优惠券列表中的优惠券名称，<br/>
+    优惠券名称只在列表中显示，便于店主管理。
+    </div>
+
+    </div>
+</div>
+
+
+<script>
+var price = parseInt(getEle('price').innerHTML);
+    
+function getEle(id){
+    return document.getElementById(id);
+}
+
+function show_amount(i_num){
+    var num = parseInt(getEle('num').value) + i_num;
+    if(price*num > <{$points}> && i_num!=0){
+        alert('您的积分余额不足。');
+        return false;
+    }
+    getEle('amount').innerHTML = price*num;
+    return true;
+}
+
+getEle('btn_minus').onclick = function(){
+    if(parseInt(getEle('num').value)<=1){
+        alert('兑换数量不能小于1');
+        return false;
+    }
+    show_amount(-1)
+    getEle('num').value = parseInt(getEle('num').value) - 1;
+};
+
+getEle('btn_plus').onclick = function(){
+    if(parseInt(getEle('num').value)>=<{$item.max_buy_num}>){
+        alert('兑换数量不能大于<{$item.max_buy_num}>');
+        return false;
+    }
+    if(!show_amount(1)) return false;
+    getEle('num').value = parseInt(getEle('num').value) + 1;
+};
+
+show_amount(0);
+</script>

@@ -1,0 +1,59 @@
+<h3 class="head-title">融合云通讯</h3>
+
+    <form id="cti_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+        <{input type="hidden" name="cti_type" value=$cti_type }>
+        <div style="padding:20px 0 0 0;">
+            <table cellpadding="4" id="">
+                <col width="40%" />
+                <tr>
+                    <td align="right">Account ： </td>
+                    <td><{input size="32" type="text" name="cti_conf[account]" value=$cti_conf.account vtype="required" }> * 账户编号</td>
+                </tr>
+                <tr>
+                    <td align="right">PBX ： </td>
+                    <td><{input size="32" type="text" name="cti_conf[pbx]" value=$cti_conf.pbx vtype="required"  }> * 账户所在PBX</td>
+                </tr>
+                <tr>
+                    <td align="right">外呼地址 ： </td>
+                    <td><{input size="32" type="text" name="cti_conf[ob_url]" value=$cti_conf.ob_url vtype="required"  }> * URL地址</td>
+                </tr>
+                <tr>
+                    <td align="right">工号 ： </td>
+                    <td><{input size="32" type="text" name="cti_conf[exten]" value=$cti_conf.exten vtype="required"  }> *</td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    
+    <div style="padding:10px 0 0 0;color:#F00;text-align:center;">如果不知道Account和PBX如何填写，请咨询您的软电话服务商。</div>
+    
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="确定启用"}>
+        </div>
+    <{/area}>
+
+<script>
+(function(){
+
+    var _frm = $('cti_form');
+    var _btn = $('saveterminal');
+    var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+    
+    _btn.addEvent('click',function(event){
+        _frm.fireEvent('submit',new Event(event));
+    });
+
+    _frm.store('target',{
+        onRequest:function(){
+           _btn.set('disabled', 'true');
+        },
+        onSuccess:function(response){    
+            try{
+                if(_dialogIns) _dialogIns.close();
+            }catch(e){}
+        }
+    });
+
+})();
+</script>

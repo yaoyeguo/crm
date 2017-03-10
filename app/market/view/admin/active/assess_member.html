@@ -1,0 +1,30 @@
+ <div style="padding-top:2px;" class="division">
+    <!--h4>下单客户分析</h4-->
+        <table  class="gridlist" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <thead>
+                <tr>
+                    <th>客户组</th>
+                    <th>下单数</th>
+                    <th>下单客户数</th>
+                    <th>下单金额</th>
+                    <th>平均订单价</th>
+                    <th>付款订单数</th>
+                    <th>付款客户数</th>
+                    <th>付款金额</th>
+            </thead>
+            <tbody>
+            <{foreach from=$data item=item key=key}>
+                <tr>
+                    <td><{if $key eq 'New'}><font color='green'>新客户</font><{else}>老客户<{/if}>(<font color="#aaaaaa">活动时</font>)</td>
+                    <td><{$item.TotalOrders}></td>
+                    <td><{$item.TotalMembers}></td>
+                    <td><{$item.TotalAmount}></td>
+                    <td><{($item.TotalOrders>0) ? ($item.TotalAmount/$item.TotalOrders) : 0|round:2}></td>
+                    <td><{$item.PayOrders}></td>
+                    <td><{$item.PayMembers}></td>
+                    <td><{$item.PayAmount}></td>
+                </tr>
+            <{/foreach}>
+            </tbody>
+        </table>
+</div>

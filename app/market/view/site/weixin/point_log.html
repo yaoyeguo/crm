@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的积分</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>我的积分</h1>
+</nav>
+<div class="page-header">
+  <div class="usable-coins">
+    <b><{$sum_points}></b>
+    <!-- <i>您的可用积分</i> -->
+  </div>
+</div>
+<div class="mod">
+  <ul class="tabs bar-tabs" data-tab>
+    <li class="trigger active"><a href="#content1">全部</a></li>
+    <li class="trigger"><a href="#content2">获取</a></li>
+    <li class="trigger"><a href="#content3">扣除</a></li>
+  </ul>
+  <div class="tabs-content">
+    <div id='content1' class="content active">
+        <{if $memberPointLogList.logs neq null}>
+        <ul class="table-view" id="content1_ul">
+            <{foreach from=$memberPointLogList.logs item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.op_time}></span>
+                <span class="title ellipsis"><{$data.point_desc}></span>
+                <span class="points text-alert"><{$data.points}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{if $memberPointLogList['totalResult'] > 8 }>
+        <a href="javascript:;" id="content1_more" class="button expand secondary">查看更多</a>
+        <{/if}>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有积分记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+    <div id='content2'  class="content">
+        <{if $memberPointLogList_add.logs neq null}>
+        <ul class="content table-view" id="content2_ul">
+            <{foreach from=$memberPointLogList_add.logs item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.op_time}></span>
+                <span class="title ellipsis"><{$data.point_desc}></span>
+                <span class="points text-alert"><{$data.points}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{if $memberPointLogList_add['totalResult'] > 8 }>
+        <a href="javascript:;" id="content2_more" class="button expand secondary">查看更多</a>
+        <{/if}>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有积分获取记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+    <div id='content3'class="content">
+        <{if $memberPointLogList_minus.logs neq null}>
+        <ul class="table-view" id="content3_ul">
+            <{foreach from=$memberPointLogList_minus.logs item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.op_time}></span>
+                <span class="title ellipsis"><{$data.point_desc}></span>
+                <span class="points text-alert"><{$data.points}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{if $memberPointLogList_minus['totalResult'] > 8 }>
+        <a href="javascript:;" id="content3_more" class="button expand secondary">查看更多</a>
+        <{/if}>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有积分扣除记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+  </div>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    var member_id = '<{$member_id}>';
+    var content1_page = 2;
+    var content2_page = 2;
+    var content3_page = 2;
+    (function(){
+        $('#content1_more').click(function(){
+            getPoint(content1_page,'content1_ul','all');
+            content1_page++;
+        });
+        $('#content2_more').click(function(){
+            getPoint(content2_page,'content2_ul','+');
+            content2_page++;
+        });
+        $('#content3_more').click(function(){
+            getPoint(content3_page,'content3_ul','-');
+            content3_page++;
+        });
+    })();
+    function getPoint(page,ul_id,point_type){
+        var aj = $.ajax( {
+            url:'get_poit_logs',// 跳转到 action
+            data:{
+                member_id : member_id,
+                page : page,
+                point_type : point_type
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data) {
+                if(data != '111111'){
+                    for(var i=0;i< data.length; i++){
+                        var html = '<li class="cell span"><span class="time">'+data[i].op_time+'</span><span class="title ellipsis">'+data[i].point_desc+'</span><span class="points text-alert">'+data[i].points+'</span></li>';
+                        $('#'+ul_id).append(html);
+                    }
+                }else{
+                    alert('没有信息了~');
+                }
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

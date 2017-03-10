@@ -1,0 +1,53 @@
+<style>
+h3,h4,ul {margin:0;padding:0;}
+.tableform {padding:10px 0 0 10px;}
+#intro {list-style:none;line-height:2em;padding:0 0 0 30px;color:#069;}
+</style>
+
+<div class="tableform">
+
+    <h3>全局会员规则</h3>
+    
+    <hr/>
+    
+    <div class="division1">
+        <p class="notice">说明：请注意，一旦更改将影响系统的整个设置规则和使用方式。<br/>仅限【旗舰版】使用，设置全局会员等级的统计方式，如根据消费金额、或全员积分等级。规则设置完成后次日生效。</p>
+    </div>
+    
+    <div class="tableform">
+        <div>
+            <form method="post" action="index.php?app=taocrm&ctl=admin_app&act=set_member_rule">
+            
+
+                    <strong><{t}>请选择<{/t}>：</strong>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="member_rule" value="pay" <{if $info[type] == 'pay' || !$info}>checked="checked"<{/if}>>根据消费金额设定</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="member_rule" value="point" <{if $info[type] == 'point'}>checked="checked"<{/if}>>根据会员积分设定</label>
+                    
+                    <br/><br/>
+                
+                <{button type="submit" label="保存设置" }>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="tableform">
+
+    <h3>清除系统证书和节点</h3>
+    
+    <hr/>
+    
+    <div class="division1">
+        <p class="notice">说明：请注意，仅限系统整体迁移到新服务器后操作。清除后需要重新登录系统。</p>
+    </div>
+    
+    <div class="tableform">
+        <div>
+            <form method="post" action="index.php?app=taocrm&ctl=admin_app&act=clear_certi">
+                <{button type="submit" label="确认清除" }>
+            </form>
+        </div>
+    </div>
+</div>

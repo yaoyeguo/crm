@@ -1,0 +1,124 @@
+<div class="table-action">
+    <{button label="初始化" id='initialize' type="button" }>
+</div>
+    
+<form action="index.php?app=market&ctl=admin_weixin_menu&act=saveCustoMmenu"
+	method="post" id="tmpl_form">
+<h5>目前自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单。一级菜单最多4个汉字，二级菜单最多7个汉字，多出来的部分将会以“...”代替。请注意，创建自定义菜单后，由于微信客户端缓存，需要24小时微信客户端才会展现出来。建议测试时可以尝试取消关注公众账号后再次关注，则可以看到创建后的效果。 </h5>
+    <div class="tableform" style="margin: 0; padding: 0;">
+		<div>
+			<table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th ><{t}>菜单序号<{/t}></th>
+                    <th ><{t}>菜单名称<{/t}></th>
+                    <th ><{t}>触发方式<{/t}></th>
+                    <th ><{t}>消息关键词<{/t}></th>
+                    <th ><{t}>跳转网页地址<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+              <{foreach from=$menus item=item}>
+                <tr>
+                    <td width="10%" <{if $item.parent ==0}>style="color:red; font-weight: bold;"<{/if}>><{if $item.parent !=0}>&nbsp&nbsp<{/if}><{$item.order}></td>
+                    <td width="20%"><input type="text" class='custommenu' name="custommenu[<{$item.id}>][name]" value="<{$item.name}>" ></td>
+                    <td width="20%"><{input type="select" class='custommenu'
+                        options=$clickType value=$item.type
+                        name="custommenu[{$item.id}][type]" }></td>
+                    <td width="20%"><input type="text" class='custommenu' name="custommenu[<{$item.id}>][key]" value="<{$item.key}>" ></td>
+                    <td><input type="text" class='custommenu' name="custommenu[<{$item.id}>][url]" value="<{$item.url}>" ></td>
+               </tr>
+               <{/foreach}>
+             </tbody>
+           </table>
+		</div>
+
+	</div>
+</form>
+
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="button" label="保存"
+	id="theme-form-submit"}></div>
+<{/area}>
+
+
+<script>
+	var _form = $('tmpl_form');
+	var btn = $('theme-form-submit');
+
+	_form.store('target',
+			{
+				onSuccess : function(response) {
+					var hash_res_obj = JSON.decode(response);
+
+					if (hash_res_obj.success != undefined
+							&& hash_res_obj.success != "") {
+						try {
+							var _dialogIns = btn.getParent('.dialog').retrieve(
+									'instance');
+						} catch (e) {
+						}
+
+						if (_dialogIns) {
+							_dialogIns.close();
+							//window.finderGroup['<{$env.get.finder_id}>'].refresh();
+						}
+					}
+				}
+			});
+
+	btn.addEvent('click', function() {
+		_form.fireEvent('submit', {
+			stop : $empty
+		});
+	});
+
+    //初始化数据
+    var init_arr = new Array(
+            //'热门活动'主菜单
+            '热门活动','','','',
+            '','','','',
+            '','','','',
+            '','','','',
+            '','','','',
+            '','','','',
+            //'自助服务'主菜单
+            '自助服务','view','','',
+                '会员中心','view','','<{$link}>/market/site_weixin_member/member_center?fromusername=123',
+                '我的订单','view','','<{$link}>/market/site_weixin_point/business_record?fromusername=123',
+                '我的兑换单','view','','<{$link}>/market/site_weixin_point/point_business_record?fromusername=123',
+                '我的卡包','view','','<{$link}>/market/site_weixin_member/show_coupon?fromusername=123',
+                '我的积分','view','','<{$link}>/market/site_weixin_point/index?fromusername=123',
+            //'粉丝福利'主菜单
+            '粉丝福利','view','','',
+                '签到','view','','<{$link}>/market/site_weixin_member/sign_in?fromusername=123',
+                '积分兑换礼品','view','','<{$link}>/market/site_weixin_ucenterNew/gifts?wx_id=123',
+                '我的邀请码','view','','<{$link}>/market/site_weixin_member/QRCode?fromusername=123',
+                '','','','',
+                '','','',''
+    );
+    var re_bool = false;
+    $$('#tmpl_form input,select.custommenu').each(function(ele,i){
+        if(ele.value){
+            re_bool = true;
+        }
+    });
+    $('initialize').addEvent('click', function() {
+
+        if(re_bool){
+            if(confirm('<{t}>初始化将覆盖掉已有设置，要继续吗？<{/t}>')){
+                $$('#tmpl_form input,select.custommenu').each(function(ele,i){
+                    ele.value = init_arr[i];
+                });
+            }
+        }else{
+            $$('#tmpl_form input,select.custommenu').each(function(ele,i){
+                ele.value = init_arr[i];
+            });
+        }
+
+
+    });
+</script>

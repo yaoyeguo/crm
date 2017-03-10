@@ -1,0 +1,24 @@
+<{foreach from=$member_level item=ml}>
+    <input type="checkbox" value="<{$ml.shop_lv_id}>" name="config[member_lv_ids][<{$ml.shop_lv_id}>]" <{if $rule.config.member_lv_ids[$ml.shop_lv_id] || $rule.config.member_lv_ids[0]=='all'}>checked<{/if}>/><{$ml.name}>
+<{/foreach}>
+<input type="checkbox" value="all" name="all_members" id="all_members" <{if $rule.config.member_lv_ids[0]=='all'}>checked<{/if}> />所有客户
+<script>
+(function(){
+    $('all_members').addEvent('click',function(){
+        var memberLvIds = document.getElements('input[name^=config[member_lv_ids]]'),
+        num = memberLvIds.length;
+
+        if (this.checked) {
+            for (var i = 0; i < num; i++) {
+                memberLvIds[i].checked = "checked";
+                memberLvIds[i].disabled = "true";
+            }
+        } else {
+            for (var i = 0; i < num; i++) {
+                memberLvIds[i].checked = "";
+                memberLvIds[i].disabled = "";
+            }
+        }
+    });
+})();
+</script>

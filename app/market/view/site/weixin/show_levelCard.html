@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的会员卡</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+    <{if $page_type eq 'member_center' }>
+    <div class="pos-left">
+        <a href="javascript:history.back();" class="icon-arrow_left"></a>
+    </div>
+    <{/if}>
+  <h1>会员卡</h1>
+</nav>
+<div class="container gap">
+  <div class="panel-card">
+      <{if $page_type neq 'member_center' }>
+      <h1 class="panel-head">绑定成功</h1>
+      <{/if}>
+      <div class="panel-body">
+          <{if $page_type neq 'member_center' }>
+        <p>恭喜您成为商城的会员<br>
+          并获得一张会员卡</p>
+          <{/if}>
+      <div class="card">
+          <{if $rs.card_img}>
+          <img src="<{$rs.card_img}>" alt="" width="100%">
+          <{else}>
+        <img src="<{$env.app.res_url}>/img/card.png" alt="" width="100%">
+          <{/if}>
+        <b class="type"><{$rs.level_name}></b>
+        <i class="num" style="font-size: 16px;"><{$rs.member_card}></i>
+      </div>
+          <div><img src="<{$img_url}>" alt=""><br>将此二维码展示给门店人员<br>您可以完成登录操作</div>
+          <{if $page_type neq 'member_center' }>
+      <a href="member_center?fromusername=<{$fromusername}>" class="button expand secondary">查看更多</a>
+          <{/if}>
+    </div>
+  </div>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+</body>
+</html>

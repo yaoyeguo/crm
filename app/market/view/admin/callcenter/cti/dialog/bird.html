@@ -1,0 +1,41 @@
+<h3 class="head-title">讯鸟通讯</h3>
+
+    <form id="cti_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+        <{input type="hidden" name="cti_type" value=$cti_type }>
+        <div style="padding:0 0 0 0;font-size:14px;text-align:center;">
+            <br/>确定要开启讯鸟通讯软电话支持吗？
+            <br/><br/>
+            注意：如果您的CTI系统不是由讯鸟提供，请不要启用本插件。
+        </div>
+    </form>
+    
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="确定启用"}>
+        </div>
+    <{/area}>
+
+<script>
+(function(){
+
+    var _frm = $('cti_form');
+    var _btn = $('saveterminal');
+    var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+    
+    _btn.addEvent('click',function(event){
+        _frm.fireEvent('submit',new Event(event));
+    });
+
+    _frm.store('target',{
+        onRequest:function(){
+           _btn.set('disabled', 'true');
+        },
+        onSuccess:function(response){    
+            try{
+                if(_dialogIns) _dialogIns.close();
+            }catch(e){}
+        }
+    });
+
+})();
+</script>

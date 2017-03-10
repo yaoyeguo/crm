@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会员中心</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+ <!-- <h1>个人中心</h1>-->
+</nav>
+<div class="page-header">
+  <ul class="deploy">
+    <li><a href="show_levelCard?fromusername=<{$fromusername}>&page_type=member_center" class="icon-card"></a></li>
+    <li class="avatar"><a href=""><img src="<{$env.app.res_url}>/img/av.png" alt=""></a></li>
+    <li><a href="sign_in?fromusername=<{$fromusername}>" class="icon-cal"></a></li>
+  </ul>
+  <div class="profile">
+    <h3 class="name"><{$rs.uname}></h3>
+    <h4 class="level">
+        <{if $rs.level_name}>
+        <{$rs.level_name}>
+        <{else}>
+        微信会员
+        <{/if}>
+    </h4>
+  </div>
+</div>
+<ul class="table-view chevron has-icon">
+  <li class="cell">
+    <a href="../site_weixin_point/business_record?fromusername=<{$fromusername}>" class="navigate-right icon">
+      <span class="round alert label"><{$rs.order_num}></span>
+      <i class="icon-orders">我的订单</i>
+    </a>
+  </li>
+</ul>
+<ul class="table-view chevron has-icon">
+  <li class="cell">
+    <i class="icon-rai">我的权益</i>
+  </li>
+  <!--<li class="cell">
+    <a href="show_levelCard?fromusername=<{$fromusername}>&page_type=member_center" class="navigate-right icon">
+      <i class="text-reserve">我的会员卡</i>
+    </a>
+  </li>-->
+  <li class="cell">
+    <a href="../site_weixin_point/index?fromusername=<{$fromusername}>" class="navigate-right icon">
+      <span class="reserve label"><{$sum_points}></span>
+      <i class="text-reserve">我的积分</i>
+    </a>
+  </li>
+    <li class="cell">
+        <a href="my_money?fromusername=<{$fromusername}>" class="navigate-right icon">
+            <span class="reserve label"><{$sum_money}></span>
+            <i class="text-reserve">我的储值</i>
+        </a>
+    </li>
+  <li class="cell">
+    <a href="show_coupon?fromusername=<{$fromusername}>" class="navigate-right icon">
+      <span class="reserve label"><{$rs.coupon_num}>张</span>
+      <i class="text-reserve">我的卡包</i>
+    </a>
+  </li>
+    <{if $menu.exchange }>
+    <li class="cell">
+        <a href="../site_weixin_point/point_business_record?fromusername=<{$fromusername}>" class="navigate-right icon">
+            <span class="reserve label"></span>
+            <i class="text-reserve">我的兑换单</i>
+        </a>
+    </li>
+    <{/if}>
+</ul>
+<ul class="table-view chevron has-icon">
+    <li class="cell">
+        <a href="receiving_address_list?fromusername=<{$fromusername}>" class="navigate-right icon">
+            <i class="icon-truck">我的收货地址</i>
+        </a>
+    </li>
+</ul>
+
+<{if $menu.code }>
+<ul class="table-view chevron has-icon">
+  <li class="cell">
+    <a href="QRCode?fromusername=<{$fromusername}>" class="navigate-right icon">
+      <i class="icon-qrcode">我的邀请码</i>
+    </a>
+  </li>
+</ul>
+<{/if}>
+
+<{if $menu.shop_search }>
+<ul class="table-view chevron has-icon">
+  <li class="cell">
+    <a href="../site_shop_search?my_xy=<{$my_xy}>" class="navigate-right icon">
+      <i class="icon-shop">门店查询</i>
+    </a>
+  </li>
+</ul>
+<{/if}>
+
+<ul class="table-view chevron has-icon">
+    <li class="cell">
+        <a href="set_info?fromusername=<{$fromusername}>" class="navigate-right icon">
+            <i class="icon-cog">设置</i>
+        </a>
+    </li>
+</ul>
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+</script>
+</body>
+</html>

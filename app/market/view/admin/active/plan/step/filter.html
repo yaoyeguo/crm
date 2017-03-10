@@ -1,0 +1,910 @@
+<style>
+#select_me  {font-family:Arial}
+#select_me .region_list {margin: 0;padding: 0;}
+#select_me .region_list li {display: inline-block;border-radius:6px;width: 75px;}
+#select_me .title_table {background-color: #F4F4F4;font-size: 20px}
+#select_me .title_table tr td {background-color: #F4F4F4;}
+
+#select_me .tabform th{}
+
+#goods_page_nav { display:block;padding:5px 0;}
+#prev,#next {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+
+#active_form label{cursor:pointer;}
+#active_form #region_list li.hover {background:#F8D998;}
+
+#goods_page_nav { display:block;padding:5px 0 0 0;}
+#prev,#next,.sbtn {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+#no_prev,#no_next{background:#AAA;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;display:;}
+</style>
+
+<div class="tableform" style="margin:0;padding:0;">
+
+    <form id="active_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+
+    <{input type="hidden" name="active_id" id="active_id" value=$rs_active_plan.active_id }>
+
+    <div id="select_me">
+
+    <!--// todo:非淘宝店铺不支持商品搜索 //-->
+    <div class="tabs-wrap finder-tabs-wrap clearfix">
+        <ul class="tab_nav">
+            <li class="tab current"><span>购买行为</span></li>
+            <li class="tab"><span>客户属性</span></li>
+            <li class="tab"><span>商品范围</span></li>
+            <li class="tab"><span>所属地区</span></li>
+            <li class="tab"><span>排除客户</span></li>
+            <li class="tab"><span>自定义属性</span></li>
+        </ul>
+    </div>
+
+    <div class="tabform">
+        <table>
+            <tr>
+                <th>
+                <{help}>所有订单状态包含（下单、已付款、关闭、成功交易、退款）<{/help}>
+                <{t}>订单总数 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[total_orders][sign]" options=$select_sign value=$filter_mem.filter.total_orders.sign }>
+                    
+                    <{input type="text" name="filter[total_orders][min_val]" size=10 value=$filter_mem.filter.total_orders.min_val }>
+                    
+                    <span id="filter[total_orders][sign]" <{if $filter_mem.filter.total_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[total_orders][max_val]" size=10 value=$filter_mem.filter.total_orders.max_val }>
+                    </span>
+                </td>
+               <th>
+                <{help}>订单状态为已完成的订单<{/help}>
+                <{t}>成功的订单数 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[finish_orders][sign]" options=$select_sign value=$filter_mem.filter.finish_orders.sign }>
+                    
+                    <{input type="text" name="filter[finish_orders][min_val]" size=10 value=$filter_mem.filter.finish_orders.min_val }>
+                    
+                    <span id="filter[finish_orders][sign]" <{if $filter_mem.filter.finish_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[finish_orders][max_val]" size=10 value=$filter_mem.filter.finish_orders.max_val }>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                <{help}>所有订单状态包含（下单、已付款、关闭、成功交易、退款)订单的金额<{/help}>
+                <{t}>订单总金额 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[total_amount][sign]" options=$select_sign value=$filter_mem.filter.total_amount.sign }>
+                    
+                    <{input type="text" name="filter[total_amount][min_val]" size=10 value=$filter_mem.filter.total_amount.min_val }>
+                    
+                    <span id="filter[total_amount][sign]" <{if $filter_mem.filter.total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[total_amount][max_val]" size=10 value=$filter_mem.filter.total_amount.max_val }>
+                </td>
+                <th>
+                <{help}>订单总金额/订单总数 <{/help}>
+                <{t}>平均订单价 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[total_per_amount][sign]" options=$select_sign value=$filter_mem.filter.total_per_amount.sign }>
+                    
+                    <{input type="text" name="filter[total_per_amount][min_val]" size=10 value=$filter_mem.filter.total_per_amount.min_val }>
+                    
+                    <span id="filter[total_per_amount][sign]" <{if $filter_mem.filter.total_per_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[total_per_amount][max_val]" size=10 value=$filter_mem.filter.total_per_amount.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th> 
+                <{help}>客户购买的次数含（下单、已付款、关闭、成功交易、退款）的订单，一天多笔订单只算一次<{/help}>
+                <{t}>购买频次：<{/t}>
+                </th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[buy_freq][sign]" options=$select_sign value=$filter_mem.filter.buy_freq.sign }>
+                    
+                    <{input type="text" name="filter[buy_freq][min_val]" size=10 value=$filter_mem.filter.buy_freq.min_val }>
+                    
+                    <span id="filter[buy_freq][sign]" <{if $filter_mem.filter.buy_freq.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[buy_freq][max_val]" size=10 value=$filter_mem.filter.buy_freq.max_val }>
+                </td>
+                <th> 
+                <{help}>时间段内(最后付款的日期 - 第一次付款的日期)/购买频次<{/help}>
+                <{t}>平均购买间隔：<{/t}>
+                </th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[avg_buy_interval][sign]" options=$select_sign value=$filter_mem.filter.avg_buy_interval.sign }>
+                    
+                    <{input type="text" name="filter[avg_buy_interval][min_val]" size=10 value=$filter_mem.filter.avg_buy_interval.min_val }>
+                    
+                    <span id="filter[avg_buy_interval][sign]" <{if $filter_mem.filter.avg_buy_interval.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[avg_buy_interval][max_val]" size=10 value=$filter_mem.filter.avg_buy_interval.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th> 
+                <{help}>存在已付款订单的月份数<{/help}>
+                <{t}>购买月数：<{/t}>
+                </th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[buy_month][sign]" options=$select_sign value=$filter_mem.filter.buy_month.sign }>
+                    
+                    <{input type="text" name="filter[buy_month][min_val]" size=10 value=$filter_mem.filter.buy_month.min_val }>
+                    
+                    <span id="filter[buy_month][sign]" <{if $filter_mem.filter.buy_month.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[buy_month][max_val]" size=10 value=$filter_mem.filter.buy_month.max_val }>
+                </td>
+                <th>
+                <{help}>全部订单中出现的商品数量<{/help}>
+                <{t}>下单商品总数：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[buy_products][sign]" options=$select_sign value=$filter_mem.filter.buy_products.sign }>
+                    
+                    <{input type="text" name="filter[buy_products][min_val]" size=10 value=$filter_mem.filter.buy_products.min_val }>
+                    
+                    <span id="filter[buy_products][sign]" <{if $filter_mem.filter.buy_products.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[buy_products][max_val]" size=10 value=$filter_mem.filter.buy_products.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                <{help}>成功订单的总金额<{/help}>
+                <{t}>成功的订单金额：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[finish_total_amount][sign]" options=$select_sign value=$filter_mem.filter.finish_total_amount.sign }>
+                    
+                    <{input type="text" name="filter[finish_total_amount][min_val]" size=10 value=$filter_mem.filter.finish_total_amount.min_val }>
+                    
+                    <span id="filter[finish_total_amount][sign]" <{if $filter_mem.filter.finish_total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[finish_total_amount][max_val]" size=10 value=$filter_mem.filter.finish_total_amount.max_val }>
+                </td>
+                <th>
+                <{help}>成功的平均订单价<{/help}>
+                <{t}>成功的平均订单价：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[finish_per_amount][sign]" options=$select_sign value=$filter_mem.filter.finish_per_amount.sign }>
+                    
+                    <{input type="text" name="filter[finish_per_amount][min_val]" size=10 value=$filter_mem.filter.finish_per_amount.min_val }>
+                    
+                    <span id="filter[finish_per_amount][sign]" <{if $filter_mem.filter.finish_per_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[finish_per_amount][max_val]" size=10 value=$filter_mem.filter.finish_per_amount.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                <{help}>已创建但未付款的订单<{/help}>
+                <{t}>未付款订单数：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[unpay_orders][sign]" options=$select_sign value=$filter_mem.filter.unpay_orders.sign }>
+                    
+                    <{input type="text" name="filter[unpay_orders][min_val]" size=10 value=$filter_mem.filter.unpay_orders.min_val }>
+                    
+                    <span id="filter[unpay_orders][sign]" <{if $filter_mem.filter.unpay_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[unpay_orders][max_val]" size=10 value=$filter_mem.filter.unpay_orders.max_val }>
+                </td>
+                <th>
+                <{help}>付款状态为全部退款的订单<{/help}>
+                <{t}>退款订单数：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[refund_orders][sign]" options=$select_sign value=$filter_mem.filter.refund_orders.sign }>
+                    
+                    <{input type="text" name="filter[refund_orders][min_val]" size=10 value=$filter_mem.filter.refund_orders.min_val }>
+                    
+                    <span id="filter[refund_orders][sign]" <{if $filter_mem.filter.refund_orders.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[refund_orders][max_val]" size=10 value=$filter_mem.filter.refund_orders.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                <{help}>退款总金额<{/help}>
+                <{t}>退款总金额：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[refund_amount][sign]" options=$select_sign value=$filter_mem.filter.refund_amount.sign }>
+                    
+                    <{input type="text" name="filter[refund_amount][min_val]" size=10 value=$filter_mem.filter.refund_amount.min_val }>
+                    
+                    <span id="filter[refund_amount][sign]" <{if $filter_mem.filter.refund_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="text" name="filter[refund_amount][max_val]" size=10 value=$filter_mem.refund_amount.max_val }>
+                </td>
+               
+                <th> <{t}>下单时间：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[create_time][sign]" options=$select_sign_time value=$filter_mem.filter.create_time.sign }>
+                    
+                    <{input type="date" name="filter[create_time][min_val]" size=10 value=$filter_mem.filter.create_time.min_val }>
+                    
+                    <span id="filter[create_time][sign]" <{if $filter_mem.filter.create_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="date" name="filter[create_time][max_val]" size=10 value=$filter_mem.filter.create_time.max_val }>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <{assign var="evaluation" value=array('good'=>"好评",'kind'=>"中评",'bad'=>"差评")}>
+    <div class="tabform" style="display:none">
+        <table>
+            <tr>
+                <th> <{t}>积分范围 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[points][sign]" options=$select_sign value=$filter_mem.filter.points.sign }>
+
+                    <{input type="text" name="filter[points][min_val]" size=10 value=$filter_mem.filter.points.min_val }>
+
+                    <span id="filter[points][sign]" <{if $filter_mem.filter.points.sign!='between'}>style="display:none"<{/if}>> ~
+                    <{input type="text" name="filter[points][max_val]" size=10 value=$filter_mem.filter.points.max_val }>
+                </td>
+            </tr>
+            <{**
+            <tr>
+                <th> <{t}>生日范围 ：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[birthday][sign]" options=$select_sign_time value=$filter_mem.filter.birthday.sign }>
+
+                    <{input type="date" name="filter[birthday][min_val]" size=10 value=$filter_mem.filter.birthday.min_val }>
+
+                    <span id="filter[birthday][sign]" <{if $filter_mem.filter.birthday.sign!='between'}>style="display:none"<{/if}>> ~
+                    <{input type="date" name="filter[birthday][max_val]" size=10 value=$filter_mem.filter.birthday.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th> <{t}>客户评价：<{/t}></th>
+                <td>
+                    <{input type="select" name="filter[evaluation]" options=$evaluation value=$filter_mem.filter.evaluation}>
+                </td>
+            </tr>
+            **}>
+            <tr>
+                <th> <{t}>客户等级：<{/t}></th>
+                <td>
+                    <{if($levels)}>
+                        <{input type="select" name="filter[lv_id]" options=$levels value=$filter_mem.filter.lv_id id="levels"}>
+                    <{else}>
+                        <a target="_blank" href="index.php?app=ecorder&ctl=admin_shop_lv&act=index">等级未设定</a>
+                    <{/if}>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <th><label>淘宝客户等级：</label></th>
+                <td><{input type="select" name="filter[taobaolv_id]" options=$taobaolv value=$filter_mem.filter.taobaolv_id }></td>
+            </tr>
+            <tr style="display:none">
+                <th> <{t}>VIP客户：<{/t}></th>
+                <td>
+                    <{input type="bool" name="filter[is_vip]" value=$filter_mem.filter.is_vip}>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <th> <{t}>黑名单：<{/t}></th>
+                <td>
+                    <{input type="bool" name="filter[in_blacklist]" value=$filter_mem.filter.in_blacklist}>
+                </td>
+            </tr>
+            <th> <{t}>第一次下单时间：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[first_buy_time][sign]" options=$select_sign_time value=$filter_mem.filter.first_buy_time.sign }>
+                    
+                    <{input type="date" name="filter[first_buy_time][min_val]" size=10 value=$filter_mem.filter.first_buy_time.min_val }>
+                    
+                    <span id="filter[first_buy_time][sign]" <{if $filter_mem.filter.first_buy_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="date" name="filter[first_buy_time][max_val]" size=10 value=$filter_mem.filter.first_buy_time.max_val }>
+                </td>
+            </tr>
+            <tr>
+                <th> <{t}>最后下单时间：<{/t}></th>
+                <td>
+                    <{input key="filter_sign" type="select" name="filter[last_buy_time][sign]" options=$select_sign_time value=$filter_mem.filter.last_buy_time.sign }>
+                    
+                    <{input type="date" name="filter[last_buy_time][min_val]" size=10 value=$filter_mem.filter.last_buy_time.min_val }>
+                    
+                    <span id="filter[last_buy_time][sign]" <{if $filter_mem.filter.last_buy_time.sign!='between'}>style="display:none"<{/if}>> ~ 
+                    <{input type="date" name="filter[last_buy_time][max_val]" size=10 value=$filter_mem.filter.last_buy_time.max_val }>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <{input type="hidden" id="filter_goods_id" value=$filter_mem.filter.goods_id}>
+    <div class="tabform" style="display:none">
+        <div style="padding:5px 0;">
+            商品名称：<input name="filter[good_name]" type="text" class="x-input" id="goods_search_key" value="<{$filter_mem.filter.good_name}>" size=8 />
+
+            <{assign var="good_name_sign" value=array('and'=>"和",'or'=>"或")}>
+            <{input type="select" id="good_name_sign" name="filter[good_name_sign]" value=$filter_mem.filter.good_name_sign options=$good_name_sign }>
+
+            <input name="filter[good_name2]" type="text" class="x-input" id="goods_search_key2" value="<{$filter_mem.filter.good_name2}>" size=8 />            
+
+            货号：<input name="filter[good_bn]" type="text" class="x-input" id="good_bn" value="<{$filter_mem.filter.good_bn}>" size=8 />
+
+            <{assign var="chk_goods_id" value=array('1'=>"手动选择",'2'=>"名称匹配")}>
+            <span style="display:;">范围：<{input type="select" name="filter[chk_goods_id]" value=$filter_mem.filter.chk_goods_id options=$chk_goods_id }></span>
+
+            <{**
+            <input type="radio" name="findRadio" value="1" checked>模糊
+            <input type="radio" name="findRadio" value="2">精确
+            **}>
+            <button type="button" class="btn" id="btn_search_product"><span><span> 搜 索 </span></span></button>
+            <{**
+            购买时间：
+            <{if $data.filter.good_buy_date && $data.actmemeber == 'yes'}>
+            <{input type="select" name="filter[good_buy_date]" value=$data.filter.good_buy_date options=$select_date disabled="disabled"}>
+            <input type=hidden name="filter[good_buy_date]" value="<{$data.filter.good_buy_date}>" />
+            <{else}>
+            <{input type="select" name="filter[good_buy_date]" value=$data.filter.good_buy_date options=$select_date}>
+            <{/if}>
+            **}>
+            <{** 购买数量大于：<{input type="text" name="filter[min_good_num]" value=$data.filter.min_good_num size=4 }> **}>
+        </div>
+        
+        <table class="gridlist">
+            <thead>
+              <tr>
+                <th width='10%'>
+                    <input type="checkbox" id="sel_all_goods" />
+                </th>
+                <th width='10%'>序号</th>
+                <th width='20%'><span style="cursor:pointer" id="sort_bn">货号</span></th>
+                <th width='50%'><span style="cursor:pointer" id="sort_name">商品名称↑</span></th>
+                <th width='10%'>商品价格</th>
+              </tr>
+            </thead>
+            <tbody id="proNode"></tbody>
+        </table>
+        <span id="goods_page_nav"></span>
+        <input type="hidden" id="goods_sort_type" value="name" />
+    </div>
+
+    <{input type="hidden" id="filter_regions_id" value=$filter_mem.filter.regions_id}>
+    <div class="tabform" style="display:none">
+        <p style="background:#FDF8DE;padding:8px;margin:0;">
+            <b>地区范围：</b>
+            <input type="radio" name="chk_all" id="chk_all1" value="1" />
+            <label for="chk_all1">全部地区</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="chk_all" id="chk_all2" value="2" />
+            <label for="chk_all2">部分地区</label>
+        </p>
+        <table width="100%" id="tbl_area" >
+            <tr>
+                <td>
+                <table id="region_list" width="100%"  cellpadding=7>
+                    <{foreach from=$regions item=v key=k}>
+                    <tr>
+                        <td width=10%><b><{$k}></b></td>
+                        <td width=90%>
+                            <ul class="region_list">
+                            <{foreach from=$v item=vv key=kk}>
+                                <li><input name="filter[regions_id][]" id="region<{$kk}>" type="checkbox" value="<{$kk}>" /><label for="region<{$kk}>"><{$vv|substr:0,9}></label></li>
+                            <{/foreach}>
+                            </ul>
+                        </td>
+                    </tr>
+                    <{/foreach}>
+                </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="tabform" id="exclude_tabform" style="display:none;height: 270px;">
+         <table>
+            <tr>
+                <td><{input type="checkbox" disabled="disabled" name="exclude_filter[]" checked="checked" value="1" }></td>
+                <td><{t}>黑名单客户组合和重复手机号码，以及无或错误手机号将自动排除<{/t}></td>
+            </tr>
+            <tr>
+                <td><{input type="checkbox" name="exclude_filter[]" value="2"  checked=$filter_mem.exclude_filter_c.2.checked}></td>
+                <td><{input type="text" name="exclude_hours" value=$filter_mem.exclude_hours|default:72  size="6" }><{t}>小时内营销过的客户，不参与本次活动<{/t}></td>
+            </tr>
+            <tr>
+                <td><{input type="checkbox" name="exclude_filter[]" value="3" checked=$filter_mem.exclude_filter_c.3.checked}><{input type="hidden" value=$filter_mem.exclude_tag_id name="exclude_tag_id" id="exclude_tag_id" }></td>
+                <td>
+                <{input type="text" size="30" name="exclude_tag" id="exclude_tag" onkeyup="getDivPositionTag(this)" onclick="getDivPositionTag(this)" value=$filter_mem.exclude_tag }><{t}>的标签组的客户，不参与本次活动<{/t}>
+                 <div id="exclude_tag_list" style="display:none;position:absolute; border: #54AAE5 solid 1px;width:290px;background:#fff">
+		            <ul style="list-style-type:none; float:left; margin-left:0px; width:100%;" id="input_select_tag">
+
+		            </ul>
+		        </div>
+                </td>
+            </tr>
+            <tr>
+                <td><{input type="checkbox" name="exclude_filter[]" value="4" checked=$filter_mem.exclude_filter_c.4.checked id="exclude_tag_2"}><{input type="hidden" value=$filter_mem.exclude_active_id name="exclude_active_id" id="exclude_active_id" }></td>
+                <td>
+                <{input type="text" size="30" name="exclude_active" id="exclude_active" onkeyup="getDivPositionActive(this)" onclick="getDivPositionActive(this)" value=$filter_mem.exclude_active   }>
+                <{t}>参加过此营销活动的客户，不参与本次活动<{/t}>
+                <div id="exclude_active_list" style="display:none;position:absolute; border: #54AAE5 solid 1px;width:290px;background:#fff">
+		            <ul style="list-style-type:none; float:left; margin-left:0px; width:100%;" id="input_select_active">
+
+		            </ul>
+		        </div>
+
+               </td>
+            </tr>
+         </table>
+    </div>
+
+    <!--自定义属性-->
+    <div class="tabform" style="display:none;padding:10px 10px 0 10px;">
+        <{foreach from=$attr_list key=sid item=attr}>
+            <table style="border:1px solid #CCC;overflow:hidden;margin:0 0 10px 0;">
+                <tr><td style="background:#E5EAF1;">
+                <h4 style="border-bottom:2px solid #CCC;font-family:Microsoft Yahei;padding:5px;font-size:14px;"><{$attr.shop_name}></h4>
+                <p id='prop_msg' style="padding:10px;color:red;<{if $attr.prop_name }>display:none;<{/if}>">店铺没有设置自定义属性,<a href="index.php?app=ecorder&ctl=admin_shop&act=index" target="_blank">去设置</a></p>
+                <ul style="list-style:none;" id="prop_list"<{if(!$attr.prop_name)}>style="display:none;"<{/if}>>
+                <{foreach from=$attr.prop_name item=v key=k}>
+                    <{if $v }>
+                    <li style="padding:10px 0 0 0;"><{$v}>：
+                        <{if($attr.prop_type[$k]=='num')}>
+                            <{input key="filter_sign" type="select" name="filter[prop_val][{$sid}][{$k}][sign]" options=$select_sign value=$filter_mem.filter[prop_val][$sid][$k][sign] }>
+                            &nbsp;<{input name="filter[prop_val][{$sid}][{$k}][min_val]" size=10 value=$filter_mem.filter[prop_val][$sid][$k][min_val] }>
+                            <span id="filter[prop_val][<{$sid}>][<{$k}>][sign]" <{if $filter_mem.filter[prop_val][$sid][$k][sign]!='between'}>style="display:none"<{/if}>> ~ 
+                            <{input name="filter[prop_val][{$sid}][{$k}][max_val]" size=10 value=$filter_mem.filter[prop_val][$sid][$k][max_val] }>
+                            </span>
+                            
+                        <{elseif($attr.prop_type[$k]=='date')}>
+                            <{input key="filter_sign" type="select" name="filter[prop_val][{$sid}][{$k}][sign]" options=$select_sign_time value=$filter_mem.filter[prop_val][$sid][$k][sign] }>
+                            
+                            <{input type="date" name="filter[prop_val][{$sid}][{$k}][min_val]" size=10 value=$filter_mem.filter[prop_val][$sid][$k][min_val] }>
+                            
+                            <span id="filter[prop_val][<{$sid}>][<{$k}>][sign]" <{if $filter_mem.filter[prop_val][$sid][$k][sign]!='between'}>style="display:none"<{/if}>> ~ 
+                            <{input type="date" name="filter[prop_val][{$sid}][{$k}][max_val]" size=10 value=$filter_mem.filter[prop_val][$sid][$k][max_val] }>
+                            </span>
+                        <{else}>
+                        &nbsp;<{input name="filter[prop_val][{$sid}][{$k}][min_val]" value=$filter_mem.filter[prop_val][$sid][$k][min_val] }>
+                            
+                        <{/if}>
+                        
+                    </li>
+                    <{/if}>
+                <{/foreach}>
+                </ul></td></tr>
+            </table>
+        <{/foreach}>
+    </div>
+
+    <div id='p_id2'></div>
+
+
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="保存"}>
+        </div>
+    <{/area}>
+
+</DIV>
+
+    </form>
+
+</DIV>
+
+<script>
+
+    $("exclude_tabform").addEvent('click',function(event){
+        if(event.target.tagName == 'LI' || event.target.id == 'exclude_tag' || event.target.id == 'exclude_tag_2' )
+       {
+            return;
+       }else{
+            var tag=document.getElementById("exclude_tag_list");
+            tag.style.display = "none";
+            var active=document.getElementById("exclude_active_list");
+            active.style.display = "none";
+       }
+    });
+    var btn =$('saveterminal');
+    btn.addEvent('click',function(){
+        save_form();
+    });
+
+    function save_form(){
+    
+        get_member_count();
+    
+        var _data = get_filter();
+        var aj = new Request.JSON({
+            url:"index.php?<{$env.server.QUERY_STRING}>",
+            data:_data,
+            onSuccess:function(response){
+                //alert(response.msg);
+                if(response.type){
+                    //关闭弹出层
+                    btn.getParent('.dialog').retrieve('instance').close();
+                    if(is_modify==0 && edit_mode == false){
+                        go_to('screen_template');
+                    }
+                    
+                    is_modify = 0;
+                }else{
+                    alert(response.msg);
+                }
+            }
+        }).send($('active_form'));
+    }
+    
+    //调用内存计算会员人数
+    function get_member_count(){
+        var _data = get_filter();
+        var ajaxReq = new Request.JSON({
+            method : 'post',
+            url : 'index.php?app=market&ctl=admin_active_plan&act=get_member_count&active_id='+$('active_id').get('value'),
+            data: _data,
+            onSuccess : function(responseText) {
+                total_valid_num = (responseText.Send);
+                update_member_num();
+            },
+            onFailure : function() {}
+        }).send();
+    }
+
+    //between运算符处理
+    var between_sign = 'between';//介于
+    var signs = $('select_me').getElements('select[key=filter_sign]');
+    signs.each(function(obj,i){
+        obj.addEvent('change',function(){
+            if(obj.get('value')==between_sign){
+                $(obj.get('name')).setStyle('display','inline');
+            }else{
+                $(obj.get('name')).setStyle('display','none');
+            }
+        });
+    });
+
+    //选项卡效果
+    var tab_div = $$('div[class=tabform]');
+    var tab_nav = $$('ul[class=tab_nav] li');
+    tab_nav.each(function($obj,i){
+        $obj.onclick=function(){
+            tab_nav.set('class','tab');
+            tab_div.setStyle('display', 'none');
+            this.set('class','tab current');
+            tab_div[i].setStyle('display', 'block');
+        };
+    });
+
+    //地区预选中
+    var filter_regions_id = ',' + $('filter_regions_id').get('value') + ',';
+    var regions_checkbox = $('region_list').getElements('input');
+    regions_checkbox.each(function(obj){
+        if(filter_regions_id.indexOf(','+obj.value+',')>=0){
+            obj.set('checked','checked');
+        }
+    });
+
+    set_checkbox_bg();
+    regions_checkbox.addEvent('click',function(){
+        set_checkbox_bg();
+    });
+
+    //全部地区和部分地区的切换
+    if(filter_regions_id != ',,') {
+        $('chk_all2').set('checked','checked');
+    }else{
+        $('chk_all1').set('checked','checked');
+        $('tbl_area').hide();
+    }
+
+    $('chk_all2').addEvent('click',function(){
+        $('tbl_area').show();
+        set_checkbox_bg()
+    });
+    $('chk_all1').addEvent('click',function(){
+        $('tbl_area').hide();
+        $$('#tbl_area input[type=checkbox]').set('checked',false);
+        set_checkbox_bg();
+    });
+
+    //获取页面内的搜索条件
+    function get_filter(){
+        var iname;
+        var itype;
+        var str='1';
+        $$('#select_me input').each(function(ele,i){
+            //alert(i);
+            iname = ele.get('name');
+            itype = ele.get('type');
+            if(iname && (iname.indexOf('filter')>=0 || iname.indexOf('exclude')>=0) ){
+                if((itype!='checkbox' && itype!='radio') || ele.checked==true){
+                    str += '&'+iname+'='+ele.value;
+                }
+            }
+        });
+        $$('#select_me select').each(function(ele,i){
+            //alert(i);
+            iname = ele.get('name');
+            if(iname && iname.indexOf('filter')>=0){
+                str += '&'+iname+'='+ele.value;
+            }
+        });
+        return str;
+    }
+
+    function getDivPositionTag(o)
+    {
+        var keyword = $(o).value;
+        var _url="index.php?app=market&ctl=admin_active_sms&act=ajax_get_tag&keyword=" + encodeURI(keyword);
+        new Request({
+            url : _url,
+            method : 'get',
+            onSuccess : function(responseText){
+                    var data = JSON.decode(responseText);
+                    var data_l = data.length;
+                    if(data_l > 0)
+                    {
+                        var str = '';
+                        for(var i=0;i<data_l;i++)
+                        {
+                            str += '<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'" style="cursor:pointer" tag_id="' + data[i].tag_id + '" onclick="setDivHiddenTempTag(this);">' + data[i].tag_name + '</li>';
+                        }
+                        $('input_select_tag').set('html',str);
+                    }else{
+                        $('input_select_tag').set('html','<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'">未找到对应信息</li>');
+                    }
+                    $('exclude_tag_list').show();
+
+            }
+        }).send();
+    }
+
+    function setDivHiddenTempTag(t)
+    {
+    	$('exclude_tag_id').value = $(t).get('tag_id');
+        $('exclude_tag').value = $(t).get('text');
+        $('exclude_tag_list').hide();
+    }
+
+    function getDivPositionActive(o)
+    {
+        var keyword = $(o).value;
+        var _url="index.php?app=market&ctl=admin_active_sms&act=ajax_get_active&keyword=" + encodeURI(keyword);
+        new Request({
+            url : _url,
+            method : 'get',
+            onSuccess : function(responseText){
+                    var data = JSON.decode(responseText);
+                    var data_l = data.length;
+                    if(data_l > 0)
+                    {
+                        var str = '';
+                        for(var i=0;i<data_l;i++)
+                        {
+                            str += '<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'" style="cursor:pointer" active_id="' + data[i].active_id + '" onclick="setDivHiddenTempActive(this);">' + data[i].active_name + '</li>';
+                        }
+                        $('input_select_active').set('html',str);
+                    }else{
+                        $('input_select_active').set('html','<li onmousemove="this.style.backgroundColor=\'#54AAE5\'" onmouseout="this.style.backgroundColor=\'#fff\'">未找到对应信息</li>');
+                    }
+                    $('exclude_active_list').show();
+            }
+        }).send();
+    }
+
+    function setDivHiddenTempActive(t){
+    	$('exclude_active_id').value = $(t).get('active_id');
+        $('exclude_active').value = $(t).get('text');
+        $('exclude_active_list').hide();
+    }
+
+    function set_checkbox_bg(){
+        $$('#region_list input').each(function(ele){
+            if(ele.get('checked')){
+                ele.getParent().set('class','hover');
+            }else{
+                ele.getParent().set('class','');
+            }
+        });
+    }
+    
+//商品搜索
+    //商品全选
+    $('sel_all_goods').addEvent('click',function(){
+        if(this.checked == true){
+            $$('#proNode input[name="filter[goods_id][]"]').set('checked','checked');
+        }else{
+            $$('#proNode input[name="filter[goods_id][]"]').set('checked','');
+        }
+        set_good_bgcolor();
+    });
+    
+    //搜索商品
+    $('btn_search_product').addEvent('click',function(){
+        var findRadioValue = $$('input[name="findRadio"]:checked').get('value');
+        var goodsSearchKey = $('goods_search_key').get('value');
+        if (2 > goodsSearchKey.length && goodsSearchKey.length != 0) {
+            alert('商品名称至少是2个字符以上');
+            return false;
+        }
+        page = 0;
+        gotoPage(0);
+    });
+    
+    //搜索商品
+    var page = 0;
+    var goods_page_nav = '';
+    goods_page_nav += '<span id="page_no" style="float:right">第 1 页</span>';
+    goods_page_nav += '<span id="no_prev">上一页</span>';
+    goods_page_nav += '<span id="prev" onclick="gotoPage(-1)">上一页</span>';
+    goods_page_nav += '<span id="next" onclick="gotoPage(1)">下一页</span>';
+    goods_page_nav += '<span id="no_next">下一页</span>';
+    goods_page_nav += '<span class="sbtn" onclick="check_all_goods(1);">全选</span>';
+    goods_page_nav += '<span class="sbtn" onclick="check_all_goods(0);">清空</span>';
+    $('goods_page_nav').set('html',goods_page_nav);
+    $('prev').hide();$('no_prev').show();
+    
+    //商品预选中
+    var page = 0;
+    var filter_goods_id = $('filter_goods_id').get('value');
+    if(filter_goods_id) {
+        filter_goods_id = ',' + filter_goods_id + ',';
+        getProducts(filter_goods_id);//预先加载商品列表
+    } 
+    
+    setTimeout('gotoPage(0)', 1000);
+    
+    $('sort_bn').addEvent('click', function(){
+        $('sort_bn').set('text', '货号↑');
+        $('sort_name').set('text', '商品名称');
+        $('goods_sort_type').set('value','bn');
+        gotoPage(0);
+    });
+    
+    $('sort_name').addEvent('click', function(){
+        $('sort_bn').set('text', '货号');
+        $('sort_name').set('text', '商品名称↑');
+        $('goods_sort_type').set('value','name');
+        gotoPage(0);
+    });
+    
+    function check_all_goods(flag){
+    if(flag==1){
+        $$('#proNode input[name="filter[goods_id][]"]').set('checked','checked');
+    }else{
+        $$('#proNode input[name="filter[goods_id][]"]').set('checked','');
+    }
+    set_good_bgcolor();
+}
+
+function gotoPage(p){
+    if(p==0) page=0;
+    page += p;
+    $('next').show();
+    $('no_next').hide();
+    if(page<=0) {
+        $('prev').hide();
+        $('no_prev').show();
+    }else{
+        $('prev').show();
+        $('no_prev').hide();
+    }
+    getProducts();
+    $('page_no').set('html','第 '+(page+1)+' 页');
+}
+
+function getProducts(filter_goods_id){
+
+    $('no_next').hide();
+    
+    var sel_goods = '0';
+    var goods_sort_type = $('goods_sort_type').get('value');
+    var good_name_sign = $('good_name_sign').get('value');
+    var goods_search_key = $('goods_search_key').get('value');
+    var goods_search_key2 = $('goods_search_key2').get('value');
+    var good_bn = $('good_bn').value;
+    //var shop_id = $('shop_id').get('value');
+    var new_node = '';
+    var proNode = $('proNode');
+    var chkBox = proNode.getElements('input');
+    var template_active = '\
+                        <td><input type="checkbox" name="filter[goods_id][]" value="{$goods_id}" /></td>\
+                        <td name="goods_no"></td>\
+                        <td>{$bn}</td>\
+                        <td style="text-align:left;">{$name}</td>\
+                        <td>{$price}</td>\
+                    ';
+                    
+    var template_disabled = '\
+                        <td bgcolor="#eeeeee"><input checked type="checkbox" disabled /></td>\
+                        <td bgcolor="#eeeeee" name="goods_no"></td>\
+                        <td bgcolor="#eeeeee">{$bn}</td>\
+                        <td bgcolor="#eeeeee" style="text-align:left;">{$name}</td>\
+                        <td bgcolor="#eeeeee">{$price}</td>\
+                    ';
+    var templates = '';
+    
+    //只移除未选择的商品
+    chkBox.each(function($obj,i){
+        var tr_obj = $obj.parentNode.parentNode;
+        //alert(tr_obj.getStyle('backgroundColor'))
+        if(tr_obj.getStyle('backgroundColor') != '#ffffcc') {
+            tr_obj.remove();
+        }else{
+            sel_goods += ','+$obj.value;
+        }
+    });
+    
+    if(filter_goods_id) {
+        page = 0;
+    }
+    
+    var data_str = 'page='+page+'&sel_goods='+sel_goods+'&sort_type='+goods_sort_type;
+    if(filter_goods_id) {
+        data_str += '&filter_goods_id='+filter_goods_id;
+    }else{
+        data_str += '&name='+goods_search_key+'&name2='+goods_search_key2+'&sign='+good_name_sign+'&bn='+good_bn;
+    }
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecorder&ctl=admin_goods&act=ajaxGet',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            var total_page = 0;
+            if(responseText != 'null') {
+                var obj = eval('(' + responseText + ')');
+                
+                //设置页码
+                var total = obj[obj.length-1];
+                if(total > 0){
+                    total_page = Math.ceil(total/10);
+                    $('page_no').set('html','第 '+(page+1)+'/'+total_page+' 页');
+                }
+                
+                for(var i=0;i<obj.length-1;i++){
+                
+                    if((sel_goods+',').indexOf(','+obj[i].goods_id+',')== -1){
+                        templates = template_active;
+                    }else{
+                        templates = template_disabled;
+                    }
+                
+                    //关键词描红
+                    obj[i].name = obj[i].name.replace(goods_search_key,'<font color=red>'+goods_search_key+'</font>');
+                    
+                    if(goods_search_key2){
+                        obj[i].name = obj[i].name.replace(goods_search_key2,'<font color=blue>'+goods_search_key2+'</font>');
+                    }
+                
+                    new_node = templates.replace('{$bn}',obj[i].bn).replace('{$name}',obj[i].name).replace('{$price}',obj[i].price).replace('{$goods_id}',obj[i].goods_id);
+                    var new_tr = new Element('tr');
+                    new_tr.set('html',new_node);
+                    new_tr.inject(proNode);
+                }
+                
+                //首次加载时，预先选中上次商品
+                if(filter_goods_id) {
+                    var goods_checkbox = $('proNode').getElements('input');
+                    goods_checkbox.each(function(obj){
+                        if(filter_goods_id.indexOf(','+obj.value+',')>=0){
+                            obj.set('checked','checked');
+                        }
+                    });
+                }
+                
+                if((page+1)>=total_page) {
+                    $('next').hide();
+                    $('no_next').show();
+                }
+                
+                $$('#proNode input[name="filter[goods_id][]"]').addEvent('click',function(){
+                    set_good_bgcolor();
+                });
+                
+                set_good_bgcolor();
+                
+            }else{
+                $('next').hide();
+                $('no_next').show();
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+function set_good_bgcolor(){
+    $$('#proNode input[name="filter[goods_id][]"]').each(function(ele){
+        var pe = (ele.parentNode.parentNode);
+        if(ele.checked == true){
+            pe.style.backgroundColor = '#FFFFCC';
+        }else{
+            pe.style.backgroundColor = '';
+        }
+    });
+    
+    $$('#proNode td[name="goods_no"]').each(function(ele,idx){
+        ele.set('text', (idx+1));
+    });
+}
+</script>

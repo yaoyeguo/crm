@@ -1,0 +1,532 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<style>
+.compare_td td{background:#F0F5F7;}
+#rfm_table {
+width:786px;height:384px;
+background:url(<{$env.app.res_url}>/rfm.gif) no-repeat;}
+</style>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+<form action="<{$form_action}>" method="post" id="filter_form">
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            
+            <div class="title_right" id="dataAction">
+                
+                    <{if $timeFilter != 'false'}>
+                    <div class="date_area" id="date_area" style="display:none">
+                        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.yesterday date_to=$timeBtn.yesterday label="昨日"}>
+                        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.sevenday_from date_to=$timeBtn.sevenday_to label="最近7天"}>
+                        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.this_month_from date_to=$timeBtn.this_month_to label="本月"}>
+                        <{button class="dataBtn btn-fourthly" date_from=$timeBtn.this_week_from date_to=$timeBtn.this_week_to label="本周"}>
+                    </div>
+                    <div class="date_date_cx" style="font-size:12px">
+                        <span id="date_date_cx" style="display:none">
+                            <{input type="date" vtype="date" name="date_from" id="date_from" style="width:66px; font-family:arial;" value=$date_from}>
+                            <span>至</span>
+                            <{input type="date" vtype="date" name="date_to" id="date_to" style="width:66px; font-family:arial;" value=$date_to}>
+                        </span>
+                        
+                        店铺：
+                        <{input type="select" id="shop_id" name="shop_id" options=$shops value=$shop_id}>
+                        
+                    </div>
+                    <{/if}>
+                    <{if $extTypeData}>
+                    <div class="date_date_cx" style="float:right">
+                        <select name="ext_type_id" id="ext_select_type" style="width:260px;">
+                            <{foreach from=$extTypeData key=key item=item}>
+                                <option value="<{$item.coupon_id}>" <{if $ext_select_type == $item.coupon_id}>selected="selected"<{/if}>><{$item.coupon_name}></option>
+                            <{/foreach}>
+                        </select>
+                    </div>
+                    <{/if}>
+                    <{if $typeData}>
+                    <div class="date_date_cx" style="float:right">
+                        <select name="type_id" id="select_type">
+                            <{foreach from=$typeData key=key item=item}>
+                                <option value="<{$item.type_id}>" <{if $select_type == $item.type_id}>selected="selected"<{/if}>><{$item.name}></option>
+                            <{/foreach}>
+                        </select>
+                    </div>
+                    <{/if}>
+                
+                </div>
+            
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>分析数据</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                        
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>&nbsp;<{/t}></th>
+                                    <th><{t}>范围1<{/t}></th>
+                                    <th><{t}>范围2<{/t}></th>
+                                    <th><{t}>范围3<{/t}></th>
+                                    <th><{t}>范围4<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                 <tr>
+                                 	<td>R：最后购买时间(天)</td>
+                                    <td>小于：
+                                    <input value="0" name="r[0][]" type="hidden" />
+                                    <input value="<{$r[0][1]}>" size="3" name="r[0][]" type="text" class="x-input" /></td>
+                                    <td>介于：
+                                    <input value="<{$r[1][0]}>" size="3" name="r[1][]" type="text" class="x-input" /> - 
+                                    <input value="<{$r[1][1]}>" size="3" name="r[1][]" type="text" class="x-input" /></td>
+                                    <td>介于：
+                                    <input value="<{$r[2][0]}>" size="3" name="r[2][]" type="text" class="x-input" /> - 
+                                    <input value="<{$r[2][1]}>" size="3" name="r[2][]" type="text" class="x-input" /></td>
+                                    <td>大于：
+                                    <input value="<{$r[3][0]}>" size="3" name="r[3][]" type="text" class="x-input" />
+                                    <input value="0" name="r[3][]" type="hidden" />
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                 	<td>F：下单次数(次)</td>
+                                    <td>小于：
+                                    <input value="0" name="f[0][]" type="hidden" />
+                                    <input value="<{$f[0][1]}>" size="3" name="f[0][]" type="text" class="x-input" /></td>
+                                    <td>介于：
+                                    <input value="<{$f[1][0]}>" size="3" name="f[1][]" type="text" class="x-input" /> - 
+                                    <input value="<{$f[1][1]}>" size="3" name="f[1][]" type="text" class="x-input" /></td>
+                                    <td>介于：
+                                    <input value="<{$f[2][0]}>" size="3" name="f[2][]" type="text" class="x-input" /> - 
+                                    <input value="<{$f[2][1]}>" size="3" name="f[2][]" type="text" class="x-input" /></td>
+                                    <td>大于：
+                                    <input value="<{$f[3][0]}>" size="3" name="f[3]" type="text" class="x-input" />
+                                    <input value="0" name="r[3][]" type="hidden" />
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                 	<td colspan="6">
+                                    	<{button id="filterBtn" class="filterBtn btn-thirdly" label="查看报表"}>
+                                    </td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                        
+                        <br/>
+                        <table id="rfm_table" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>&nbsp;<{/t}></th>
+                                    <{foreach from=$r_label item=data key=key}>
+                                    <th><{t}><{$data}>天<{/t}></th>
+                                    <{/foreach}>
+                                    <th><{t}>合计<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$f_label item=v key=k}>
+                                 <tr>
+                                     <td><{$v}>次</td>
+                                     <{foreach from=$r_label item=vv key=kk}>
+                                     <td class="Tips1" title="客户数：<{$analysis_data[$k][$kk][members]|default:0}><br/>总金额：<{$analysis_data[$k][$kk][amount]|cur}><br/>客户比例：<{$analysis_data[$k][$kk][members]*100/$total_data[members]|round:2}>%<br/>金额比例：<{$analysis_data[$k][$kk][amount]*100/$total_data[amount]|round:2}>%">
+                                        <{$analysis_data[$k][$kk][members]*100/$total_data[members]|round:2}>%
+                                        , 
+                                        <{$analysis_data[$k][$kk][amount]*100/$total_data[amount]|round:2}>%
+                                        
+                                        <{if ($analysis_data[$k][$kk][members]>0)}>
+                                        <a href="<{$member_url}>&shop_id=<{$shop_id}>&r=<{$r[$kk][0]}>_<{$r[$kk][1]}>&f=<{$f[$k][0]}>_<{$f[$k][1]}>"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        
+                                     </td>
+                                     <{/foreach}>
+                                     <td bgcolor="#FFFFCC" class="Tips1" title="客户数：<{$total_f_data[$k][members]}>  <br/>总金额：<{$total_f_data[$k][amount]|cur}><br/>客户比例：<{$total_f_data[$k][members]*100/$total_data[members]|round:2}>%<br/>金额比例：<{$total_f_data[$k][amount]*100/$total_data[amount]|round:2}>%">
+                                        <{$total_f_data[$k][members]*100/$total_data[members]|round:2}>%
+                                        , 
+                                        <{$total_f_data[$k][amount]*100/$total_data[amount]|round:2}>%
+                                        
+                                        <{if ($total_f_data[$k][members]>0)}>
+                                        <a href="<{$member_url}>&shop_id=<{$shop_id}>&f=<{$f[$k][0]}>_<{$f[$k][1]}>"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        
+                                     </td>
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr bgcolor="#FFFFCC">
+                                     <td>合计</td>
+                                     <{foreach from=$r_label item=data key=k}>
+                                     <td class="Tips1" title="客户数：<{$total_r_data[$k][members]|default:0}><br/>总金额：<{$total_r_data[$k][amount]|cur}><br/>客户比例：<{$total_r_data[$k][members]*100/$total_data[members]|round:2}>%<br/>金额比例：<{$total_r_data[$k][amount]*100/$total_data[amount]|round:2}>%">
+                                        <{$total_r_data[$k][members]*100/$total_data[members]|round:2}>%
+                                        , 
+                                        <{$total_r_data[$k][amount]*100/$total_data[amount]|round:2}>%
+                                        
+                                        <{if ($total_r_data[$k][members]>0)}>
+                                        <a href="<{$member_url}>&shop_id=<{$shop_id}>&r=<{$r[$k][0]}>_<{$r[$k][1]}>"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        
+                                     </td>
+                                     <{/foreach}>
+                                     <td bgcolor="#EDFFE0">
+                                        <{$total_data[members]}>
+                                        ,
+                                        <{$total_data[amount]|cur}>
+                                     </td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+<style>/* unitip css */
+
+#unitip {
+	position: absolute;
+	z-index: 1000;
+	top: -1000px;
+	color: #fff;
+	font: normal normal 1.1em/15px Verdana, Arial, Helvetica, sans-serif;
+	display: none;
+}
+
+	#unitippoint, #unitipmid, #unitipcap {
+		position: relative;
+		top: 0px; 
+		left: 0px;
+		display: block;
+	}
+	
+	#unitippoint { 
+		height: 0px; 
+		overflow: hidden; 
+	}
+	
+	#unitipmid { 
+		background: #024B94; 
+		width: 150px;
+		height: auto; 
+		padding: 5px 15px;
+        filter:alpha(opacity=80);
+        opacity: 0.8;
+        line-height:20px;
+	}
+	
+	#unitipcap { 
+		height: 0px; 
+		overflow: hidden; 
+	}</style>
+<script>
+// uniTip - written by Nathan Ford for Unit Interactive
+//
+// uniTip is based on qTip:
+// qTip - CSS Tool Tips - by Craig Erskine
+// http://qrayg.com
+
+var uniTipTag = "td"; //Which tag do you want to uniTip-ize? Keep it lowercase. No spaces around commas.//
+var uniTipClass = "Tips1"; //Which classes do you want to uniTip-ize? If you leave this blank, then all the tags designated above will get uniTip-ized. Match case. No spaces around commas.
+
+var uniTipX = 0; // X offset from cursor//
+var uniTipY = 15; // Y offset from cursor//
+
+//______________________________________________There's no need to edit anything below this line//
+
+var offsetX = uniTipX, offsetY = uniTipY, elewidth = null, eleheight = null, tipid = null, tiptop = null, tipbot = null, tipcapin=null, tippointin=null, altText=false;
+
+var x=0, y=0, WinWidth=0, WinHeight=0, TipWidth=0, TipHeight=0, CapHeight=0, PointHeight=0;
+
+// first, find all the correct elements
+function init_tips() {
+	var elementList = uniTipTag.split(",");
+	for(var j = 0; j < elementList.length; j++) {	
+		var elements = document.getElementsByTagName(elementList[j]);
+		
+		if(elements) {
+			for (var i = 0; i < elements.length; i ++) {
+				if (uniTipClass != '') {
+				
+					var elClass = elements[i].className;
+					var elClassList = uniTipClass.split(",");
+					
+					for (var h=0; h < elClassList.length; h++) { if (elClass.match(elClassList[h])) unitipize(elements[i]); }
+					
+				} else unitipize(elements[i]);
+			}
+		}
+	}
+}
+
+// next, add the tooltip function to those elements
+function unitipize(element) {
+	var a = element;
+	altText = (a.alt && a.getAttribute("alt") != '' ) ? true : false;
+	var sTitle = (altText == true) ? a.getAttribute("alt") : a.getAttribute("title");				
+	if(sTitle) {
+		a.onmouseover = function() {build_tips(a, sTitle);};
+		a.onmouseout = function() {hide_tips(a, sTitle);};
+	}
+}
+
+// now, we build the tooltip
+function build_tips(a, sTitle) {
+	
+	if (a.title) a.title = "";
+	if (altText==true) a.alt = "";
+	
+	var tipContainer = document.createElement("div");
+	tipContainer.setAttribute("id", "unitip");
+	document.body.appendChild(tipContainer);
+	
+	var tipContainerTop = document.createElement("div");
+	tipContainerTop.setAttribute("id", "unitippoint");
+	tipContainer.appendChild(tipContainerTop);
+	
+	var tipContainerMid = document.createElement("div");
+	tipContainerMid.setAttribute("id", "unitipmid");
+	tipContainer.appendChild(tipContainerMid);
+	
+	var tipContainerBot = document.createElement("div");
+	tipContainerBot.setAttribute("id", "unitipcap");
+	tipContainer.appendChild(tipContainerBot);
+
+	tipid = document.getElementById("unitip");
+	tippoint = document.getElementById("unitippoint");
+	tipmid = document.getElementById("unitipmid");
+	tipcap = document.getElementById("unitipcap");
+	
+	document.getElementById("unitipmid").innerHTML = sTitle;
+	tipid.style.display = "block";
+	
+	elewidth = document.getElementById("unitipmid").offsetWidth;
+	eleheight = document.getElementById("unitip").offsetHeight;
+	
+	WinWidth = document.body.offsetWidth;
+	WinHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+	
+	CapHeight = document.getElementById('unitipcap').offsetHeight;
+	PointHeight = document.getElementById('unitippoint').offsetHeight;
+	
+	if (typeof pngfix=="function") { // if IE, rebuilds wraps unitippoint and unitipcap in outer div
+		if (tippoint.currentStyle.backgroundImage.match(/\.png/gi)) {
+			var tipP = tippoint.innerHTML;
+			
+			tippoint.id = 'unitipP'; // switch unitippoint to outer div
+			
+			tippoint.style.overflow = "hidden";
+			tippoint.style.height = PointHeight + "px";
+			tippoint.style.width = elewidth + "px";
+			tippoint.style.position = "relative";
+			tippoint.style.display = "block";
+			
+			tippoint.innerHTML = '<div id="unitippoint">' + tipP + '</div>'; // inject unitippoint
+			
+			tippointin = document.getElementById("unitippoint");  // redefine styles for unitippoint to fit filter image
+			tippointin.style.width = (elewidth * 2) + "px";
+			tippointin.style.height = (PointHeight * 2) + "px";
+			tippointin.style.backgroundImage = tippoint.style.backgroundImage;
+			tippointin.style.position = "absolute";
+			
+			tippoint.style.backgroundImage = "none";
+		}
+		if (tipcap.currentStyle.backgroundImage.match(/\.png/gi)) {
+			var tipC = tipcap.innerHTML;
+			
+			tipcap.id = 'unitipC';
+			
+			tipcap.style.overflow = "hidden";
+			tipcap.style.height = CapHeight + "px";
+			tipcap.style.width = elewidth + "px";
+			tipcap.style.position = "relative";
+			tipcap.style.display = "block";
+			
+			tipcap.innerHTML = '<div id="unitipcap">' + tipP + '</div>';
+			
+			tipcapin = document.getElementById("unitipcap");
+			tipcapin.style.height = (CapHeight * 2) + "px";
+			tipcapin.style.backgroundImage = tipcap.style.backgroundImage;
+			tipcapin.style.position = "absolute";
+			
+			tipcap.style.backgroundImage = "none";
+		}
+		
+		//pngfix(); // png fix
+		
+	}
+	
+	document.onmousemove = function (evt) {move_tips (evt)};
+}
+
+// now, we track the mouse and make the tooltip follow
+function move_tips(evt) {
+	
+	if (window.event) {
+		x = window.event.clientX;
+		y = window.event.clientY;
+		
+		if (document.documentElement.scrollLeft) tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + document.documentElement.scrollLeft) + "px" :  (x + offsetX + document.documentElement.scrollLeft) + "px";
+		else tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + document.body.scrollLeft) + "px" :  (x + offsetX + document.body.scrollLeft) + "px";
+		
+		if (document.documentElement.scrollTop) tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + document.documentElement.scrollTop) + "px" : (y + offsetY + document.documentElement.scrollTop) + "px";
+		else tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + document.body.scrollTop) + "px" : (y + offsetY + document.body.scrollTop) + "px";
+		
+	} else {
+		x = evt.clientX;
+		y = evt.clientY;	
+		
+		tipid.style.left = (TipWidth >= WinWidth ) ? ((x - offsetX - elewidth) + window.scrollX) + "px" :  (x + offsetX + window.scrollX) + "px";
+		tipid.style.top = (TipHeight >= WinHeight) ? ((y - offsetY - eleheight) + window.scrollY) + "px" : (y + offsetY + window.scrollY) + "px";
+	}
+	
+	TipWidth = x + elewidth + 20;
+	TipHeight = y + eleheight + 20;
+	
+	if (TipHeight >= WinHeight ) { // rearrange the inner divs [123 to 321]
+		tipid.removeChild(tippoint);
+		tipid.removeChild(tipmid);
+		tipid.removeChild(tipcap);
+		tipid.appendChild(tipcap);
+		tipid.appendChild(tipmid);
+		tipid.appendChild(tippoint);
+	} else {  // rearrange the inner divs [321 to 123]
+		tipid.removeChild(tippoint);
+		tipid.removeChild(tipmid);
+		tipid.removeChild(tipcap);
+		tipid.appendChild(tippoint);
+		tipid.appendChild(tipmid);
+		tipid.appendChild(tipcap);
+	}
+	
+	if (TipHeight >= WinHeight) {
+		
+		if (document.getElementById('uniTipP')) {
+			tippointin.style.left = (TipWidth >= WinWidth ) ? "-" + elewidth + "px" : "0px";
+			tippointin.style.top = "-" + PointHeight + "px";
+		} else tippoint.style.backgroundPosition = (TipWidth >= WinWidth ) ? "right bottom" : "left bottom";
+		
+		if (document.getElementById('uniTipC')) tipcapin.style.top = "-" + CapHeight + "px";
+		else tipcap.style.backgroundPosition = "0 -" + CapHeight + "px";
+		
+	} else {
+		
+		if (document.getElementById('uniTipP')) {
+			tippointin.style.left = (TipWidth >= WinWidth ) ? "-" + elewidth + "px" : "0px";
+			tippointin.style.top = "0px";
+		} else tippoint.style.backgroundPosition = (TipWidth >= WinWidth ) ? "right top" : "left top";
+		
+		if (document.getElementById('uniTipC')) tipcapin.style.top = "0px";
+		else tipcap.style.backgroundPosition = "0 0";
+		
+	}
+}
+
+// lastly, hide the tooltip
+function hide_tips(a, sTitle) {
+	document.getElementById("unitipmid").innerHTML = "";
+	document.onmousemove = '';
+	document.body.removeChild(tipid);
+	tipid.style.display = "none";
+	if (altText==false) a.setAttribute("title", sTitle);
+	else a.setAttribute("alt", sTitle);
+	altText=false;
+}
+
+// add the event to the page
+//if (window.addEventListener) window.addEventListener("load", init, false);
+//if (window.attachEvent) window.attachEvent("onload", init);
+</script>
+
+
+
+<script>
+(function(){
+
+    init_tips();
+
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#F1F6F7');
+    } 
+
+
+    var dataAction= $('dataAction');
+    <{if $timeFilter != 'false'}>
+    var from=dataAction.getElement('input[name=date_from]');
+    var to=dataAction.getElement('input[name=date_to]');
+    $('filterBtn').addEvent('click',function(e){setChartData(true);});
+    <{/if}>
+
+    function setChartData(flag,e){
+        <{if $timeFilter != 'false'}>
+        if(from && to){
+            if(!check_data(from,to))return;
+        }
+        <{/if}>
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+
+    if($('select_type')) $('select_type').addEvent('change',function(e){setChartData(true);});
+    if($('ext_select_type')) $('ext_select_type').addEvent('change',function(e){setChartData(true);});
+
+    function check_data(from,to){
+      var data=[],
+      _return=[from,to].every(function(el){
+        if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+          new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+          el.focus();
+          return false;
+        }
+        data.push(Date.parse(el.value.replace(/-/gi,"/")));
+        return true;
+      });
+
+      if(!_return)return null;
+      if(data[1]<data[0]){
+        return MessageBox.error('<{t}>选择开始时间必须早于结束时间<{/t}>');
+      }
+      return _return;
+    }
+	
+	$('shop_id').addEvent('change',function(e){$('filterBtn').fireEvent('click');});
+
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+      if(el.get('date_from')==from.value && el.get('date_to')==to.value)
+          el.addClass('btn-fourthly-cur');
+      el.addEvent('click',function(e){
+        from.value=this.get('date_from');
+        to.value=this.get('date_to');
+        /* ['time_from','time_to'].each(function(v){
+         *   dataAction.getElements('input[name='+v+']').value=this.get(v);
+         * },this); */
+        $('filterBtn').fireEvent('click');
+      });
+    });
+
+})();
+</script>

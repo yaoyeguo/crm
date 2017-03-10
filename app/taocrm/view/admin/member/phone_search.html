@@ -1,0 +1,180 @@
+<div class="tableform">
+
+    <h3 class="head-title">客户快捷查询</h3>
+
+ 	<div class="division">
+		<span style="font-weight:bold;font-size:20px;vertical-align: middle;">来电号码/订单号：</span>
+		<span>
+			<input type="text" name="number_id" id="number_id" style="width:200px;height:25px;font-weight:bold;font-size:18px;vertical-align: middle" class="x-input" onkeydown="subCheck();">
+			<{button label="来电号码搜索" type="button" id="down01" class="btn-primary"}>
+			<{button label="订单号搜索" type="button" id="down02" class="btn-primary"}>
+		</span>
+		<span id="area" style="padding-left:100px;font-weight:bold;font-size:15px;vertical-align: middle">
+		
+		</span>
+	</div>
+	    
+	<div id="tab" style="margin-left:20px">
+	    
+	</div>
+	
+	<div id="notice" style="margin-left:200px;margin-top:100px"></div>
+</div>
+
+<style>
+.f14 {line-height:2em;font-size:14px;font-weight:bold;color:#3F4D69;}
+.f18 {line-height:2em;font-size:18px;font-weight:bold;color:#3F4D69;}
+</style>
+
+
+<script>
+
+(function(){
+
+	//按手机号搜索
+    $$('#down01').addEvent('click',function(){
+    	var type = 'phone';
+    	submitByPhone(type);
+	});
+    
+    //按订单号搜索
+	$$('#down02').addEvent('click',function(){
+        var type = 'order';
+		if($('number_id').value==""){
+            alert('请输入来电号码或者订单号');
+            $('number_id').focus();
+            return false;
+        }
+        
+         var data={'number_id':$('number_id').value};
+    	 new Request.JSON({
+    	        url : 'index.php?app=taocrm&ctl=admin_member&act=getInfoByOrder',
+    	        method : 'post',
+    	        data:data,
+    	        onSuccess:function(msg){
+    	        	getInfo(msg,type);
+    	        }
+    	 }).send();
+	});
+})();
+
+//回车直接按手机号提交
+function subCheck(){
+	  var event=arguments.callee.caller.arguments[0]||window.event;//消除浏览器差异  
+	  if (event.keyCode == 13){  
+		  submitByPhone();
+	  }  
+}
+
+//按手机号获取信息
+function submitByPhone(type){
+	var number = $('number_id').value;
+	if(number==""){
+        alert('请输入来电号码或者订单号');
+        $('number_id').focus();
+        return false;
+    }
+	
+	var data = '';
+    if(number.length == 11 && !number.indexOf('-') && !isMobel(number)){
+    	alert('手机号不合法');
+    	return false;
+    }else if(isMobel(number)){
+    	data={'number_id':$('number_id').value,'type':'mobile'};
+    }else{
+    	data={'number_id':$('number_id').value,'type':'tel'};
+    }
+    
+     //var data={'number_id':$('number_id').value};
+     
+	 new Request.JSON({
+	        url : 'index.php?app=taocrm&ctl=admin_member&act=getInfoByPhone',
+	        method : 'post',
+	        data:data,
+	        onSuccess:function(msg){
+	        	getInfo(msg,type,number);
+	        }
+	 }).send();
+	
+}
+
+function getInfo(msg,type,number){
+	
+	var str = "";
+    var sex = "";
+    var area = "";
+    /*
+	if(msg.area.rsp == 'succ'){
+    	area += "<span style=\"font-weight:bold;font-size:14px;color:#404040\">号码归属："+msg.area.province +"，"+msg.area.city+"; 【中国"+msg.area.type+"】</span>";
+    	$('area').set('html',area);
+	}else{
+		$('area').set('html','');
+	}
+	*/
+	$('tab').set('html','');
+	$('area').set('html','');
+	$('notice').set('html','');
+	if(msg.rsp == 'fail'){
+		str = "<span style=\"font-weight:bold;font-size:14px;color:	#404040\">不存在此来电号码/订单号对应的信息</span>";
+		$('notice').set('html',str);
+		return false;
+	}
+	for(i=0, len=msg.member.length; i<len; i++) {
+		
+		if(msg.member[i].sex == 'female'){
+			sex = '女';
+		}else if(msg.member[i].sex == 'male'){
+			sex = '男';
+		}
+		
+		str += "<div style='border:4px solid #F4F4F4;width:98%;'><div style='border:1px solid #CDD2D8;'><div class='tabs-wrap finder-tabs-wrap clearfix f14'>&nbsp;&nbsp;" +msg.member[i].uname + "</div><table><tr><td width='30%' ><b class='f18'>"+msg.member[i].name+"</b><a onClick=\"new Dialog(\'index.php?app=taocrm&ctl=admin_member&act=getAnalysisData&member_id="+msg.member[i].member_id+"&shop_id="+msg.member[i].shop_id+"\',{\'title\':'<{t}>订单详细信息<{/t}>\', width:800, height:300});\" href=\"javascript:void(0)\" style=\"padding-left:20px\"><span><{t}>更多<{/t}></span></a><div style='border-bottom:1px solid #CCC;height:28px;'><div style='background:#AAA;color:#FFF;line-height:28px;float:right;width:100px;text-align:center;'>最近购买商品</div><b class='f18'>"+msg.member[i].mobile+"</b></div><div style='line-height:2em;color:#666'>"+msg.member[i].goods_name+"</div></td><td width='70%'>  <div class='tableform'><div class='division'><table class=\"gridlist\" cellpadding=\"0\" cellspacing=\"0\" >"+
+			"<thead><tr align=\"center\">"+
+				"<th>订单总数</th>"+
+				"<th>订单总金额</th>"+
+				"<th>平均订单价</th>"+
+			"</tr></thead>"+
+			"<tr align=\"center\">"+
+				"<td>"+msg.member[i].total_orders+"</td>"+
+				"<td>"+msg.member[i].total_amount+"</td>"+
+				"<td>"+msg.member[i].total_per_amount+"</td>"+
+			"</tr>"+
+			"<thead><tr align=\"center\">"+
+				"<th>退款订单数</th>"+
+				"<th>退款订单金额</th>"+
+				"<th>成功的订单数</th>"+
+			"</tr></thead>"+
+				"<td>"+msg.member[i].refund_orders+"</td>"+
+				"<td>"+msg.member[i].refund_amount+"</td>"+
+				"<td>"+msg.member[i].finish_orders+"</td>"+
+			"</tr>"+
+		"</table></div></div> </td></tr></table></div></div>";
+	}
+	$('tab').set('html',str);
+	
+	if(type == 'phone'){
+		new Request.JSON({
+	        url : 'index.php?app=taocrm&ctl=admin_member&act=getPhoneArea',
+	        method : 'post',
+	        data:{'phone_number':number},
+	        onSuccess:function(msg){
+	        	if(msg.rsp == 'succ'){
+	    	    	area += "<span style=\"font-weight:bold;font-size:14px;color:#404040\">号码归属："+msg.province +"，"+msg.city+"; 【中国"+msg.type+"】</span>";
+	    	    	$('area').set('html',area);
+	    		}else{
+	    			$('area').set('html','');
+	    		}
+	        }
+	 	}).send();
+
+	}
+}
+
+//手机号验证
+function isMobel(value){  
+	if(/^1[3579]\d{9}$/g.test(value)){    
+            return true;  
+	}else{  
+            return false;  
+	}  
+}  
+</script>

@@ -1,0 +1,35 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>会员卡号<{/t}></th>
+            <th><{t}>会员卡卡密<{/t}></th>
+            <th><{t}>发卡渠道(会员卡类型)<{/t}></th>
+            <th><{t}>激活状态<{/t}></th>
+            <th><{t}>激活渠道<{/t}></th>
+            <th><{t}>激活时间<{/t}></th>
+            <th><{t}>持卡人名<{/t}></th>
+            <th><{t}>持卡人手机号<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$memberCardList item=item key=key}>
+         <tr>
+             <td><{$item.card_no}></td>
+             <td><{$item.card_pwd}></td>
+             <td><{$item.send_card_channel}></td>
+             <td><{$item.card_status}></td>
+             <td><{if $item.bind_card_channel}><{$item.bind_card_channel}><{else}>-<{/if}></td>
+             <td><{if $item.bind_time}><{$item.bind_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+             <td><{if $item.member.account.uname}><{$item.member.account.uname}><{else}>-<{/if}></td>
+             <td><{if $item.member.contact.phone.mobile}><{$item.member.contact.phone.mobile}><{else}>-<{/if}></td>
+             <td><{$item.create_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

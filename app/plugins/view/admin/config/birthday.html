@@ -1,0 +1,276 @@
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr>
+      <th><{t}>插件名称：<{/t}></th>
+      <td><b><{$plugins.title}></b></td>
+    </tr>
+    <tr >
+      <th><em class="c-red">*</em>客户范围:</th>
+        <td>
+            <input type="radio" name="params[use_shop]" value="0" <{if $params.use_shop != 1}>checked='checked'<{/if}>>全局客户
+            <input type="radio" name="params[use_shop]" value="1" <{if $params.use_shop == 1}>checked='checked'<{/if}>>选择店铺
+        </td>
+    </tr>
+    <tr id="use_shop">
+      <th><em class="c-red">*</em>有效店铺：</th>
+        <td>
+            <{foreach from=$items.shop_id.options item=data key=i}>
+            <label><input name="params[shop_id][]" value="<{$i}>" type="checkbox" <{if(in_array($i,$params.shop_id))}>checked<{/if}> >
+            <{$data}> 
+            </label>
+            <{/foreach}>
+       </td>
+    </tr>
+    <tr >
+      <th><em class="c-red">*</em>发送周期：</th>
+        <td>
+            <input type="radio" name="params[type]" value="day" <{if $params.type == 'day' or !$params.type}>checked='checked'<{/if}>>一天一次
+            <input type="radio" name="params[type]" value="week"<{if $params.type == 'week'}>checked='checked'<{/if}>>一周一次
+            <input type="radio" name="params[type]" value="month"<{if $params.type == 'month'}>checked='checked'<{/if}>>一月一次
+        </td>
+    </tr>
+    <tbody id="input_day" class="input_all" >
+    <tr>
+      <th><em class="c-red">*</em>发送规则：</th>
+      <td>
+         在会员生日的
+        <{input value=$params.day.select1 id='day_select1' type='select' name='params[day][select1]' options=$items.day.options1 }>
+        <span id='day_select2'<{if($params.day.select1) == 0}>style="display:none;"<{/if}>  >
+        <{input value=$params.day.select2  type='select' name='params[day][select2]' options=$items.day.options2 }>
+        </span>
+         天
+        <{input value=$params.day.select3 id='day_select3' type='select' name='params[day][select3]' options=$items.day.options3 }>
+         时发送生日祝福
+      </td>
+    </tr>
+    <tr><th>短信模板：</th><td>
+        <button class="btn sel_sms_template" type="button" setid="params[day][send_content]"><span><span>选择模板</span></span></button> </td></tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+          <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[day][send_content]" id="params[day][send_content]"><{if $params.day.send_content}><{$params.day.send_content}><{else}><{$items.day.send_content}><{/if}></textarea>
+        <br>
+        <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[day][send_content]'),&quot;&lt;{姓名}&gt;&quot;)"><button class="btn" type="button"><span><span>姓名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[day][send_content]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[day][send_content]'),&quot;【&lt;{签名}&gt;】&quot;)"><button class="btn" type="button"><span><span>签名</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+    <tbody class="input_all" id="input_week" style="display:none">
+    <tr>
+      <th><em class="c-red">*</em>发送规则：</th>
+      <td>
+        在每周的
+        <{input value=$params.week.select1 type='select' name='params[week][select1]' options=$items.week.options1 }>
+        给
+        <{input value=$params.week.select2 type='select' name='params[week][select2]' options=$items.week.options2 }>
+        过生日的会员
+        <{input value=$params.week.select3 type='select' name='params[week][select3]' options=$items.week.options3 }>
+         时发送生日祝福
+      </td>
+    </tr>
+    <tr><th>短信模板：</th><td>
+        <button class="btn sel_sms_template" type="button" setid="params[week][send_content]"><span><span>选择模板</span></span></button> </td></tr>
+    <tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+          <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[week][send_content]" id="params[week][send_content]"><{if $params.week.send_content}><{$params.week.send_content}><{else}><{$items.week.send_content}><{/if}></textarea>
+        <br>
+        <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[week][send_content]'),&quot;&lt;{姓名}&gt;&quot;)"><button class="btn" type="button"><span><span>姓名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[week][send_content]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[week][send_content]'),&quot;【&lt;{签名}&gt;】&quot;)"><button class="btn" type="button"><span><span>签名</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+    <tbody class="input_all" id="input_month" style="display:none">
+    <tr>
+      <th><em class="c-red">*</em>发送规则：</th>
+      <td>
+        在每个月的
+        <{input value=$params.month.select1 type='select' name='params[month][select1]' options=$items.month.options1 }>
+        号给
+        <{input value=$params.month.select2 type='select' name='params[month][select2]' options=$items.month.options2 }>
+        过生日的会员
+        <{input value=$params.month.select3 type='select' name='params[month][select3]' options=$items.month.options3 }>
+         时发送生日祝福
+      </td>
+    </tr>
+    <tr><th>短信模板：</th><td>
+        <button class="btn sel_sms_template" type="button" setid="params[month][send_content]"><span><span>选择模板</span></span></button> </td></tr>
+    <tr>
+    <tr>
+      <th><em class="c-red">*</em>发送内容：</th>
+      <td>
+          <textarea type="textarea" class="x-input" style="width:80%;height:60px;" vtype="required" name="params[month][send_content]" id="params[month][send_content]"><{if $params.month.send_content}><{$params.month.send_content}><{else}><{$items.month.send_content}><{/if}></textarea>
+        <br>
+        <span></span>
+                <a onclick="insertAtCursor(document.getElementById('params[month][send_content]'),&quot;&lt;{姓名}&gt;&quot;)"><button class="btn" type="button"><span><span>姓名</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[month][send_content]'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                <a onclick="insertAtCursor(document.getElementById('params[month][send_content]'),&quot;【&lt;{签名}&gt;】&quot;)"><button class="btn" type="button"><span><span>签名</span></span></button></a>
+                  </td>
+    </tr>
+    </tbody>
+    <tr>
+      <th></th>
+        <td style="color:red;padding:3px 5px;margin:5px 0 0 0;border:1px solid #AAA;background:#FFC;display:<{$need_sign}>;">您的店铺缺少短信签名，请<span style="cursor:pointer;color:#069;" id="config_sms_sign">点击这里设置</span>。</td>
+    </tr>
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="p-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+(function(){
+    $$('.sel_sms_template').addEvent('click',function(){
+        var url = 'index.php?app=plugins&ctl=admin_manage&act=sel_sms_template&setid='+$$(this).get('setid');
+        new Dialog(url,{
+                title:'选择短信模板',width:700,height:320,
+                onShow:function(){
+                }
+            }
+        );
+    });
+
+    //判断字数
+    $$('textarea').each(function(el){
+        set_sms_len(el);
+        
+        el.addEvent('change',function(){
+            set_sms_len(el);
+        });
+    });
+    $$("input[name='params[type]']").addEvent('click',function(){
+        show_tbody();
+    });
+
+    show_tbody();
+    $$("input[name='params[use_shop]']").addEvent('click',function(){
+        use_shop();
+    });
+
+    use_shop();
+    $("day_select1").addEvent('change',function(){
+        if($$(this).get('value') == '0')
+            $("day_select2").hide();
+        else
+            $("day_select2").show();
+    });
+    $('config_sms_sign').addEvent('click', function(){
+        new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:650,height:350});
+    });
+
+})();
+
+function use_shop()
+{
+    var use_shop = $$("input[name='params[use_shop]']:checked");
+    if(use_shop.get('value') == '1')
+        $('use_shop').show();
+    else
+        $('use_shop').hide();
+}
+function show_tbody()
+{
+    var type_check = $$("input[name='params[type]']:checked");
+    $$('.input_all').hide();
+    $('input_'+type_check.get('value')).show();
+}
+function set_sms_len(el){
+    el.getNext().getNext().set('html','参考字数：'+el.value.length)
+}
+
+
+
+_btn.addEvent('click',function(){
+    var shop_list = $$("input[name='params[shop_id][]']:checked");
+    var use_shop = $$("input[name='params[use_shop]']:checked").get('value');
+    if(shop_list.length == 0 && use_shop == 1){
+        alert('您没有选择店铺，插件将不会运行。');
+        return false;
+    }
+    var params_type = $$("input[name='params[type]']:checked");
+    if(params_type.get('value') == 'day')
+    {
+       if(($$("select[name='params[day][select1]']").get('value') == '' || $$("select[name='params[day][select2]']").get('value') == '' || $$("select[name='params[day][select3]']").get('value') == '') && ($$("select[name='params[day][select1]']").get('value') == 1 && $$("select[name='params[day][select2]']").get('value') == '')) 
+       {
+        alert('发送规则不完善，请完善');
+        return false;
+       }
+    }else if(params_type.get('value') == 'week')
+    {
+       if($$("select[name='params[week][select1]']").get('value') == '' || $$("select[name='params[week][select2]']").get('value') == '' || $$("select[name='params[week][select3]']").get('value') == '') 
+       {
+        alert('发送规则不完善，请完善');
+        return false;
+       }
+    
+    }else if(params_type.get('value') == 'month')
+    {
+       if($$("select[name='params[month][select1]']").get('value') == '' || $$("select[name='params[month][select2]']").get('value') == '' || $$("select[name='params[month][select3]']").get('value') == '') 
+       {
+        alert('发送规则不完善，请完善');
+        return false;
+       }
+    
+    }
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+_form.store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+    
+        if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns){	
+                _dialogIns.close();
+            }
+        }
+    }
+});
+
+
+function insertAtCursor(myField, myValue){
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

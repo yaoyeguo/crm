@@ -1,0 +1,215 @@
+<div id="exec_div" style="position:relative;">
+    <input type="hidden" id="batch_id" name="batch_id" value="<{$batch.batch_id}>" />
+    <table>
+      <tr>
+       <th width="170" align="right">短信内容：</th>
+       <td>
+        <{input class="x-input" type=textarea id="message_text"  style="width:400px;height:60px;margin-top:0px;border:1px solid #EEE;padding:5px;" name="message_text" value=$message_text  }>
+       </td>
+      </tr>
+        <th align="right">短信签名：</th>
+        <td>
+        <div style="width:410px;">
+            <span style="float:right;">
+                <input type="checkbox" checked="checked" disabled="disabled" />
+                <{$unsubscribe_str}> 
+                <{help}><{t}>系统会自动添加<{/t}><{/help}>
+            </span>
+            
+            <select class="x-input" vtype='required' name="message_sign" id="message_sign">
+                <option value="">请选择</option>
+                <{foreach from=$sign_list item=sign}>
+                <option value="<{$sign.extend_no}>" <{if $sign.sign == $sms_sign}>selected<{/if}>><{$sign.sign}></option>
+                <{/foreach}>
+            </select>
+            
+            <span style="cursor:pointer;color:#0597E0;" id="config_sms_sign">
+                <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                设置签名
+            </span>
+            
+            <span>
+                <a href="http://www.dwz.cn/"style="color:#0597E0;text-decoration: none;" target='_blank'>
+                <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                网址缩短工具
+                </a>
+            </span>
+        </div>
+       </td>
+      </tr>
+      <tr>
+            <th></th>
+            <td>
+            <{img src="alert.gif" app="market" height="16" align="absmiddle" }>
+            <font color="#0597E0">短信内的网址请在前面加<b>http://</b>，末尾加空格，以防止手机识别错误！</font>
+            </td>
+        </tr>
+      <tr>
+       <th align="right">短信预览：</th>
+       </td>
+       <td>
+       <div style="background:#EEE;width:410px;font-family:Microsoft Yahei;border-radius:5px;"><div id='preview' style="padding:5px;"></div></div>
+      </td>
+      </tr>
+      <tr>
+       <td>
+       </td>
+       <td>
+        字符数：<b id="txt_count" style="font-size:18px;font-style:italic;color:blue;">0</b>
+        ，约 <b id="sms_num" style="font-size:18px;font-style:italic;color:red;">0</b> 条短信长度
+        <{help}><{t}>短信内容的实际长度以最终发出的结果为准<{/t}><{/help}>
+      </td>
+      </tr>
+        <!--短信发送清单：-->
+        <tr id="el_send_sms_list">
+            <th align="right">发送清单：</th>
+            <td>
+                <div id="sms_total_num" style="width:400px;margin-top:0px;padding:5px;background:#EEE;border-radius:5px;">
+                您选择的客户数：<span id="el_select_sms_membernums"><{$batch.total_nums}></span> 
+                (
+                有效：<span style="color:#03F" id="el_vaild_sms_membernums"><{$batch.mobile_valid_nums}></span>　
+                无效：<span style="color:#F30" id="el_unvaild_sms_membernums"><{$batch.total_nums-$batch.mobile_valid_nums}></span>
+                )<br />
+                当前共待发送客户数：<span id="el_reality_sms_membernums"><{$batch.mobile_valid_nums}></span>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+    
+    <div id="loading_bar" style="display:none;text-align:center;color:#4B5F87;position:absolute;left:50%;top:50%;margin:-30px 0 0 -130px;background:#FFF;width:300px;padding:20px 0;">
+        正在执行，请耐心等待……<br/>
+        <img src="<{$env.app.res_url}>/loading42.gif" />
+    </div>
+
+    <div id="sms_info_content" style="display:none;text-align:center;position:absolute;left:50%;top:50%;margin:-30px 0 0 -130px;background:#FFF;width:300px;padding:20px 0;">
+        <span style="color:red;" id="difpice"></span>
+        <br/>
+        <a href="index.php?app=market&ctl=admin_sms_account&act=index" target="_top">
+            <{button label="去充值>>" type="button" id="" class="btn-primary"}>
+        </a>
+    </div>
+
+    <{area inject=".mainFoot"}>
+        <div id='sms_send_id' class="table-action" style="text-align:center;padding:5px 0;">
+            <{button label="发送" type="button" id="exec_btn" class="btn-primary"}>
+            <{button label="关闭" type="button" id="sms_close_btn" class="btn-primary nodisabled"}>
+        </div>
+    <{/area}>
+
+</div>
+
+<input type="hidden" id="sms_sign" value='<{$sms_sign}>' />
+
+<script>
+$('config_sms_sign').addEvent('click', function(){
+    window.open('index.php?app=ecorder&ctl=admin_sms_sign&act=index');
+    //new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:550,height:400,onClose:function(){refresh_sms_sign('message_sign');}});
+});
+
+
+window.addEvent('domready',function(){
+
+    $$('#sms_close_btn').addEvent('click',function(){
+        $('sms_close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+
+    $$("#message_text").addEvent('keyup',function(){
+        set_sms_preview();
+    });
+    $$("#message_sign").addEvent('change',function(){
+        set_sms_preview();
+    });
+
+    $$("#exec_btn").addEvent('click',function(){
+        send_sms();
+    });
+    
+    set_sms_preview();
+});
+
+//短信预览
+function set_sms_preview(){
+    var msg = $('message_text').value;
+    if($('message_sign').get('value')!=''){
+        msg += ' <{$unsubscribe_str}>【' +$('message_sign').options[$('message_sign').selectedIndex].text + '】';
+    }
+    $('preview').set('text',  msg);
+    set_sms_length();
+}
+
+//字数估算
+function set_sms_length(){
+    var message_text = $('preview').get('text');
+    $('txt_count').set('html',message_text.length);
+    $('sms_num').set('html',Math.ceil(message_text.length/67));
+}
+
+//发送短信
+function send_sms(){
+    var templete = $('message_text').value;
+    var message_sign = $('message_sign').options[$('message_sign').selectedIndex].text;
+
+    if(templete == ''){
+        alert('请输入短信内容');
+        $('message_text').focus();
+        return false;
+    }
+    
+    if(message_sign == '请选择'){
+        alert('请选择签名');
+        $('message_sign').focus();
+        return false;
+    }
+
+    if(message_sign.length < 2){
+        alert('您的签名长度不合法');
+        $('message_sign').focus();
+        return false;
+    }
+    
+    if(templete.match(/[【】@#\$%\^&\*\[\]]/) || message_sign.match(/[【】@#\$%\^&\*\[\]]/)){
+        alert('短信内容和签名不能包含下列字符：【】!@#$%^&*{}[]');
+        return false;
+    }
+    
+    var message_text = $('preview').get('text');
+    $('exec_btn').set('disabled', 'disabled');
+    $('loading_bar').show();
+    
+    new Request({
+        url : 'index.php?app=taocrm&ctl=admin_member_import&act=toSend',
+        method : 'post',
+        data:{'sms_content':message_text,'batch_id':$('batch_id').value,'extend_no':$('message_sign').value},
+        onSuccess:function(responseText){
+            $('exec_btn').set('disabled', '');        
+            try{
+                var data = JSON.decode(responseText);
+
+                if(data.res == 'fail'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     return false;
+                }else if(data.res == 'balance_less'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     $("difpice").set('html',"您的短信账号可用余额不足请充值");
+                     $('sms_info_content').show();
+                     return false;
+                }else{
+                    $('loading_bar').hide();
+                    $('exec_btn').hide();
+                    alert("提交成功，短信发送需要一点时间，请耐心等待。");
+                }
+                return true;
+            }catch(e){
+                //alert(responseText);
+                $('loading_bar').hide();
+                $('sms_send_id').show();
+                $('exec_btn').hide();
+                alert("服务器发生了内部错误:"+responseText);
+            }
+        }
+    }).send();
+}
+</script>

@@ -1,0 +1,68 @@
+<style>
+h3,h4,ul {margin:0;padding:0;}
+.tableform {padding:10px 0 0 20px;}
+#intro {list-style:none;line-height:2em;padding:0 0 0 30px;color:#069;}
+</style>
+
+<h3 class="head-title">客户导入工具</h3>
+
+<div style="padding:20px 0 0 50px;">
+	<div class="tableform">
+        <div style="padding:0 0 0 15px;">下载导入工具：
+        <a target="_blank" href="<{$import_tools_download_url}>"><{img border=0 align="absmiddle" src="download.jpg" app="taocrm"}></a></div>
+        
+        <h4>导入工具说明:</h4>
+        <ul id="intro">
+            <li>1.可以导入淘宝历史订单(请从淘宝后台下载)。</li>
+            <li>2.淘宝交易订单数据量较大时请分月或季度下载后上传。</li>
+            <li>3.导入其他联系人信息.</li>
+            <li>4.导入模板请参照导入工具中模板说明</li>
+            <li>5.若未安装.NET framework 2.0而导致工具无法正常使用,请
+            <span style="font-size:18px;color:#61A203">
+				<strong>
+				<a href="http://pingjia.taoex.com/download/dotnetfx.zip" target='_blank'>点击下载</a>
+				</strong>
+				</span>
+            </li>
+            <!--li>5.暂不支持其他渠道历史数据导入(如：京东、拍拍、一号店)</li-->
+            <li>&nbsp;</li>
+        </ul>
+       <{img border=0 align="absmiddle" src="import_tools.gif" app="taocrm" width="960px"}>
+	</div>
+    
+	<h3>导入工具配置信息</h3>
+	<div class="tableform">
+        <div style="padding:0 0 0 20px;">
+			<table cellpadding=0 cellspacing=0 >
+			 <tr>
+			     <th width="100"><{t}>淘管crm网址<{/t}>：</th>
+			     <td><input class="x-input" type="text" size="40" value="<{$import_host}>" /></td>
+			 </tr>
+			 <tr>
+                 <th><{t}>用户名<{/t}>：</th>
+                 <td><input class="x-input" type="text" size="40" value="import" /></td>
+             </tr>
+             <tr>
+                 <th>密码：</th>
+                 <td><input class="x-input" type="text" size="40" value="<{$import_pwd}>" /></td>
+             </tr>
+			</table>
+        </div>
+	</div>
+    
+</div>
+
+<script>
+(function(){
+
+    /*
+	var state;
+	$('ImportBtn').addEvent('click',function(e){
+		if(state||!$('ImportCSV').value.length)return false;
+		state=true;
+		this.style.cursor='not-allowed';
+	});
+    */
+    
+})();
+</script>

@@ -1,0 +1,81 @@
+<style>
+#create_type {list-style:none;}
+#sel_user_p {padding:5px;border:1px solid #CCC;overflow:hidden;background:#EAEEF4;border-radius:5px;margin:5px 0 0 0;}
+    #sel_user_p label{display:block;float:left;width:120px;overflow:hidden;}
+.head-title {margin:0 0 0 0;}
+#assign_users {background:#7695D2;color:#FFF;border-radius:5px;padding:5px;line-height:1.5em;}
+td.preview {font-weight:bold;}
+
+#sel_goods_list li,#goods_list li{
+    border-bottom:1px solid #EAEEF4;
+    cursor:pointer;
+    overflow:hidden;
+}
+#sel_goods_list li.goods_header,#goods_list li.goods_header{
+    background:#DBE2ED;
+}
+#sel_goods_list .bn,#goods_list .bn{
+    display:block;
+    float:left;
+    width:100px;
+}
+#active_form label,#active_form button {cursor:pointer;}
+#active_form .division {border:none;}
+
+#active_step { padding:20px 0;}
+#active_step li{background:#B59BB0;color:#FFF;border-radius:5px;width:100px;height:50px;display:inline-block;margin:0 20px 0 0;}
+</style>
+
+<form id="active_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+    <!-----------------------step1---------------------------->
+    <{input type="hidden" name="box_id" id="box_id" value=$box_id }>
+    <{input type="hidden" name="info[active_id]" id="active_id" value=$info.active_id }>
+    <div id="step1">
+        <div class="">
+
+            <div style="padding:20px 0;line-height:2em;width:61%;margin:0 auto;">
+                等待时间：<{input type="text" maxlength="3" size="6" name="info[wait_days]" value=$wait_days onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" }> 天
+                <div style="color:gray;padding:20px 0;">
+                    设置等待时间，从执行该次活动时间开始，
+                    等待设置的时间后，查看营销效果。
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="保存"}>
+        </div>
+    <{/area}>
+
+</form>
+<script>
+//(function(){
+
+    //alert(days_box);
+
+	var btn =$('saveterminal');
+    btn.addEvent('click',function(){
+        var aj = new Request.JSON({
+        url:"index.php?<{$env.server.QUERY_STRING}>",
+        onSuccess:function(response){
+            if(response.type){
+                //关闭弹出层
+                btn.getParent('.dialog').retrieve('instance').close();
+                if(is_modify==0 && edit_mode==false){
+                    go_to('wait_time_template');
+                }
+                
+                is_modify = 0;
+            }else{
+                alert(response.msg);
+            }
+        }
+        }).send($('active_form'));
+    });
+    
+//})();
+</script>

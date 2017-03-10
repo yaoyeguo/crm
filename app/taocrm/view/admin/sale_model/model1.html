@@ -1,0 +1,52 @@
+<style>
+.m_icon {width:100%;overflow:hidden;border-bottom:1px dotted #CCC;}
+.m_icon li{background-image:url(<{$env.app.res_url}>/m_icon.gif);background-repeat:no-repeat;height:100px;padding:0 0 0 70px;line-height:22px;width:35%;float:left;}
+.m_icon li a{font-weight:bold;font-size:10pt;}
+.m_icon li p{color:#999;}
+
+.bg_1_0 {background-position:0 -100px;}
+.bg_1_1 {background-position:0 -200px;}
+.bg_1_2 {background-position:0 -300px;}
+.bg_1_3 {background-position:0 -400px;}
+</style>
+
+<h3 class="head-title">基础营销模型</h3>
+
+<div class="tableform">
+    
+    <div class="division">
+    
+        <ul class="m_icon">
+            <{foreach from=$model[0] value=data key=i}>
+            <li class="bg_0_<{$i}>">
+                <a href="?app=taocrm&ctl=admin_sale_model&act=select_model&id=0_<{$i}>" target="dialog::{width:600,height:300,title:'<{$data.label}>'}"><{$data.label}></a>
+                <p><{$data.desc}></p>
+            </li>
+            <{/foreach}>
+        </ul>
+    
+        <ul class="m_icon">
+            <{foreach from=$model[1] value=data key=i}>
+            <li class="bg_1_<{$i}>">
+                <a href="?app=taocrm&ctl=admin_sale_model&act=select_model&id=1_<{$i}>" target="dialog::{width:600,height:300,title:'<{$data.label}>'}"><{$data.label}></a>
+                <p><{$data.desc}></p>
+            </li>
+            <{/foreach}>
+        </ul>
+        
+        <ul class="m_icon">
+            <{foreach from=$model[2] value=data key=i}>
+            <li class="bg_2_<{$i}>">
+                <a href="?app=taocrm&ctl=admin_sale_model&act=select_model&id=2_<{$i}>" target="dialog::{width:600,height:300,title:'<{$data.label}>'}"><{$data.label}></a>
+                <p><{$data.desc}></p>
+            </li>
+            <{/foreach}>
+        </ul>
+        
+    </div>
+</div>
+
+<script>
+
+</script>
+

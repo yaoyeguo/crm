@@ -1,0 +1,22 @@
+<style xmlns="http://www.w3.org/1999/html">
+#prompt{width: 100%; height: auto; text-align: center; line-height: 20px; margin: 0 auto; font-family: "微软雅黑";font-size: 14px;}
+.tishi_img{width: 100%;height: auto; text-align: center;}
+.type_ok {background: url(<{$env.app.res_url}>/ok.jpg) no-repeat;width: 239px;height: 234px;margin: 0 auto;}
+.type_error {background: url(<{$env.app.res_url}>/error.jpg) no-repeat; width: 239px;height: 234px;margin: 0 auto;}
+</style>
+<div id="prompt">
+   <p style="margin-top: 5px;"><{$msg}></p>
+   <div class="tishi_img">
+       <{if($res==0)}>
+        <div class="type_ok"></div>
+       <{/if}>
+       <{if($res==1)}>
+        <div class="type_error"></div>
+       <{/if}>
+   </div>
+</div>
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button onclick="$(this).getParent('.dialog').retrieve('instance').close();" class="btn-primary" type="button" label="关闭"}>
+    </div>
+<{/area}>

@@ -1,0 +1,120 @@
+<form action="index.php?<{$env.server.QUERY_STRING}>" method="post">
+<div class="tableform">
+    <input type=hidden name='member_id' value="<{$mem.member_id}>" />
+    <div class="division" style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <col width="100" />
+            <col width="400" />
+            <col width="100" />
+            <col />
+            <tr>
+                <th><{t}>客户名<{/t}></th>
+                <td colspan="3">
+                    <input type="hidden" name="uname" value="<{$mem.account.uname}>" />
+                    <{if($mem.member_id)}>
+                        <{$mem.account.uname}>
+                    <{else}>
+                        <{input app=ectools type="text" name='uname' value=$mem.account.uname vtype='required' }>
+                        <font color='red'> *</font>
+                    <{/if}>    
+                    </td>
+            </tr>
+            <tr>
+                <th><font color='red'> *</font> <{t}>姓名<{/t}></th>
+                <td><{input app=ectools type="text" name='name' value=$mem.contact.name vtype="required" size=15 }>
+                
+                　　<{t}>会员卡号<{/t}> 
+                <{input type="text" name='member_card' value=$mem.member_card }>
+                </td>
+                <th><{t}>支付宝帐号<{/t}></th>
+                <td><{input app=ectools type="text" name='alipay_no' value=$mem.alipay_no }></td>
+            </tr>
+            <tr>
+                <th><{t}>手机<{/t}></th>
+                <td><{input size=15 app=ectools type="text" name='mobile' value=$mem.contact.phone.mobile }>
+                　　<{t}>固定电话<{/t}> 
+                <{input app=ectools type="text" name='telephone' value=$mem.contact.phone.telephone }></td>
+                <th><{t}>贵宾组客户<{/t}></th>
+                <td><{input app=ectools type="bool" name='is_vip' value=1 value=$mem.is_vip }></td>
+            </tr>
+            <tr>
+                <th><{t}>邮箱<{/t}></th>
+                <td>
+                    <{input size=30 app=ectools type="text" name='email' value=$mem.contact.email vtype='email' }>
+                </td>
+                <th><{t}>短信黑名单<{/t}></th>
+                <td><{input app=ectools type="bool" name='sms_blacklist' value=$mem.sms_blacklist }></td>
+            </tr>
+            
+            <tr>
+                <th><{t}>性别<{/t}></th>
+                <td><{input type='gender' name='gender' value=$mem.profile.gender }></td>
+                <th><{t}>邮件黑名单<{/t}></th>
+                <td><{input app=ectools type="bool" name='edm_blacklist' value=$mem.edm_blacklist }></td>
+            </tr>
+            <tr>
+                <th><{t}>生日<{/t}></th>
+                <td><{input type='date' name='birthday' value=$mem.profile.birthday }></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <th><{t}>地区<{/t}></th>
+                <td colspan="3"><{input app=ectools type="region" name='area' value=$mem.contact.area }></td>
+            </tr>
+            <tr>
+                <th><{t}>地址<{/t}></th>
+                <td colspan="3"><{input size=50 app=ectools type="text" name='addr' value=$mem.contact.addr }>
+                　　<{t}>邮编<{/t}> 
+                    <{input size=10 maxlength=6 app=ectools type="text" name='zipcode' value=$mem.contact.zipcode }>
+                    </td>
+            </tr>
+            <tr>
+                <th><{t}>备注<{/t}></th>
+                <td colspan="3"><{input size=50 type="text" name="remark" value=$mem.remark}></td>
+            </tr>
+            <tr>
+                <th><{t}>自定义属性<{/t}></th>
+                <td colspan="3">
+                    <{foreach from=$prop_name item=v key=k}>
+                        <{if($v!='')}>
+                            <{$v}>：                       
+                            <{if($prop_type[$k]=='date')}>
+                                <{input type="date" size="10" maxlength="20" name="prop_name[{$k}]" value=$prop_val[$k] }>
+                            <{else}>
+                                <{input type="text" size="10" maxlength="20" name="prop_name[{$k}]" value=$prop_val[$k] }>
+                            <{/if}>
+                            &nbsp;
+                            <{if($k==4)}>
+                                <div style="height:5px;overflow:hidden;">&nbsp;</div>
+                            <{/if}>
+                        <{/if}>
+                    <{/foreach}>
+                    
+                    <div>
+                        <a href="index.php?app=ecorder&ctl=admin_shop&act=member_prop_edit&p[0]=<{$rs_shop.shop_id}>&redirect_uri=<{$redirect_uri}>" target="dialog::{width:700,height:380,title:'自定义属性'}" style="color:#5779BD;">点击这里定义客户属性</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-action"><{button type="submit" label=$___b2c="保存"|t:'b2c' }></div>
+</div>
+</form>
+<script>
+(function(){
+    /*
+	var input = $(document.body).getElements('input[name=contact[area]]')[0];
+	var select = input.getNext('select');
+	select.addEvent('change',function(e){
+		if($(e.target).value !='_NULL_'){
+			input.getParent('span').set('vtype','area');
+		}
+		else{
+			input.getParent('span').set('vtype','');
+		}
+	});
+    */
+})();
+</script>
+

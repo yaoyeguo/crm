@@ -1,0 +1,70 @@
+<div class="tableform">
+    <div class="division">
+    <input type="hidden" id="log_id" name="log_id" value="<{$log_id}>" />
+    <input type="hidden" id="isSelectedAll" name="isSelectedAll" value="<{$isSelectedAll}>" />
+    <input type="hidden" id="retry_type" name="retry_type" value="<{$retry_type}>" />
+    <input type="hidden" id="cursor" name="cursor" value="0" />
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+          <tbody>
+          <th><{img app='desktop' src='load.gif' class="box loading"}></th>
+          <td>正在重试...</td>
+        </tr>   
+          </tbody>
+        </table>
+    </div>
+    <div id="retry_info" style="overflow:auto;"></div>
+</div>
+
+<script>
+
+    var log_id = $("log_id").get('value'),status,simpleTimer;
+    var retry_type = $("retry_type").get('value');
+    var isSelectedAll = $("isSelectedAll").get('value');
+
+    retry(log_id,retry_type,isSelectedAll);
+
+    function retry(log_id,retry_type,isSelectedAll){
+
+        var jsonRequest = new Request.JSON({
+            url: "index.php?app=market&ctl=admin_api_log&act=retry_do",
+            onComplete: function(retry, text){
+                if (retry.status == 'succ' || retry.status == 'complete') status = '....<font color=blue>发起成功</font>';
+                else status = '....<font color=red>发起失败</font>';
+                $('retry_info').set('html', retry.task_name + status + "<br/>" + $('retry_info').get('html') );
+                var ispatrn = isPatrn(log_id);
+                if (retry.status == 'fail') return;
+                if ((retry_type == 'single' && retry.status == 'succ') || retry.status == 'complete' || (retry.status == 'succ' && !ispatrn && isSelectedAll != '_ALL_') ){
+                    simpleTimer = fresh_close.delay(2000);
+                    return;
+                }
+                if (retry_type == 'batch' && (ispatrn || isSelectedAll == '_ALL_')){
+                    cursor = $('cursor').value;
+                    cursor++;
+                    $('cursor').set('value', cursor);
+                    setTimeout("retry(log_id,retry_type,isSelectedAll)", 500);
+                    return;
+                }
+            }
+        }).get({
+            'log_id': encodeURIComponent(log_id),
+            'retry_type': retry_type,
+            'isSelectedAll': isSelectedAll,
+            'cursor': $('cursor').value
+        });
+    }
+
+    function fresh_close(){
+        $('retry_info').getParent('.dialog').retrieve('instance').close();
+        parent.finderGroup['<{$env.get.finder_id}>'].refresh.delay(400,parent.finderGroup['<{$env.get.finder_id}>']);
+    }
+
+    function isPatrn(s)
+    {
+        var patrn = /\|/g;
+        if(patrn.exec(s)){
+            return true;
+        }
+        return false;
+    }
+
+</script>

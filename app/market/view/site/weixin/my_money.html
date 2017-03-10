@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的储值</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>我的储值</h1>
+</nav>
+<div class="page-header">
+  <div class="usable-coins">
+    <b><{$sum_money}></b>
+    <!-- <i>您的可用积分</i> -->
+  </div>
+</div>
+<div class="mod">
+  <ul class="tabs bar-tabs" data-tab>
+    <li class="trigger active"><a href="#content1">全部</a></li>
+    <li class="trigger"><a href="#content2">获取</a></li>
+    <li class="trigger"><a href="#content3">扣除</a></li>
+  </ul>
+  <div class="tabs-content">
+    <div id='content1' class="content active">
+        <{if $memberPointLogList neq null}>
+        <ul class="table-view" id="content1_ul">
+            <{foreach from=$memberPointLogList item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.value_time}></span>
+                <span class="title ellipsis"><{$data.remark}></span>
+                <span class="points text-alert"><{$data.change_amount}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有储值记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+    <div id='content2'  class="content">
+        <{if $memberPointLogList_add neq null}>
+        <ul class="content table-view" id="content2_ul">
+            <{foreach from=$memberPointLogList_add item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.value_time}></span>
+                <span class="title ellipsis"><{$data.remark}></span>
+                <span class="points text-alert"><{$data.change_amount}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有储值获取记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+    <div id='content3'class="content">
+        <{if $memberPointLogList_minus neq null}>
+        <ul class="table-view" id="content3_ul">
+            <{foreach from=$memberPointLogList_minus item=data key=k}>
+            <li class="cell span">
+                <span class="time"><{$data.value_time}></span>
+                <span class="title ellipsis"><{$data.remark}></span>
+                <span class="points text-alert"><{$data.change_amount}></span>
+            </li>
+            <{/foreach}>
+        </ul>
+        <{else}>
+        <!-- 暂无可用 -->
+        <div class="content placeholder-info">
+            <p>
+                <i class="icon-coins"></i>
+            </p>
+            <p>您还没有储值扣除记录哦~</p>
+        </div>
+        <{/if}>
+    </div>
+
+  </div>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+</body>
+</html>

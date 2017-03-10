@@ -1,0 +1,143 @@
+<form id="mem_form" action="index.php?app=taocrm&ctl=admin_member_card&act=save" method="post">
+<div class="tableform">
+    <input type=hidden name="from" value="<{$from}>" />
+    <input type=hidden name="id" value="<{$formdata.id}>" />
+    <input type=hidden name="is_type_code" id="is_type_code" value="1" />
+    <div class="division" style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            
+            <tr>
+                <th><{t}>会员卡名称<{/t}></th>
+                <td>
+                    <{input style="width:150px" app=ectools type="text" name='card_name' value=$formdata.card_name vtype='required' }>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>上传会员卡原型<{/t}><br><font style="color: red;font-size: 10px;">(建议原型尺寸<br>300x200)</font></th>
+                <td>
+                    <{input id="card_img" width=160 height=60 type="image" value=$formdata.card_img name="card_img"}>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>会员卡类型<{/t}></th>
+                <td>
+                   <{input app=ectools type="select" name="member_card_type_id"  id="member_card_type_id" value=$formdata.member_card_type_id  options=$memberCardTypeList vtype="required" }>
+                <a target="dialog::{onClose:function(){closeTypeDialog();},width:500,height:250,title:'添加会员卡类型'}" href="index.php?app=taocrm&ctl=admin_member_card_type&act=show_type">管理</a>
+                </td>
+            </tr>
+            <!-- <tr>
+                <th><{t}>是否启用会员卡类型编码<{/t}></th>
+                <td><{input app=ectools type="select" name='is_type_code' id="is_type_code" value=$formdata.is_type_code  options=$memberCardIsType vtype="required" }>
+                </td>
+            </tr>-->
+            <tr>
+                <th><{t}>会员卡长度<{/t}></th>
+                <td><{input app=ectools type="select" name='card_len' id="card_len" value=$formdata.card_len  options=$memberCardLen vtype="required" }>
+            </tr>
+            <tr>
+                <th><{t}>会员卡卡密长度<{/t}></th>
+                <td><{input app=ectools type="select" name='card_pwd_len' id="card_pwd_len" value=$formdata.card_pwd_len  options=$memberCardPwd vtype="required" }>
+            </tr>
+            <tr>
+                <th><{t}>会员卡卡密规则<{/t}></th>
+                <td><{input app=ectools type="select" name='card_pwd_rule' id="card_pwd_rule" value=$formdata.card_pwd_rule  options=$memberCardPwdRule vtype="required" }>
+            </tr>
+             <tr>
+                <th>预览会员卡格式</th>
+                <td id="showMemberCardSample"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-action"><{button id="save" type="button" label=$___b2c="保存"|t:'b2c' }></div>
+</div>
+</form>
+<script>
+var member_card_type_list = <{$jsonMemberCardTypeList}>;
+var type_id_selected = <{$formdata.member_card_type_id}>;
+
+(function(){
+    
+	 $('save').addEvent('click',function(event){
+	     $('mem_form').fireEvent('submit',new Event(event));
+     });
+	    
+	 
+    $('mem_form').store('target',{
+        onRequest:function(){
+           $('save').set('disabled', 'true');
+        },
+        onSuccess:function(response){    
+            var hash_res_obj = JSON.decode(response);
+            if(typeof(hash_res_obj.error) != 'undefined'){
+               $('save').set('disabled', '');
+            }else{
+               
+            }
+            
+            try{
+                var _dialogIns = $('save').getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            if(_dialogIns)
+            {
+                _dialogIns.close();
+            }
+        }
+    });
+
+    $ES('select',$('mem_form')).each(function(el){
+    	el.addEvent('change',function(){
+    		showMemberCardSample();
+    	});
+    });
+    
+})();
+
+function closeTypeDialog(){
+	 new Request({
+         url : 'index.php?app=taocrm&ctl=admin_member_card_type&act=get_type_list',
+         method : 'post',
+         onSuccess:function(responseText){
+             var result = JSON.decode(responseText);
+             if(result.rsp == 'succ'){
+            	 member_card_type_list = result.type_list;
+            	 initTypeSelect();
+             }
+         }
+     }).send();
+	 
+}
+
+function initTypeSelect(){
+     $('member_card_type_id').length = 0;
+     member_card_type_list.each(function(typeRow){
+         var varItem = new Option(typeRow.type_name, typeRow.id);   
+         if(typeRow.id == type_id_selected)varItem.selected = true;
+         varItem.set('type_code',typeRow.type_code);
+         $('member_card_type_id').options.add(varItem);
+     });
+}
+
+function showMemberCardSample(){
+	var memberCardStr = '会员卡号:';
+	if($('is_type_code').value == 1){
+		memberCardStr += $('member_card_type_id').options[$('member_card_type_id').selectedIndex].get('type_code');
+	}
+	
+	var card_len = parseInt($('card_len').value)-1;
+	for(var i=0;i<card_len;i++){
+		memberCardStr += '0';
+	}
+	memberCardStr += '1';
+	
+	memberCardStr += ',会员卡卡密:';
+	var card_pwd_len = parseInt($('card_pwd_len').value);
+    for(var i=0;i<card_pwd_len;i++){
+        memberCardStr += 'x';
+    }
+	$('showMemberCardSample').set('text',memberCardStr);
+}
+
+initTypeSelect();
+showMemberCardSample();
+</script>
+

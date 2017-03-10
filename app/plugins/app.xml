@@ -1,0 +1,18 @@
+<app>
+    <name>应用插件系统</name>
+    <description>应用插件系统</description>
+
+    <author>
+        <name>shopex开发团队</name>
+        <email>dev@shopex.cn</email>
+        <url>http://www.shopex.cn</url>
+    </author>
+
+    <version>0.1</version>
+    <license>shopex license</license>
+
+	<depends>
+        <app>desktop</app>
+	</depends>
+    
+</app>

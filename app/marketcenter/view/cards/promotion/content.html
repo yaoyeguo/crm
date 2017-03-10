@@ -1,0 +1,53 @@
+<h3><{t}>优惠券详情<{/t}></h3>
+<div id="x-g-basic" class="goods-detail tableform">
+  <div class="division">
+    <table border="0" cellpadding="0" cellspacing="0" class="rule_list">
+      <tr>
+        <{if $card.card_type == 'GENERAL_COUPON'}>
+        <th style="width:10%"><{t}>优惠详情<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="textarea" class="x-input" value=$card.default_detail name="card[default_detail]" style="resize:none;" cols="50" rows="5" maxth="255" }>
+        </td>
+        <{elseif $card.card_type == 'DISCOUNT'}>
+        <th style="width:10%"><{t}>打折额度<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="text" class="x-input" value=$card.discount name="card[discount]" maxlength="20"}><br><span class="notice-inline "><{t}>例：填30就是七折<{/t}></span>
+        </td>
+        <{elseif $card.card_type == 'CASH'}>
+        <th style="width:10%"><{t}>起用金额<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="text" class="x-input" value=$card.least_cost  name="card[least_cost ]" maxlength="20"}><br><span class="notice-inline "><{t}>单位为分<{/t}></span>
+        </td>
+      </tr>
+      <tr>
+        <th style="width:10%"><{t}>减免金额<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="text" class="x-input" value=$card.reduce_cost name="card[reduce_cost]" maxlength="20"}><br><span class="notice-inline "><{t}>单位为分<{/t}></span>
+        </td>
+        <{elseif $card.card_type == 'GIFT'}>
+        <th style="width:10%"><{t}>礼品名称<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="textarea" class="x-input" value=$card.gift name="card[gift]" style="resize:none;" cols="50" rows="5" maxth="255" }>
+        </td>
+        <{elseif $card.card_type == 'GROUPON'}>
+        <th style="width:10%"><{t}>团购详情<{/t}>：</th>
+        <td style="width:90%">
+          <{input type="textarea" class="x-input" value=$card.deal_detail name="card[deal_detail]" style="resize:none;" cols="50" rows="5" maxth="255" }>
+        </td>
+        <{/if}>
+      </tr>
+      <tr>
+        <th><{t}>使用须知<{/t}>：</th>
+        <td>
+         <{input type="textarea" class="x-input" value=$card.description name="card[description]" style="resize:none;" cols="50" rows="5" maxth="255" }>
+       </td>
+      </tr>
+      <tr>
+        <th>客服电话</th>
+        <td>
+          <{input type="text" value=$card.service_phone name="card[service_phone]" maxlength="20"}><br><span class="notice-inline "><{t}>手机或固话<{/t}></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<{if $themes}>
+    <select name="theme" id="theme" onchange="changeTheme();" style="width:140px;">
+    <option value="0">请选择模板</option>
+    <{foreach from=$themes item=theme}>
+    <option value="<{$theme.theme_id}>"><{$theme.theme_title}></option>
+    <{/foreach}>
+    </select>
+<{/if}>

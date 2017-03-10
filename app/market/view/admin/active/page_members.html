@@ -1,0 +1,21 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>用户名<{/t}></th>
+            <th><{t}>发送短信<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$members item=item key=key}>
+         <tr>
+             <td><{$item.uname}></td>
+             <td><{if $active.theme_id}>是<{else}>否<{/if}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

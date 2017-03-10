@@ -1,0 +1,123 @@
+    <div id="step1" border="0" cellspacing="0" cellpadding="0">
+    <h3>1.请选择会员分组</h3>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <thead>
+            <tr>   
+                <th></th>
+                <th>分组名称</th>
+                <th>客户数</th>
+            </tr>
+        </thead>
+        <tbody>
+            <{foreach from=$groups item=data key=i}>
+            <tr class="provice-bg">
+                <td width="5%"><input type="radio" name="rad_group_id" value="<{$data.group_id}>" /></td>
+                <td style="text-align:left;font-weight:bold" width="30%">
+                <{if $data.childs>0 }>
+                <span id="<{$data.group_id}>" class="imgTree tree_close" onclick="clickTree(this,1);"> &nbsp;&nbsp; </span>
+                <{else}>
+                <span id="<{$data.group_id}>" class="imgTree tree_open"> &nbsp;&nbsp; </span>
+                <{/if}>
+                <{$data.group_name}></td>
+                <td width="10%">
+                <span id="show_member_count_<{$data.group_id}>"><{$data.members}></span>&nbsp;
+                <span onclick="showMemberCount('<{$data.shop_id}>',<{$data.group_id}>)"><{img align="absmiddle" app="taocrm" src="refresh3.gif" }></span>
+                </td>
+               
+            </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+    
+	<div class="table-action">
+		<{button label="下一步 >>" type="button" id="btn01" class="btn-primary" onClick="goStep2()" }> 
+		<{button label="关闭" type="button" class="close_btn nodisabled"}>
+	</div>
+</div>
+<span id="el_createactive_loading" style="display: none;">创建营销活动中,这可能需要点时间...</span>
+
+<script>
+function showMemberCount(shop_id,group_id){
+	  var ajaxReq = new Request(
+			    {
+			        method : 'post',
+			        url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=refresh',
+			        data: {'shop_id':shop_id,'group_id':group_id},
+			        onSuccess : function(responseText) {
+			            $('show_member_count_' + group_id).set('text',responseText);
+			        },
+			        onFailure : function() {}
+			    });
+			    ajaxReq.send();
+	
+}
+
+function clickTree(obj,depth){
+    //alert(obj.id);
+    if(obj.get('class')=='imgTree tree_open') {
+        obj.set('class','imgTree tree_close')
+        removeChilds(obj.parentNode.parentNode.getNext(),depth);
+    }else{
+        obj.set('class','imgTree tree_open')
+        getChildGroup(obj.id,depth);
+    }
+}
+
+function removeChilds(o,depth){
+    var o_depth = o.get('depth');
+    var o_next = o.getNext();
+    if(!o_depth) return false;
+    if( o_depth != depth) {
+        o.remove();
+        removeChilds(o_next,depth);
+    }
+}
+
+function getChildGroup(parent_id,depth){
+    var o = $(parent_id).parentNode.parentNode;
+    var data_str = 'parent_id='+parent_id;
+    var templates = '<td width="5%"><input type="radio" name="rad_group_id"  value="{$group_id}" /></td><td style="text-align:left" width="30%">\
+           {$imgTree}{$group_name}</td>\
+                <td width="10%"><span id="show_member_count_{$group_id}">{$members}</span>&nbsp;\
+                <span onclick="showMemberCount(\'<{$shopId}>\',{$group_id})"><{img align="absmiddle" src="refresh3.gif" app="taocrm"}></span></td>';
+    
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=getChildGroup',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                var imgTree;
+                var obj = eval('(' + responseText + ')');
+                for(var i=0;i<obj.length;i++){
+                    new_node = templates.replace(/\{\$parent_id\}/g,obj[i].parent_id).replace(/\{\$group_id\}/g,obj[i].group_id).replace('{$group_name}',obj[i].group_name).replace('{$members}',obj[i].members).replace('{$update_time}',obj[i].update_time).replace('{$op_user}',obj[i].op_user);
+                    
+                    //替换节点图标
+                    if(obj[i].childs>0) {
+                        imgTree = '<span id="'+obj[i].group_id+'" class="imgTree tree_close" onclick="clickTree(this,'+(depth+1)+');"> &nbsp;&nbsp; </span>';
+                    }else{
+                        imgTree = '<span class="imgTree tree_open"> &nbsp;&nbsp; </span>';
+                    }
+                    for(var j=1;j<=depth;j++){
+                        imgTree = '　　'+imgTree;
+                    }
+                    new_node = new_node.replace('{$imgTree}',imgTree);
+                    
+                    var e = new Element('tr');
+                    e.set('depth',depth+1);
+                    e.set('id','tr'+obj[i].group_id);
+                    e.set('class','provice-bg');
+                    e.set('html',new_node);
+                    e.inject(o, 'after');
+                }
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+</script>
+

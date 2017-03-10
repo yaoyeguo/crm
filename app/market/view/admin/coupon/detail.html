@@ -1,0 +1,63 @@
+<div class="tableform">
+	<div class="division">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>优惠券名称：<{/t}></label></th><td><{$coupon.coupon_name|escape:'html'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>所属店铺：<{/t}></label></th><td><{$coupon.shop_name}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>创建时间：<{/t}></label></th><td><{$coupon.created|cdate:'FDATE_FTIME'}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>是否启用：<{/t}></label></th><td><{if $coupon.status eq 1}>启用<{else}>禁用<{/if}></td>
+					</tr>
+					<tr>
+                        <th><label><{t}>领用地址：<{/t}></label></th><td><a target="_blank" href="<{$coupon.outer_activity_url}>">领用</a></td>
+                    </tr>
+                     <tr>
+                        <th><label><{t}>每人限领：<{/t}></label></th><td><{if $coupon.person_limit_count == 0}>无限<{else}><{$coupon.person_limit_count}><{/if}></td>
+                    </tr>
+				</table>
+			</td>
+			<td>
+				<table class="multi-cols" cellspacing="0" cellpadding="0">
+					<tr>
+						<th><label><{t}>优惠券的面额：<{/t}></label></th><td class="price0"><{$coupon.denominations|escape:'html'}>元</td>
+					</tr>
+					<tr>
+						<th><label>订单限额：</label></th><td><{if $coupon.conditions}>满<{$coupon.conditions}>元<{else}>-<{/if}></td>
+					</tr>
+					<tr>
+						<th><label><{t}>有效时间：<{/t}></label></th><td>
+                        <{$coupon.start_time|cdate:'FDATE_FTIME'}> ~ 
+                        <{$coupon.end_time|cdate:'FDATE_FTIME'}></td>
+					</tr>
+					<tr>
+                        <th><label><{t}>已领取数：<{/t}></label></th><td><{$coupon.applied_count}></td>
+                    </tr>
+                    <tr>
+                        <th><label><{t}>已使用数：<{/t}></label></th><td><{$coupon.used_num}></td>
+                    </tr>
+                    <tr>
+                        <th><label><{t}>总领用量：<{/t}></label></th><td><{$coupon.coupon_count}></td>
+                    </tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	
+	<table class="multi-cols" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+		<th><label><{t}>备注：<{/t}></label></th>
+		<td><{$coupon.remark}></td>
+		</tr>
+	</table>
+	
+	</div>
+	</div>
+

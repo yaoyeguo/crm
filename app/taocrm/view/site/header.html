@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ShopEx CRM</title>
+<style>
+    body{background:#EEF3FA;margin:0;padding:0;font-size:12px;color:#444;}
+    #container {width:1000px;margin:0 auto; background:#FFF; overflow:hidden}
+    ul,h3,form{margin:0;padding:0;}
+    ul{list-style:none}
+    a {text-decoration:none}
+    img{border:none}
+    
+    #coupon {padding:20px;line-height:22px}
+    #coupon li{display:inline-block;width:235px;overflow:hidden;height:325px;}
+    
+    #top_menu {background:url(<{$env.app.res_url}>/bg_all.png);line-height:32px;padding:0 0 0 30px;font-family:'微软雅黑'}
+    #top_menu a {color:#000;text-decoration:none}
+    #top_menu a:hover {color:#F30}
+    
+    #logout {display:inline-block;height:22px;background:url(<{$env.app.res_url}>/bg_all.png) 0 -50px;width:60px;text-indent:-9999px;float:right;margin:5px 10px 0 0;}
+    
+    #buy {display:inline-block;height:42px;background:url(<{$env.app.res_url}>/bg_all.png) 0 -80px;width:102px;text-indent:-9999px;margin:5px 0 0 0;}
+    #ex_btn {height:42px;background:url(<{$env.app.res_url}>/bg_all.png) 0 -80px;width:102px;text-indent:-9999px;border:none}
+    #ex_tips {height:32px;background:url(<{$env.app.res_url}>/bg_all.png) 0 -120px no-repeat;text-indent:-9999px;border-bottom:1px solid #DDD}
+    #copy_right { text-align:center;line-height:2em;padding:20px 0;background:#F4F4F4;border:2px solid #FFF}
+    
+    .tbl_list {width:100%;border-left:1px solid #DDD;border-top:1px solid #DDD;}
+    .tbl_list thead{background:#337FAF;color:#FFF;font-weight:bold;}
+    .tbl_list tbody td{border-right:1px solid #DDD;border-bottom:1px solid #DDD;}
+    .tbl_list td{padding:7px 5px;}
+    
+    #price,#amount { font-family:arial;}
+    #amount {font-size:14px;color:#F30;font-weight:bold;}
+    
+    #succ_info{background:url(<{$env.app.res_url}>/bg_all.png) 0 -150px no-repeat;height:80px;}
+    #error_info{background:url(<{$env.app.res_url}>/bg_all.png) 0 -250px no-repeat;height:80px;}
+    
+    /*pager*/
+.pager { padding:10px 0; font-family: Tahoma, Helvetica, sans-serif; text-align: center; clear:both; overflow:hidden; }
+.pager a,
+.pager span { padding:2px 6px; cursor:pointer; margin:2px; line-height:normal; border: 1px solid #ccdbe4; color: #3E5B74; background: #f3f3f3; text-decoration: none;}
+.pager a:hover,
+.pager span:hover,
+.pager .current { background-color: #4f6596; border-color: #2b55af; color: #fff; }
+.pager .disabled { border-style:dotted; cursor:not-allowed; }
+.pager .next { }
+.pager .prev { }
+.pager .span-auto { margin-right:0; }
+.pagernum {  zoom:1; }
+</style>
+</head>
+<body>
+<div id="container">
+    <div>
+        <div style="float:right;padding:10px 10px 0 0;">
+        <{if($nick!='')}>
+            <img align="absmiddle" src="http://wwc.taobaocdn.com/avatar/getAvatar.do?userId=<{$user_id}>&amp;width=40&amp;height=40&amp;type=sns">  
+            欢迎您，<{$nick}>
+            您的积分余额：<b><{$points}></b>
+        <{else}>
+            <br/>
+            <a href="<{$tb_url.login}>"><img src="http://img03.taobaocdn.com/tps/i3/T1KKOzXX0VXXcyhH33-100-25.png" /></a>
+        <{/if}>
+        </div>
+        <{img src="logo.gif" app="taocrm" }>
+    </div>
+    
+    <div id="top_menu">
+        <{if($nick!='')}>
+            <a id="logout" href="<{$tb_url.logout}>">退出登录</a><{/if}>
+        <a href="<{link app='site'}>">优惠券</a>　|　
+        <a href="<{link app='site' ctl='site_exchange' act='points'}>">我的积分</a>　|　
+        <a href="<{link app='site' ctl='site_exchange' act='orders'}>">兑换记录</a>
+    </div>
+
+    <{img src="bar.jpg" app="taocrm" height=100 width=1000 }>
+    

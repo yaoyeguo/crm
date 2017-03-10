@@ -1,0 +1,89 @@
+<style>
+#support_center {}
+#support_center li{list-style:none;}
+#support_center h3{margin:10px 0 10px 0;border-bottom:1px solid #EAEEF4;}
+#support_center h3 span{color:#FFF;background:#5779BD;padding:3px;}
+#support_center h4{margin:0;padding:0;}
+
+#icon_ul {overflow:hidden;margin:0 0 30px 100px;}
+#icon_ul li{float:left;width:300px;margin:0 30px 0 0;padding:10px;}
+
+#bbs_list {line-height:2em;}
+
+.gray {color:#999;}
+.job_title {font-size:12px;font-weight:normal;}
+</style>
+
+<div id="support_center">
+    <h3><span>专家在线支持</span></h3>
+
+        <ul id="icon_ul">
+            <li>
+                <{img src="face.png" app="ecorder" align="left" height=80 }>
+                <h4 style="color:;">琼<font class="job_title">(产品经理)</font></h4>
+                <div class="gray">
+                多年电商行业运营经验。帮您发掘客户价值，提升业绩。<br/><br/>
+                </div>
+                <a target="_blank" href="tencent://message/?uin=3065401181&amp;Site=ShopExCRM&amp;Menu=yes"><img SRC="http://wpa.qq.com/pa?p=1:3065401181:16" alt="ShopExCRM专家支持" border="0"></a>                
+            </li>
+            
+            <li>
+                <{img src="face.png" app="ecorder" align="left" height=80 }>
+                <h4 style="color:;">兴哥<font class="job_title">(产品经理)</font></h4>
+                <div class="gray">多年CRM产品开发经验。
+                多年电商行业运营经验。帮您发掘客户价值提升销量。<br/><br/>
+                </div>
+                <a target="_blank" href="tencent://message/?uin=358869633&amp;Site=ShopExCRM&amp;Menu=yes"><img SRC="http://wpa.qq.com/pa?p=1:358869633:16" alt="ShopExCRM专家支持" border="0"></a>
+            </li>
+        </ul>
+
+    <h3><span>技术服务热线</span></h3>
+
+        <ul style="margin:0 0 30px 100px;font-size:48px;color:#B61919;">
+            <li><{img align="absmiddle" src="contact.png" app="ecorder"  height=64 }> 400-890-8858</li>
+        </ul>
+
+    <h3><span>在线交流论坛</span></h3>
+
+        <div style="padding:0 0 0 100px;">
+            <table>
+                <tr>
+                    <td valign="top" width="80">
+                    <{img src="icon_communities.png" app="ecorder"  height=64 }>
+                    <a href="http://pingjia.taoex.com/bbslist.asp?zid=5/305546885" target="_blank">
+                    【查看更多】
+                    </a>
+                    </td>
+                    <td id="bbs_list">
+                        <{img src="loading.gif" app="ecorder" }>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    
+</div>
+
+<script>
+(function(){
+    
+    ajax_get_bbs_list();
+    
+})();
+
+function ajax_get_bbs_list(){
+
+    var _url = 'index.php?app=ecorder&ctl=admin_help_support&act=ajax_get_bbs_list';
+    var _data = {};
+
+    new Request({
+         url : _url,
+         method : 'post',
+         data: _data,
+         onSuccess:function(responseText){
+            //alert(responseText);
+            $('bbs_list').set('html', responseText);
+        }
+    }).send();
+}
+</script>
+

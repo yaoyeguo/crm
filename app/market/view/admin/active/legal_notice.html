@@ -1,0 +1,39 @@
+<div class="x-vali-error2" style="width:80%;margin:5px auto;">
+按效果付费营销提示：本软件的短信发送功能除正常发送短信的费用外，
+还将采取以短信活动发起后以实际下单数量来扣除一定比例的短信数量进行营销活动效果付费机制,
+详细说明请先查看
+<a target="dialog::{width:650,height:350,title:'条款条件'}" href='index.php?app=market&ctl=admin_active&act=legal_copy'>条款条件</a>！
+</div>
+
+
+<{area inject='.mainFoot'}>
+	<div style="height:50px;text-align:center">
+		<{button id="down1" class="btn-primary" label=$___b2c="取消"|t:'b2c' type="button"}>　　
+		<{button id="down2" class="btn-primary" label=$___b2c="确定"|t:'b2c' type="button"}>
+	</div>
+<{/area}>
+
+
+<script>
+
+$('down1').addEvent('click',function(){
+	$('down1').getParent('.dialog').retrieve('instance').close();
+});
+
+$('down2').addEvent('click',function(){
+	var status = 'agree';
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active&act=legal_save',
+        method : 'post',
+        data:{'status':status,'active_id':<{$active_id}>},
+        onSuccess:function(responseText){
+        	$('down2').getParent('.dialog').retrieve('instance').close();
+        	show_active();
+        }
+    }).send();
+})
+</script>
+
+
+
+

@@ -1,0 +1,67 @@
+
+<div class="division" id="el_coupon_ecstore">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td></td>
+            <td><h3 id="show_msg"></h3><h4 id="show_sub_msg"></h4></td>
+        </tr>
+        <tr id="submit_tr">
+            <th>&nbsp;</th>
+            <td>
+            <select name="shop_id" id="shop_select">
+                        <option value="">-请选择-</option>
+                        <{foreach from=$shopList item=shop}>
+                            <option value=<{$shop.shop_id}>><{$shop.name}></option>
+                        <{/foreach}>
+                    </select>
+                <{button id="down1" class="btn-primary" label=$___b2c="点击获取Ecstore优惠劵"|t:'taocrm' type="button"}>
+                <{button id="down2" class="btn-primary" label=$___b2c="关闭"|t:'taocrm' type="button"}>
+            </td>
+        </tr>
+    </table>
+    
+</div>
+
+<style>
+#order_status {padding:0 0 8px 0;}
+#order_percent_bar {border:1px solid #5D84B0;width:400px;}
+#order_percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+
+  
+
+    $$('#down1').addEvent('click',function(){
+    	if($('shop_select').value == ''){
+    		alert('请选择店铺');
+    		return false;
+    	}
+    	
+        $('show_msg').set('html','正在请求优惠劵数据....');
+        new Request({
+            url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=toGetCoupon',
+            method : 'post',
+            data:{'shop_id' : $('shop_select').value},
+            onSuccess:function(responseText){
+                var data = JSON.decode(responseText);
+                if(data.status){
+                	 $('show_msg').set('html','已完成,本次更新优惠劵有'+data.info.total+'张，关闭优惠劵有'+data.info.closeTotal+'张');
+                }else{
+                	 $('show_msg').set('html',data.msg);
+                }
+            }
+        }).send();
+         
+    });
+    
+    $('down2').addEvent('click',function(){
+        $('el_coupon_ecstore').getParent('.dialog').retrieve('instance').close();
+    });
+
+})();
+
+
+
+</script>
+

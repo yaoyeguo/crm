@@ -1,0 +1,25 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>买家昵称<{/t}></th>
+            <th><{t}>优惠券编号<{/t}></th>
+            <th><{t}>使用情况<{/t}></th>
+            <th><{t}>渠道<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$couponDetail item=item key=key}>
+         <tr>
+             <td><{$item.buyer_nick}></td>
+             <td><{$item.coupon_number}></td>
+             <td><{$item.state}></td>
+             <td><{$item.channel}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

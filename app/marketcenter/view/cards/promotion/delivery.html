@@ -1,0 +1,20 @@
+<h3><{t}>销劵设置<{/t}></h3>
+<div id="x-g-basic" class="goods-detail tableform">
+  <div class="division">
+    <table border="0" cellpadding="0" cellspacing="0" class="rule_list">
+      <tr>
+        <th style="width:10%"><{t}>销劵方式<{/t}>：</th>
+        <td style="width:90%">
+          <input type="radio" name="card[code_type]" <{if $card.code_type == 'CODE_TYPE_TEXT' }> checked="checked"<{/if}> value="CODE_TYPE_TEXT">仅卡劵号<br><span class="notice-inline "><{t}>只显示卡劵号，验证后可进行销毁<{/t}></span><br>
+          <input type="radio" name="card[code_type]" <{if $card.code_type == 'CODE_TYPE_QRCODE' }> checked="checked"<{/if}> value="CODE_TYPE_QRCODE">二维码<br><span class="notice-inline "><{t}>包含卡劵信息的二维码，扫描后进行销劵<{/t}></span><br>
+          <input type="radio" name="card[code_type]" <{if $card.code_type == 'CODE_TYPE_BARCODE' }> checked="checked"<{/if}> value="CODE_TYPE_BARCODE">条形码<br><span class="notice-inline "><{t}>包含卡劵信息的条形码，扫描后可进行销劵面<{/t}></span><br>
+        </td>
+      </tr>
+      <tr>
+        <th><{t}>操作提示<{/t}>：</th>
+        <td>
+          <{input type="text" value=$card.notice name="card[notice]" maxlength="20"}><br><span class="notice-inline "><{t}>建议引导用户到店出示卡劵，由店员完成核销操作<{/t}></span></td>
+      </tr>
+    </table>
+  </div>
+</div>

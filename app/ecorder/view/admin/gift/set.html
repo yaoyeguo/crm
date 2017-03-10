@@ -1,0 +1,88 @@
+<style>
+#dataAction label{cursor:pointer;font-size:14px;font-family:Microsoft Yahei;}
+.tips {text-align:center;padding:5px;font-size:14px;font-family:Microsoft Yahei;color:#F30;}
+#dataAction .ok {background:url(<{$env.app.res_url}>/ok.png) right no-repeat #FFF;padding:0 20px 0 0;}
+</style>
+
+<div style="padding:0 0 0 0;">
+	
+    <div style="margin-bottom:6px;padding:5px 15px; border:0;background:#F0F0F0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;">
+    
+        <form id="dataAction" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+
+        <h4>当有多个赠品规则时执行：</h4>
+        
+        <table>
+            <col width="100" />
+            <tr>
+                <td align="right" >
+                    <input type="radio" name="set_type" value="include" id="set_type_include" />
+                </td>
+                <td>
+                    <label for="set_type_include">赠品规则进行<font color="red">叠加</font></label>
+                </td>
+            </tr>
+            <tr>
+                <td></td><td><font color="gray">说明：当一个客户或者购物订单，符合多个赠品规则时，系统将赠送所有符合的规则中的赠品。同一SKU商品数量将累加。</font></td>
+            </tr>
+            <tr>
+                <td></td><td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="right" >
+                    <input type="radio" name="set_type" value="exclude" id="set_type_exclude" />
+                </td>
+                <td>
+                    <label for="set_type_exclude">赠品规则进行<font color="blue">排他</font></label>
+                </td>
+            </tr>
+            <tr>    
+                <td></td><td><font color="gray">说明：当一个客户或者购物订单，符合多个赠品规则时，系统将根据赠品规则的优先级，赠送优先级最高的赠品规则中的商品，当商家未设置赠品优先级、或优先级相同时将赠送最新创建的赠品规则中的商品。</font></td>
+            </tr>
+            <tr>
+                <td></td><td>&nbsp;</td>
+            </tr>
+            <tr>    
+                <td></td><td>
+                    <button type="button" id="save_set_type">保存</button>
+                </td>
+            </tr>
+        </table>
+
+        </form>
+
+    </div>
+	
+</div>
+
+<script>
+var set_type = '<{$set_type}>';
+
+(function(){
+
+    $$('#dataAction input[name="set_type"][value="'+set_type+'"]').set('checked', 'checked');
+
+    var dataAction = $('dataAction');
+    
+    dataAction.getElement('#save_set_type').addEvent('click', function(){
+        setChartData();
+    });
+    
+    function setChartData(){
+        var params=dataAction.toQueryString();
+        dataAction.store('_data',params);
+        var url='index.php?<{$env.server.QUERY_STRING}>';
+        W.page(
+            url, 
+            {
+                data:params, 
+                method:'post',
+                onComplete:function(){
+                    //if(_finder) _finder.filter.value=params;
+                }
+            }
+        );
+    }
+    
+})();
+</script>

@@ -1,0 +1,37 @@
+<div>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>买家昵称<{/t}></th>
+            <th><{t}>优惠券编号<{/t}></th>
+            <th><{t}>状态<{/t}></th>
+            <th><{t}>失败信息<{/t}></th>
+            <th><{t}>发送时间<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$couponDetail item=item key=key}>
+         <tr>
+             <td><{$item.buyer_nick}></td>
+             <td><{if $item.coupon_number}><{$item.coupon_number}><{else}>-<{/if}></td>
+             <td><{if $item.sent_status == 'succ'}>成功<{else}>失败<{/if}></td>
+             <td onclick="$$('tr.fail_info').hide();$('fail_info_<{$key}>').show();"><{$item.reason}></td>
+             <td><{$item.send_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+         <tr class="fail_info" id="fail_info_<{$key}>" style="display:none;">
+            <td style="color:#6989C9;" colspan=20>
+                <table>
+                <{foreach from=$item.fail_detail_info item=item2}>
+                    <tr><td width=200><{$item2.buyer_nick}></td>
+                    <td style="text-align:left;"><{$item2.reason}></td></tr>
+                <{/foreach}>
+                </table>
+            </td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

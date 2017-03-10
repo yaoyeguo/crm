@@ -1,0 +1,136 @@
+<{if !$_is_singlepage}>
+
+<form method="POST" action="index.php?app=ecorder&ctl=admin_shop_credit&act=save" class="tableform" id="form_member_lv">
+<{if $credit.rule_id}><{input type='hidden' name='rule_id' value=$credit.rule_id}><{/if}>
+<div class="division" id="group_edit_container">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+    <tr>
+	  <th><em class="c-red">*</em><{t}>适用店铺：<{/t}></th>
+	  <td><{input type="select" name="shop_id" vtype="required" options=$shops value=$credit.shop_id}></td>
+	</tr>
+    
+	<tr>
+	  <th><em class="c-red">*</em><{t}>规则名称：<{/t}></th>
+	  <td><{input type="text" name="name" size="20" vtype="required" value=$credit.name}></td>
+	</tr>
+    
+    <tr>
+	  <th><em class="c-red">*</em><{t}>金额类型：<{/t}></th>
+	  <td>
+        <{assign var="count_type" value=array("payed"=>"实付金额","total_amount"=>"订单金额")}>
+        <{input type="select" options=$count_type name="count_type" value=$credit.count_type }>
+      </td>
+	</tr>
+    
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>消费金额<{/t}>：</th>
+      <td>
+        <select class="x-input-select inputstyle" name="order_type">
+            <option value="single" <{if($credit.order_type=='single')}>selected<{/if}>>单笔付款</option>
+            <!--option value="all" <{if($credit.order_type=='all')}>selected<{/if}>>累计付款</option-->
+        </select>
+        
+        <{input key="filter_sign" type="select" id="total_amount" name="filter[total_amount][sign]" options=$select_sign value=$credit.amount_symbol}>
+      	<span id='total_amount_input'>
+        <{input type="unsigned" name="min_amount" size=10 value=$credit.min_amount}>
+        <span id="filter[total_amount][sign]" <{if $data.filter.total_amount.sign!='between'}>style="display:none"<{/if}>> ~ 
+        <{input type="unsigned" name="max_amount" size=10 value=$credit.max_amount }>
+        </span>
+      </td>
+    </tr>
+    <tr>
+	  <th><em class="c-red">*</em><{t}>每积分需要消费：<{/t}></th>
+	  <td><{input type="text" name="cost_amount" style="width:50px" maxlength="6" vtype="required" value=$credit.cost_amount}> 元　(大于等于1的整数)</td>
+	</tr>
+    <tr style="display:none;">
+      <th><{t}>生效时间<{/t}>：</th>
+      <td>
+            <{input type="date" name="start_time" size="16" class="_x_input" value=$credit.start_time}> - 
+            <{input type="date" name="end_time" size="16" class="_x_input" value=$credit.end_time}>
+      </td>
+    </tr>
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="member_lv-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+	    btn.addEvent('click',function(){
+		    _form.fireEvent('submit',{stop:$empty});
+		});
+	    
+	
+	 //between运算符处理
+    var between_sign = 'between';//介于运算符
+    var signs = $('group_edit_container').getElements('select[key=filter_sign]');
+    signs.each(function(obj,i){
+    	if(obj.get('value')==between_sign){
+    		 $(obj.get('name')).setStyle('display','inline');
+    	}else{
+    		 $(obj.get('name')).setStyle('display','none');
+    	}
+        obj.addEvent('change',function(){
+            if(obj.get('value')==between_sign){
+                $(obj.get('name')).setStyle('display','inline');
+            }else{
+                $(obj.get('name')).setStyle('display','none');
+            }
+        });
+        
+    });
+    
+    if($('total_amount').value=='unlimited'){
+    	$("total_amount_input").hide();
+    }
+    
+    
+    $$("#total_amount").addEvent('change',function(){
+		 if($("total_amount").value=='unlimited') {
+			 $("total_amount_input").hide();
+		 }else{
+			 $("total_amount_input").show();
+		 }
+	 });
+    
+	
+	
+	
+
+	
+})();
+</script>
+
+<{/if}>
+ 

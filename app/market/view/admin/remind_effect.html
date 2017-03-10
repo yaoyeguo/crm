@@ -1,0 +1,66 @@
+<style>
+.gridlist {color:#5779BD;}
+.gridlist b{color:#F60;font-size:18px;}
+</style>
+
+<h3 id="head-title" class="head-title">催付效果评估</h3>
+
+<div style="padding:10px 0 0 0;">
+    <form action="index.php?app=market&ctl=admin_remind_effect&act=index" method="get" id="filter_form">
+    选择店铺：<{input id="shop_id" style="width:180px" type="select" name="shop_id" options=$shops value=$shop_id}>
+    </form>
+</div>
+
+<table cellspacing="0" cellpadding="0" border="0" class="gridlist" style="width:800px;margin:10px 0 0 0;">
+        <thead>
+            <tr>   
+                <th colspan="5">昨日数据</th>
+            </tr>
+        </thead>
+        <tbody>
+            <td width="20%">
+                催付订单数<br/>
+                <b><{$effect.total_orders}> 单</b>
+            </td>
+            <td width="20%">
+                催付成功订单数<br/>
+                <b><{$effect.succ_orders}> 单</b>
+            </td>
+            <td width="20%">
+                催付成功金额<br/>
+                <b><{$effect.succ_payed}> 元</b>
+            </td>
+            <td width="20%">
+                付款率<br/>
+                <b><{$effect.succ_ratio}>%</b>
+            </td>
+            <td width="20%">
+                ROI <{help}><{t}>催付成功金额除以短信费用<br/>(短信单价以0.05元计) <{/t}><{/help}><br/>
+                <b><{$effect.roi}></b>
+            </td>
+        </tbody>
+</table>
+
+<h3 style="margin:20px 0;">最近一周催付效果</h3>
+<iframe height="360" width="800" src="index.php?app=market&ctl=admin_remind_effect&act=chart&shop_id=<{$shop_id}>"></iframe>
+
+<div id="open_tips" style="font-size:14px;font-weight:bold;padding:100px;text-align:center;display:;"><a target="_parent" href="index.php?app=plugins&ctl=admin_buy&act=index">您还没有开启自动催付插件，请点击这里立即开启。</a>
+
+<script type="text/javascript">
+var cuifu_open = '<{$cuifu_open}>';
+if(cuifu_open == 'close'){
+    new Dialog($('open_tips'),{title:'温馨提示',width:550,height:250});
+}else{
+    $('open_tips').hide();
+}
+
+(function(){
+
+    function setChartData(){
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+
+    if($('shop_id')) $('shop_id').addEvent('change',function(e){setChartData(true);});
+
+})();
+</script>

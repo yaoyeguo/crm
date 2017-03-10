@@ -1,0 +1,37 @@
+<div id="group_edit_container">
+	<table width="100%" border="0" cellpadding="5" cellspacing="10">
+	    <tr>
+		  <td><span class="bind">绑定失败!<span></td>
+		</tr>
+		<tr>
+		  <td><span class="bind">您可能没有购买该应用,请点击以下链接进行购买!</span></td>
+		</tr>
+		<tr>
+		  <td align='center'><a href="http://fuwu.taobao.com/ser/detail.htm?spm=a1z13.1113643.1113643.31.smX1uS&service_code=ts-16212" target="_blank" style="font-size:16px">购买链接</a></td>
+		</tr>
+	   
+	</table>
+</div>
+<{area inject='.mainFoot'}>
+	<div class="table-action">
+		<{button id="down" class="btn-primary" label=$___b2c="关闭窗口"|t:'b2c' type="button"}>　　
+	</div>
+<{/area}>
+
+<style>
+	.bind{
+		font-size:15px;
+		padding-left:20px;
+		padding-top:15px
+	}
+</style>
+<script>
+
+$('down').addEvent('click',function(){
+	$('down').getParent('.dialog').retrieve('instance').close();
+});
+</script>
+
+
+
+

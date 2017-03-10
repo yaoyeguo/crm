@@ -1,0 +1,219 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+</style>
+
+<form style="position:relative;" id="form_vote" class="tableform" action="index.php?app=market&ctl=admin_weixin_vote&act=vote_edit" method="POST">
+
+<div class="division">
+
+    <!--预览-->
+    <div style="width:280px;overflow-y:auto;float:right;border:1px solid #DDD;">
+        <div id="preview_head" style="background:url(<{$env.app.res_url}>/wx1.gif) no-repeat #FFF;padding:0 0 0 30px;height:274px;"></div>
+        <div id="preview_body" style="background:url(<{$env.app.res_url}>/wx2.gif) no-repeat #FFF;padding:0 0 10px 10px;min-height:240px;"></div>
+    </div>
+
+    <table style="width:420px;" cellspacing="0" cellpadding="0" border="0" align="center">
+    <tbody><tr class="hide">
+        <th>活动模板：</th>
+        <td class="set-temp" id="sel_templates">
+            <label class="checked" for="template1"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_default.jpg" app="quiz">
+            <input checked="checked" type="radio" id="template1" name="fields[template_id]" value="1">
+            </label>
+            
+            
+            <label class="" for="template2"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_red.jpg" app="quiz">
+            <input type="radio" id="template2" name="fields[template_id]" value="2">
+            </label>
+            
+            <label class="" for="template3"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_green.jpg" app="quiz">
+            <input type="radio" id="template3" name="fields[template_id]" value="3">
+            </label> 
+            
+        </td>
+    </tr>
+    <tr>
+      <th>
+        <em class="c-red">*</em>活动名称：</th>
+      <td>
+        <{input id="title" value=$rs.title name="fields[title]" vtype="required" maxlength="12" }>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>活动关键词：</th>
+        <td>
+            <{input id="keywords" value=$rs.keywords name="fields[keywords]" vtype="required" }>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>活动图片：
+        <br/>320*120px
+        </th>
+        <td>
+            <{input width=160 height=60 id="picurl" type="image" value=$rs.picurl name="fields[picurl]"}>
+        </td>
+    </tr>
+    <tr>
+        <th>活动简介：</th>
+        <td>
+            <{input id="desc" value=$rs.desc name="fields[desc]" maxlength="40" }>
+        </td>
+    </tr>
+    <tr>
+        <th>活动状态：</th>
+        <td><input type="radio" <{if($rs.is_active==1)}>checked="checked"<{/if}> value="1" id="dom_el_a4e99c0-1" name="fields[is_active]"><label for="dom_el_a4e99c0-1">开启</label>　　　　
+        
+        <input type="radio" <{if($rs.is_active==0)}>checked="checked"<{/if}> value="0" id="dom_el_a4e99c0-2" name="fields[is_active]"><label for="dom_el_a4e99c0-2">关闭</label></td>
+    </tr>
+    <tr>
+        <th>用户信息填写：</th>
+        <td id="req_fields1">
+            <label><input type="checkbox" <{if(in_array('mobile', $rs.req_fields))}>checked="checked"<{/if}> value="mobile" name="fields[req_fields][]">手机</label>                    
+            
+            <label><input type="checkbox" <{if(in_array('truename', $rs.req_fields))}>checked="checked"<{/if}> value="truename" name="fields[req_fields][]">姓名</label>                
+        </td>
+    </tr>
+    <tr>
+        <th>获取积分：</th>
+        <td><{input id="points" value=$rs.points name="fields[points]" type="text" }></td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>活动详细说明：</th>
+        <td>
+            <{input id="content" value=$rs.content name="fields[content]" type="textarea" rows=2 cols=40 }>
+        </td>
+    </tr>
+    <tr>
+        <td class="vote-action" colspan="2">
+            <table id="vote-list">
+                <tbody>
+                <tr class="vote-name">		
+                    <th>投票项1：</th>
+                    <td><{input size="30" value=$rs.vote_items[0] name="fields[vote_items][]" }></td>
+                </tr>
+                <tr class="vote-name">		
+                    <th>投票项2：</th>
+                    <td><{input size="30" value=$rs.vote_items[1] name="fields[vote_items][]" }></td>
+                </tr>
+                <tr class="vote-name">		
+                    <th>投票项3：</th>
+                    <td><{input size="30" value=$rs.vote_items[2] name="fields[vote_items][]" }></td>
+                </tr>
+                <tr class="vote-name">		
+                    <th>投票项4：</th>
+                    <td><{input size="30" value=$rs.vote_items[3] name="fields[vote_items][]" }></td>
+                </tr>
+                <tr class="vote-name">		
+                    <th>投票项5：</th>
+                    <td><{input size="30" value=$rs.vote_items[4] name="fields[vote_items][]" }></td>
+                </tr>
+            </tbody></table>
+        </td>
+    </tr>
+    </tbody></table>
+    
+    <div style="width:100%;clear:both;"></div>
+    
+    <input name="vote_id" value="<{$rs.vote_id}>" type="hidden" />
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+        <{button type="button" label="预览" onclick="set_preview();" }>
+    </div>
+<{/area}>
+
+</form>
+
+<script>
+(function(){
+    
+    var _form = $('form_vote');
+	var btn =$('survey-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {	
+                    _dialogIns.close();
+                    window.finderGroup['<{$env.get.finder_id}>'].refresh();
+                }
+            }	
+        }
+    });
+
+    btn.addEvent('click',function(){
+        if($$('#vote-list input[name="fields[vote_items][]"]').length==0){
+            alert('请至少选择一个题目哦');
+            return false;
+        }
+        _form.fireEvent('submit',{stop:$empty});
+
+    }); 
+    
+    $$('#req_fields1 input').addEvent('click',function(){
+        set_preview();
+    });
+})();
+
+function get_img_url(){
+    var image = $$('div.image-input-view img');
+    var img_html = '';
+    if(image){
+        return image.get('src');
+    }
+    return false;
+}
+
+function set_preview(){
+    var title = $('title').get('value');
+    var keywords = $('keywords').get('value');
+    var picurl = get_img_url();
+    var desc = $('desc').get('value');
+    var vote_list = $$('#vote-list input');
+    var req_fields1 = $$('#req_fields1 input:checked');
+    var content = $('content').get('value');
+    
+    var req_fields = ';';
+    for(var i=0;i<req_fields1.length;i++){
+        req_fields += req_fields1[i].value+';';
+    }
+    
+    //alert(req_fields);
+    
+    var preview_head = '<h3 style="margin:0 0 20px 0;padding:70px 0 0 0;">'+title+'</h3>\
+    <img style="border:1px solid #AAA;" src="'+picurl+'" height=72 width=192 />\
+    <br/>'+desc+'\
+    ';    
+    $('preview_head').set('html', preview_head);
+    
+    var preview_body = '<h3 style="color:#FFF;margin:0 0 20px 0;padding:60px 0 0 0;">'+title+'</h3>\
+    <div style="background:#DFDFDF">'+content+'</div>\
+    请选择：\
+    ';
+    
+    for(var i=0;i<vote_list.length;i++){
+        if(vote_list[i].value != '')
+        preview_body += '<br/><input type="radio" /> '+vote_list[i].value;
+    }
+    
+    preview_body += '<br/>';
+    if(req_fields.indexOf(';mobile;')!=-1) preview_body += '手机：<input size=5 />';
+    if(req_fields.indexOf(';truename;')!=-1) preview_body += '姓名：<input size=5 />';
+    
+    $('preview_body').set('html', preview_body);
+}
+
+set_preview();
+</script>

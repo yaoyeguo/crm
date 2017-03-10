@@ -1,0 +1,147 @@
+<{if !$_is_singlepage}>
+
+
+<style>
+.points { font-weight:bold; font-family:Tahoma, Geneva, sans-serif;}
+label {cursor:pointer;}
+</style>
+<form method="POST" action="index.php?app=taocrm&ctl=admin_points_log&act=save" class="tableform" id="form_points_log">
+<div class="division">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+    <tr>
+	  <th><em class="c-red">*</em><{t}>客户名称：<{/t}></th>
+	  <td >
+          <{if $member_info}>
+            <select class="x-input-select inputstyle" name="member_id" id="member_id">
+            <{foreach from=$member_info item=info}>
+                <option value=<{$info.member_id}>><{$info.uname}></option>
+            <{/foreach}>
+        </select>
+          <{/if}>
+      </td>
+	</tr>
+    <{if $source_page eq 'member_analysis' }>
+    <tr>
+	  <th><em class="c-red">*</em><{t}>店铺：<{/t}></th>
+	  <td>
+        <!--<{input type="select" name="shop_id" id="shop_id" options=$shopList value=$shop_id }>-->
+         <{$shopList.$shop_id}>
+          <input type="hidden" name="shop_id" value="<{$shop_id}>" />
+      </td>
+	</tr>
+    <{/if}>
+	<tr id="mobile_sel_tr" style="display:none">
+	  <th><{t}>选择手机号：<{/t}></th>
+	  <td id="mobile_sel">&nbsp;</td>
+	</tr>
+    <tr>
+	  <th><{t}>当前积分：<{/t}></th>
+	  <td id="curr_points"><{$points}></td>
+	</tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>操作积分<{/t}>：</th>
+      <td>
+        <!--<{input type="select" name="points_type" options=$points_type_conf vtype="required" }> -->&nbsp;
+        
+        <{input type="number" name="points" size="8" class="_x_input points" vtype="required&&number" value=$logs.points maxlength='5'}>
+            <span class="notice-inline" style="margin:5px 0 0 5px; padding:0"><{t}>输入正数增加加分，负数扣除积分<{/t}></span>
+      </td>
+    </tr>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>备注<{/t}>：</th>
+      <td><{input type="text" name="remark" size="50" class="_x_input" vtype="required" value=$logs.remark}>
+      </td>
+    </tr>
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="member_lv-form-submit"}>
+</div>
+
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_points_log');
+	var btn =$('member_lv-form-submit');
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+                    finderGroup['<{$finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+        //btn.set('disabled','disabled');
+    });
+    
+    $('member_id').addEvent('change',function(){
+        get_points();
+    });
+    
+    $('shop_id').addEvent('change',function(){
+        get_points();
+    });    
+	
+    <{if $member_info}>
+        get_points();
+    <{/if}>
+})();
+
+function get_points(){
+    var member_id = $('member_id').get('value');
+    var shop_id = $('shop_id').get('value');
+    
+    if(member_id=='' || shop_id==''){
+        return false;
+    }
+    
+    var _data = 'member_id='+member_id+'&shop_id='+shop_id;
+    var _url = 'index.php?app=taocrm&ctl=admin_points_log&act=get_points';
+    var ajaxReq = new Request({
+        method : 'post',
+        url : _url,
+        data:_data,
+        onSuccess : function(responseText) {
+            //alert(responseText)
+            try{
+                var obj = eval("("+responseText+")");
+                if(obj.msg != 'succ'){
+                    $('curr_points').set('html', obj.msg);
+                }else{
+                    $('curr_points').set('html', obj.points);
+                }
+            }catch(e){
+                alert(responseText);
+            }
+        }
+    });
+    ajaxReq.send();
+}
+
+function set_points(points){
+    $('curr_points').set('html', points);
+}
+</script>
+
+<{/if}>
+ 

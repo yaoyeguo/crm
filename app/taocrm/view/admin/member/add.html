@@ -1,0 +1,152 @@
+<h3 class="head-title">添加客户</h3>
+
+<form id="mem_form" action="index.php?<{$env.server.QUERY_STRING}>" method="post">
+<div class="tableform">
+    <input type=hidden name="from" value="<{$from}>" />
+    <input type=hidden name="member_id" value="<{$mem.member_id}>" />
+    <div class="division" style="border:none;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th><{t}>所属店铺<{/t}></th>
+                <td><{input style="width:160px" app=ectools type="select" options=$shops name='shop_id' id="shop_id" value=$mem.shop_id vtype="required" }>
+                <font color='red'> *</font>
+                
+                <a target="dialog::{width:700,height:350,title:'新增店铺'}" href="index.php?app=ecorder&ctl=admin_shop&act=addterminal&from=add_member" style="color:#5779BD;">点击新增店铺</a>
+                </td>
+            </tr>
+            
+            <tr>
+                <th><{t}>客户名<{/t}></th>
+                <td>
+                    <{input style="width:150px" app=ectools type="text" name='uname' value=$mem.account.uname vtype='required' }>
+                    <font color='red'> * 唯一识别</font>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>邮箱<{/t}></th>
+                <td>
+                    <{input size=30 app=ectools type="text" name='email' value=$mem.contact.email vtype='email' }>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>姓名<{/t}></th>
+                <td><{input app=ectools type="text" name='name' value=$mem.contact.name vtype="required" }>
+                <font color='red'> *</font>
+                </td>
+            </tr>
+            <tr>
+                <th><{t}>性别<{/t}></th>
+                <td><{input type='gender' name='gender' value=$mem.profile.gender }></td>
+            </tr>
+            <tr>
+                <th><{t}>生日<{/t}></th>
+                <td><{input type='date' name='birthday' value=$mem.profile.birthday }></td>
+            </tr>
+            <tr>
+                <th><{t}>地区<{/t}></th>
+                <td><{input app=ectools type="region" name='area' value=$mem.contact.area }></td>
+            </tr>
+            <tr>
+                <th><{t}>地址<{/t}></th>
+                <td><{input size=50 app=ectools type="text" name='addr' value=$mem.contact.addr }>
+                　　<{t}>邮编<{/t}> 
+                    <{input size=10 maxlength=6 app=ectools type="text" name='zipcode' value=$mem.contact.zipcode }>
+                    </td>
+            </tr>
+            <tr>
+                <th><{t}>手机<{/t}></th>
+                <td><{input app=ectools type="text" name='mobile' value=$mem.contact.phone.mobile }>
+                　　<{t}>固定电话<{/t}> 
+                <{input app=ectools type="text" name='telephone' value=$mem.contact.phone.telephone }></td>
+            </tr>
+            
+
+            <tr>
+                <th><{t}>支付宝帐号<{/t}></th>
+                <td><{input app=ectools type="text" name='alipay_no' value=$mem.alipay_no }></td>
+            </tr>
+            <tr>
+                <th><{t}>贵宾组客户<{/t}></th>
+                <td><{input app=ectools type="bool" name='is_vip' value=1 value=$mem.is_vip }></td>
+            </tr>
+            <tr>
+                <th><{t}>短信黑名单<{/t}></th>
+                <td><{input app=ectools type="bool" name='sms_blacklist' value=$mem.sms_blacklist }></td>
+            </tr>
+            <tr>
+                <th><{t}>邮件黑名单<{/t}></th>
+                <td><{input app=ectools type="bool" name='edm_blacklist' value=$mem.edm_blacklist }></td>
+            </tr>
+            <tr>
+                <th><{t}>备注<{/t}></th>
+                <td><{input size=50 type="text" name="remark" value=$mem.remark}></td>
+            </tr>
+            <tr>
+                <th><{t}>自定义属性<{/t}></th>
+                <td id="prop_name">
+                    请选择店铺
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-action"><{button id="save" type="button" label=$___b2c="保存"|t:'b2c' }></div>
+</div>
+</form>
+<script>
+(function(){
+    
+    $('shop_id').addEvent('change',function(){
+        get_shop_prop($(this).value);
+    });
+    
+    $('save').addEvent('click',function(event){
+        $('mem_form').fireEvent('submit',new Event(event));
+    });
+    
+    $('mem_form').store('target',{
+        onRequest:function(){
+           $('save').set('disabled', 'true');
+        },
+        onSuccess:function(response){    
+            alert('客户添加成功！如需立即查看，请先重新加载内存！');
+            var hash_res_obj = JSON.decode(response);
+            if(typeof(hash_res_obj.error) != 'undefined'){
+               $('save').set('disabled', '');
+            }else{
+               
+            }
+        }
+    });
+    
+})();
+
+function get_shop_prop(shop_id){
+    var _url = 'index.php?app=ecorder&ctl=admin_shop&act=get_shop_prop';
+    var _data = 'shop_id='+shop_id;
+    new Request({
+        url : _url,
+        method : 'post',
+        data : _data,
+        onSuccess : function(responseText){
+            //alert(responseText);
+            try{
+                var data = JSON.decode(responseText);
+                if(data.length > 0){
+                    var prop_name = '';
+                    for(var i=0;i<data.length;i++){
+                        if(data[i] != '')
+                        prop_name += data[i]+'：\
+                            <input class="x-input" type="text" size="8" maxlength="8" name="prop_name['+data[i]+']" value="" />&nbsp;';
+                    }
+                    $('prop_name').set('html', prop_name);
+                }else{
+                    $('prop_name').set('html', '未定义，<a href="index.php?app=ecorder&ctl=admin_shop&act=member_prop_edit&p[0]='+shop_id+'&from=add_member" target="dialog::{width:700,height:380,title:\'自定义属性\'}" style="color:#5779BD;">点击这里定义客户属性</a>');
+                }
+            }catch(e){
+                alert("服务器发生了内部错误:"+responseText); 
+            }
+        }
+    }).send();
+}
+</script>
+

@@ -1,0 +1,24 @@
+
+<div style="" class="content-head">
+    <div>
+        <h2 class="head-title ">环境监控</h2>
+        <{foreach from=$sur_arr item=data key=i}>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span <{if $data.code == 'fail' }> style="color:red" <{/if}>>
+        <{$data.msg}>
+        </span>
+        <br />
+        <{/foreach}>
+    </div>
+    <div id="goods_host_list">
+    <h2 class="head-title ">定时任务监控</h2>
+        <{foreach from=$surdata item=data key=i}>
+        <h3><{$i}>:<{$data.task_name}>（<{$data.task_desc}>）</h3>
+           <span <{if $data.time_consuming >= $data.cycle_int }> style="color:red" <{/if}>>
+           开始：<{$data.begin_time}>，结束：<{$data.end_time}>，耗费：<{$data.time_consuming}>秒，周期：<{$data.cycle}>
+           </span>
+           <br />
+        <{/foreach}>
+    </div>
+    
+
+</div>

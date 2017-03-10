@@ -1,0 +1,25 @@
+<h3 class="head-title"><{t}> 短信模板<{/t}></h3>
+<form action="index.php?app=taocrm&ctl=admin_messenger&act=save" method="post" id="c_msg_list">
+    <div class="gridlist-action">
+        <{button label="模板添加" app="taocrm"  onclick="new Dialog('}>
+    </div>
+
+
+    <table class="gridlist" cellpadding="0"  cellspacing="0" border="0">
+        <thead>
+            <tr>
+                <th style="width:15%"><{t}>发送项目<{/t}></th>
+                <th>编辑</th>
+            </tr>
+        </thead>
+        <tbody>
+            <{foreach from=$list item=list key=key}>
+            <tr> <td><{$list.theme_title}></td>
+            <td><a href="" onclick="new Dialog('index.php?app=taocrm&ctl=admin_sms&act=edit_theme&theme_id=<{$list.theme_id}>',{height:300,title:'模板添加'})">编辑</a></td>
+            </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+
+
+</form>

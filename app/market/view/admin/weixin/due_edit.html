@@ -1,0 +1,256 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+
+.req_fields div{padding:0 0 5px 0;}
+span.del,span.add{color:#FFF;font-size:14px;font-weight:bold;padding:2px 5px;cursor:pointer;}
+span.del{background:#F60;}
+span.add{background:#090;}
+</style>
+
+<form style="position:relative;" id="form_due" class="tableform" action="index.php?app=market&ctl=admin_weixin_due&act=due_edit" method="POST">
+
+<div class="division">
+
+    <!--预览-->
+    <div style="float:right;width:290px;overflow-y:auto;border:1px solid #CCC;">
+        <div id="preview_head" style="background:url(<{$env.app.res_url}>/wx1.gif) no-repeat #FFF;padding:0 0 0 30px;height:274px;"></div>
+        <div id="preview_body" style="background:url(<{$env.app.res_url}>/wx2.gif) no-repeat #FFF;padding:0 0 10px 10px;min-height:240px;"></div>
+    </div>
+
+<table style="width:420px;" cellspacing="0" cellpadding="0" border="0" align="center">
+    <tbody><tr class="hide">
+        <th>活动模板：</th>
+        <td class="set-temp" id="sel_templates">
+            <label class="checked" for="template1"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_default.jpg" app="quiz">
+            <input checked="checked" type="radio" id="template1" name="fields[template_id]" value="1">
+            </label>
+
+
+            <label class="" for="template2"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_red.jpg" app="quiz">
+            <input type="radio" id="template2" name="fields[template_id]" value="2">
+            </label>
+
+            <label class="" for="template3"><img src="http://test.b2c.weixindao.cn/app/quiz/statics/images/temp_vote_green.jpg" app="quiz">
+            <input type="radio" id="template3" name="fields[template_id]" value="3">
+            </label>
+
+        </td>
+    </tr>
+    <tr>
+      <th>
+        <em class="c-red">*</em>预约名称：</th>
+      <td>
+        <{input id="title" value=$rs.title name="fields[title]" vtype="required" maxlength="12" }>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>关键词：</th>
+        <td>
+            <{input id="keywords" value=$rs.keywords name="fields[keywords]" vtype="required" }>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>预约图片：
+            <br/>320*120px
+        </th>
+        <td>
+            <{input id="picurl" width=160 height=60 type="image" value=$rs.picurl name="fields[picurl]"}>
+        </td>
+    </tr>
+    <tr>
+        <th>预约简介：</th>
+        <td>
+            <{input type="textarea" id="desc" value=$rs.desc name="fields[desc]" style="width:290px" maxlength="40" }>
+        </td>
+    </tr>
+    <tr>
+        <th>活动状态：</th>
+        <td>
+        <input <{if($rs.is_active==1)}>checked="checked"<{/if}> type="radio" value="1" id="dom_el_a4e99c0-1" name="fields[is_active]"><label for="dom_el_a4e99c0-1">开启</label>
+
+        <input <{if($rs.is_active==0)}>checked="checked"<{/if}> type="radio" value="0" id="dom_el_a4e99c0-2" name="fields[is_active]"><label for="dom_el_a4e99c0-2">关闭</label></td>
+    </tr>
+    <tr>
+        <th>预约信息填写：</th>
+        <td id="req_fields1">
+            <label><input type="checkbox" <{if(in_array('num', $rs.req_fields.prop))}>checked="checked"<{/if}> value="num" name="fields[req_fields][prop][]" />数量</label>
+
+            <label><input type="checkbox" <{if(in_array('color', $rs.req_fields.prop))}>checked="checked"<{/if}> value="color" name="fields[req_fields][prop][]" />颜色</label>
+
+            <label><input type="checkbox" <{if(in_array('size', $rs.req_fields.prop))}>checked="checked"<{/if}> value="size" name="fields[req_fields][prop][]" />尺码</label>
+        </td>
+    </tr>
+    <tr>
+        <th>用户信息填写：</th>
+        <td id="req_fields2" class="req_fields">
+            <label><input type="checkbox" <{if(in_array('mobile', $rs.req_fields.user))}>checked="checked"<{/if}> value="mobile" name="fields[req_fields][user][]" />手机</label>
+
+            <label><input type="checkbox" <{if(in_array('truename', $rs.req_fields.user))}>checked="checked"<{/if}> value="truename" name="fields[req_fields][user][]" />姓名</label>
+
+            <label><input type="checkbox" <{if(in_array('addr', $rs.req_fields.user))}>checked="checked"<{/if}> value="addr" name="fields[req_fields][user][]" />地址</label>
+        </td>
+    </tr>
+    <tr>
+        <th>自定义输入：</th>
+        <td id="req_fields3" class="req_fields">
+            <{assign var="arr" value=array("num"=>"数量","date"=>"日期")}>
+
+            <{foreach from=$rs.req_fields.other.name item=data key=k }>
+            <div>
+                <{input type="text" name="fields[req_fields][other][name][]" size="6" value=$data }>
+                类型：
+                <{input type="select" name="fields[req_fields][other][type][]" options=$arr value=$rs.req_fields.other.type[$k] }>
+                <span class="del">x</span>
+            </div>
+            <{/foreach}>
+        </td>
+    </tr>
+    <tr>
+        <th><em class="c-red">*</em>活动详细说明：</th>
+        <td>
+            <{input id="content" value=$rs.content name="fields[content]" type="textarea" rows=2 cols=60 style="width:290px" }>
+        </td>
+    </tr>
+
+    </tbody></table>
+
+    <div style="width:100%;clear:both;"></div>
+
+    <input name="due_id" value="<{$rs.due_id}>" type="hidden" />
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+        <{button type="button" label="预览" onclick="set_preview();" }>
+    </div>
+<{/area}>
+
+</form>
+
+<script>
+(function(){
+
+    var _form = $('form_due');
+	var btn =$('survey-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                    window.finderGroup['<{$env.get.finder_id}>'].refresh();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+
+        _form.fireEvent('submit',{stop:$empty});
+
+    });
+
+    $$('#req_fields1 input').addEvent('click',function(){
+        set_preview();
+    });
+
+    $$('#req_fields2 input').addEvent('click',function(){
+        set_preview();
+    });
+
+    $$('#req_fields3 span.del').addEvent('click',function(){
+        $(this).getParent().getElement('input').set('value', '');
+        $(this).getParent().getElement('select').set('value', '');
+    });
+
+    //bind_add_event();
+})();
+
+function bind_add_event(){
+    $$('#req_fields3 span.add').addEvent('click',function(){
+        var td = $(this).getParent().getParent();
+        var html = td.getElement('div').get('html');
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        div.injectInside(td);
+    });
+}
+
+function get_img_url(){
+    var image = $$('div.image-input-view img');
+    var img_html = '';
+    if(image){
+        return image.get('src');
+    }
+    return false;
+}
+
+function set_preview(){
+    var title = $('title').get('value');
+    var keywords = $('keywords').get('value');
+    var picurl = get_img_url();
+    var desc = $('desc').get('value');
+    var req_fields1 = $$('#req_fields1 input:checked');
+    var req_fields2 = $$('#req_fields2 input:checked');
+    var content = $('content').get('value');
+
+    var req_fields = ';';
+    for(var i=0;i<req_fields1.length;i++){
+        req_fields += req_fields1[i].value+';';
+    }
+
+    for(var i=0;i<req_fields2.length;i++){
+        req_fields += req_fields2[i].value+';';
+    }
+    //alert(req_fields);
+
+    var preview_head = '<h3 style="margin:0 0 20px 0;padding:70px 0 0 0;">'+title+'</h3>\
+    <img style="border:1px solid #AAA;" src="'+picurl+'" height=72 width=192 />\
+    <br/>'+desc+'\
+    ';
+    $('preview_head').set('html', preview_head);
+
+    var preview_body = '<h3 style="color:#FFF;margin:0 0 20px 0;padding:60px 0 0 0;">'+title+'</h3>\
+    <div style="background:#EFEFEF">'+content+'</div>\
+    请输入预约信息：\
+    ';
+
+    if(req_fields.indexOf(';num;')!=-1) preview_body += '<br/>　　数量：-<input size=3 />+';
+    if(req_fields.indexOf(';color;')!=-1) preview_body += '<br/>　　颜色：<input size=5 />';
+    if(req_fields.indexOf(';size;')!=-1) preview_body += '<br/>　　尺码：<input size=5 />';
+    if(req_fields.indexOf(';date;')!=-1) preview_body += '<br/>　　日期：<input size=5 />';
+    if(req_fields.indexOf(';mobile;')!=-1) preview_body += '<br/>　　手机：<input size=5 />';
+    if(req_fields.indexOf(';truename;')!=-1) preview_body += '<br/>　　姓名：<input size=5 />';
+    if(req_fields.indexOf(';addr;')!=-1) preview_body += '<br/>　　地址：<input size=5 />';
+
+    $$('#req_fields3 div').each(function(el){
+        var name = el.getElement('input[name="fields[req_fields][other][name][]"]');
+        var type = el.getElement('select[name="fields[req_fields][other][type][]"]');
+        if(name.value != ''){
+            if(type.value == 'num'){
+                preview_body += '<br/>　　'+name.value+'：-<input size=3 />+';
+            }else{
+                preview_body += '<br/>　　'+name.value+'：<input size=5 />';
+            }
+        }
+    });
+
+    preview_body += '<br/>备注留言：<input size=5 />';
+
+    $('preview_body').set('html', preview_body);
+}
+
+set_preview();
+</script>

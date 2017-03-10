@@ -1,0 +1,315 @@
+<div id="group_edit_container" class="finder-detail-content" style="width:100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab <{if $cur_tab == 'auto'}>current<{/if}>"><span><a href="index.php?app=taocrm&ctl=admin_all_member&act=bind_member&tab=auto">自动识别可合并客户</a></span></li>
+                            <li class="tab <{if $cur_tab == 'manual'}>current<{/if}>"><span><a href="index.php?app=taocrm&ctl=admin_all_member&act=bind_member&tab=manual&dimensions=qq">手动合并客户</a></span></li>
+                            <li class="tab <{if $cur_tab == 'assign'}>current<{/if}>"><span><a href="index.php?app=taocrm&ctl=admin_all_member&act=bind_member&tab=assign">指定客户合并</a></span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                        <div class="table-action">
+                            <{button id="btn_auto_task" label=$___b2c="一键合并客户"|t:'b2c' }>
+                            根据客户的手机号或邮箱相同，自动跨渠道和平台识别客户为同一客户
+                        </div>
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>客户昵称ID<{/t}></th>
+                                    <th><{t}>真实姓名<{/t}></th>
+                                    <th><{t}>手机号<{/t}></th>
+                                    <th><{t}>邮箱<{/t}></th>
+                                    <th><{t}>客户地址<{/t}></th>
+                                    <th><{t}>更新时间<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                            <{if $members.data}>
+                                <{foreach from=$members.data item=data key=key}>
+                                 <tr>
+                                     <td><{$data.uname}></td>
+                                     <td><{$data.name}></td>
+                                     <td><{$data.mobile}></td>
+                                     <td><{$data.email}>
+                                     <td><{$data.addr}></td>
+                                     <td><{if $data.update_time}><{$data.update_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}>
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr>
+                                    <td colspan="6" align="center">最终合并会员数:<{$members.total}></td>
+                                 </tr>
+                                 <{/if}>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="tableform" style="display:none">
+
+                       <div class="table-action"><{button type="submit" id="btn_manual_task" label=$___b2c="一键合并客户"|t:'b2c' }>根据商家选择可识别的跨渠道和平台客户的条件，系统自动识别客户为同一客户
+                     <{input app=ectools type="select" options=$dimensionsList name='dimensions' id="manual_dimensions" value=$dimensions  vtype="required" }><{button class="filterBtn btn-thirdly" id="btn_manual_search" label="查询"}></div>
+                      
+                       <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}><{$dimensionsList.$dimensions}>合并<{/t}></th>
+                                    <th><{t}>客户昵称ID<{/t}></th>
+                                    <th><{t}>真实姓名<{/t}></th>
+                                    <th><{t}>手机号<{/t}></th>
+                                    <th><{t}>邮箱<{/t}></th>
+                                    <th><{t}>客户地址<{/t}></th>
+                                    <th><{t}>更新时间<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                             <{if $members.data}>
+                                <{foreach from=$members.data item=data key=key}>
+                                 <tr>
+                                     <td><{$data.$dimensions}></td>
+                                     <td><{$data.uname}></td>
+                                     <td><{$data.name}></td>
+                                     <td><{$data.mobile}></td>
+                                     <td><{$data.email}>
+                                     <td><{$data.addr}></td>
+                                     <td><{if $data.update_time}><{$data.update_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}>
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr>
+                                    <td colspan="6" align="center">最终合并会员数:<{$members.total}></td>
+                                 </tr>
+                                 <{/if}>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                     <div class="tableform" style="display:none">
+                          <div class="table-action">客户:<input type="text"  name="search_keywords" id="search_keywords"   value="<{$search_keywords}>" >(客户昵称)<{button type="submit" id="btn_assign_search" label=$___b2c="查询"|t:'b2c' }></div>
+                       <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>客户昵称ID<{/t}></th>
+                                    <th><{t}>真实姓名<{/t}></th>
+                                    <th><{t}>手机号<{/t}></th>
+                                    <th><{t}>邮箱<{/t}></th>
+                                    <th><{t}>客户地址<{/t}></th>
+                                    <th><{t}>QQ<{/t}></th>
+                                    <th><{t}>微信<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="search_member_list">
+                          
+                            </tbody>
+                        </table>
+                        <div style="height:20px;"></div>
+                         <div class="table-action">合并到:<input type="text"  name="search_bind_keywords" id="search_bind_keywords"   value="<{$search_bind_keywords}>" >(客户昵称)<{button type="submit" id="btn_assign_bind_search" label=$___b2c="查询"|t:'b2c' }></div>
+                       <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>选择<{/t}></th>
+                                    <th><{t}>客户昵称ID<{/t}></th>
+                                    <th><{t}>真实姓名<{/t}></th>
+                                    <th><{t}>手机号<{/t}></th>
+                                    <th><{t}>邮箱<{/t}></th>
+                                    <th><{t}>客户地址<{/t}></th>
+                                    <th><{t}>QQ<{/t}></th>
+                                    <th><{t}>微信<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="search_bind_member_list">
+                            </tbody>
+                        </table>
+                        <div class="table-action"><{button  type="submit" id="btn_bind" label=$___b2c="确定合并"|t:'b2c' }></div>
+                    </div>
+                    
+                </div>
+
+ <script>
+		(function() {
+
+			//选项卡效果
+			var tab_container = $$('#group_edit_container');
+			var tab_nav, tab_div;
+			var tabs = new Array('auto','manual','assign');
+			
+			for ( var i = 0; i < tab_container.length; i++) {
+				tab_nav = $('tab_nav').getElements('li');
+				tab_div = tab_container[i].getElements('div.tableform');
+				tab_nav.each(function(obj, i) {
+					
+					if(tabs[i] == '<{$cur_tab}>'){
+						obj.set('class', 'tab current');
+                        tab_div[i].setStyle('display', 'block');
+					}else{
+					    obj.set('class', 'tab');
+                        tab_div[i].setStyle('display', 'none');
+					}
+					
+				});
+			}
+			
+			
+			$('btn_manual_search').addEvent('click',function(){
+				window.location.href='index.php?app=taocrm&ctl=admin_all_member&act=bind_member&tab=manual&dimensions='+$('manual_dimensions').value;
+			});
+			
+			$('btn_auto_task').addEvent('click',function(){
+				var ajaxReq = new Request(
+		                {
+		                    method : 'post',
+		                    url : 'index.php?app=taocrm&ctl=admin_all_member&act=do_request_bind',
+		                    data:'',
+		                    onSuccess : function(responseText) {
+		                    	var data = JSON.decode(responseText);
+		                    	if(data.status == 'succ'){
+		                    		alert('提交任务成功，请到合并客户队列查看.');
+		                            window.location.href='index.php?app=taocrm&ctl=admin_member_bind_queue&act=index';
+
+		                    	}else{
+		                    		alert(data.msg);
+		                    	}
+		                    },
+		                });
+		     ajaxReq.send();
+				
+			});
+			
+			$('btn_manual_task').addEvent('click',function(){
+				
+                var ajaxReq = new Request(
+                        {
+                            method : 'post',
+                            url : 'index.php?app=taocrm&ctl=admin_all_member&act=do_request_bind&dimensions='+$('manual_dimensions').value,
+                            data:'',
+                            onSuccess : function(responseText) {
+                                var data = JSON.decode(responseText);
+                                if(data.status == 'succ'){
+                                    alert('提交任务成功，请到合并客户队列查看.');
+                                    window.location.href='index.php?app=taocrm&ctl=admin_member_bind_queue&act=index';
+
+                                }else{
+                                	alert(data.msg);
+                                }
+                            },
+                        });
+             ajaxReq.send();
+                
+            });
+			
+			
+			$('btn_assign_search').addEvent('click',function(){
+				$('search_member_list').empty();
+				var ajaxReq = new Request(
+                        {
+                            method : 'post',
+                            url : 'index.php?app=taocrm&ctl=admin_all_member&act=ajax_search_member',
+                            data:{'search_keywords':$('search_keywords').value},
+                            onSuccess : function(responseText) {
+                                var result = JSON.decode(responseText);
+                                var template = '<td mid="{member_id}">{uname}</td><td>{name}</td><td>{mobile}</td><td>{email}<td>{addr}</td><td>{qq}</td><td>{weixin}</td>';
+                                if(result.status == 'succ'){
+                                	result.data.each(function(item){
+                                		template = template.replace('{member_id}',item.member_id);
+                                		template = template.replace('{uname}',item.uname);
+                                		template = template.replace('{name}',item.name);
+                                		template = template.replace('{mobile}',item.mobile);
+                                		template = template.replace('{email}',item.email);
+                                		template = template.replace('{addr}',item.addr);
+                                		template = template.replace('{qq}',item.qq);
+                                		template = template.replace('{weixin}',item.weixin);
+                                		var tr = new Element('tr');
+                                		tr.set('html',template);
+                                		tr.inject($('search_member_list'));
+                                	});
+                                }else{
+                                    alert('查询失败,请稍后重试!');
+                                }
+                            },
+                        });
+             ajaxReq.send();
+			});
+			
+			
+			$('btn_assign_bind_search').addEvent('click',function(){
+                $('search_bind_member_list').empty();
+                var ajaxReq = new Request(
+                        {
+                            method : 'post',
+                            url : 'index.php?app=taocrm&ctl=admin_all_member&act=ajax_search_member',
+                            data:{'search_keywords':$('search_bind_keywords').value},
+                            onSuccess : function(responseText) {
+                                var result = JSON.decode(responseText);
+                                var template = '<td><input type="radio" mid="{member_id}" /></td><td>{uname}</td><td>{name}</td><td>{mobile}</td><td>{email}<td>{addr}</td><td>{qq}</td><td>{weixin}</td>';
+                                if(result.status == 'succ'){
+                                    result.data.each(function(item){
+                                    	template = template.replace('{member_id}',item.member_id);
+                                        template = template.replace('{uname}',item.uname);
+                                        template = template.replace('{name}',item.name);
+                                        template = template.replace('{mobile}',item.mobile);
+                                        template = template.replace('{email}',item.email);
+                                        template = template.replace('{addr}',item.addr);
+                                        template = template.replace('{qq}',item.qq);
+                                        template = template.replace('{weixin}',item.weixin);
+                                        var tr = new Element('tr');
+                                        tr.set('html',template);
+                                        tr.inject($('search_bind_member_list'));
+                                    });
+                                }else{
+                                    alert('查询失败,请稍后重试!');
+                                }
+                            },
+                        });
+             ajaxReq.send();
+            });
+            
+            $('btn_bind').addEvent('click',function(){
+                var from_member_ids = new Array();
+                var to_member_id = 0;
+                $ES('tr',$('search_member_list')).each(function(el){
+                    from_member_ids.push(el.getFirst().get('mid'));
+                });
+                $ES('input[type=radio]',$('search_bind_member_list')).each(function(el){
+                    if(el.checked)to_member_id = el.get('mid');
+                });
+            
+                if(from_member_ids.length == 1 && from_member_ids[0] == to_member_id){
+                    alert('被合并和合并客户是同一个人，合并无意义!');
+                    return false;
+                }
+                
+                if(from_member_ids.length == 0){
+                    alert('请选择被合并的客户!');
+                    return false;
+                }
+                
+                if(to_member_id == 0){
+                    alert('请选择合并的客户!');
+                    return false;
+                }
+                //console.info(from_member_ids);
+                //console.info(to_members);
+                //return false;
+                var data = {'from_member_ids':JSON.encode(from_member_ids),'to_member_id':to_member_id}; 
+                var ajaxReq = new Request(
+                            {
+                                method : 'post',
+                                url : 'index.php?app=taocrm&ctl=admin_all_member&act=do_assign_bind',
+                                data:data,
+                                onSuccess : function(responseText) {
+                                    var result = JSON.decode(responseText);
+                                    if(result.status == 'succ'){
+                                        $('search_member_list').empty();
+                                        $('search_keywords').value = '';
+                                     alert('合并成功');
+                                    }else{
+                                        alert(result.msg);
+                                    }
+                                },
+                            });
+                 ajaxReq.send();
+                
+            });
+        })();
+    </script>

@@ -1,0 +1,42 @@
+<div class="tableform">
+    <h2 class="head-title" style="padding:20px 70px;"><{t}>历史订单导入<{/t}></h2>
+	<div class="tableform" style="background:#EAEEF4;padding:10px 60px;">
+		<h5><{t}>第一步：从淘宝下载订单报表和宝贝报表的.csv文件<{/t}></h5><br/>
+        <h5><{t}>第二步：上传.CSV文件<{/t}>　　<font color="red">2M以上大数据量订单导入工具下载：</font>  
+        <a target="_blank" href="<{$import_tools_download_url}>"><{img border=0 align="absmiddle" src="download.jpg" app="taocrm"}></a></h5>
+	</div>
+	<div class="tableform" style="padding:5px 50px;">
+		<form action='index.php?app=taocrm&ctl=admin_member&act=toImport' method='post' enctype="multipart/form-data" id="import_form">
+			<div class="division">
+				<font color="red">*</font> <{t}>所属店铺<{/t}>：
+				<select name="shop_id">
+                <option value=''>-请选择-</option>
+				<{foreach from=$shopList item=shop}>
+					<option value='<{$shop.shop_id}>'><{$shop.name}></option>
+				<{/foreach}>
+				 </select>
+			</div>
+			<div class="division" >
+				<font color="red">*</font> 上传订单CSV：<input size=30 type='file' name='order_list' />
+			</div>
+			<div class="division" >
+				<font color="red">*</font> 上传宝贝CSV：<input size=30 type='file' name='detail_list' />
+			</div>
+            <div class="division" ><font color="red">*</font> 订单CSV和宝贝CSV都必须上传。<font color="red">两个文件大小合计不能超过4MB。</font></div>
+			<div class="table-action">
+				<{button label=$___desktop="导入"|t:'desktop' id="ImportBtn"  type="submit"}>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+(function(){
+	var state;
+	$('ImportBtn').addEvent('click',function(e){
+		if(state||!$('ImportCSV').value.length)return false;
+		state=true;
+		this.style.cursor='not-allowed';
+	});
+})();
+</script>

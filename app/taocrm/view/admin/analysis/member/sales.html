@@ -1,0 +1,51 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+        <div class="wdgk_title"><span class="float1 ">客户销售统计</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+            <tr class="list_tr">
+                <td>客户等级</td>
+                <td>订单总额</td>
+                <td>已支付订单总额</td>
+                <td>未支付订单总额</td>
+                <td>成功订单总额</td>
+                <td>未成功订单总额</td>
+                <td>订单总量</th>
+                <td>成功订单总量</td>
+                <td>未支付订单总量</td>
+                <td>取消订单总量</td>
+            </tr>
+
+            <{foreach from=$data item=data key=key}>
+            <tr class="list_tr1">
+                <td><{$data.name}></td>
+                    <td><{if $data.data.order_salse_total.total}><{$data.data.order_salse_total.total}><{else}>0<{/if}></td>
+                    <td><{if $data.data.order_pay_total.total}><{$data.data.order_pay_total.total}><{else}>0<{/if}></td>
+                    <td><{if $data.data.order_nopay_total.total}><{$data.data.order_nopay_total.total}><{else}>0<{/if}></td>
+                    <td><{if $data.data.order_finish_total.total}><{$data.data.order_finish_total.total}><{else}>0<{/if}></td>
+                    <td><{if $data.data.order_dead_total.total}><{$data.data.order_dead_total.total}><{else}>0<{/if}></td>
+                    <td><{$data.data.order_count.count}></td>
+                    <td><{$data.data.order_finish_count.count}></td>
+                    <td><{$data.data.order_nopay_count.count}></td>
+                    <td><{$data.data.order_dead_count.count}></td>
+            </tr>
+            <{/foreach}>
+            </table>
+        </div>
+
+        <div class="wdgk_title"><span class="float1 ">客户通路销售额比较</span></div>
+        <div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=chart_line&service=<{$service}>&target=<{if $shop_level[0][shop_lv_id]}><{$shop_level[0][shop_lv_id]}><{else}>0<{/if}>&time_from=<{$time_from}>&time_to=<{$time_to}>&shopId=<{$select_type}>" scrolling="no" width="100%" height="100%" id='line_frame'></iframe>
+        </div>
+        <div  class="fkfb_list_row">
+            <ul >
+                <{foreach from=$shop_level item=data key=key name=shopLevel}>
+                <li >
+                    <label for="radio<{$data.shop_lv_id}>">
+                        <input type="radio" name="rd" id="radio<{$data.shop_lv_id}>" value='<{$data.shop_lv_id}>' <{if $smarty.foreach.shopLevel.first}> checked<{/if}> onclick='change_chart(this.value)' /><{$data.name}></label>
+                </li>
+                <{/foreach}>
+            </ul>
+        </div>
+    </div>
+</div>

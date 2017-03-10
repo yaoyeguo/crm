@@ -1,0 +1,49 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+        <div class="wdgk_title"><span class="float1 ">购买单价平均值属于某区间的客户个数</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+                <tr class="list_tr">
+                    <td>客户等级</td>
+                    <{foreach from=$price_space item=space key=key}>
+                    <td> <{$space}></td>
+                    <{/foreach}>
+                </tr>
+                <{foreach from=$prices item=price key=key}>
+                <tr class="list_tr1">
+                    <td><{$lv.$key}></td>
+                    <{foreach from=$price item=price2 key=key}>
+                    <td><{$price2}></td>
+                    <{/foreach}>
+                </tr>
+                <{/foreach}>
+            </table>
+        </div>
+        <!--<div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=column_times_shop" scrolling="no" width="100%" height="100%"></iframe>
+        </div>-->
+
+        <div class="wdgk_title"><span class="float1 ">客户购买总金额属于某区间的客户个数</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+                <tr class="list_tr">
+                    <td>客户等级</td>
+                    <{foreach from=$price_space item=space key=key}>
+                    <td> <{$space}></td>
+                    <{/foreach}>
+                </tr>
+                <{foreach from=$total_price item=price key=key}>
+                <tr class="list_tr1">
+                    <td><{$lv.$key}></td>
+                    <{foreach from=$price item=price2 key=key}>
+                    <td><{$price2}></td>
+                    <{/foreach}>
+                </tr>
+                <{/foreach}>
+            </table>
+        </div>
+        <!--<div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=column_times_two" scrolling="no" width="100%" height="100%"></iframe>
+        </div>-->
+    </div>
+</div>

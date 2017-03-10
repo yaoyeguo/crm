@@ -1,0 +1,16 @@
+<ul id="coupon">
+
+    <{if (!$items)}>
+        暂时没有可兑换的优惠券。
+    <{/if}>
+
+    <{foreach from=$items item=data }>
+    <li><a href="<{link app='taocrm' ctl='site_exchange' act='index' item_id=$data.item_id }>"><{img width=180 height=180 src="coupon.jpg" app="taocrm" }></a><br/>
+    <font style="color:#DF7A17;font-size:10pt;font-family:'Microsoft YaHei' ! important;"><{$data.title}></font><br/>
+    需要积分：<{$data.price}><br/>
+    适用店铺：<{$shops[$data.shop_id]}><br/>
+    <a id="buy" href="<{link app='taocrm' ctl='site_exchange' act='index' item_id=$data.item_id }>">立刻兑换</a>
+    <br/><br/></li>
+    <{/foreach}>
+
+</ul>

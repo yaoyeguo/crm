@@ -1,0 +1,108 @@
+<div container='true'>
+<div class="tableform">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td><{t}>类型名称:<{/t}><{input app=ectools size="10" maxlength="5" type="text" name="type_name" id="type_name" vtype="required" }>&nbsp
+                 <{t}>类型编码:<{/t}><{input app=ectools size="10" maxlength="5" type="text" name='type_code' id="type_code" vtype="required" }>
+               <{button id="addTypeBtn" class="filterBtn btn-thirdly" label=$___ectools="添加"|t:'ectools'}>
+                </td>
+            </tr>
+            <tr>
+                <td id="type_list"></td>
+            </tr>
+             <tr>
+                <td><{button id="closeTypeBtn" class="filterBtn btn-thirdly" label=$___ectools="关闭"|t:'ectools'}></td>
+            </tr>
+   </table>
+   
+</div>
+</div>
+<script>
+var typeList = <{$jsonTypeList}>;
+var typeTmp = '序号:{key},类型名称:{type_name},类型编码:{type_code}<button type="button" class="btn delBtn btn-thirdly"><span><span>删除</span></span></button>';
+(function(){
+	$('addTypeBtn').addEvent('click',function(){
+		if($('type_name').value == ''){
+			alert('类型名称不能为空!');
+			return false;
+		}
+		
+		if($('type_code').value == ''){
+            alert('类型编码不能为空!');
+            return false;
+        }
+		
+		var data = {'type_name':$('type_name').value,'type_code':$('type_code').value};
+		
+		 new Request({
+		        url : 'index.php?app=taocrm&ctl=admin_member_card_type&act=save_type',
+		        method : 'post',
+		        data:data,
+		        onSuccess:function(responseText){
+		        	var result = JSON.decode(responseText);
+		        	if(result.rsp == 'succ' && $defined(result.id)){
+		        		data.id = result.id;
+		        		typeList.push(data);
+		        		initTypeList();
+		        	}else{
+		        		alert(result.msg);
+		        	}
+		        }
+		    }).send();
+	});
+	
+	
+	$('closeTypeBtn').addEvent('click',function(){
+		$('closeTypeBtn').getParent('.dialog').retrieve('instance').close();
+	});
+})()
+
+function initTypeList(){
+	$('type_list').empty();
+	typeList.each(function(typeRow,key){
+		var el = new Element('div',{
+			'styles':{
+				'height':'25px'
+			},
+			'type_id':typeRow.id
+		});
+	
+		typeRow.key = key+1;
+		el.set('html',typeTmp.substitute(typeRow));
+		el.inject($('type_list'));
+		var delBtns = $ES('.delBtn',el);
+		delBtns.removeEvent('click');
+		delBtns.addEvent('click',function(){
+              delType(el);
+        });
+	});
+	
+}
+
+function delType(el){
+	var data = {'type_id':el.get('type_id')};
+    
+    new Request({
+           url : 'index.php?app=taocrm&ctl=admin_member_card_type&act=del_type',
+           method : 'post',
+           data:data,
+           onSuccess:function(responseText){
+               var result = JSON.decode(responseText);
+               if(result.rsp == 'succ'){
+            	   typeList.each(function(typeRow,index){
+            		   if(typeRow.id == el.get('type_id')){
+            			   typeList.splice(index,1);
+            		   }
+            	   });
+                   initTypeList();
+               }else{
+                   alert(result.msg);
+               }
+           }
+       }).send();
+	
+}
+
+
+initTypeList();
+</script>

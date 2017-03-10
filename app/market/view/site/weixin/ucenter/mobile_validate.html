@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no"> 
+<title>手机验证</title>
+<!--script src="<{$env.app.res_url}>/js/jquery.js"></script-->
+<script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.0.0/js/sui.min.js"></script>
+<link rel="stylesheet" href="<{$env.app.res_url}>/wheel/BigWheel.css">
+<style>
+img, object { max-width: 100%;}
+body {background:#FFF;}
+body,ul,li{margin:0;padding:0;}
+a {text-decoration:none;}
+ul,li{list-style:none;overflow:hidden;}
+.top_navbar {font-family:Microsoft Yahei;font-weight:bold;border:1px solid #DDDDDD;border-right:none;}
+.top_navbar ul li{float:left;width:33%;text-align:center;}
+.top_navbar ul li a{display:block;padding:5px 0;background:#F6F6F6;border-right:1px solid #DDDDDD;font-size:14px;color:#333;}
+.top_navbar ul li a:hover{background:#EDEDED;}
+.top_navbar ul li a.ui-btn-active{background:#3388CC;color:#FFF;}
+
+
+.input_text input {font-size:18px;font-family:Arial;font-weight:bold;border:none;}
+.input_text {border:1px solid #CCC;padding:8px;}
+
+.msg-con {color:#F00;font-size:12px;padding:0 0 0 66px;}
+</style>
+</head>
+<body>
+<div id="top_bar">
+    <div id="shop_logo"><img src="<{$ucenter.logo}>" /></div>
+    <{$ucenter.shop_name}>
+</div>
+<h3 align="center">为了保护您的会员信息，首次使用会员中心的客户，需要进行一次手机验证码验证。接收验证码是免费的。</h3>
+
+<form action="" method="post" style="width:320px;margin:0 auto;" class="sui-validate">
+
+    <div class="input_text">
+        手　机：<input name="mobile" id="mobile" type="text" maxlength="11" style="width:220px" data-rules="required|mobile" />
+    </div>
+    
+    <br/>
+    
+    <div class="input_text">
+        <button type="button" id="send_passcode" style="float:right;">获取验证码</button>
+        验证码：<input id="passcode" name="passcode" type="text" maxlength="4" style="width:130px" data-rules="required|digits|minlength=4" />
+    </div>
+    
+    <br/>
+    
+    <button id="save_mobile" type="button" style="width:100%;height:40px;">提交</button>
+
+</form>
+
+<script>
+var send_tips = '验证码已经发送到您的手机，请注意查收。';
+var wx_id = '<{$wx_id}>';
+
+$(function(){
+    
+    $('#save_mobile').click(function(){
+        save_mobile();
+    });
+    
+    $('#send_passcode').click(function(){
+        send_passcode();
+    });
+    
+});
+
+function save_mobile(){
+    var _url = 'save_mobile';
+    var _data = 'wx_id='+wx_id+'&mobile='+$('#mobile').val()+'&passcode='+$('#passcode').val();
+
+    $.ajax({
+        type:'POST',
+        url: _url,
+        data:_data,
+        cache: false,
+        success: function(html){
+            if(html == 'succ'){
+                window.location.href = 'points?wx_id='+wx_id;
+            }else{
+                alert(html);
+            }
+        }
+    });
+    
+    return false;
+}
+
+function send_passcode(){
+    var _url = 'mobile_validate';
+    var _data = 'act=send_passcode&mobile='+$('#mobile').val();
+
+    $.ajax({
+        type:'POST',
+        url: _url,
+        data:_data,
+        cache: false,
+        success: function(html){
+            if(html == 'succ'){
+                alert(send_tips);
+            }else{
+                alert(html);
+            }
+        }
+    });
+    
+    return false;
+}
+</script>
+<!--
+说明：点击菜单判断是否已经手机验证，
+未验证的手机的微信客户跳出此页进行验证。
+链接中应含有关注微信的ID
+短信内容：您的验证码为1234，欢迎您的参与！【商派】
+-->
+</body>
+</html>

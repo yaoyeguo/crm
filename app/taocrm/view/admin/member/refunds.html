@@ -1,0 +1,37 @@
+<div>
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>退款单号<{/t}></th>
+            <th><{t}>订单号<{/t}></th>
+            <th><{t}>订单状态<{/t}></th>
+            <th><{t}>商品<{/t}></th>
+            <th><{t}>商品状态<{/t}></th>
+            <th><{t}>退款金额<{/t}></th>
+            <th><{t}>退款原因<{/t}></th>
+            <th><{t}>申请日期<{/t}></th>
+            <th><{t}>店铺<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$refunds item=item key=key}>
+         <tr>
+             <td><{$item.refund_id}></td>
+             <td><{$item.tid}><a target="dialog::{width:700,height:355,title:'订单明细'}" href="index.php?app=taocrm&ctl=admin_member&act=getOrderInfo&p[0]=<{$item.shop_id}>&p[1]=<{$item.tid}>">明细</a></td>
+             <td><{$item.order_status}></td>
+             <td><{$item.title}></td>
+             <td><{$item.good_status}></td>
+             <td><{$item.refund_fee|cur}></td>
+             <td><{$item.reason}></td>
+             <td><{$item.created|cdate:'FDATE_FTIME'}></td>
+             <td><{$item.shop_name}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+
+</div>
+</div>
+</div>

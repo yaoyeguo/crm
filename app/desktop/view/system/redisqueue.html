@@ -1,0 +1,18 @@
+<style>
+.nums{
+color:#ff0000;
+}
+</style>
+	<div style="" class="content-head">
+	    <div>总订单数:<span class="nums"><{$len_orders_queue}></span>个</div>
+	    <div>小工具导入总订单数:<span class="nums"><{$len_cstools_orders_queue}></span>个</div>
+		<div>日常队列数:<span class="nums"><{$len_normal_queue}></span>个</div>
+		<div>日常实时队列数:<span class="nums"><{$len_realtime_queue}></span>个</div>
+		<div>
+			明细：<br /><span class="nums">
+			 <{foreach from=$waiting_queue
+			item=data key=i}> 
+			<{$i}>:<{$data}><br />
+			<{/foreach}></span>
+		</div>
+	</div>

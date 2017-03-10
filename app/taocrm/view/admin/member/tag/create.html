@@ -1,0 +1,95 @@
+<div class="tableform">
+  <h3>标签创建</h3>
+  <div class="division">
+    <form method="post" action="index.php?app=taocrm&ctl=admin_member_tag&act=save" id="form-branch">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+      <{input type=hidden value=$info.tag_id name="tag_id"}>
+        <tbody>
+         <tr><td></td></tr>
+         <tr>
+            <th><em class="c-red">*</em> 标签名称：</th>
+            <td>
+                <{input type="text" id="tag_name" value=$info.tag_name  name="info[tag_name]" vtype='required'  }>
+            </td>
+         </tr>
+         <tr>
+            <th></th>
+            <td>
+                <label><input type="checkbox" name="info[get_tag]" id="get_tag" value='1' <{if $info.get_tag == 'true'}>checked='checked'<{/if}>>根据规则自动给客户打标签</label>
+            </td>
+         </tr>
+         <tr id="select_tag_type" <{if $info.get_tag neq 'true'}>style="display:none"<{/if}>>
+            <th></th>
+            <td>
+                <div style="border: 1px solid #999; width:390px; height:160px">
+                    </br></br>
+                        <input type="radio" name="info[tag_select]" value="1" <{if $info.tag_select == 1 || !$info.tag_select}>checked<{/if}>>
+                        最近连续<{input type="text" id="activity_num" value=$info.activity_num|default:1  name="info[activity_num]" vtype='required'  style="width:30px"}>次未参加营销活动客户
+                    <br/><br/>
+                        <input type="radio" name="info[tag_select]" value="2" <{if $info.tag_select == 2}>checked<{/if}>>
+                        单笔订单付款金额 介于
+                        <{input type="text" id="one_min" value=$info.one_min|default:0  name="info[one_min]" vtype='required'  style="width:60px"}>—
+                        <{input type="text" id="one_max" value=$info.one_max|default:1  name="info[one_max]" vtype='required' style="width:60px" }>客户
+                    <br/><br/>
+                        <input type="radio" name="info[tag_select]" value="3" <{if $info.tag_select == 3}>checked<{/if}>>
+                        累计成功消费金额 介于
+                        <{input type="text" id="all_min" value=$info.all_min|default:0  name="info[all_min]" vtype='required'  style="width:60px"}>—
+                        <{input type="text" id="all_max" value=$info.all_max|default:1  name="info[all_max]" vtype='required' style="width:60px" }>客户
+                    <br/>
+                </div>
+            </td>
+         </tr>
+        </tbody>
+      </table>
+      <div class="table-action"><{button label="保存" type="submit" name="submit" id="btn-branch"}> &nbsp;&nbsp;</div>
+
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+
+    (function(){
+        var _form = $('form-branch');//form_id
+        var btn =$('btn-branch');//bt_id
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+
+        _form.store('target',{
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+                    }
+                }
+
+            }
+        });
+
+            btn.addEvent('click',function(){
+                var validate = true;
+                if ($('tag_name').value == '') {
+                    validate = false;
+                    alert('请选择标签名称!');
+                    return false;
+                }
+
+                if (validate) {
+                    _form.fireEvent('submit',{stop:$empty});
+                }
+            });
+            $('get_tag').addEvent('click',function(){
+                if(this.checked == true)
+                    $('select_tag_type').show();
+                else
+                    $('select_tag_type').hide();
+            });
+    })();
+</script>

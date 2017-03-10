@@ -1,0 +1,157 @@
+<desktop>
+    
+    <permissions>
+        <permission id="markets">营销管理</permission>
+        <permission id="rolescfg">系统管理</permission>
+        <permission id="edm_manage">EDM配置</permission>
+        <permission id="smscfg">短信设置</permission>
+        <permission id="coupon">优惠券设置</permission>
+        <permission id="send">短信发送列表</permission>
+        <permission id="fx_member">分销管理</permission>
+        
+        <permission id="weixin">微信营销</permission>
+        <permission id="weixin_qa">互动问答库</permission>
+        <permission id="weixin_member">微信客户</permission>
+        
+        <permission id="shop_sms">短信帐号</permission>
+        <permission id="shop_sms_template">短信模板</permission>
+        <permission id="shop_sms_send_log">发送记录</permission>
+        <permission id="add_sms_active">创建短信营销</permission>
+        <permission id="sms_active_list">短信营销列表</permission>
+        
+        <permission id="callcenter">电话呼叫中心</permission>
+        <permission id="callplan">呼叫计划管理</permission>
+        <permission id="workspace">坐席工作台</permission>
+        <permission id="active_cycle">周期自动营销</permission>
+        <permission id="cti_set">软电话设置</permission>
+    </permissions>
+    
+    <workground name="我的店铺" id="ecorder.shop" order="100">
+    
+        <menugroup name="我的短信" order="1002000">
+            <menu controller='admin_sms_active' action='index' permission='shop_sms' display='true' order='1002100'>短信帐号</menu>
+            <menu controller='admin_sms_templates' action='themes' permission='shop_sms_template' display='true' order='1002200'>短信模板</menu>
+            <menu controller='admin_sms_send' action='index' permission='shop_sms_send_log' display='true' order='1002300'>营销短信日志</menu>
+            
+            <menu controller='admin_sms_log' action='index' permission='shop_sms_send_detail' display='false' order='1002500'>xxxx发送明细</menu>
+        </menugroup>
+
+		<menugroup name="xxxxEDM配置" id="edm_manage" order="1700">
+            <menu controller='admin_edm_account' action='index' permission='edm_manage' display='false' order='6001100'>邮件配置</menu>
+            <menu controller='admin_edm_templates' action='themes' permission='edm_manage' display='false' order='6001200'>邮件模板</menu>
+            <menu controller='admin_edm_tclass' action='index' permission='edm_manage' display='false' order='6001300'>模板分类</menu>
+            <menu controller='admin_edm_active' action='index' permission='edm_manage' display='false' order='6001400'>邮件模板市场</menu>
+            <menu controller='admin_edm_send' action='index' permission='edm_manage' display='false' order='6001500'>邮件发送列表</menu>
+            <menu controller='admin_edm_doc' action='rule' permission='edm_manage' display='false' order='6001600'>EDM制作规范</menu> 
+        </menugroup>
+
+    </workground>
+    
+    <workground name="客户中心" id="taocrm.member" order="200">
+        
+        <menugroup name="潜在客户" order="2003000">
+            <menu controller='admin_weixin' action='openId' permission='weixin_member' display='true' order='2003040'>微信客户</menu>
+        </menugroup>
+		
+    </workground>
+    
+    <workground name="服务中心" id="taocrm.all_member" order="250">
+        
+        <menugroup name="电话服务" order="2502000">
+            <menu controller='admin_callcenter_workspace' action='index' permission='workspace' display='true' order='2502010'>客服坐席</menu>
+            <menu controller='admin_callcenter_callin' action='index' permission='callcenter' display='true' order='2502020'>呼叫弹屏</menu>
+            <menu controller='admin_callcenter_callplan' action='index' permission='callplan' display='true' order='2502030'>呼叫计划</menu>
+            <menu controller='admin_callcenter_calllog' action='index' permission='callcenter' display='true' order='2502040'>呼叫历史</menu>
+        </menugroup>
+        
+        <menugroup name="系统设置" order="2503000">
+            <menu controller='admin_callcenter_cti' action='set' permission='cti_set' display='true' order='2503010'>软电话设置</menu>
+        </menugroup>
+        
+    </workground>
+    
+    <workground name="营销推广" id="market.active" order="300">
+    
+        <menugroup name="自定义营销" order="3001000">
+            <menu controller='admin_active' action='guide' permission='add_sms_active' display='true' order='3001100'>创建营销活动</menu>
+            <menu controller='admin_active_sms' action='index' permission='sms_active_list' display='true' order='3001200'>营销活动列表</menu>
+			<menu controller='admin_active_edm' action='index' permission='markets' display='false' order='2001200'>邮件活动列表</menu>
+            
+            <menu controller='admin_active_plan' action='index' permission='add_sms_active' display='true' order='3001350'>营销计划列表</menu>
+            
+            <menu controller='admin_active_plan' action='edit' permission='add_sms_active' display='true' order='3001400'>营销计划设计</menu>
+        </menugroup>   
+        
+        <menugroup name="定时自动营销" order="3002000">
+            <menu controller='admin_active_cycle' action='index' permission='active_cycle' display='true' order='3002200'>周期(购)营销</menu>
+            <menu controller='admin_active_cronlist' action='index' permission='active_cycle' display='true' order='3002300'>定时营销任务列表</menu>
+        </menugroup>
+		
+        <menugroup name="xxxxxxxxxx淘宝优惠券" order="3005000">
+            <menu controller='admin_coupon' action='index' permission='coupon' display='false' order='3005100'>淘宝优惠券管理</menu>
+            <menu controller='admin_coupon_analysis' action='index' permission='coupon' display='false' order='3005200'>淘宝优惠券使用</menu>
+        </menugroup> 
+        
+        <menugroup name="优惠劵管理" order="3006000">
+            <menu controller='admin_coupon_ecstore' action='index' permission='markets' display='true' order='3006100'>Ecstore优惠劵</menu>
+            <menu controller='admin_coupon_ecstore_sendlog' action='index' permission='markets' display='true' order='3006200'>Ecstore优惠劵发送记录</menu>
+        </menugroup>
+        
+        <menugroup name="营销效果评估" order="3007100">
+            <menu controller='admin_active_assess' action='index' permission='markets' display='false' order='3007100'>短信营销效果评估</menu>
+            <menu controller='admin_coupon_analysis' action='index' permission='coupon' display='false' order='3007200'>xxxxxxxxxx淘宝优惠券使用评估</menu>
+            <menu controller='admin_remind_effect' action='index' permission='markets' display='true' order='3006300'>催付效果评估</menu>
+            <menu controller='admin_active_monitor' action='index' permission='markets' display='true' order='3007300'>营销效果监控评估</menu>
+        </menugroup>
+
+    </workground>
+    
+    <workground name="微信营销" id="market.weixin" order="400">
+    
+        <menugroup name="微信活动" order="4002000">
+            
+            <menu controller='admin_weixin' action='survey_items' permission='weixin_qa' display='true' order='4002100'>互动问答库</menu>
+            <menu controller='admin_weixin' action='survey' permission='weixin' display='true' order='4002200'>互动活动（问答）</menu>
+            <menu controller='admin_weixin' action='products' permission='weixin' display='true' order='4002300'>商品推荐</menu>
+            <menu controller='admin_weixin' action='registRuleSet' permission='weixin' display='true' order='4002400'>微信签到</menu>
+
+        </menugroup>
+    
+        <menugroup name="微信管理" order="4003000">
+    
+            <menu controller='admin_weixin' action='newWeixin' permission='weixin' display='false' order='4003950'>微信增强版</menu>
+
+            <menu controller='admin_weixin' action='openId' permission='weixin' display='true' order='4003050'>微信客户</menu>
+            <menu controller='admin_weixin' action='dashboard' permission='weixin' display='true' order='4003100'>绑定微信</menu>
+            <menu controller='admin_weixin' action='autoReply' permission='weixin' display='true' order='4003200'>自动回复</menu>
+            <menu controller='admin_weixin' action='keywordAutoReply' permission='weixin' display='true' order='4003300'>关键词自动回复</menu>
+            <menu controller='admin_weixin' action='plugin' permission='weixin' display='true' order='4003400'>互动插件</menu>
+            <menu controller='admin_weixin' action='news' permission='weixin' display='true' order='4003500'>图文素材</menu>
+            <menu controller='admin_weixin' action='msg_send_all' permission='weixin' display='true' order='4003500'>群发消息</menu>
+            <menu controller='admin_weixin' action='customMenu' permission='weixin' display='true' order='4003600'>微信菜单</menu>
+            <menu controller='admin_weixin' action='pointLog' permission='weixin' display='true' order='4003700'>微信积分日志</menu>
+            <menu controller='admin_weixin' action='noResponseChat' permission='weixin' display='true' order='4003800'>人工处理聊天记录</menu>
+        </menugroup>
+        
+		<menugroup name="活动设置" order="4004000">
+			<menu controller='admin_weixin_vote' action='index' permission='weixin' display='true' order='4002600'>投票调查</menu>
+            <menu controller='admin_weixin_due' action='index' permission='weixin' display='true' order='4002700'>预约服务</menu>
+            <menu controller='admin_weixin' action='lottery_manage' permission='weixin' display='true' order='4002800'>积分抽奖</menu>
+            <menu controller='admin_weixin' action='redemption_manage' permission='weixin' display='true' order='4002900'>积分换购</menu>
+        </menugroup>
+    </workground> 
+        
+	<workground name="分销管理" id="taocrm.fxmember" order="550">
+        <menugroup name="分销管理">
+            <menu controller='admin_fx_activity' action='index' permission='fx_member' display='true' order='5502100'>营销活动</menu>
+            <menu controller='admin_fx_sms' action='index' permission='fx_member' display='true' order='5502200'>发送记录</menu>
+        </menugroup>
+    </workground> 
+    
+    <workground name="系统设置" id="sys.config" order="600">
+        <menugroup name="基础设置" order="6005000">
+            <menu controller='admin_weixin' action='store_manage' permission='weixin' display='true' order='6000600'>门店管理</menu>
+        </menugroup>
+    </workground>
+   
+</desktop>

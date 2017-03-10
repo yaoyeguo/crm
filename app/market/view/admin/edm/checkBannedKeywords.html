@@ -1,0 +1,15 @@
+<div class="tableform">
+     <form action="<{link app=sms ctl=admin_account act=checkBannedKeywords}>" method="post" id="enterpriseRegister">
+         <table border="0" cellspan="0" colspan="0">
+             <tr>
+                 <th><em class="c-red">*</em> 短信内容:</th>
+                 <td><textarea name="smscontent" cols="40" rows="5"><{$smscontent}></textarea></td>
+             </tr>
+             <tr>
+                 <th> 违禁词:</th>
+                 <td><input type="text" name="bannedwords" value="<{$bannedwords}>"></td>
+             </tr>
+             <tr><td colspan="2" align="center"><{button type="submit" label="检查" id="register"}></td></tr>                                                                                     
+         </table>
+    </form>
+</div>

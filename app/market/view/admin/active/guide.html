@@ -1,0 +1,81 @@
+<h3 class="head-title">创建营销活动</h3>
+
+<style>
+#active_method {width:980px;margin:20px 0;}
+#active_method ul {list-style:none;}
+#active_method ul li{width:440px;float:left;margin:0 30px 40px 0;}
+#active_method ul li dt{float:left;width:100px;height:120px;text-indent:-9999px;}
+#active_method ul li dd{border:1px solid #BBB;float:right;width:300px;border-radius:5px;height:100px;padding:10px;line-height:1.5em;color:#666;position:relative;}
+
+.type_ico {background:url(<{$env.app.res_url}>/type_ico.gif) no-repeat;}
+.ico2{background-position:0 -310px;}
+.ico3{background-position:0 -160px;}
+.ico4{background-position:0 -475px;}
+
+.run_btn { position:absolute; bottom:10px;right:10px;}
+.arr_left{ position:absolute; left:-10px;top:40px;background:url(<{$env.app.res_url}>/arr_left.gif) no-repeat;width:14px;height:14px;}
+</style>
+
+<div id="active_method">
+    <ul>
+        <li>
+            <dl>
+                <dt class="type_ico ico1">自定义营销活动</dt>
+                <dd>
+                    自由选择客户属性，如下单次数，下单金额，所在地区等条件组合，对符合条件的客户进行营销。
+                    <div class="run_btn">
+                    <{button label="开始营销" id="create_active" }></div>
+                    <div class="arr_left"></div>
+                </dd>
+            </dl>
+        </li>
+        
+        <li>
+            <dl>
+                <dt class="type_ico ico2">快捷营销模型</dt>
+                <dd>
+                    系统内置近一个月新客户，近三个月高价值客户，高质量沉睡老客户，近一个月未付款客户等模型，可以快速进行营销。
+                    <div class="run_btn">
+                    <a href="index.php?app=taocrm&ctl=admin_sale_model&act=model1"><{button label="开始营销" }></a></div>
+                    <div class="arr_left"></div>
+                </dd>
+            </dl>
+        </li>
+        
+        <li>
+            <dl>
+                <dt class="type_ico ico3">自定义客户分组</dt>
+                <dd>
+                    对已经预先分组的客户进行营销。您可以指定多个条件创建分组，以便快速识别和区分您的目标客户。
+                    <div class="run_btn">
+                    <a href="index.php?app=taocrm&ctl=admin_member_group&act=index"><{button label="开始营销" }></a></div>
+                    <div class="arr_left"></div>
+                </dd>
+            </dl>
+        </li>
+        
+        <li>
+            <dl>
+                <dt class="type_ico ico4">自动营销插件</dt>
+                <dd>
+                    系统内置多个插件，覆盖整个交易周期，支持下单后的催付，物流提醒，签收提醒，交易完成后的客户关怀和店铺名片发送等。
+                    <div class="run_btn">
+                    <a href="index.php?app=plugins&ctl=admin_buy&act=index"><{button id="auto_plugin" label="开始营销" }></a></div>
+                    <div class="arr_left"></div>
+                </dd>
+            </dl>
+        </li>
+        
+    </ul>
+</div>
+
+<script>
+(function(){
+    //onClose:function(){window.location.reload();},
+    $('create_active').addEvent('click',function(){
+        new Dialog('index.php?app=market&ctl=admin_active_sms&act=create_active&send_method=sms',{title:'创建活动',width:650,height:355});
+    });
+})();
+</script>
+
+

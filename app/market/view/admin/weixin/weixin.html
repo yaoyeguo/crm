@@ -1,0 +1,32 @@
+
+<style>
+    /*background: #ccc;*/
+    .weixin_body{width: 80%; height: 500px; margin: 0 auto;  text-align: center;}
+    .weixin_body a{display: inline-block; width: 160px; height: 50px; font-weight: bold; background: #090;color: #F2FFF8; text-align: center; border: 1px solid green;line-height: 50px;letter-spacing: 1px; text-decoration: none;margin: 80px auto 0 auto; border-radius: 3px;}
+    .weixin_body p{ font-family: "微软雅黑";color: #7D3909;font-size: 15px;line-height: 12px; }
+</style>
+
+<div class="weixin_body">
+    <a href="javascript:void(0)" class="standard_weixin" version='1'>切换微信标准版</a>
+    <a href="javascript:void(0)" class="standard_weixin" version='2'>升级增强版微信</a>
+    <div style="display: block; margin-top:50px; ">
+        <p>切换有风险，可能会造成数据混乱，丢失，请谨慎操作！</p>
+        <p>切换有后,需要在登陆微信公众平台修改微信公众号的配置！</p>
+    </div>
+</div>
+
+<script>
+(function (){
+    var _this = $$(".standard_weixin");
+    _this.addEvent('click',function(){
+        var wx_version = $(this).getProperty('version');
+        var pingRequest = new Request.JSON({
+            url:"index.php?app=ecorder&ctl=admin_shop&act=standardWeixin&wx_version="+wx_version,
+            onComplete: function(res){
+                window.location.href = "index.php?app=market&ctl=admin_weixin&act=survey_items";
+            }
+        });
+        pingRequest.get();
+    });
+})();
+</script>

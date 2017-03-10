@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会员中心</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<div style="padding-left: 30px;">
+    <{if $addrs neq null}>
+    <{foreach from=$addrs item=data key=k}>
+    <div>
+        <label><{$data.address}></label>
+        &nbsp;&nbsp;<a href="javascript:;" onclick="default_addr(<{$data.receiver_id}>,<{$data.member_id}>)">
+        <{if $data.default_addr eq 'true'}><font style="color: red;">默认收货地址</font><{else}>设置默认收货地址<{/if}>
+    </a>
+        &nbsp;&nbsp;<a href="receiving_address_edit?member_id=<{$data.member_id}>&receiver_id=<{$data.receiver_id}>">编辑</a>
+        <{if $data.default_addr eq 'false'}>&nbsp;&nbsp;<a href="javascript:;" onclick="del(<{$data.receiver_id}>)">删除</a><{/if}>
+    </div>
+    <{/foreach}>
+    <{/if}>
+</div>
+<div style="padding-left: 30px;">
+    <a href="receiving_address_edit?member_id=<{$data.member_id}>">新增收货地址</a>
+</div>
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    //默认地址
+    function default_addr(receiver_id,member_id){
+        var aj = $.ajax( {
+            url:'do_default_addr',// 跳转到 action
+            data:{
+                receiver_id : receiver_id,
+                member_id : member_id
+            },
+            type:'post',
+            success:function(data) {
+                alert(data);
+                location.reload();
+            }
+        });
+    }
+    //删除
+    function del(receiver_id){
+        var aj = $.ajax( {
+            url:'receiving_address_delete',// 跳转到 action
+            data:{
+                receiver_id : receiver_id
+            },
+            type:'post',
+            success:function(data) {
+                alert(data);
+                location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

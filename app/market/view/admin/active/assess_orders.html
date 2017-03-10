@@ -1,0 +1,28 @@
+ <div style="padding-top:2px;" class="division">
+    <!--h4>每日下单记录</h4-->
+        <table  class="gridlist" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <thead>
+                <tr>
+                    <th>下单日期</th>
+                    <th>下单订单数</th>
+                    <th>下单客户数</th>
+                    <th>付款订单数</th>
+                    <th>付款客户数</th>
+                    <th>下单金额</th>
+                    <th>付款金额</th>
+            </thead>
+            <tbody>
+            <{foreach from=$data item=item key=key}>
+                <tr>
+                    <td><{$item.Date}></td>
+                    <td><{$item.TotalOrders}></td>
+                    <td><{$item.TotalMembers}></td>
+                    <td><{$item.PayOrders}></td>
+                    <td><{$item.PayMembers}></td>
+                    <td><{$item.TotalAmount}></td>
+                    <td><{$item.PayAmount}></td>
+                </tr>
+            <{/foreach}>
+            </tbody>
+        </table>
+</div>

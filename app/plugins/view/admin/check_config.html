@@ -1,0 +1,59 @@
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr>
+      <th><{t}>插件名称：<{/t}></th>
+      <td><b><{$plugins.title}></b></td>
+    </tr>
+    
+    <{foreach from=$items item=data key=key}>
+    <tr>
+      <th><em class="c-red">*</em><{t}><{$data.label}><{/t}>：</th>
+      <td>
+           <{input type=$data.type vtype="required" name="params[{$key}]" value=$params.keys options=$data.options }>
+      </td>
+    </tr>
+    <{/foreach}>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="p-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+_btn.addEvent('click',function(){
+
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+
+_form.store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+    
+        if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns){	
+                _dialogIns.close();
+                window.top.location.href = 'index.php?app=plugins&ctl=admin_manage&act=index';
+                //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+
+
+</script>

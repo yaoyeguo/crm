@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>编辑收货地址</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="<{$env.app.res_url}>/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<script>
+    DESKTOPRESURL='<{$env.app.res_url}>';
+</script>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>编辑收货地址</h1>
+    <div class="pos-right">
+        <a  href="javascript:;" onclick="del(<{$addrs.receiver_id}>)" title="删除" class="icon-trash"></a>
+    </div>
+</nav>
+<form action="" method="post" class="form-address" data-abide="ajax">
+  <ul class="form-container">
+    <li class="row">
+      <label>
+        <input type="text" placeholder="收货人姓名" name="name" id='name' value="<{$addrs.name}>" required>
+      </label>
+    </li>
+    <li class="row">
+        <label class="act-selectarea" id="area" for="for_area">
+        <a href="#areaselect" class="input">
+          <span>
+              <{if $addrs.area_show }> <{$addrs.area_show}> <{else}> 地区<{/if}>
+          </span>
+          <i class="icon-arrow_right"></i>
+          <input type="text" name="" value="<{$addrs.area}>" id="for_area" placeholder="地区" style="width:0;height:0;opacity:0;padding:0;" required>
+        </a>
+      </label>
+    </li>
+    <li class="row">
+      <label>
+        <input type="text" placeholder="详细地址" name="addr" id='addr' value="<{$addrs.addr}>" required>
+      </label>
+    </li>
+    <li class="row">
+      <label>
+        <input type="tel" placeholder="联系电话" name="mobile" id='mobile' value="<{$addrs.mobile}>" required maxlength="11" pattern="mobile">
+      </label>
+    </li>
+      <li class="row" style="padding-top: 15px;padding-bottom: 15px;">
+          <label>
+              <input type="checkbox" name="default_addr" value="true" <{if $addrs.default_addr eq 'true' }> checked <{/if}> > 设置默认地址
+          </label>
+      </li>
+      <li class="row" style="padding-top: 15px;padding-bottom: 15px;padding-left: 10px;">
+          <label><a href="javascript:;" onclick="del(<{$addrs.receiver_id}>)" class="text-alert act-delete">删除此地址</a></label>
+      </li>
+  </ul>
+  <div class="row" style="padding-top: 30px;">
+    <div class="small-12 columns">
+        <input type="hidden" id='member_id' value="<{$member_id}>" />
+        <input type="hidden" id='receiver_id' value="<{$addrs.receiver_id}>" />
+      <button type="button" id='save' class="alert expand">保存</button>
+    </div>
+  </div>
+</form>
+<div id="areaselect" class="area-select" style="display:none;">
+  <ul class="table-view act-selected"></ul>
+  <ul class="table-view act-forselect"></ul>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+    var gift_id = '<{$gift_id}>';
+    var wx_id = '<{$wx_id}>';
+    (function(){
+
+        $('#save').click(function(){
+            var name = $('#name').val();
+            var mobile = $('#mobile').val();
+            var area = $('#for_area').val();
+            var addr = $('#addr').val();
+            var member_id = $('#member_id').val();
+            var receiver_id = $('#receiver_id').val();
+            var default_addr = false;
+            $('input:checkbox[name="default_addr"]:checked').each(function () {
+                default_addr = $(this).val();
+            })
+
+            if(!name){
+                alert('请填写收货人名称！');
+                return false;
+            }
+            if(!area){
+                alert('请选择地区！');
+                return false;
+            }
+            if(!addr){
+                alert('请填写收货详细地址！');
+                return false;
+            }
+            if(!isMobel(mobile)){
+                alert('请输入正确格式的手机号！');
+                return false;
+            }
+
+            var aj = $.ajax( {
+                url:'receiving_address_save?source=',// 跳转到 action
+                data:{
+                    name : name,
+                    mobile : mobile,
+                    area : area,
+                    addr : addr,
+                    member_id : member_id,
+                    receiver_id : receiver_id,
+                    default_addr : default_addr
+                },
+                type:'post',
+                //dataType:'json',
+                success:function(data) {
+                    if(data == 'succ'){
+                        alert('保存成功！');
+                        if(gift_id){
+                            window.location.href = "../site_weixin_ucenterNew/order_confirm?wx_id="+wx_id+'&gift_id='+gift_id;
+                        }else{
+                            window.location.href = "receiving_address_list?member_id="+member_id;
+                        }
+                    }else{
+                        alert(data);
+                    }
+                },
+                error : function() {
+                    alert("ajax异常！");
+                }
+            });
+        });
+    })();
+    //手机号验证
+    function isMobel(value){
+        var isPhone = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+        var isMob=/^((\+?86)|(\(\+86\)))?(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+        if(isMob.test(value)||isPhone.test(value)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    //删除
+    function del(receiver_id){
+        if(!confirm('确定删除该收货地址吗?')) {
+            return false;
+        }
+
+        var member_id = $('#member_id').val();
+        var aj = $.ajax( {
+            url:'receiving_address_delete',// 跳转到 action
+            data:{
+                receiver_id : receiver_id
+            },
+            type:'post',
+            success:function(data) {
+                alert(data);
+                window.location.href = "receiving_address_list?member_id="+member_id;
+            }
+        });
+    }
+</script>
+</body>
+</html>

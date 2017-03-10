@@ -1,0 +1,274 @@
+<style>
+    h4{margin:0;padding:8px 0;}
+    .title_right {float:right;font-size:12px;font-weight:normal}    
+    .date_area {
+	MARGIN: 1px 0;
+	float:left;
+	FONT-FAMILY: verdana;
+	HEIGHT: 21px;
+	font-weight:100;
+	BACKGROUND:url(date_bj.jpg) repeat-x;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+}.date_date_cx {
+	float:left;
+	margin-left:5px;
+	height:22px;
+	font-weight:100;
+	line-height:22px;
+	padding:0 1px;
+}
+</style>
+
+<!--table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%" valign="top" bgcolor="#E4E4E4" style="padding:12px 8px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div-->
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        
+        <h4>
+            <div class="title_right" id="dataAction">
+                <form action="<{$form_action}>" method="post" id="filter_form">
+                    <div class="date_area">
+                    <{button class="dataBtn btn-fourthly" time_from=$timeBtn.yesterday time_to=$timeBtn.yesterday label="昨日"}>
+                    <{button class="dataBtn btn-fourthly" time_from=$timeBtn.sevenday_from time_to=$timeBtn.sevenday_to label="最近7天"}>
+                    <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_month_from time_to=$timeBtn.this_month_to label="本月"}>
+                    <{button class="dataBtn btn-fourthly" time_from=$timeBtn.this_week_from time_to=$timeBtn.this_week_to label="本周"}>
+                    </div>
+            
+                    <div class="date_date_cx">
+                        <{input type="date" vtype="date" name="date_from" id="date_from" style="width:66px; font-family:arial;" value=$date_from}>
+                        <span>至</span>
+                        <{input type="date" vtype="date" name="date_to" id="date_to" style="width:66px; font-family:arial;" value=$date_to}>
+                        店铺：
+                        <{input style="width:180px" type="select" name="shop_id" id="shop_id" options=$shops value=$shop_id}>
+                        销量排名Top20商品：
+                        <{input style="width:200px" type="select" id="goods_id" name="goods_id" options=$hot_products value=$goods_id}>
+                        
+                        <{button id="filterBtn" type="button" class="filterBtn btn-thirdly" label="查询"}>
+                    </div>
+                </form>
+            </div>
+            <div><{$path}></div>
+        </h4>        
+
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="tableform" style="display:;">
+                    
+                        <{if (!$compare_data)}>
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>
+                                  <th style="color:blue;">&nbsp;<{$goods_a}></th>
+                                  <th colspan="3">订单数</th>
+                                  <th colspan="3">比例</th>
+                                  <th colspan="2">客户数</th>
+                                </tr>
+                                <tr>  
+                                    <th><{t}>关联商品B<{/t}>
+                                    <{help}>购买A商品的订单同时购买的商品<{/help}>
+                                    </th>
+                                    <th><{t}>购买AB<{/t}>
+                                    <{help}>同时购买AB商品的订单数<{/help}>
+                                    </th>
+                                    <th><{t}>购买A<{/t}></th>
+                                    <th><{t}>购买B<{/t}></th>
+                                    <th><{t}>购买AB<{/t}>
+                                    <{help}>购买AB商品在所有购买A或B的商品订单的比例<{/help}>
+                                    </th>
+                                    
+                                    <th><{t}>A订单中买B<{/t}>
+                                    <{help}>购买A商品同时购买B商品的订单在所有购买A商品订单中的比例<{/help}>
+                                    </th>
+                                    <th><{t}>B订单中买A<{/t}>
+                                    <{help}>购买B商品同时购买A商品的订单在所有购买B商品订单中的比例<{/help}>
+                                    </th>
+                                    <th><{t}>购买AB<{/t}>
+                                    <{help}>同时购买AB商品的客户数<{/help}>
+                                    </th>
+                                    
+                                    <th><{t}>买A未买B<{/t}>
+                                    <{help}>购买A商品而没有购买B商品的客户<{/help}>
+                                    </th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                <tr>
+                                    <td><{$data.name}></td>
+                                    <td><{$data.times}></td>
+                                    <td><{$data.order_a}></td>
+                                    <td><{$data.order_b}></td>
+                                    <td><{$data.ab_ratio*100|round:2}>%</td>
+                                    
+                                    <td><{$data.b_ratio*100|round:2}>%</td>
+                                    <td><{$data.a_ratio*100|round:2}>%</td>  
+                                    <td><{$data.ab_members}> 
+                                    	<{if $data.ab_members > 0 }>
+                                    		<a onclick="show_members('&count_by=relation&shop_id=<{$shop_id}>&filter_type=analysis&date_from=<{$date_from}>&date_to=<{$date_to}>&relation=ab&goods_a=<{$goods_id}>&goods_b=<{$data.goods_b}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                    	<{/if}>
+                                    </td> 
+                                    
+                                    <td><{$data.a_members}> 
+                                    	<{if $data.a_members > 0}>
+                                    		<a onclick="show_members('&count_by=relation&shop_id=<{$shop_id}>&filter_type=analysis&date_from=<{$date_from}>&date_to=<{$date_to}>&relation=only_a&goods_a=<{$goods_id}>&goods_b=<{$data.goods_b}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                    	<{/if}>
+                                    </td>
+                                </tr>
+                                <{/foreach}>
+                            </tbody>
+                        </table>
+                        <{/if}>
+                        
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+</td>
+</tr>
+</table-->
+<script>
+(function(){
+
+    $('goods_id').addEvent('change',function(){
+        if(!chk_date_area()) return false;
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    });
+    
+    $('shop_id').addEvent('change',function(){
+        if(!chk_date_area()) return false;
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    });
+    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#EEE');
+    } 
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+
+            };
+        });
+    }
+
+    var dataAction= $('dataAction');
+    var from=dataAction.getElement('input[name=date_from]');
+    var to=dataAction.getElement('input[name=date_to]');
+    dataAction.getElement('.filterBtn').addEvent('click',function(e){setChartData(true);});
+    
+    function setChartData(flag,e){
+        if(from && to){
+            if(!check_data(from,to))return;
+        }
+        if(!chk_date_area()) return false;
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+    
+    function check_data(from,to){
+      var data=[],
+      _return=[from,to].every(function(el){
+        if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+          new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+          el.focus();
+          return false;
+        }
+        data.push(Date.parse(el.value.replace(/-/gi,"/")));
+        return true;
+      });
+
+      if(!_return)return null;
+      if(data[1]<data[0]){
+        return MessageBox.error('<{t}>选择开始时间必须早于结束时间<{/t}>');
+      }
+      return _return;
+    }
+    
+    var dataBtn=dataAction.getElements('.dataBtn');
+    dataBtn.each(function(el,i){
+      if(el.get('time_from')==from.value && el.get('time_to')==to.value)
+        el.addClass('btn-fourthly-cur');
+        el.addEvent('click',function(e){
+        from.value=this.get('time_from');
+        to.value=this.get('time_to');
+        /* ['time_from','time_to'].each(function(v){
+         *   dataAction.getElements('input[name='+v+']').value=this.get(v);
+         * },this); */
+        dataAction.getElement('.filterBtn').fireEvent('click');
+      });
+    });
+    
+})();
+
+function change_chart(){
+    var order_status = $('order_status').get('value');
+    var iframe1=$('line_frame1');
+    var iframe2=$('line_frame2');
+    iframe1.src += '&order_status='+order_status;
+    iframe2.src += '&order_status='+order_status;
+}
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+
+function chk_date_area(){
+    var days = dateDiff('D',$('date_from').get('value'),$('date_to').get('value'));
+    days = parseInt(days);
+
+    if(days>31*3) 
+        return MessageBox.error('<{t}>时间范围选择不能超过3个月<{/t}>');
+    
+    return true;
+}
+
+//计算两个日期的间隔
+function dateDiff(interval,date1,date2){ 
+	var objInterval = {'D':1000*60*60*24,'H':1000*60*60,'M':1000*60,'S':1000,'T':1}; 
+	interval = interval.toUpperCase(); 
+	var dt1 = Date.parse(date1.replace(/-/g, '/')); 
+	var dt2 = Date.parse(date2.replace(/-/g, '/')); 
+	try { 
+		return Math.round((dt2 - dt1) / eval('(objInterval.' + interval + ')')); 
+	}catch (e) { 
+		return e.message; 
+	} 
+}
+</script>

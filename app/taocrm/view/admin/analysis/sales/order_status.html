@@ -1,0 +1,186 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <{include file="admin/analysis/search.html"}>
+            <div class="title_left" >
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0">
+            <div class="wdgk_box">
+
+
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>趋势分析</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="tableform">
+                        <div style="height:345px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=order_status&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>" scrolling="no" width="100%" height="100%" id='line_frame'></iframe>
+                        </div>
+                        <div class="fkfb_list_row" style="padding:5px;" id="rd">
+                            分析维度：
+                            <label><input checked="checked" type="radio" name="rd" value="1" /> 订单数量</label>
+                            <label><input type="radio" name="rd" value="2" /> 订单金额</label>
+                            <label><input type="radio" name="rd" value="3" /> 客户数</label>
+                            <label><input type="radio" name="rd" value="4" /> 订单单价</label>
+                        </div>
+                    </div>
+
+                    <div class="tableform" style="display:none">
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>
+                                    <th><{t}>时间<{/t}></th>
+
+                                    <th><{t}>全部订单数<{/t}></th>
+                                    <th><{t}>全部金额<{/t}></th>
+                                    <th><{t}>全部客户数<{/t}></th>
+                                    <th><{t}>订单单价<{/t}></th>
+
+                                    <th><{t}>付款订单数<{/t}></th>
+                                    <th><{t}>付款金额<{/t}></th>
+                                    <th><{t}>付款客户数<{/t}></th>
+                                    <th><{t}>付款订单单价<{/t}></th>
+
+                                    <th><{t}>完成订单数<{/t}></th>
+                                    <th><{t}>完成金额<{/t}></th>
+                                    <th><{t}>完成客户数<{/t}></th>
+                                    <th><{t}>完成订单单价<{/t}></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                 <tr>
+                                     <td><{$data.date}></td>
+                                     <td><{$data.total_orders}></td>
+                                     <td><{$data.total_amount|cur}></td>
+                                     <td><{$data.total_members}>
+                                     <{if($data.total_members>0)}>
+                                     <a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=all&date=<{$data.date}>&count_by=ostatus&datetype=<{$count_by}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}></td>
+                                     <td>
+                                         <{if $data.total_orders}>
+                                            <{($data.total_amount/$data.total_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}>
+                                     </td>
+
+                                     <td><{$data.paid_orders}></td>
+                                     <td><{$data.paid_amount|cur}></td>
+                                     <td><{$data.paid_members}>
+                                     <{if($data.paid_members>0)}>
+                                     <a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=pay&date=<{$data.date}>&count_by=ostatus&datetype=<{$count_by}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}></td>
+                                     <td>
+                                         <{if $data.paid_orders}>
+                                            <{($data.paid_amount/$data.paid_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}>
+                                     </td>
+
+                                     <td><{$data.finish_orders}></td>
+                                     <td><{$data.finish_amount|cur}></td>
+                                     <td><{$data.finish_members}>
+                                      <{if($data.finish_members>0)}><a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=finish&date=<{$data.date}>&count_by=ostatus&datetype=<{$count_by}>')"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}></td>
+                                     <td>
+                                         <{if $data.finish_orders}>
+                                            <{($data.finish_amount/$data.finish_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}>
+                                     </td>
+
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr bgcolor="#F0F5F7">
+                                     <td>合计</td>
+                                     <td><{$total_data.total_orders}></td>
+                                     <td><{$total_data.total_amount|cur}></td>
+                                     <td><{$total_data.total_members}></td>
+                                     <td><{if $total_data.total_orders}>
+                                            <{($total_data.total_amount/$total_data.total_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}></td>
+
+                                     <td><{$total_data.paid_orders}></td>
+                                     <td><{$total_data.paid_amount|cur}></td>
+                                     <td><{$total_data.paid_members}></td>
+                                     <td><{if $total_data.paid_orders}>
+                                            <{($total_data.paid_amount/$total_data.paid_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}></td>
+
+                                     <td><{$total_data.finish_orders}></td>
+                                     <td><{$total_data.finish_amount|cur}></td>
+                                     <td><{$total_data.finish_members}></td>
+                                     <td><{if $total_data.finish_orders}>
+                                            <{($total_data.finish_amount/$total_data.finish_orders)|cur}>
+                                            <{else}>0
+                                         <{/if}></td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+(function(){
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+
+    $$('#rd input').addEvent('click',function(){
+        change_chart(this.value);
+    });
+
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#EEE');
+    }
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+            };
+        });
+    }
+})();
+
+function change_chart(target){
+    var iframe=$('line_frame'),
+        url = '?app=taocrm&ctl=admin_analysis_chart&act=order_status&service=<{$service}>&date_from=<{$date_from}>&date_to=<{$date_to}>&count_by=<{$count_by}>';
+        <{if $line_shop}>url = url + '&line_shop=' + <{$line_shop}>;<{/if}>
+        <{if $shop_id}>url = url + '&shop_id=' + "<{$shop_id}>";<{/if}>
+    iframe.src=url+'&target='+target;
+}
+</script>

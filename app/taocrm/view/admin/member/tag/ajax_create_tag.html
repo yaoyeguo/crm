@@ -1,0 +1,50 @@
+<div class="tableform">
+  <h3>标签创建</h3>
+  <div class="division">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+      <{input type=hidden value=$data.tag_id name="tag_id"}>
+        <tbody>
+         <tr><td></td></tr>
+         <tr>
+            <th><em class="c-red">*</em> 标签名称：</th>
+            <td>
+          <{input type="text" id="tag_name"   name="tag_name" vtype='required'  }>
+            </td>
+         </tr>
+        </tbody>
+      </table>
+      <div class="table-action"><{button label="保存" type="submit" name="submit" id="btn-create-tag"}> &nbsp;&nbsp;</div>
+      
+  </div>
+</div>
+<script type="text/javascript">
+$('btn-create-tag').addEvent('click',function(){
+	if($('tag_name').value == ''){
+		alert('标签不能为空!');
+		return false;
+	}
+	var data={'tag_name':$('tag_name').value};
+	new Request({
+        url : 'index.php?app=taocrm&ctl=admin_member_tag&act=ajaxToCreateTag',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+           //alert(responseText);
+           var data = JSON.decode(responseText);
+           if(data.status == 'fail'){
+               alert(data.info);
+               $("tag_name").focus();
+               return false;
+           }
+           var el_tag = new Element('span',{'id':'tag_'+data.tag_id,'tag_id':data.tag_id,'class':'m_tag'});
+           el_tag.setText($('tag_name').value);
+           el_tag.addEvent('click',function(e){
+        	   clickTag(el_tag);
+           });
+           el_tag.inject($('tag_list'));
+           $('btn-create-tag').getParent('.dialog').retrieve('instance').close();
+       }
+    }).send();
+   return true;
+});
+</script>

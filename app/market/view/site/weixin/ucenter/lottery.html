@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="format-detection" content="telephone=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<title>幸运大转盘</title>
+<script src="<{$env.app.res_url}>/js/jquery.js"></script>
+<script src="<{$env.app.res_url}>/wheel/json2.js"></script>
+<script src="<{$env.app.res_url}>/wheel/BigWheel.js?06111"></script>
+<link rel="stylesheet" href="<{$env.app.res_url}>/wheel/BigWheel.css?06111">
+
+<style>body {background:#F9F9F9;}
+body,ul,li,dl,dd,dt{margin:0;padding:0;}
+a {text-decoration:none;}
+ul,li{list-style:none;overflow:hidden;}
+.top_navbar {font-family:Microsoft Yahei;font-weight:bold;border:1px solid #DDDDDD;border-right:none;overflow:hidden;}
+.top_navbar ul li{float:left;width:33%;text-align:center;}
+.top_navbar ul li a{display:block;padding:8px 0;background:#F6F6F6;border-right:1px solid #DDDDDD;font-size:14px;color:#333;}
+.top_navbar ul li a:hover{background:#EDEDED;}
+.top_navbar ul li a.ui-btn-active{background:#3388CC;color:#FFF;}
+
+#gifts_li img{width:130px;height:130px;}
+#gifts_li li{float:left;width:140px;height:240px;margin:0 0 20px 20px;font-size:12px;border:1px solid #DDDDDD;}
+#gifts_li li h4{margin:0;padding:0;}
+#gifts_li li dt{text-align:center;background:#FFF;}
+#gifts_li li dd{padding:10px 10px 0 10px;line-height:1.5em;}
+#gifts_li li .button{text-align:center;padding:5px 0 0 0;}
+#gifts_li li span{ float:right;color:red;}
+
+.box1 {border:1px solid #DDDDDD;}
+.box1 li{float:left;}
+.box1_left {background:#3388CC;color:#FFF;line-height:1.5em;padding:10px 0;width:80px;text-align:center;}
+.box1_right {line-height:65px;text-align:center;width:215px;background:#FFF;font-family:Arial;font-size:28px;}
+
+#LQ { word-break: break-all; max-width: 960px; overflow: hidden; margin:0 auto; }
+.block-title {font-weight:bold;}
+</style>
+</head>
+<body>
+<div id="top_bar">
+    <div id="shop_logo"><img src="<{$ucenter.logo}>" /></div>
+    <{$ucenter.shop_name}>
+</div>
+
+<div class="top_navbar">
+    <ul>
+        <li><a href="<{$base_url}>points?wx_id=<{$wx_id}>">我的积分</a></li>
+        <li><a class="ui-btn-active">积分抽奖</a></li>
+        <li style="width:34%;"><a href="<{$base_url}>gifts?wx_id=<{$wx_id}>">积分兑礼</a></li>
+    </ul>
+</div><!-- /navbar -->
+
+<div id="LQ">
+
+    <div class="wheel disabled noDel">
+        <div class="canvas-box" id="wheel" style="width:350px;margin:0 auto;">
+            <span class="start"></span>
+        </div>
+
+        <div class="block" style="display:none;">
+          <div class="block-title">我的抽奖结果</div>
+          <div class="block-content">
+            <ul class="user-list">
+                <li class="user-item"><!--抽奖历史记录--></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card_detail disabled">
+            <div class="price">
+                <div class="block-title">活动说明</div>
+                <div style="color:#666;font-size:12px;" class="content">
+                    每次抽奖扣除 <{$rs_lottery.minus_score|default:0}> 积分，
+                    您当前的可用积分为 <font id="all_points" color="blue"><{$rs_member.all_points|default:0}></font> 积分。
+                </div>
+            </div>
+        </div>
+
+        <div class="block">
+          <div class="block-title">奖项</div>
+          <div class="block-content" style="color:#666;font-size:12px;">
+              <table>
+                <tbody>
+                    <{foreach from=$rs_lottery_info item=data }>
+                    <tr>
+                        <td><{$data.awards_name}></td>
+                        <td><{$data.awards_info}></td>
+                        <td><{$data.awards_stock}>名</td>
+                    </tr>
+                    <{/foreach}>
+                </tbody>
+              </table>
+          </div>
+        </div>
+
+        <ul class="result">
+            <li id="award_zero" class="result-msg">
+                <{$rs_lottery.end_msg}>
+            </li>
+            <li id="award_more" class="result-msg">
+                <{$rs_lottery.lose_msg}><br/><br/>
+                <button class="btn-b-s" onclick="$(this).parent().parent().hide();">继续抽奖</button>
+            </li>
+              
+            <{foreach from=$rs_lottery_info item=data }>
+            <li id="award_<{$data.info_id}>" class="result-msg"><div class="title"><{$data.awards_name}>&nbsp;&nbsp;&nbsp;&nbsp;<{$data.awards_info}></div><div class="info_block"><{$rs_lottery.win_msg}></div>
+                <br/>
+                <a href="#" onclick="goto_res();"><button class="btn-b-s">填写获奖信息</button></a>
+            </li>
+            <{/foreach}>
+        </ul>
+    </div>
+    
+</div>
+
+<script>
+    var wx_id = '<{$wx_id}>';
+    var log_id = 0;
+    var minus_score = <{$rs_lottery.minus_score}>;
+    var all_points = <{$rs_member.all_points}>;
+    var lottery_id = '<{$rs_lottery.lottery_id}>';
+    var packageData = [{"name":"wheel","activeForm":true,"data":{"awards_info":"\u606d\u559c\u60a8\u4e2d\u5956\uff0c\u8bf7\u8054\u7cfb\u6211\u4eec\u786e\u8ba4\u4fe1\u606f\uff0c\u6211\u4eec\u7684\u8054\u7cfb\u65b9\u5f0f\u662f121123144","awards":<{$awards}>,"times":"10","birthday":0,"name":"1","sex":"1","email":0,"qq":0,"address":0,"id":""}}];
+    
+    wheel.view.$el = $('#LQ');
+    wheel.view.model = packageData[0];
+    wheel.view.initialize();
+    
+    function goto_res(){
+        var url = 'lottery_res?wx_id=<{$wx_id}>&gift_id=<{$gifts.buy_id}>&log_id='+log_id;
+        window.location.href = url;
+    }
+ </script>
+</body>
+</html>

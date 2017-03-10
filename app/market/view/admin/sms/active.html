@@ -1,0 +1,97 @@
+<div class="tableform">
+
+	<div id="bind_div" style="width:600px">
+		<form action="<{link app=market ctl=admin_sms_account act=bind}>" method="post" id="enterpriseBind">
+			<table border="0" cellspan="0" colspan="0">
+				<tr>
+					<th>&nbsp;</th>
+					<td><h2 class="head-title">短信账户激活</h2>
+                    </td>
+				</tr>                
+				<tr>
+					<th><em class="c-red">*</em> 手机号:</th>
+					<td>
+						<{input size=30 maxlength=11 type="text" name="mobile" id="mobile" }>
+						<{button type="button" label="获取验证码" id="get_passcode"}>
+					</td>
+				</tr>
+				<tr>
+					<th><em class="c-red">*</em> 验证码:</th>
+					<td>
+						<{input size=30 maxlength=6 type="text" name="passcode" id="passcode" }>
+						<{button type="button" label="激活" id="check_passcode"}>
+					</td>
+				</tr>                                                    
+                <tr id="loading" style="display:none;">
+					<th></th>
+					<td>
+						<{img src="loading.gif" app="taocrm" align="absmiddle" }> 正在激活，请稍等……
+					</td>
+				</tr>                                                    
+			</table>   
+<div style="border:1px solid #EEE;color:red;margin:0 auto;line-height:2em;padding:0 10px;background:#FFC;">
+                    手机号仅作为激活短信帐号的工具，不会从您手机扣除费用。
+                    首次激活系统自动赠送您200条短信。 
+                    </div>            
+		</form>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+    (function(){
+	
+        $('get_passcode').addEvent('click',function(){
+			get_passcode();
+        });
+		
+		$('check_passcode').addEvent('click',function(){
+			check_passcode();
+        });
+
+    })();
+	
+	function get_passcode(){
+		var mobile = $('mobile').value;
+		var _data = 'mobile='+mobile;
+		
+		var _url = 'index.php?app=market&ctl=admin_sms_active&act=send_passcode';
+		var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data:_data,
+			onSuccess : function(responseText) {
+				alert(responseText)
+			},
+		});
+        ajaxReq.send();
+	}
+	
+	function check_passcode(){
+    
+        $('loading').show();
+    
+		var mobile = $('mobile').value;
+		var passcode = $('passcode').value;
+		var _data = 'mobile='+mobile+'&passcode='+passcode;
+		
+		var _url = 'index.php?app=market&ctl=admin_sms_active&act=check_passcode';
+		var ajaxReq = new Request({
+			method : 'post',
+			url : _url,
+			data:_data,
+			onSuccess : function(responseText) {
+				//alert(responseText)
+				if(responseText == 'succ'){
+					//window.location.reload();
+					window.location.href = "index.php?app=market&ctl=admin_sms_active&act=index";
+				}else{
+					alert(responseText);
+				}
+                
+                $('loading').hide();
+			},
+		});
+        ajaxReq.send();
+	}
+</script>

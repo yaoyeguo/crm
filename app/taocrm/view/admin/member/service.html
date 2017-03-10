@@ -1,0 +1,29 @@
+
+<div class="tableform">
+	 <div class="gridlist" style="border:none;">
+	 	<table width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+	 	<tr>
+	 		<th><{t}>日期<{/t}></th>
+	 		<th><{t}>客服旺旺<{/t}></th>
+	 		<th><{t}>类型<{/t}></th>
+	 		<th><{t}>备注<{/t}></th>
+	 	</tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$servicenamelist item=item}>
+	 	<tr>
+	 		<td><{$item.date}></td>
+	 		<td><{$item.nick}></td>
+	 		<td><{$item.type}></td>
+	 		<td><{$item.mark}></td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+	 </div>
+	 	 <{$pager}>
+
+
+	 
+</div>

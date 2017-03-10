@@ -1,0 +1,58 @@
+<div id="tmpl_form" class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+<form method="post" action="index.php?app=market&ctl=admin_active&act=invalid" id="terminal">
+	<{input type='hidden' value=$active_id name="active_id_name" id="active_id_id"}>
+<table align="center">
+	<tr>
+		<td class="table-action">是：<input type='radio' value='on' id="invalid_id" name="invalid_name" required='true' checked=checked> 否：<input value='off' type='radio' id="invalid_id" name="invalid_name" required='true'></td>
+	</tr>
+	<tr>
+		<td class="table-action" >
+            <{button label="确定" type="submit" id="sel_mem_btn" class="btn-primary"}>
+            <{button label="取消" type="button" id="btn_cancel" class="btn-primary"}>
+        </td>
+	</tr>
+</table>
+</form>
+</div>
+
+
+<script>
+(function(){ 
+var _form = $('terminal');//form_id
+var btn =$('sel_mem_btn');//bt_id
+var btn_cancel =$('btn_cancel');//bt_id
+var finder = finderGroup['<{$env.get._finder.finder_id}>'];//finder_id
+
+btn_cancel.addEvent('click',function(){
+    btn_cancel.getParent('.dialog').retrieve('instance').close();	    
+});
+
+_form.store('target',{
+	onSuccess:function(response){
+		var hash_res_obj = JSON.decode(response);
+	
+		if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+		{
+			try{
+				var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+			}catch(e){}
+			
+			if(_dialogIns)
+			{	
+				_dialogIns.close();
+				window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+			}
+		}
+		
+	}
+});
+    btn.addEvent('click',function(){
+    	var validate = true;
+    	if (validate) {
+    		_form.fireEvent('submit',{stop:$empty});
+    	}	    
+	});
+})();
+
+
+</script>

@@ -1,0 +1,119 @@
+<h3 class="head-title">添加客户</h3>
+
+<form action="index.php?app=taocrm&ctl=admin_all_member&act=add_member" method="post">
+<input type=hidden name="from" value="<{$from}>" />
+<div class="tableform">
+    <div class="division" style="border:none;">
+        <table border="0" cellspacing="0" cellpadding="0" align="left">
+            <tr>
+                <td align="right" width="100" ><{t}>客户昵称(ID):<{/t}></td>
+                <td width="100"><{input app=ectools type="text" name='uname'  vtype="required" }> <font color=red>*</font></td>
+                <td width="100" align="right"><{t}>昵称来源:<{/t}></td>
+                <td align="left">手动录入</td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>真实姓名:<{/t}></td>
+                <td> <{input app=ectools type="text" name='name' value=$mem.contact.name }></td>
+                <td align="right"><{t}>会员卡号:<{/t}></td>
+                <td><{input app=ectools type="text" name='member_card' value=$mem.member_card }></td>
+            </tr>
+              <tr>
+                <td align="right"><{t}>性别:<{/t}></td>
+                <td><{input type='gender' name='gender' value=$mem.profile.gender }></td>
+                <td align="right"><{t}>生日:<{/t}></td>
+                <td><{input type='date' name='birthday' value=$mem.profile.birthday }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>手机:<{/t}></td>
+                <td><{input app=ectools type="text" name='mobile' value=$mem.contact.phone.mobile vtype="required&&mobile" maxlength="11" }>
+                <font color=red>*</font></td>
+             <td align="right"><{t}>邮箱:<{/t}></td>
+                <td>
+                    <{input size=30 app=ectools type="text" name='email' value=$mem.contact.email vtype='email' }>
+                </td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>电话:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='tel' value=$mem.contact.phone.telephone }></td>
+                <td align="right"><{t}>QQ:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='qq' value=$mem.qq }></td>
+            </tr>
+              <tr>
+                <td align="right"><{t}>旺旺:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='wangwang' value=$mem.wangwang }></td>
+                <td align="right"><{t}>微信:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='weixin' value=$mem.weixin }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>微博:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='weibo' value=$mem.weibo }></td>
+                <td align="right"><{t}>支付宝:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='alipay_no' value=$mem.alipay_no }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>所属店铺:<{/t}></td>
+                <td>
+	                <select name="shop_id" id="shop_select">
+	                    <option value="">-请选择-</option>
+	                    <{foreach from=$shop_list item=shop}>
+	                    	<option value=<{$shop.shop_id}>><{$shop.name}></option>
+	                    <{/foreach}>
+	                </select>
+                <td align="right"><{t}>推荐人code:<{/t}></td>
+                <td>
+                <{input size=10 maxlength=10 type="text" name='commend_code' }>
+            </td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>地区:<{/t}></td>
+                <td><{input app=ectools type="region" name='area' value=$mem.contact.area }></td>
+                <td align="right"><{t}>推荐人手机号:<{/t}></td>
+                <td>
+                <{input type="text" maxlength=11 name='commend_mobile'}></td>
+            </tr>
+            <tr>
+                <td align="right"><{t}>地址:<{/t}></td>
+                <td><{input size=50 app=ectools type="text" name='addr' value=$mem.contact.addr }></td>
+                <td align="right"><{t}>邮编:<{/t}> </td>
+                <td>
+                    <{input size=10 maxlength=6 app=ectools type="text" name='zipcode' value=$mem.contact.zipcode }>
+                    </td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>备注:<{/t}></td>
+                <td colspan="3"><{input size=50 type="text" name="remark" value=$mem.remark}></td>
+            </tr>
+              <tr>
+                <td align="right"><{t}>自定义属性:<{/t}></td>
+                <td colspan="3">
+                    <{if(!$prop_name[0])}>
+                        未定义，<a href="index.php?app=taocrm&ctl=admin_all_member&act=add_member_prop&redirect_uri=<{$redirect_uri}>" target="dialog::{widtd:700,height:380,title:'自定义属性'}" style="color:#5779BD;">点击这里定义客户属性</a>
+                    <{/if}>                    
+                    
+                    <{foreach from=$prop_name item=v key=k}>
+                        <{if($v!='')}>
+                            <{$v}>：                       
+                        <input class="x-input" type="text" size="8" maxlengtd="8" name='prop_name[<{$v}>]' value='<{$prop_val[$v]}>' />&nbsp;
+                            <{if($k==4)}>
+                                <div style="height:5px;overflow:hidden;">&nbsp;</div>
+                            <{/if}>
+                        <{/if}>
+                    <{/foreach}>
+                </td>
+            </tr>
+            <tr><td colspan="4"  class="table-action">
+                <{button type="submit" label=$___b2c="保存"|t:'b2c' }>
+                <input type="hidden" name="source" value="<{$source}>" />
+            </td></tr>
+        </table>
+    </div>
+</div>
+</form>
+
+

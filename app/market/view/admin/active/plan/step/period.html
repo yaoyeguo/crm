@@ -1,0 +1,131 @@
+<style>
+#create_type {list-style:none;}
+#sel_user_p {padding:5px;border:1px solid #CCC;overflow:hidden;background:#EAEEF4;border-radius:5px;margin:5px 0 0 0;}
+    #sel_user_p label{display:block;float:left;width:120px;overflow:hidden;}
+.head-title {margin:0 0 0 0;}
+
+#active_form label,#active_form button {cursor:pointer;}
+#active_form .division {border:none;}
+
+#active_step { padding:20px 0;}
+#active_step li{background:#B59BB0;color:#FFF;border-radius:5px;width:100px;height:50px;display:inline-block;margin:0 20px 0 0;}
+
+#active_form #shop_list {margin:0;padding:0;}
+#active_form #shop_list li{display:inline-block;width:150px;margin:0 0 5px 0;border-radius:6px;}
+#active_form #shop_list li.hover {background:#F8D998;}
+</style>
+
+<form id="active_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+    <!------------------------step1---------------------------->
+    <{input type="hidden" name="info[active_id]" id="active_id" value=$info.active_id }>
+
+    <div id="step3" style="display:;">
+    <div class="">
+
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <tr>
+			  <th align="right"><em class="c-red">*</em><{t}>活动名称：<{/t}></th>
+			  <td>
+                <{input type="text" id="active_name" name="info[active_name]" value=$info.active_name size="35" vtype="required" }>
+                </td>
+			</tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em><{t}>开始时间：<{/t}></th>
+	            <td>
+                    <{input size="30" type='date' id="start_time" name='info[start_time]' value=$info.start_time vtype="required" }>
+                    　　
+                    <em class="c-red">*</em>结束时间：
+                    <{input size="30" type='date' id="end_time" name='info[end_time]' value=$info.end_time vtype="required" }>
+                </td>
+	        </tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em>执行时间：</th>
+	            <td>
+                    <{input size="30" type='date' id="plan_send_time" name='info[plan_send_time]' value=$info.plan_send_time vtype="required"}>
+                    <{input id="auto_run_hour" name="info[auto_run_hour]" type="text" value=$info.auto_run_hour size="6" maxlength='2'  vtype="required"}>时
+                    <{input id="auto_run_min" name="info[auto_run_min]" type="text" value=$info.auto_run_min size="6" maxlength='2'  vtype="required"}>分
+                </td>
+	        </tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em>指定店铺：</th>
+	            <td>
+                    <ul id="shop_list">
+                    <{foreach from=$shops item=v key=k}>
+                        <li><input name="info[shop_ids][]" id="shop_list<{$k}>" type="checkbox" value="<{$k}>" /><label for="shop_list<{$k}>"><{$v}></label></li>
+                    <{/foreach}>
+                    </ul>
+                </td>
+	        </tr>
+            <tr>
+	            <th align="right">活动说明：</th>
+	            <td>
+                    <{input class="x-input" type='textarea' style="width:80%;height:60px;" id="remark" name='info[remark]' value=$info.remark }>
+                </td>
+	        </tr>
+		</table>
+    </div>
+</div>
+
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="保存"}>
+        </div>
+    <{/area}>
+
+
+</form>
+
+<script>
+//(function(){
+    var shop_ids = '<{$info.shop_ids}>';
+    $$('#active_form input[name="info[shop_ids][]"]').each(function(ele){
+        if(shop_ids.indexOf(ele.get('value')) >= 0){
+            ele.set('checked', true);
+        } 
+    });
+    
+    set_checkbox_bg();
+    $$('#shop_list input').addEvent('click', function(){
+        set_checkbox_bg();
+    });
+
+	var btn =$('saveterminal');
+    btn.addEvent('click',function(){
+    
+        if($$('#active_form input[name="info[shop_ids][]"]:checked').length==0){
+            alert('请至少选择一个店铺');
+            return false;
+        }
+    
+        var aj = new Request.JSON({
+            url:"index.php?<{$env.server.QUERY_STRING}>",
+            onSuccess:function(response){
+                if(response.type){
+                    //关闭弹出层
+                    btn.getParent('.dialog').retrieve('instance').close();
+                    if(is_modify==0 && edit_mode == false){
+                        active_id = response.active_id;
+                        go_to('active_time_template');
+                    }
+                    
+                    is_modify = 0;
+                }else{
+                    alert(response.msg);
+                }
+            }
+        }).send($('active_form'));
+    });
+    
+    function set_checkbox_bg(){
+        $$('#shop_list input').each(function(ele){
+            if(ele.get('checked')){
+                ele.getParent().set('class','hover');
+            }else{
+                ele.getParent().set('class','');
+            }
+        });
+    }
+//})();
+</script>

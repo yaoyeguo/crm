@@ -1,0 +1,91 @@
+<div class="tableform">
+	<div class="division">
+        <form method="POST" action="index.php?app=market&ctl=admin_exchange_items&act=save" class="tableform" id="form_member_lv">
+        
+        <{if($coupon.source!='local')}>
+            <div style="background:#FFF;color:red;padding:8px 70px;">注意：该优惠券在CRM外创建，不支持兑换操作。</div>
+        <{/if}>
+        
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+            <tr>
+              <th><{t}>适用店铺：<{/t}></th>
+              <td><b><{$shops.name}></b></td>
+            </tr>
+            
+            <tr>
+              <th><em class="c-red">*</em> <{t}>积分兑换：<{/t}></th>
+              <td>
+                <label><input type="radio" name="is_active" value=1 <{if($exchange.is_active==1)}>checked<{/if}> /> 开启</label>　　           
+                <label><input type="radio" name="is_active" value=0 <{if($exchange.is_active==0)}>checked<{/if}> /> 关闭</label>                
+              </td>
+            </tr>
+            
+            <tbody id="exchange_conf">
+            <tr>
+              <th><em class="c-red">*</em> <{t}>优惠券名称：<{/t}></th>
+              <td><{input type="text" name="title" size="50" vtype="required" value=$exchange.title}></td>
+            </tr>
+            
+            <tr>
+              <th><{t}>总数：<{/t}></th>
+              <td><b><{$coupon.coupon_count}></b></td>
+            </tr>
+            
+            <tr>
+              <th><em class="c-red">*</em> <{t}>可兑换总数：<{/t}></th>
+              <td><{input type="text" name="num" size="10" vtype="required" value=$exchange.num}> 张
+              (不能超过总数)
+              </td>
+            </tr>
+            
+            <tr>
+              <th><em class="c-red">*</em> <{t}>每张优惠券需要：<{/t}></th>
+              <td><{input type="text" name="price" size="10" vtype="required" value=$exchange.price}> 积分</td>
+            </tr>
+            
+            <tr>
+              <th><em class="c-red">*</em> <{t}>每客户限兑：<{/t}></th>
+              <td>
+                <{assign var="opt" value=array(1=>1,2=>2,3=>3,4=>4,5=>5)}>
+                <{input name="max_buy_num" vtype="required" type="select" options=$opt value=$exchange.max_buy_num}> 张</td>
+            </tr>
+            
+            <tr>
+              <th><em class="c-red">*</em> <{t}>兑换截止时间：<{/t}></th>
+              <td><{input type="date" name="end_time" size="10" vtype="required" value=$exchange.end_time}></td>
+            </tr>
+            
+            <tr>
+              <th><{t}>兑换说明：<{/t}></th>
+              <td><{input type="textarea" name="item_desc" style="width:400px;height:100px;" value=$exchange.item_desc}></td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <div class="table-action">
+            <{input type="hidden" name="shop_id" value=$exchange.shop_id }>
+            <{input type="hidden" name="item_type" value=$exchange.item_type }>
+            <{input type="hidden" name="relate_id" value=$exchange.relate_id }>
+            <{input type="hidden" name="item_id" value=$exchange.item_id }>
+            <{button type="submit" label="保存" id="member_lv-form-submit"}>
+        </div>
+        
+        </form>
+
+	</div>
+</div>
+
+<script>
+var is_active = $$('input[name=is_active]:checked').get('value');
+if(is_active == '0') {
+    $('exchange_conf').hide();
+}
+
+$$('input[name=is_active]').addEvent('click',function(){
+    if(this.value == '0') {
+        $('exchange_conf').hide();
+    }else{
+        $('exchange_conf').show();
+    }
+});
+</script>

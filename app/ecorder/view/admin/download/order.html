@@ -1,0 +1,277 @@
+<link href="http://g.alicdn.com/sj/dpl/1.0.0/css/sui.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.0.0/js/sui.min.js"></script>
+
+<div style="padding:20px;">
+
+
+<ul class="sui-nav nav-tabs nav-large nav-primary">
+<li><a href="index.php?app=ecorder&ctl=admin_debug">设置系统版本</a></li>
+<li class="active"><a>下载订单</a></li>
+<li><a href="index.php?app=ecorder&ctl=admin_download&act=goods2">下载商品</a></li>
+</ul>
+
+<div class="tableform">
+
+<div class="division">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <th><{t}>请选择店铺：<{/t}></th>
+           	<td>
+               <select class="x-input" id='shop_id' name='shop_id'>
+               			<option value="">-请选择-</option>
+               			<{foreach from=$shoplist item=item}>
+               			<option value="<{$item.shop_id}>" name="<{$item.name}>"><{$item.name}></option>
+               			<{/foreach}>
+               </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th><{t}>日期选择：<{/t}></th>
+            <td>
+                <{input size="20" type='date' id='date_from' name='date_from' value=$date_from }>
+                    
+                <{input size="20" type='date' id='date_to' name='date_to' value=$date_to }>
+				(不包含结束日期的数据)
+            </td>
+        </tr>
+        <tr style="display:none;" id="order_loading_bar">
+			<th>&nbsp;</th>
+			<td>
+                <div id="order_status"></div>
+                <div id="order_percent_bar">
+                    <div id="order_percent"></div>
+                </div>
+            </td>
+		</tr>
+        <tr id="submit_tr">
+			<th>&nbsp;</th>
+			<td>
+                <{button id="down1" class="btn-primary" label=$___b2c="下载订单"|t:'b2c' type="button"}>
+                <{button id="down2" class="btn-primary" label=$___b2c="下载退款单"|t:'b2c' type="button"}>
+            </td>
+		</tr>
+    </table>
+    
+</div>
+</div>
+
+</div>
+<style>
+#order_status {padding:0 0 8px 0;}
+#order_percent_bar {border:1px solid #5D84B0;width:400px;}
+#order_percent {background:#5D84B0;height:18px;overflow:hidden;width:1%}
+</style>
+<script>
+(function(){
+
+    var forbidden = '<{$forbidden}>';
+    if(forbidden == 'yes') {
+        $('order_loading_bar').show();
+        $('submit_tr').hide();
+        $('order_status').set('html','正在处理，请耐心等待....');
+    }
+    
+    $$('#down2').addEvent('click',function(){
+        var shop_id = $('shop_id').value;
+        var date_from = $('date_from').value;
+        var date_to = $('date_to').value;
+        
+        if(shop_id==""){
+            alert('请选择店铺');
+            $('shop_id').focus();
+            return false;
+        }
+        
+        if(date_from=="" || date_to==''){
+            alert('请选择起止日期');
+            $('date_to').focus();
+            return false;
+        }
+        
+        var data={'data_type':'order','shop_id':shop_id,'date_from':date_from,'date_to':date_to};
+        
+        $('order_loading_bar').show();
+        $('submit_tr').hide();
+        $('order_status').set('html','正在获取数据，请耐心等待....');
+        new Request({
+            url : 'index.php?app=ecorder&ctl=admin_download&act=get_refunds',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+                if (responseText.indexOf('error')>=0){
+                    $('order_status').set('html',responseText);
+                    $('submit_tr').show();
+                    return false;
+                }
+                set_percent(100);
+                $('order_status').set('html','全部完成');
+                $('submit_tr').show();
+            }
+        }).send();
+         
+    });
+
+    $$('#down1').addEvent('click',function(){
+        var shop_id = $('shop_id').value;
+        var date_from = $('date_from').value;
+        var date_to = $('date_to').value;
+        
+        if(shop_id==""){
+            alert('请选择店铺');
+            $('shop_id').focus();
+            return false;
+        }
+        
+        if(date_from=="" || date_to==''){
+            alert('请选择起止日期');
+            $('date_to').focus();
+            return false;
+        }
+        
+        if(!check_data($('date_from'),$('date_to'))){
+        	return false;
+        }
+        
+        var data={'data_type':'order','shop_id':shop_id,'date_from':date_from,'date_to':date_to};
+        
+        $('order_loading_bar').show();
+        $('submit_tr').hide();
+        $('order_status').set('html','正在获取订单数，请耐心等待....');
+        new Request({
+            url : 'index.php?app=ecorder&ctl=admin_download&act=get_order_tids',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+                if (responseText.indexOf('error')>=0){
+                    $('order_status').set('html',responseText);
+                    $('submit_tr').show();
+                    return false;
+                }
+                var tid_count = parseInt(responseText);
+                if($('order_status')) $('order_status').set('html','订单数：'+tid_count);
+                get_order_detail(shop_id,0,tid_count);
+            }
+        }).send();
+         
+    });
+
+})();
+
+//获取订单明细
+function get_order_detail(shop_id,page_no,total){
+	$('order_loading_bar').show();
+	$('submit_tr').hide();
+    if(!page_no) page_no = 0;
+    var data={'shop_id':shop_id,'page_no':page_no};
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_download&act=get_order_detail',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            //page_no++;
+            page_no = parseInt(responseText);
+            if(total > 0){
+            	var percent = Math.ceil(100*page_no/total);
+            }else{
+            	percent = 100;
+            }
+            set_percent(percent);
+            if($('order_status')) $('order_status').set('html','订单数：'+total+' 进度：'+(page_no)+'('+percent+'%)');
+            
+            if(page_no >= total) {
+                //$('submit_tr').show();
+                run_analysis(0);
+                return false;
+            }
+            
+            get_order_detail(shop_id,page_no,total);
+        }
+    }).send();
+}
+
+// 计算统计数据
+function run_analysis(days){
+
+    if(!$('shop_id') || $('shop_id').value=='') {
+        if($('order_status'))
+            $('order_status').set('html','全部完成');
+        return false;
+    }
+    
+    if($('order_status'))
+        $('order_status').set('html','正在下载，请耐心等待...');
+
+    var shop_id = $('shop_id').value;
+    var date_from = $('date_from').value;
+    var date_to = $('date_to').value;
+    
+    if(shop_id==""){
+        alert('请选择店铺');
+        $('shop_id').focus();
+        return false;
+    }
+    
+    if(date_from=="" || date_to==''){
+        alert('请选择起止日期');
+        $('date_to').focus();
+        return false;
+    }
+    
+    var data={'shop_id':shop_id,'date_from':date_from,'date_to':date_to,'days':days};
+    $('order_loading_bar').show();
+    $('submit_tr').hide();
+    new Request({
+        url : 'index.php?app=ecorder&ctl=admin_analysis&act=run_analysis',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            if(responseText.indexOf('finish')>=0){
+                alert('下载完成');
+                if($('order_status')) $('order_status').set('html','全部完成');
+                $('submit_tr').show();
+            }else{
+                if($('order_status')) 
+                $('order_status').set('html','正在下载：'+responseText);
+                run_analysis(days+1);
+            }
+        }
+    }).send();
+}
+
+function set_percent(percent) {
+    if($('order_percent')) {
+        $('order_percent').setStyle('width',percent+'%');
+    }
+}
+
+function check_data(from,to){
+    var data=[],
+    _return=[from,to].every(function(el){
+	    if(!/^(19|20)[0-9]{2}-([1-9]|0[1-9]|1[012])-([1-9]|0[1-9]|[12][0-9]|3[01])+$/.test(el.value)){
+		    new MessageBox('<{t}>请录入日期格式yyyy-mm-dd<{/t}>',{type:'error',autohide:true});
+		    el.focus();
+		    return false;
+	    }
+      	data.push(Date.parse(el.value.replace(/-/gi,"/")));
+      	return true;
+    });
+    if(!_return)return;
+    if(data[1]<data[0]){
+    	return MessageBox.error('<{t}>开始时间不能大于结束时间<{/t}>');
+    }
+ 	var days = (data[1] - data[0]) / 86400000;
+    
+    if(days > 7){
+    	return MessageBox.error('<{t}>开始时间与结束时间不能超过7天<{/t}>');
+    }
+    
+    var end_day = <{$today}>;
+    if((end_day - data[0]/1000) > 90*86400){
+    	return MessageBox.error('<{t}>开始时间不能早于3个月<{/t}>');
+    }
+    return _return;
+}
+</script>
+

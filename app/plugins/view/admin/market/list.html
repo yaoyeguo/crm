@@ -1,0 +1,222 @@
+<style>
+.provice-bg h4{color:#4B5F87;margin:0;padding:5px 0;}
+.star1,.star2,.star3,.star4,.star5 {width:85px}
+.star1{background:url(<{$env.app.res_url}>/seller_credit_1.gif)  no-repeat;}
+.star2{background:url(<{$env.app.res_url}>/seller_credit_2.gif)  no-repeat;}
+.star3{background:url(<{$env.app.res_url}>/seller_credit_3.gif)  no-repeat;}
+.star4{background:url(<{$env.app.res_url}>/seller_credit_4.gif)  no-repeat;}
+.star5{background:url(<{$env.app.res_url}>/seller_credit_5.gif)  no-repeat;}
+</style>
+
+<div style="" class="content-head">
+
+	<div class="finder-title">
+		<h2 class="head-title span-auto">营销超市</h2>
+	</div>
+
+	<div id="finder-packet-d48745" class="finder-packet"
+		style="width: 1111px;">
+		<div class="packet-items clearfix" style="width: 1113px;">
+			<ul class="clearfix">
+				<{foreach from=$plugins item=data key=i}> <{if $data.tab}> <{if
+				$curr_tab==$i}>
+				<li class="current"><{else}>
+				<li><{/if}> <a
+					href="index.php?app=plugins&ctl=admin_market&act=index&type=<{$type}>&tab=<{$i}>">
+						<span><{$data.title}></span> </a>
+				</li> <{/if}> <{/foreach}>
+			</ul>
+
+		</div>
+	</div>
+
+	<div style="padding-right: 75px;" id="finder-action-d48745"
+		class="gridlist-action finder-action clearfix">
+		<ul class="finder-action-items flt">
+			<li><select name="active[shop_id]" id="shop_select">
+					<option value="0">-请选择营销店铺-</option> <{foreach from=$shopList
+					item=shop}>
+					<option value='<{$shop.shop_id}>' <{if($shop.shop_id == $default_shop_id)}>selected<{/if}>><{$shop.name}></option>
+					<{/foreach}>
+			</select>
+			</li>
+		</ul>
+	</div>
+
+</div>
+
+<div style="padding-top: 2px;" id="maret_content_id">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0"
+		class="gridlist">
+		<thead>
+			<tr>
+				<th>规则描述</th>
+				<th>推荐力度</th>
+				<th>预估人数</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<{if $plugins.$curr_tab.tab}> <{assign var=plugins_list
+			value=$plugins.$curr_tab.list}> <{else}> <{assign var=plugins_list
+			value=$plugins}> <{/if}> <{foreach from=$plugins_list item=data
+			key=i}>
+			<tr class="provice-bg">
+				<td width="60%" style="text-align:left"><h4><{$data.title}></h4><{$data.desc}></td>
+				<td width="12%"><div class='star<{$data.recommend}>'>&nbsp;</div></td>
+                <td width="12%"><span></span><a market_id="<{$data.id}>"
+					class="btn_member_counts"><{img border='0' src='preview.gif'}></a>
+				</td>
+				<td width="12%">
+                    <a market_id="<{$data.id}>" class="btn_sms_sale"><{img alt='短信营销' border='0' src='sms_send.gif'}></a> 
+					<!-- <a market_id="<{$data.id}>" class="btn_edm_sale"><{img alt='邮件营销' border='0' src='edm.gif'}></a> -->
+				</td>
+			</tr>
+			<{/foreach}>
+		</tbody>
+	</table>
+</div>
+
+<script>
+var pluginsHash = new Hash();
+<{foreach from=$plugins_list item=data key=i}>
+pluginsHash.set(<{$data.id}>,-1);
+<{/foreach}>
+
+var market_id;
+var shop_id;
+var mtype = 'sms';
+
+autoSelectShop();
+	
+$('shop_select').addEvent('change',function(){
+	$ES('.btn_member_counts',$('maret_content_id')).each(function(el){
+		el.show();
+		el.getPrevious().set('text','');
+	});
+	Cookie.write('last_shop_select', $('shop_select').value);
+});
+
+$ES('.btn_sms_sale',$('maret_content_id')).each(function(el){
+	show_sms_sale(el,'sms');
+});
+
+$ES('.btn_edm_sale',$('maret_content_id')).each(function(el){
+	show_sms_sale(el,'edm');
+});
+
+$ES('.btn_member_counts',$('maret_content_id')).each(function(el){
+	show_member_count(el);
+});
+
+function autoSelectShop(){
+    var last_shop_select = Cookie.read('last_shop_select');
+	if(last_shop_select){
+		for (var i = 0; i < $('shop_select').options.length; i++) { 
+	        if ($('shop_select').options[i].value == last_shop_select) {        
+	        	$('shop_select').options[i].selected = true;  
+	            break;        
+	        }        
+	    }     
+    }
+}
+
+function show_member_count(el){
+	el.addEvent('click',function(){
+        var shop_id = $('shop_select').value;
+        if(shop_id == 0){
+            alert('请选择营销店铺!');
+            return false;
+        }
+        el.hide();
+        el.getPrevious().set('text','正在获取客户数量...');
+        var market_id = el.get('market_id');
+        var url = 'index.php?app=plugins&ctl=admin_market&act=getMemberCounts&market_id='+market_id+'&shop_id='+shop_id;
+        var ajaxReq = new Request(
+                {
+                    method : 'post',
+                    url : url,
+                    data:'',
+                    onSuccess : function(responseText) {
+                    	pluginsHash.set(market_id,responseText);
+                        el.getPrevious().set('text',responseText);
+                        save_hits(market_id,shop_id,'preview');
+                    },
+                });
+        ajaxReq.send();
+	});
+}
+
+function show_sms_sale(el,type){
+	el.addEvent('click',function(){
+	    shop_id = $('shop_select').value;
+	    market_id = el.get('market_id');
+	    if(shop_id == 0){
+	        alert('请选择营销店铺!');
+	        return false;
+	    }
+	    if( pluginsHash.get(market_id) == -1){
+	    	//alert('请先预估人数!');
+	    	//return false;
+	    }
+	    
+	    if(pluginsHash.get(market_id) == 0){
+            //alert('营销人数为0!');
+            //return false;
+        }
+        
+        save_hits(market_id,shop_id,'exec');
+		show_active();
+        //show_legal(type);
+	    
+	});
+}
+
+//创建活动窗口
+function show_active(){
+    var url = 'index.php?app=market&ctl=admin_active&act=one_page&filter_from=market&market_id='+market_id+'&shop_id='+shop_id+'&send_method='+mtype;
+    if (mtype == 'sms') dialog_title = '一键营销';
+    else dialog_title = '邮件营销';
+    new Dialog(url,{width:700,height:355,title:dialog_title});
+}
+
+//付费提醒窗口
+function show_legal(type){
+     mtype = type;
+
+    //var active_id = $('active_id_id').value;
+    var active_id = 123;//更换数字后重新打勾
+    var data={'active_id':active_id};
+    
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active&act=get_legal',
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            if(responseText == 1){
+                new Dialog('index.php?app=market&ctl=admin_active&act=legal_notice&active_id='+active_id,{width:600,height:150,title:'发送提醒'});
+            }else if(responseText == 2){
+                new Dialog('index.php?app=market&ctl=admin_active&act=legal_copy',{width:650,height:350,title:'条款条件'});
+            }else{
+                new Dialog('index.php?app=market&ctl=admin_active&act=legal_notice&active_id='+active_id,{width:600,height:150,title:'发送提醒'});
+                //show_active(el,shop_id);
+            }
+        }
+    }).send();
+}
+
+function save_hits(market_id,shop_id,type){
+    var url = 'index.php?app=plugins&ctl=admin_market&act=save_hits&market_id='+market_id+'&shop_id='+shop_id+'&type='+type;
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : url,
+        data:'',
+        onSuccess : function(responseText) {
+            //alert(responseText);
+        },
+    });
+    ajaxReq.send();
+}
+</script>

@@ -1,0 +1,52 @@
+
+<div class="tableform">
+    
+    <div class="division">
+    
+        <form action="index.php?<{$env.server.QUERY_STRING}>" method="get" style="padding:0 0 5px 0;">
+            手机号：<{input size=16 type="text" name="mobile" maxlength=11 value=$mobile }>
+            <button type="submit">搜索</button>
+        </form>
+    
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th width="10%"><{t}>插件名称<{/t}></th>
+                    <th width="10%"><{t}>手机号<{/t}></th>
+                    <th width="10%"><{t}>订单号<{/t}></th>
+                    <th width="50%"><{t}>短信内容<{/t}></th>
+                    <th width="10%"><{t}>发送时间<{/t}></th>
+                    <th width="10%"><{t}>店铺<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$logs item=data}>
+                <tr>
+                    <td><{$data.plugin_name}></td>
+                    <td><{$data.mobile}></td>
+                    <td class="logi_info" id="<{$data.tid}>">
+                        <a target="dialog::{width:700,height:355,title:'订单明细'}" href="index.php?app=taocrm&ctl=admin_member&act=getOrderInfo&order_bn=<{$data.tid}>"><{$data.tid}></a>
+                    </td>
+                    <td><{$data.sms_content}></td>
+                    <td><{$data.create_date}></td>
+                    <td><{$data.shop_name}></td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        
+        <br/>
+        <{$pager}>
+        
+    </div>
+</div>
+
+<script>
+/* 
+ $$('td.logi_info').addEvent('click',function(){
+    new Dialog('index.php?app=plugins&ctl=admin_manage&act=logi_info&tid='+this.id,{width:640,height:280,title:'物流信息'});
+    return false;
+});*/
+</script>
+

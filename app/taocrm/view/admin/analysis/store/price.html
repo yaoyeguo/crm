@@ -1,0 +1,135 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<style>
+.compare_td td{background:#F0F5F7;}
+</style>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <{include file="admin/analysis/store/price_search.html"}>
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>成交价格分布</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                        <div style="height:345px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_store&act=price_map&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&shop_id=<{$shop_id}>&order_status=<{$order_status}>" scrolling="no" width="100%" height="100%" id='line_frame1'></iframe>
+                        </div> 
+                        <div class="fkfb_list_row" style="padding:5px;" id="order_status">
+                            订单类别：
+                            <label><input checked="checked" type="radio" name="rd" value="all" /> 全部订单</label>
+                            <label><input type="radio" name="rd" value="pay" /> 付款订单</label>
+                            <label><input type="radio" name="rd" value="finish" /> 完成订单</label>
+                        </div>
+                    </div>
+
+                    <div class="tableform" style="display:none">
+                    
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>
+                                    <th><{t}>价格区间<{/t}></th>
+                                    <th><{t}>总订单数<{/t}></th>
+                                    <th><{t}>总会员数<{/t}></th>
+                                    <th><{t}>付款订单数<{/t}></th>
+                                    <th><{t}>付款会员数<{/t}></th>
+                                    <th><{t}>完成订单数<{/t}></th>
+                                    <th><{t}>完成会员数<{/t}></th>
+                                    <th><{t}>订单占比<{/t}></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <{foreach from=$all_data item=data key=key}>
+                                     <tr>
+                                         <td><{$key}></td>
+                                         <td><{$data.TotalOrders}></td>
+                                         <td><{$data.TotalMembers}>
+                                             <{if($data.TotalMembers>0)}>
+                                             <a onclick="show_members('&date_from=<{$date_from}>&date_to=<{$date_to}>&shop_id=<{$shop_id}>&totalAmount1=<{$data.totalAmount1}>&totalAmount2=<{$data.totalAmount2}>&filter_type=price&order_status=all');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                             <{/if}>
+                                         </td>
+                                         <td><{$data.PayOrders}></td>
+                                         <td><{$data.PayMembers}>
+                                             <{if($data.PayMembers>0)}>
+                                             <a onclick="show_members('&date_from=<{$date_from}>&date_to=<{$date_to}>&shop_id=<{$shop_id}>&totalAmount1=<{$data.totalAmount1}>&totalAmount2=<{$data.totalAmount2}>&filter_type=price&order_status=pay');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                             <{/if}>
+                                         </td>
+                                         <td><{$data.FinishOrders}></td>
+                                         <td><{$data.FinishMembers}>
+                                             <{if($data.FinishMembers>0)}>
+                                             <a onclick="show_members('&date_from=<{$date_from}>&date_to=<{$date_to}>&shop_id=<{$shop_id}>&totalAmount1=<{$data.totalAmount1}>&totalAmount2=<{$data.totalAmount2}>&filter_type=price&order_status=finish');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                             <{/if}>
+                                         </td>
+                                         <td><{$data.OrderRate * 100}>%</td>
+                                     </tr>
+                                 <{/foreach}>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function(){
+
+    $('compare_span').hide();
+
+    var c_time_from = $('c_date_from').get('value');
+    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#EEE');
+    } 
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+            };
+        });
+    }
+    
+    $$('#order_status input').addEvent('click',function(){
+        change_chart(this.value);
+    });
+    
+})();
+
+//按订单状态切换报表
+function change_chart(order_status){
+    var iframe1=$('line_frame1');
+    iframe1.src += '&order_status='+order_status;
+}
+</script>

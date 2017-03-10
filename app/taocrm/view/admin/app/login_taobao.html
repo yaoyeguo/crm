@@ -1,0 +1,34 @@
+<div class="division" id="group_edit_container">
+	<table width="100%" border="0" cellpadding="5" cellspacing="10">
+		<tr>
+		  <td><span class="bind">您未登录淘宝,请先登录淘宝后再绑定！</span></td>
+		</tr>
+		<tr>
+		  <td align='center'><a href="<{$url}>" target="_blank" style="font-size:16px;margin-top:15px">登录淘宝</a></td>
+		</tr>
+	   
+	</table>
+</div>
+<{area inject='.mainFoot'}>
+	<div class="table-action">
+		<{button id="down" class="btn-primary" label=$___b2c="关闭窗口"|t:'b2c' type="button"}>　　
+	</div>
+<{/area}>
+
+<style>
+	.bind{
+		font-size:15px;
+		padding-left:20px;
+		padding-top:10px
+	}
+</style>
+<script>
+
+$('down').addEvent('click',function(){
+	$('down').getParent('.dialog').retrieve('instance').close();
+});
+</script>
+
+
+
+

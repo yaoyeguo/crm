@@ -1,0 +1,28 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>货号<{/t}></th>
+            <th><{t}>商品<{/t}></th>
+            <th><{t}>数量<{/t}></th>
+            <th><{t}>总金额<{/t}></th>
+            <th><{t}>平均单价<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$goods item=item key=key}>
+         <tr>
+                     <td><{$item.bn|default:'-'}></td>
+             <td><{$item.name}></td>
+             <td><{$item.nums}></td>
+             <td><{$item.amount}></td>
+             <td><{$item.amount/$item.nums|round:2}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+        
+     <{$pager}>
+</div>
+</div>

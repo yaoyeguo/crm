@@ -1,0 +1,52 @@
+<form method="post" action="index.php?app=ecorder&ctl=admin_gift_rule&act=invalid" class="tableform" id="form_member_lv">
+	<{input type='hidden' value=$id name="id" id="active_id_id"}>
+	<{input type='hidden' name='view' value=$view}>
+	<table align="center">
+		<tr>
+			<td class="table-action">是：<input type='radio' value='on' id="invalid_id" name="invalid_name" required='true' checked=checked> 否：<input value='off' type='radio' id="invalid_id" name="invalid_name" required='true'></td>
+		</tr>
+	</table>
+</form>
+<{area inject='.mainFoot'}>
+	<div class="table-action">
+		<{button type="button" label="保存" id="member_lv-form-submit"}>
+	</div>
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function(){
+   		_form.fireEvent('submit',{stop:$empty});
+    
+    });
+	
+})();
+
+   
+</script>
+
+ 

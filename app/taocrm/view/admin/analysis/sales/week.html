@@ -1,0 +1,228 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<style>
+#show_type {font-size:12px;font-weight:normal;padding:0 0 0 30px;}
+    #show_type a{color:#5779BD;}
+</style>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <{include file="admin/analysis/search.html"}>
+            <div class="title_left">
+                <{$path}> 
+                <span id="show_type">
+                    显示模式：
+                    <a href="index.php?app=taocrm&ctl=admin_analysis_sales&act=hours">小时</a>　|　
+                    <span style="color:red">星期</span>
+                </span>
+             </div>
+        </h4>
+        
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>订单趋势</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                        
+                        <div style="height:345px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=chart_week&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=1" scrolling="no" width="100%" height="100%" id='line_frame1'></iframe>
+                        </div> 
+                        
+                    </div>
+                    
+                    <div class="tableform" style="display:none">
+
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>时间<{/t}></th>
+                                    
+                                    <th><{t}>订单数<{/t}></th>
+                                    <th><{t}>总金额<{/t}></th>
+                                    <th><{t}>客户数<{/t}></th>
+                                    <th><{t}>订单单价<{/t}></th>
+                                    
+                                    <th><{t}>付款订单数<{/t}></th>
+                                    <th><{t}>付款总金额<{/t}></th>
+                                    <th><{t}>付款客户数<{/t}></th>
+                                    <th><{t}>付款订单单价<{/t}></th>
+                                    
+                                    <th><{t}>完成订单数<{/t}></th>
+                                    <th><{t}>完成总金额<{/t}></th>
+                                    <th><{t}>完成客户数<{/t}></th>
+                                    <th><{t}>完成订单单价<{/t}></th>
+                                    
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                 <tr>
+                                     <td><{$key}></td>
+                                     <td><{$data.total_orders}></td>
+                                     <td><{$data.total_amount|cur}></td>
+                                     <td><{$data.total_members}>
+                                        <{if($data.total_members)}>
+                                        <a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=all&date_from=<{$date_from}>&date_to=<{$date_to}>&count_by=week&hours=<{$data.week_no}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        </td>
+                                     <td>
+                                         <{if $data.total_orders}>
+                                            <{($data.total_amount/$data.total_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+                                     
+                                     <td><{$data.paid_orders|default:0}></td>
+                                     <td><{$data.paid_amount|cur}></td>
+                                     <td><{$data.paid_members|default:0}>
+                                        <{if($data.paid_members)}>
+                                        <a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=pay&date_from=<{$date_from}>&date_to=<{$date_to}>&count_by=week&hours=<{$data.week_no}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        </td>
+                                     <td>
+                                         <{if $data.paid_orders}>
+                                            <{($data.paid_amount/$data.paid_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+                                     
+                                     <td><{$data.finish_orders|default:0}></td>
+                                     <td><{$data.finish_amount|cur}></td>
+                                     <td><{$data.finish_members|default:0}>
+                                        <{if($data.finish_members)}>
+                                        <a onclick="show_members('&shop_id=<{$shop_id}>&filter_type=analysis&order_status=finish&date_from=<{$date_from}>&date_to=<{$date_to}>&count_by=week&hours=<{$data.week_no}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                        <{/if}>
+                                        </td>
+                                     <td>
+                                         <{if $data.finish_orders}>
+                                            <{($data.finish_amount/$data.finish_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+
+                                 </tr>
+                                 <{/foreach}>
+                                 
+                                 <tr bgcolor="#F1F6F7">
+                                     <td>合计</td>
+                                     <td><{$total_data.total_orders}></td>
+                                     <td><{$total_data.total_amount|cur}></td>
+                                     <td><{$total_data.total_members}></td>
+                                     <td>
+                                         <{if $total_data.total_orders}>
+                                            <{($total_data.total_amount/$total_data.total_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+                                     
+                                     <td><{$total_data.paid_orders}></td>
+                                     <td><{$total_data.paid_amount|cur}></td>
+                                     <td><{$total_data.paid_members}></td>
+                                     <td>
+                                         <{if $total_data.paid_orders}>
+                                            <{($total_data.paid_amount/$total_data.paid_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+                                     
+                                     <td><{$total_data.finish_orders}></td>
+                                     <td><{$total_data.finish_amount|cur}></td>
+                                     <td><{$total_data.finish_members}></td>
+                                     <td>
+                                         <{if $total_data.finish_orders}>
+                                            <{($total_data.finish_amount/$total_data.finish_orders)|cur}>
+                                         <{else}>0
+                                         <{/if}>
+                                     </td>
+
+                                 </tr>
+                            </tbody>   
+                        </table>                      
+                        
+                    </div>
+                    
+                    <div class="fkfb_list_row" id="sel_order_status">
+                        <ul id="order_status">
+                            <li>
+                                订单状态：
+                                <label><input checked="checked" type="radio" name="order_status" value="total" /> 全部订单</label>　
+                                <label><input type="radio" name="order_status" value="paid" /> 已付款订单</label>　
+                                <label><input type="radio" name="order_status" value="finish" /> 已完成订单</label>                        
+                            </li>
+                        </ul>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+(function(){
+    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%3 == 1) list_tr[i].setStyle('background','#F4F4F4');
+        if (i%3 == 2) list_tr[i].setStyle('background','#EEE');
+    }
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+                if(i==1) {
+                    $('sel_order_status').setStyle('display', 'none');
+                }else{
+                    $('sel_order_status').setStyle('display', 'block');
+                }
+                if(i==1) $('frame2').set('src', $('frame2').get('title'));
+            };
+        });
+    }
+    
+    $$('#order_status input').addEvent('click',function(){
+        change_chart(this.value);
+    });
+    
+})();
+
+//按订单状态切换报表
+function change_chart(order_status){
+    var iframe1=$('line_frame1');
+    var iframe2=$('line_frame2');
+    iframe1.src += '&order_status='+order_status;
+    iframe2.src += '&order_status='+order_status;
+}
+</script>

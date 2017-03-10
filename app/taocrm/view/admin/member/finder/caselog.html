@@ -1,0 +1,45 @@
+
+<div class="tableform">
+	 <div class="gridlist" style="border:none;">
+	 	<table width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+            <tr>
+                <th><{t}>操作<{/t}></th>
+                <th><{t}>客户名称<{/t}></th>
+                <th><{t}>店铺<{/t}></th>
+                <th><{t}>来源<{/t}></th>
+                <th><{t}>日期<{/t}></th>
+                <th><{t}>媒体<{/t}></th>
+                <th><{t}>类型<{/t}></th>
+                <th><{t}>状态<{/t}></th>
+                <th><{t}>服务内容<{/t}></th>
+                <th><{t}>提醒日期<{/t}></th>
+                <th><{t}>客服<{/t}></th>
+                
+            </tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$caselog item=item}>
+	 	<tr>
+            <td>
+	 			<a target='dialog::{width:650,height:300,title:"修改服务"}' href="index.php?app=taocrm&ctl=admin_member_caselog&act=caselog_edit&member_id=<{$item.member_id}>&id=<{$item.id}>">修改</a>
+	 		</td>
+	 		<td><{$item.customer}></td>
+	 		<td><{$item.shop_name}></td>
+	 		<td><{$item.source}></td>
+	 		<td><{$item.create_time}></td>
+	 		<td><{$item.media}></td>
+	 		<td><{$item.category}></td>
+	 		<td><{$item.status}></td>
+	 		<td><{$item.content}></td>
+	 		<td><{$item.alarm_time}></td>
+	 		<td><{$item.agent}></td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+    </div>
+     
+    <{$pager}>
+	 
+</div>

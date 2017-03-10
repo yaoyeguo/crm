@@ -1,0 +1,35 @@
+<div class="title_right" id="dataAction">
+<form action="<{$form_action}>" method="post" id="filter_form">
+    <{if $timeFilter != 'false'}>
+    <div class="date_date_cx" style="font-size:12px">
+        <span id="count_unit">
+            根据：
+            <{input type="select" id="qudao_input" name="shop_type" options=$shop_types value=$shop_type}>
+            <{input style="width:180px" id="dianpu_input" type="select" name="shop_id" options=$shops value=$shop_id}>
+            <{input type="select" id="yue_input" name="use_month" options=$use_months value=$use_month}>
+            预测：
+            <{input type="select" name="scope" id="yuce_input" options=$scopes value=$scope}>
+        </span>
+        <{button class="filterBtn btn-thirdly" label="查询"}>
+    </div>
+    <{/if}>
+</form>
+</div>
+<script>
+(function(){
+    var dataAction= $('dataAction');
+    dataAction.getElement('.filterBtn').addEvent('click',function(e){setChartData(true);});
+
+    function setChartData(flag,e){
+        $('filter_form').fireEvent('submit',{stop:$empty});
+    }
+})();
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>

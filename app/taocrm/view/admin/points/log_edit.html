@@ -1,0 +1,81 @@
+<{if !$_is_singlepage}>
+
+
+<style>
+.points { font-weight:bold; font-family:Tahoma, Geneva, sans-serif;}
+</style>
+<form method="POST" action="index.php?app=taocrm&ctl=admin_points_log&act=save" class="tableform" id="form_points_log">
+<div class="division">
+<{input type='hidden' name='pid' value=$logs.log_id}>
+<{input type='hidden' name='member_id' value=$logs.member_id}>
+<{input type='hidden' name='shop_id' value=$logs.shop_id}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+    <tr>
+	  <th><{t}>客户名称：<{/t}></th>
+	  <td class="points"><{$logs.uname}></td>
+	</tr>
+	<tr>
+	  <th><{t}>当前积分：<{/t}></th>
+	  <td class="points"><{$logs.total_points}></td>
+	</tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>操作积分<{/t}>：</th>
+      <td>
+        <{input type="number" name="points" size="8" class="_x_input points" vtype="required&&number" value=$logs.points}>
+            <span class="notice-inline" style="margin:5px 0 0 5px; padding:0"><{t}>输入负数表示扣除积分<{/t}></span>
+      </td>
+    </tr>
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>备注<{/t}>：</th>
+      <td><{input type="text" name="remark" size="50" class="_x_input" vtype="required" value=$logs.remark}>
+      </td>
+    </tr>
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="member_lv-form-submit"}>
+</div>
+
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_points_log');
+	var btn =$('member_lv-form-submit');
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+        //btn.set('disabled','disabled');
+    });
+	
+})();
+</script>
+
+<{/if}>
+ 
+ 
+ 

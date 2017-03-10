@@ -1,0 +1,114 @@
+<form method="POST" action="index.php?app=ecorder&ctl=admin_gift_rule&act=update_rule" class="tableform" id="form_member_lv">
+	<{input type='hidden' name='id' value=$id id="id"}>
+	<{input type='hidden' name='view' value=$view}>
+	<{if $shop.shop_id}><{input type='hidden' name='shop_id' value=$shop.shop_id id='shop_id'}><{/if}>
+	<{if $shop.shop_id}><{input type='hidden' name='lv_id' value=$aLv.lv_id id='lv_id'}><{/if}>
+	<div class="division1" id="group_edit_container">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+		    <tr>
+			  <th><em class="c-red">*</em><{t}>适用店铺：<{/t}></th>
+			  <td><{$shop.name}></td>
+			</tr>
+		    
+		    <tr>
+			  <th><em class="c-red">*</em><{t}>等级名称：<{/t}></th>
+			  <td>
+			  	 <{$aLv.name}>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th><em class="c-red">*</em><{t}>赠品名称：<{/t}></th>
+			  
+			  <td>
+				<select name="gift_bn" id="gift_bn">
+                    <option value="0">-请选择-</option>
+	                    <{foreach from=$shop_gift item=item}>
+	                    	<option <{if $gift_bn == $item.gift_bn}>selected<{/if}> value=<{$item.gift_bn}>><{$item.gift_name}></option>
+	                    <{/foreach}>
+                </select>
+			 </td>
+			 
+			 
+			 <tr>
+	            <th><em class="c-red">*</em><{t}>开始时间：<{/t}></th>
+	            <td><{input size="30" type='date' id='start_time' name='start_time' value=$start_time}></td>
+	        </tr>
+	        <tr>
+	            <th><em class="c-red">*</em><{t}>结束时间：<{/t}></th>
+	            <td><{input size="30" type='date' id='end_time' name='end_time' value=$end_time }></td>
+	        </tr>
+	        
+			</tr>
+		</table>
+	</div>
+</form>
+<{area inject='.mainFoot'}>
+	<div class="table-action">
+		<{button type="button" label="保存" id="member_lv-form-submit"}>
+	</div>
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+
+    btn.addEvent('click',function(){
+    	if($('gift_bn').value=="0"){
+            alert("请选择赠品");
+            $('gift_bn').focus();
+            return false;
+        }
+		
+       	var data = {'shop_id':$('shop_id').get('value'),'id':$('id').get('value'),'lv_id':$('lv_id').value,
+       			'gift_bn':$('gift_bn').value,'start_time':$('start_time').value,'end_time':$('end_time').value};
+       	new Request({
+            url : 'index.php?app=ecorder&ctl=admin_gift_rule&act=check_gift_rule',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+            	if(responseText){
+            		if(responseText == 1){
+            			alert('规则冲突!');
+                		return false;
+            		}else if(responseText == 2){
+            			alert('结束时间必须大于开始时间');
+            			//$('end_time').focus();
+            			return false;
+            		}
+            		
+            	}
+               	_form.fireEvent('submit',{stop:$empty});
+            }
+        }).send();
+       	
+    });
+	
+})();
+
+   
+</script>
+
+ 

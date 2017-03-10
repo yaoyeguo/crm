@@ -1,0 +1,65 @@
+
+  <form id="menu_form" action="index.php?ctl=users&act=self_service_menu" method="POST">
+  <div>
+      <h2>自服务菜单配置</h2>
+      <div>
+          <ul style="list-style-type:none;">
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="member_card" checked />
+                  会员卡
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="sign_in" checked />
+                  签到
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="order" checked />
+                  我的订单
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="point" checked />
+                  我的积分
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="money" checked />
+                  我的储值
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="card" checked />
+                  我的卡包
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="card" checked />
+                  我的收货地址
+              </li>
+              <li>
+                  <input type="checkbox" name="menu[]" disabled=true value="set" checked />
+                  设置
+              </li>
+              <{foreach from=$conf_menu item=data key=k }>
+              <li>
+                  <label>
+                  <input type="checkbox" name="menu[]" value="<{$k}>" <{if(in_array($k, $service_menu))}> checked <{/if}> />
+                  <{$data}>
+                  </label>
+              </li>
+              <{/foreach}>
+          </ul>
+      </div>
+      <div style="padding-top: 20px;">
+          <label style="padding-left: 100px;"><input type="button" id="menu_submit" name="menu_submit" value="保存" /></label>
+      </div>
+  </div>
+  </form>
+<script>
+    (function(){
+        var _form = $('menu_form');
+        var btn =$('menu_submit');
+
+        btn.addEvent('click',function(){
+
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

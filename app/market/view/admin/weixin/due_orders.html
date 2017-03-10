@@ -1,0 +1,75 @@
+<style>
+#child_tbl .child_tbl tr td{padding:0;margin:0;height:16px;line-height:16px;}
+</style>
+
+<div class="tableform">
+    
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th width="10%"><{t}>微信用户ID<{/t}></th>
+                    <th width="80%"><{t}>订单内容<{/t}></th>
+                    <th width="10%"><{t}>创建时间<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody id="child_tbl">
+                <{foreach from=$logs item=data}>
+                <tr>
+                    <td><{$data.wx_id}></td>
+                    <td style="text-align:left;">
+                        <table class="child_tbl">
+                            <tr>
+                                <td>姓名</td>
+                                <td>手机</td>
+                                <td>数量</td>
+                                <td>尺码</td>
+                                <td>颜色</td>
+                            <tr>
+                            <tr>
+                                <td><{$data.truename}></td>
+                                <td><{$data.mobile}></td>
+                                <td><{$data.num}></td>
+                                <td><{$data.size}></td>
+                                <td><{$data.color}></td>
+                            <tr>
+                            <{if($data.addr)}>
+                            <tr>
+                                <td colspan="20">地址：<{$data.addr}></td>
+                            </tr>
+                            <{/if}>
+                            <{if($data.order_content)}>
+                            <tr>
+                                <td colspan="20">备注：<{$data.order_content}></td>
+                            </tr>
+                            <{/if}>
+                        </table>
+                        
+                        <{if($data.log.more_info)}>
+                            <{foreach from=$data.log.more_info item=v key=k }>
+                                <{$k}>:<{$v}>;
+                            <{/foreach}>
+                        <{/if}>
+                        
+                    </td>
+                    <td><{$data.created}></td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        
+        <br/>
+        <{$pager}>
+        
+    </div>
+</div>
+
+<script>
+$$('td.logi_info').addEvent('click',function(){
+    //alert(this.id);
+    new Dialog('index.php?app=plugins&ctl=admin_manage&act=logi_info&tid='+this.id,{width:640,height:280,title:'物流信息'});
+    return false;
+});
+</script>
+

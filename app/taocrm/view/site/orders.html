@@ -1,0 +1,30 @@
+<div style="padding:20px">
+    <table class="tbl_list" border="0" cellspacing="0" cellpadding="0">
+        <thead>
+<tr>
+        <td>兑换的优惠券</td>
+        <td>数量</td>
+        <td>消费积分</td>
+        <td>状态</td>
+        <td>备注</td>
+        <td>时间</td>
+        </tr>
+        </thead>
+        <tbody>
+        <{foreach from=$orders item=data}>
+        <tr>
+        <td><{$data.title}></td>
+        <td><{$data.num}></td>
+        <td><{$data.payment}></td>
+        <td><{$data.status}></td>
+        <td><{$data.remark}></td>
+        <td><{$data.create_time}></td>
+        </tr>
+        <{/foreach}>
+    
+    </tbody>
+    </table>
+    
+    <{$pager}>
+    
+</div>

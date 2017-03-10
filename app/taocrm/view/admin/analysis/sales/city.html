@@ -1,0 +1,62 @@
+<table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th>&nbsp;</th>
+            
+            <th colspan="4"><{t}>全部订单<{/t}></th>
+            
+            <th colspan="4"><{t}>付款订单<{/t}></th>
+
+        </tr>
+        <tr>  
+            <th><{t}>区域<{/t}></th>
+            
+            <th><{t}>订单数<{/t}></th>
+            <th><{t}>总金额<{/t}></th>
+            <th><{t}>客户数<{/t}></th>
+            <th><{t}>平均单价<{/t}></th>
+            
+            <th><{t}>付款总数<{/t}></th>
+            <th><{t}>付款金额<{/t}></th>
+            <th><{t}>客户数<{/t}></th>
+            <th><{t}>付款单价<{/t}></th>
+
+        </tr>
+    </thead>
+    
+    <tbody>
+        <{foreach from=$analysis_data item=data key=key}>
+         <tr>
+             <td>
+                <{$data.area}>
+            </td>
+             
+             <td><{$data.total_orders}> (<{$data.total_orders_ratio}>%)</td>
+             <td><{$data.total_amount|cur}> (<{$data.total_amount_ratio}>%)</td>
+             <td title="<{$data.total_members_ratio}>%"><{$data.total_members}> 
+             <a onclick="parent.show_members('&shop_id=<{$shop_id}>&count_by=area&filter_type=analysis&order_status=all&date_from=<{$date_from}>&date_to=<{$date_to}>&area=<{$data.area_id}>&is_city=1');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+             </td>
+             <td><{$data.per_amount|cur}></td>
+             
+             <td><{$data.paid_orders}> (<{$data.paid_orders_ratio}>%)</td>
+             <td><{$data.paid_amount|cur}> (<{$data.paid_amount_ratio}>%)</td>
+             <td title="<{$data.paid_members_ratio}>%"><{$data.paid_members}> 
+             <a onclick="parent.show_members('&shop_id=<{$shop_id}>&count_by=area&filter_type=analysis&order_status=paid&date_from=<{$date_from}>&date_to=<{$date_to}>&area=<{$data.area_id}>&is_city=1');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a></td>
+             <td><{$data.paid_per_amount|cur}></td>
+
+         </tr>
+         <{/foreach}>
+         <tr bgcolor="#F0F5F7">
+             <td>合计</td>
+             <td><{$total_data.total_orders}></td>
+             <td><{$total_data.total_amount|cur}></td>
+             <td><{$total_data.total_members}></td>
+             <td><{$total_data.total_amount/$total_data.total_members|cur}></td>
+             
+             <td><{$total_data.paid_orders}></td>
+             <td><{$total_data.paid_amount|cur}></td>
+             <td><{$total_data.paid_members}></td>
+             <td><{$total_data.paid_amount/$total_data.paid_members|cur}></td>
+         </tr>
+    </tbody>   
+</table>

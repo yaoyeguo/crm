@@ -1,0 +1,102 @@
+<div class="tableform">
+<form action="index.php?app=taocrm&ctl=admin_active&act=toAdd" method="post" id="form01">
+    <input type='hidden' name='active[shop_id]' value="<{$shop.shop_id}>" />
+    <input type='hidden' name='group_id' value="<{$group.group_id}>" />
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<th><{t}>所属店铺：<{/t}></th>
+			<td><{$shop.name}></td>
+		</tr>
+		<tr>
+			<th><{t}>活动名称：<{/t}></th>
+			<td><input type='text' name='active[active_name]' value="" /></td>
+		</tr>
+		<tr>
+			<th><label for="coupon_id"><{t}>优惠券发送：<{/t}></label></th>
+			<td id="coupon_send"><label><input type='radio' name='coupon_send' value=<{$shop.shop_id}> /><{t}>是<{/t}></label>
+				<label><input type='radio' name='coupon_send' value="" checked="checked" /><{t}>否<{/t}></label></td>
+		</tr>
+		<tr>
+			<th></th>
+			<td id="coupon_id"></td>
+		</tr>
+        <tr>
+            <th><{t}>短信提醒：<{/t}></th>
+            <td id="sms_send"><label><input type='radio' name='sms_send' value=1 <{if $rule.theme_id}>checked="checked"<{/if}> /><{t}>是<{/t}></label>
+                <label><input type='radio' name='sms_send' value=""  <{if !$rule.theme_id}>checked="checked"<{/if}> /><{t}>否<{/t}></label></td>
+        </tr>
+        <tr id="select_theme">
+            <th><{t}>选择短信模板：<{/t}></th>
+            <td>
+	            <select name="themeGroup" id="themeGroup" style="width:100px;">
+	                <option value="0">选择模板分类</option>
+	                <{foreach from=$groupList item=group}>
+	                <option value="<{$group.group_id}>"><{$group.group_title}></option>
+	                <{/foreach}>
+	            </select>
+	            <span id="theme_id"></span>
+	        </td>
+        </tr>
+	</table>
+</form>
+</div>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label="确认" type="button" id="btn01" class="btn-primary"}>
+   </div>
+<{/area}>
+
+<script>
+(function(){
+    $('btn01').addEvent('click',function(){
+        $('form01').store('target',{onComplete:function(re){
+            re = JSON.decode(re);
+
+            if(re.error)return;
+            $('form01').getParent('.dialog').retrieve('instance').close();
+        }});
+        $('form01').fireEvent('submit',{stop:$empty});
+    });
+
+    window.addEvent('domready',function(){
+        $$("#coupon_send input[name=coupon_send]").addEvent('click',function(){
+            if(this.value){
+                new Request.HTML({
+                    url : 'index.php?app=taocrm&ctl=admin_coupon&act=getShopCoupon&p[0]='+this.value,
+                    method : 'post',
+                    update : $('coupon_id')
+                }).send();
+            }else{
+                $('coupon_id').innerHTML = '';
+            }
+        });
+    });
+
+    $('select_theme').hide();
+    $('select_theme').getFormElements().set('disabled',true);
+
+    $$("#sms_send input[name=sms_send]").addEvent('click',function(){
+        if(this.value){
+            $('select_theme').show();
+            $('select_theme').getFormElements().set('disabled',false);
+        }else{
+            $('select_theme').hide();
+            $('select_theme').getFormElements().set('disabled',true);
+        }
+    });
+
+    $('themeGroup').addEvent('change', function() {
+        if(this.value){
+            new Request.HTML({
+                url : 'index.php?app=taocrm&ctl=admin_sms_themes_group&act=getThemesByGroup&p[0]='+this.value,
+                method : 'get',
+                update : $('theme_id')
+            }).send();
+        }else{
+            $('theme_id').innerHTML = '';
+        }
+	});
+})();
+function changeTheme(){
+}
+</script>

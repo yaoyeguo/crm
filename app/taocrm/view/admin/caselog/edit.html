@@ -1,0 +1,91 @@
+<div class="top_extra">
+
+    <div>
+        <form id="caselog_form_dlg" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+        <{input name="from" type="hidden" value=$from }>
+        <{input name="select_index" type="hidden" value=$select_index }>
+        <{input name="member_id" id="member_id_case" type="hidden" value=$rs.member_id }>
+        <{input name="id" type="hidden" value=$rs.id }>
+        <table>
+            <col width="50%" />
+            <col width="50%" />
+            <tr>
+                <td>
+                    服务来源：<{input name="source" type="select" options=$category[3] value=$rs.source vtype="required" }>
+                </td>
+                <td>所属店铺：<{input name="shop_id" type="select" options=$rs_shop value=$rs.shop_id vtype="" }></td>
+            </tr>
+            
+            <tr>
+                <td>客户名称：<{input name="customer" id="customer_case" type="text" value=$rs.customer vtype="required" }></td>
+                <td>手机号码：<{input name="mobile" id="mobile_case" type="text" value=$rs.mobile maxlength="11" }>
+                    <{button class="btn-thirdly" type="button" id="sms_btn_case" label="发送短信"}>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>服务媒体：<{input name="media" type="select" options=$category[1] value=$rs.media vtype="required" }></td>
+                <td>事件类型：<{input name="category" type="select" options=$category[2] value=$rs.category vtype="required" }></td>
+            </tr>
+            
+            <tr>
+                <td>服务状态：<{input id="status" name="status" type="select" options=$category[4] value=$rs.status vtype="required" }></td>
+                <td>提醒时间：<{input id="alarm_time" name="alarm_time" type="time"  value=$rs.alarm_time }></td>
+            </tr>
+            
+            <tr>
+                <td colspan="2">服务内容：<br/>
+                <{$rs.content}>
+                <{input name="content" type="textarea" style="width:98%;height:60px;" }></td>
+                <{input name="old_content" type="hidden" value=$rs.content }></td>
+            </tr>
+        </table>
+        </form>
+    </div>
+	
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="save_caselog_dlg" label="保存"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+    
+    $('save_caselog_dlg').addEvent('click',function(event){
+    
+        if($('status').get('value')=='需要跟进' && $('alarm_time').get('value')==''){
+            alert('跟进状态的服务必须输入提醒时间');
+            return false;
+        }
+    
+        $('caselog_form_dlg').fireEvent('submit',new Event(event));
+    });
+    
+    $('sms_btn_case').addEvent('click', function(){
+        send_sms_case();
+    });
+    
+})();
+
+function send_sms_case(){
+    if($('mobile_case').get('value')==''){
+        alert('请输入手机号码');
+        $('mobile_case').focus();
+        return false;
+    }
+    send_sms_dlg = new Dialog('index.php?app=market&ctl=admin_callcenter_callin&act=send_sms&name='+$('customer_case').get('value')+'&mobile='+$('mobile_case').get('value')+'&member_id='+$('member_id_case').get('value'),{title:'发送短信',width:650,height:220});
+}
+
+$('caselog_form_dlg').store('target',{
+    onRequest:function(){
+       $('save_caselog_dlg').set('disabled', 'true');
+    },
+    onSuccess:function(response){
+        //alert(response);
+        $('save_caselog_dlg').getParent('.dialog').retrieve('instance').close();
+    }
+});
+</script>

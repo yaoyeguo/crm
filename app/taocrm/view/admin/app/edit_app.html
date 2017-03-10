@@ -1,0 +1,84 @@
+<form method="POST" action="index.php?app=taocrm&ctl=admin_app&act=update_app" class="tableform" id="form_member_lv">
+	<{input type="hidden" name="app[id]" value=$data.id id="app_id"}>
+	<div class="division" id="group_edit_container">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+		    <tr>
+			  <th><em class="c-red">*</em><{t}>应用类型：<{/t}></th>
+			  <td>
+	               <{$data.app_type}>
+			  </td>
+			</tr>
+		    
+		    <th ><em class="c-red">*</em> 应用名称：</th>
+	          <td><{input type="text&&required" name="app[app_name]" value=$data.app_name id="app_name"}>
+	          </td> 
+	        </tr>
+			
+			<tr>
+			  <th><{t}>应用描述：<{/t}></th>
+			  <td>
+			  		<textarea cols="50" rows="5" name="app[app_desc]"><{$data.app_desc}></textarea>
+			  </td>
+			</tr>			
+		</table>
+	</div>
+</form>
+<{area inject='.mainFoot'}>
+	<div class="table-action">
+		<{button type="button" label="保存" id="member_lv-form-submit"}>
+	</div>
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+	
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+		
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+				
+				if(_dialogIns)
+				{	
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+			
+		}
+	});
+	
+    btn.addEvent('click',function(){
+    	if($('app_name').value==""){
+            alert("请输入应用名称");
+            $('lv_id').focus();
+            return false;
+        }
+       	var data = {'app_name':$('app_name').get('value'),'id':$('app_id').get('value')};
+       	new Request({
+            url : 'index.php?app=taocrm&ctl=admin_app&act=check_exist_app',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+           		if(responseText == 1){
+           			alert('应用名称已存在!');
+               		return false;
+           		}
+            	_form.fireEvent('submit',{stop:$empty});
+            }
+        }).send();
+       	
+    });
+	
+})();
+
+</script>
+
+ 

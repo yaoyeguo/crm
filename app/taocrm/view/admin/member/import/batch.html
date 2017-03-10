@@ -1,0 +1,72 @@
+
+<div class="tableform">
+	 <div class="division">
+        
+        <{$tips}>        
+	 	<table class="gridlist" width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+        <tr>
+            <th><{t}>批次号<{/t}></th>
+            <th><{t}>导入人数<{/t}></th>
+            <th><{t}>下单付款人数<{/t}></th>
+            <th><{t}>付款订单数<{/t}></th>
+            <th><{t}>付款金额<{/t}></th>
+            <th><{t}>发送次数<{/t}></th>
+            <th><{t}>最后发送状态<{/t}></th>
+            <th><{t}>最后发送时间<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+            <th><{t}>操作<{/t}></th>
+        </tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$batchList item=item key=key}>
+	 	<tr>
+	 	    <td><{$item.group_id}>-<{$item.batch_id}></td>
+	 		<td><{$item.total_nums}></td>
+            <td><{$item.member_num|default:'-'}> <{$item.buy_ratio}></td>
+            <td><{$item.order_num|default:'-'}></td>
+            <td><{$item.payed|default:'-'}></td>
+	 		<td><{$item.send_nums}></td>
+	 		<td><{$item.last_send_status}></td>
+	 		<td><{if $item.last_send_time}><{$item.last_send_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 		<td><{if $item.create_time}><{$item.create_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 		<td>
+                <{if $item.total_nums > 0}><a target="dialog::{width:700,height:350,title:'客户发送[<{$item.group_id}>-<{$item.batch_id}>]'}" href="index.php?app=taocrm&ctl=admin_member_import&act=send&batch_id=<{$item.batch_id}>"><{if $item.send_nums == 0}>发送<{else}>再次发送<{/if}></a> 
+                
+                <a target="dialog::{width:500,height:200,title:'拆分'}" href="index.php?app=taocrm&ctl=admin_member_import&act=split&batch_id=<{$item.batch_id}>">拆分</a>
+            
+            <a href="###" onclick="ajax_del('<{$item.batch_id}>',$(this));">删除</a>
+                <{else}>
+                     -
+                <{/if}> 
+            </td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+	 </div>
+	 	 <{$pager}>
+
+</div>
+<script>
+    function ajax_del(batch_id,el){
+        if(confirm('确定要删除吗？删除后不能撤销！')==false){
+            return false;
+        }
+        
+        var td = el.getParent().getParent();
+        el.getParent().set('html', '<img align="absmiddle" src="<{$env.app.res_url}>/loading.gif" /> 正在删除，请稍等');
+
+        var _url = 'index.php?app=taocrm&ctl=admin_member_import&act=del_batch';
+        var _data = 'batch_id='+batch_id;
+        new Request({
+            url : _url,
+            method : 'post',
+            data : _data,
+            onSuccess:function(responseText){
+                //alert(responseText);
+                td.hide();
+            }
+        }).send();
+    }
+</script>

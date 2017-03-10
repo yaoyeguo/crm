@@ -1,0 +1,74 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+
+.req_fields div{padding:0 0 5px 0;}
+span.del,span.add{color:#FFF;font-size:14px;font-weight:bold;padding:2px 5px;cursor:pointer;}
+span.del{background:#F60;}
+span.add{background:#090;}
+
+/*选项卡效果*/
+#my_tab_nav {overflow:hidden;}
+#my_tab_nav span {display:block;padding:3px 10px;margin:0 0 0 20px;float:left;cursor:pointer;}
+#my_tab_nav span {background:#D7DCE2;}
+#my_tab_nav span.hover{background:#5779BD;color:#FFF;}
+#my_tab_body {background:#FFF;border:1px solid #D7DCE2;padding:10px;min-height:350px;}
+#award_list td{padding:3px 5px;}
+</style>
+<form style="position:relative;" id="form_store" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=response_chat" method="POST">
+
+<div>
+    <table id="step_1" style="width:420px;" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tr>
+            <th style="width:40px;">收到内容：</th>
+            <td>
+               <{$info.chat_content}>
+            </td>
+        </tr>
+        <tr>
+            <th style="width:40px;">回复：</th>
+            <td>
+               <{input class="x-input" type="textarea" id="chat_content"  name="info[chat_content]" style="width:270px;height:80px;"}>
+            </td>
+        </tr>
+    </table>
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[chat_id]" value="<{$info.chat_id}>" type="hidden" />
+    </div>
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="发送" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+    var _form = $('form_store');
+	var btn =$('survey-form-submit');
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+})();
+</script>

@@ -1,0 +1,126 @@
+<style>
+#prop_demo {
+	list-style: none;
+	margin: 5px 0 0 0;
+	padding: 0;
+}
+
+#prop_demo li {
+	float: left;
+	width: 70px;
+	line-height: 24px;
+	margin: 0 10px 5px 0;
+}
+
+#prop_demo a {
+	display: block;
+	text-align: center;
+	border: 1px solid #577DCA;
+	color: #666;
+	background: #FFF;
+}
+
+#prop_demo a:hover {
+	background: #577DCA;
+	color: #FFF;
+}
+</style>
+
+<h3 class="head-title">自定义客户属性</h3>
+
+<div class="tableform">
+	<div class="division1">
+		<form method="post"
+			action="index.php?app=taocrm&ctl=admin_all_member&act=saveterminal"
+			id="terminal">
+
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <col width="100" />
+            <col width="200" />
+            <col  />
+                <thead>
+                    <tr>
+						<th>序号</th>
+						<th>自定义属性名称</th>
+						<th style="text-align:left;">类型</th>
+                    </tr>
+                </thead>
+				<tbody>
+                    <{foreach from=$prop_name item=v key=k}>
+					<tr>
+                        <td><{$k+1}></td>
+						<td>
+							<{input type="text" size="8" maxlength="8" name="prop_name[]"
+							value=$v}>&nbsp; <{if($k==4)}>
+							<div style="height: 5px; overflow: hidden;">&nbsp;</div> <{/if}>
+							</td>
+                        <td style="text-align:left;">
+                            <{input type="select" options=$conf_prop_type name="prop_type[]"
+							value=$prop_type[$k] }>
+                        </td>
+					</tr>
+                    <{/foreach}>
+					<tr>
+						<th>快捷设定：</th>
+						<td colspan="2">
+							<ul id="prop_demo">
+								<{assign var="prop_demo"
+								value=array("性别","年龄","肤质","身高","上衣尺码","鞋码","爱好","体重")}>
+								<{foreach from=$prop_demo item=v key=k}>
+								<li><a href="javascript:void(0);"><{$v}></a>
+								</li> <{/foreach}>
+							</ul></td>
+					</tr>
+					<tr>
+					   <td colspan="3">请谨慎设置自定义客户属性和客户属性排序，设定完成产生数据后不允许再次修改自定义客户属性</td>
+					</tr>
+					<tr>
+						<td colspan="3" class="table-action"><{button type="submit" id="saveterminal"
+							label=$___b2c="保存"|t:'b2c' }></td>
+					</tr>
+
+				</tbody>
+			</table>
+
+
+			<input type='hidden' name="redirect_uri" value="<{$redirect_uri}>">
+			<input type="hidden" name="from" value="<{$from}>">
+		</form>
+	</div>
+</div>
+<script>
+(function(){
+    
+    $$('#prop_demo a').addEvent('click', function(){ 
+        set_prop_val($(this).get('text'));
+    });
+    
+})();
+
+function set_prop_val(prop_val){
+    var prop_name = $$('input[name="prop_name[]"]');
+    prop_name.each(function(prop){
+        if(prop.value=='' && prop_val){
+            prop.value = prop_val;
+            prop_val = '';
+        }
+    });
+}
+
+
+$('terminal').store('target',{
+    onRequest:function(){
+       $('saveterminal').set('disabled', 'true');
+    },
+    onSuccess:function(response){    
+        var hash_res_obj = JSON.decode(response);
+        if(typeof(hash_res_obj.error) != 'undefined'){
+           $('saveterminal').set('disabled', '');
+       }else{
+           $('saveterminal').set('disabled', 'true');
+
+           $('saveterminal').getParent('.dialog').retrieve('instance').close();
+       }
+    }
+    });
+</script>

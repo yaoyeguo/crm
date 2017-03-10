@@ -1,0 +1,1250 @@
+<{include file='admin/weixin/inc_css.html'}>
+
+<style>
+#wx_dashboard {
+	overflow: hidden;
+	width: 800px;
+	padding: 30px;
+}
+
+#wx_dashboard dl {
+	float: left;
+	border: 1px solid #CCC;
+	width: 230px;
+	margin: 0 20px 20px 0;
+	text-align: center;
+}
+
+#wx_dashboard dt {
+	line-height: 30px;
+	border-bottom: 1px solid #CCC;
+	background: #7695D2;
+	color: #FFF;
+}
+
+#wx_dashboard dd {
+	line-height: 70px;
+	font-size: 28px;
+	font-weight: bold;
+	font-family: Arial;
+	color: #4B5F87;
+}
+
+#bind_status {
+	overflow: hidden;
+	width: 320px;
+	height: 60px;
+	border: 1px solid #CCC;
+}
+
+#bind_status li {
+	float: left;
+	text-align: center;
+	height: 60px;
+}
+</style>
+
+<div id="weixin_page" class="wx">
+	<{tabber}>
+    <{tab name=关注自动回复}>
+	<form method="post"
+		action="index.php?app=market&ctl=admin_weixin&act=savewelcome">
+		<div id="wx_dashboard">
+			<h4>关注回复内容</h4>
+			<div><{input type=html style="width:600px" id="welcomeword"
+				value=$wxuser.welcomeword name="welcomeword" vtype='required' }></div>
+			<div>
+				<input type="submit" value="保存" class="btn-save" />
+			</div>
+		</div>
+	</form>
+	<{/tab}>
+    
+    <{tab current=$tab2_status name=消息自动回复}>
+	<form method="post"
+		action="index.php?app=market&ctl=admin_weixin&act=saveAutoReplyWord">
+		<div id="wx_dashboard">
+			<h4>消息回复内容</h4>
+			<div><{input type=html style="width:600px" id="autoreplyword"
+				value=$wxuser.autoreplyword name="autoreplyword" vtype='required' }></div>
+            <div>
+                <input type="submit" value="保存" class="btn-save" />
+            </div>
+		</div>		
+	</form>
+	<{/tab}> <{/tabber}>
+</div>
+
+<{if($tab==0 && $wx_bind_ok==false)}>
+    <{include file='admin/weixin/guide/step.html'}>
+<{/if}>
+
+<script>
+var site = "";
+
+    function jumpTab(tab) {
+        var tablist = $ES('.tab', $('weixin_page'));
+        tablist.each(function(el) {
+            if (el.getFirst().get('text') == tab) {
+                el.onclick();
+            }
+        });
+    }
+
+    <{if $tab}>
+    jumpTab('<{$tab}>');
+    <{/if}>
+    
+    //for 关键词自动回复
+Element.implement({
+    Validator: function(opts){
+        var d = this,
+            text = d.getElements('input[type=text], textarea'),
+            radio = d.getElements('.radio-wrap'),
+            checkbox = d.getElements('.check-wrap'),
+            upload = d.getElements('input[type=file]'),
+            args = opts;
+
+        if(!!opts && opts.preload)
+            opts.preload();
+
+        text.addEvents({
+            focus:function(){
+                if($(this).get('data-tip') != undefined){
+                    if(!checkAllies($(this))) return false;
+                    var wrapper = $(this).getParents('.text-wrap')[0],
+                        cxt = $(this).get('data-tip');
+
+                    if(!!wrapper.getChildren('.msgbox')[0])
+                        wrapper.getChildren('.msgbox')[0].removeClass('pass').removeClass('err').addClass('tip').getChildren('span')[0].set('html', cxt);
+                }
+            },
+            blur:function(){
+                if($(this).get('data-tip') != undefined){
+                    if(!checkAllies($(this))) return false;
+                    var wrapper = $(this).getParents('.text-wrap')[0],
+                        cxt = !!$(this).get('data-error') ? $(this).get('data-error') : $(this).get('data-tip'),
+                        prevent = true;
+
+                    if(!!wrapper.getChildren('.msgbox')[0])
+                        wrapper.getChildren('.msgbox')[0].removeClass('tip');
+
+                    if($(this).get('value').trim().length>0){
+                        switch(true){
+                            case $(this).hasClass('txtlink'):
+                                if(!/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            case $(this).get('data-type') == 'number':
+                                if(!/^[0-9]*$/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            case $(this).get('data-type') == 'phone':
+                                if(!/^\d{8,}$/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            case $(this).get('data-type') == 'money':
+                                if(!/^(([1-9]\d*)|0)(\.\d{1,2})?$/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            case $(this).get('data-type') == 'zip':
+                                if(!/^\d{6,}$/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            case $(this).get('data-type') == 'email':
+                                if(!/^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/.test($(this).get('value')))
+                                    prevent = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else{
+                        prevent = false;
+                        cxt = $(this).get('data-tip') || $(this).get('data-error');
+                    }
+                    if(!!wrapper.getChildren('.msgbox')[0]){
+                        if(!prevent)
+                            wrapper.getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                        else
+                            wrapper.getChildren('.msgbox')[0].getChildren('span')[0].set('text', '');
+                    }
+                }
+            }
+        });
+        //单选区域
+        if(radio.length){
+            radio.each(function(d){
+                d.getElements('[data-tip]')[0].addEvent('click', function(e){
+                    if(d.getElements('input:checked').length)
+                        d.getChildren('.msgbox')[0].removeClass('err').getChildren('span')[0].set('text', '');
+                });
+            });
+        }
+        //复选区域
+        if(checkbox.length){
+            checkbox.each(function(d){
+                d.getElements('input[data-type=required]').addEvent('click', function(){
+                    if(d.getElements('input[data-type=required]').length == d.getElements('input:checked[data-type=required]').length)
+                        d.getChildren('.msgbox')[0].removeClass('err').getChildren('span')[0].set('text', '');
+                })
+            })
+        }
+
+        if(upload.length){
+            upload.each(function(d){
+                d.addEvent('change', function(){
+                    if($(this).get('value').length){
+                        d.getParents('.upload-wrap')[0].getChildren('.msgbox')[0].removeClass('err').getChildren('span')[0].set('text', '');
+                    }
+                });
+            })
+        }
+
+        d.addEvents({
+            click: function(e){ 
+                if(e.target.type == 'submit'||e.target.type=='button'){
+                    e.stop();
+                    var form = this,
+                        prevent = true;
+                    //init
+                    d.getElements('input[type=text], textarea');
+                    radio = d.getElements('.radio-wrap');
+                    d.getElements('.check-wrap');
+                    d.getElements('input[type=file]');
+
+                    if(!!opts && !!opts.init)
+                        opts.init();
+
+                    d.getElements("input[type=text][data-tip], input[type=password][data-tip], textarea[data-tip]").each(function(dd){
+                        if(!checkAllies(dd)) return false;
+
+                        var wrapper = dd.getParents('.text-wrap')[0],
+                            cxt = !!dd.get('data-error') ? dd.get('data-error') : dd.get('data-tip'),
+                            pass = true;
+
+                        if(wrapper.hasClass('hide'))
+                            return false;
+                        if(dd.get('value').trim().length>0){
+                            switch(true){
+                                case dd.hasClass('txtlink'):
+                                    if(!/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test(dd.get('value')))
+                                        pass = false;
+                                    break;
+                                case dd.hasClass('cfmpwd'):
+                                    if($$('input[name=pwd]')[0].get('value').trim().length){
+                                        if($$('input[name=pwd]')[0].get('value') != dd.get('value')){
+                                            cxt = dd.get('data-orr') || dd.get('data-error');
+                                            pass = false;
+                                        }
+                                    }
+                                    break;
+                                case dd.get('data-type') == 'number':
+                                    if(!/^[0-9]*$/.test(dd.get('value')))
+                                        pass = false;
+                                    break;
+                                case dd.get('data-type') == 'phone':
+                                    if(!/^\d{8,}$/.test(dd.get('value')))
+                                        pass = false;
+                                    break;
+                                case dd.get('data-type') == 'money':
+                                    if(!/^(([1-9]\d*)|0)(\.\d{1,2})?$/.test(dd.get('value')))
+                                        prevent = false;
+                                    break;
+                                case dd.get('data-type') == 'zip':
+                                    if(!/^\d{6,}$/.test(dd.get('value')))
+                                        pass = false;
+                                    break;
+                                case dd.get('data-type') == 'email':
+                                    if(!/^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/.test(dd.get('value')))
+                                        pass = false;
+                                    break;
+                                case dd.get('data-type') == 'em'://验证邮箱和手机
+                                    switch(true){
+                                        case /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/.test(dd.get('value')):
+                                            user_type = 1;
+                                            break;
+                                        case /^1[3458]\d{9}$/.test(dd.get('value')):
+                                            user_type = 0;
+                                            break;
+                                        default:
+                                            cxt = dd.get('data-orr');
+                                            pass = false;
+                                            break;
+                                    }
+                                    break;
+                                case dd.get('data-type') == 'encode':
+                                    wrapper.getElement('input[type=hidden]').set('value', encodeURI(dd.get('value')));
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else{
+                            cxt = dd.get('data-tip') || dd.get('data-error');
+                            pass = false;
+                        }
+                        
+
+                        if(!pass){
+                            if(!!opts && !!opts.err){
+                                opts.err(wrapper, cxt);
+                            }
+                            else{
+                                if(!!dd.getParents('.text-wrap')[0].getChildren('.msgbox')[0])
+                                    dd.getParents('.text-wrap')[0].getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                            }
+                            prevent = false;
+                        }
+                        else{
+                            if(!!opts && !!opts.correct){
+                                opts.correct(wrapper);
+                            }
+                        }
+                    });
+
+                    if(radio.length){
+                        radio.each(function(dd){
+                            if(!dd.getElements('input:checked').length){
+                                cxt = dd.getElements('[data-tip]')[0].get('data-tip');
+                                dd.getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                                prevent = false;
+                            }
+                        });
+                    }
+                    if(checkbox.length){
+                        checkbox.each(function(dd){
+                            if(dd.getElements('input[data-type=required]').length != dd.getElements('input:checked[data-type=required]').length){
+                                cxt = dd.getElements('[data-tip]')[0].get('data-tip');
+                                dd.getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                                prevent = false;
+                            }
+                        });
+                    }
+
+                    if(upload.length){
+                        upload.each(function(dd){
+                            if(!dd.get('value').length){
+                                cxt = dd.get('data-tip');
+                                dd.getParents('.upload-wrap')[0].getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                                prevent = false;
+                            }
+                        })
+                    }
+
+                    if(!!opts && !!opts.additionValid){
+                        opts.additionValid(function(v, cxt){
+                            if(v == 0){
+                                prevent = false;
+                                if(!!opts.err){
+                                    opts.err(null, cxt);
+                                }
+                            }
+                        })
+                    };
+
+                    if(prevent){
+                        if(!!opts && !!opts.othervalid){//延时验证
+                            opts.othervalid(function(v, cxt){
+                                if(v == 0){
+                                    prevent = false;
+                                    if(!!opts.err){
+                                        opts.err(null, cxt);
+                                    }
+                                }
+                            })
+                        }
+                    }
+
+                    if(prevent && !!form.getElements('input[request]')){
+                        var text = form.getElements('input[request]');
+                        var finalpass = true;
+                        if(text.length){
+                            text.each(function(unit){
+                                var paras = {
+                                    'rq_type': unit.get('request')
+                                },
+                                api = unit.get('request') + '_api';
+                                window['para_name'] = unit.get('name');
+                                paras[window.para_name] = unit.get('value');
+                                new Request({
+                                    url: window[api],
+                                    data: paras,
+                                    method: "post",
+                                    async: false,
+                                    onSuccess: function (data) {
+                                        if(!!data){
+                                            if(data.toString() != '1'){
+                                                finalpass=false;
+                                                var _wrap = unit.getParent('.text-wrap');
+                                                if(!!opts && !!opts.err){
+                                                    opts.err(_wrap, data);
+                                                }
+                                                else{
+                                                    cxt = unit.get('data-error');
+                                                    if(!!unit.getParents('.text-wrap')[0].getChildren('.msgbox')[0])
+                                                        unit.getParents('.text-wrap')[0].getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').addClass('err').getChildren('span')[0].set('html', cxt);
+                                                }
+                                            }
+                                            else{
+                                                if(!!opts && !!opts.correct)
+                                                    opts.correct(d);
+                                            }
+                                        }
+                                        else{
+                                            finalpass=false;
+                                            alert(data);
+                                        }
+                                    },
+                                    onFailure: function(){
+                                        finalpass=false;
+                                        alert('非常抱歉，页面错误请稍候尝试。');
+                                    }
+                                }).send();
+                            })
+                        }
+                        if(!!form.get('request')){
+                            var paras = {
+                                'rq_type': form.get('request')
+                            },
+                            api = form.get('request') + '_api';
+
+                            form.getElements('input[data-allies]').each(function(unit){
+                                paras[unit.get('name')] = unit.get('value');
+                            });
+
+                            form.getElements('.check-wrap').each(function(unit){
+                                unit.getElements('input:checked[type=checkbox]').each(function(d){
+                                    paras[d.get('name')] = 1;
+                                });
+                            });                          
+
+                            new Request({
+                                url: window[api],
+                                data: paras,
+                                method: "post",
+                                async: false,
+                                onSuccess: function(data) {
+                                    if(!!data){
+                                        if(data.toString() != '1'){
+                                            finalpass=false;
+                                            if(!!opts && !!opts.err){
+                                                opts.err(form, data);
+                                            }
+                                        }
+                                        else{
+                                            if(!!opts && !!opts.correct)
+                                                opts.correct(d);
+                                        }
+                                    }
+                                    else{
+                                        finalpass=false;
+                                        alert('非常抱歉，页面错误请稍候尝试。');
+                                    }
+                                },
+                                onFailure: function(){
+                                    finalpass=false;
+                                    alert('非常抱歉，页面错误请稍候尝试。');
+                                }
+                            }).send();
+                        }
+
+                        if(e.target.type=='submit' && finalpass){
+                            if(!!opts && !!opts.ajaxsubmit)
+                                opts.ajaxsubmit();
+                            else
+                                d.submit();
+                        }
+                    }
+                    else if(prevent&&e.target.type=='submit'){
+                        if(!!opts && !!opts.ajaxsubmit)
+                            opts.ajaxsubmit();
+                        else
+                            d.submit();
+                    }
+                    else
+                        return false;
+                }
+            }
+        });
+
+
+        function checkAllies(dd){
+            var t = 1;
+            //special offer
+            if(!!dd.get('allies')){
+                var allies = dd.get('allies');
+                if(!!$(allies)){
+                    if($(allies).get('value').trim().length==0){
+                        dd.getParents('.text-wrap')[0].getChildren('.msgbox')[0].removeClass('tip').removeClass('pass').removeClass('err').getChildren('span')[0].set('text', '');
+                        t = 0;
+                    }
+                }
+            }
+            return t;
+        }
+    },
+    popWindow: function(args, callback, closecallback){
+        if($$("#popwindow").length < 1 && $$(".cover-layer").length < 1){
+            var d = this,
+                ie6_bug = '<!--[if lte IE 6.5]><iframe src=\'javascript:"";\' style="width:3000px; height:30000px; position:absolute; top:0; left:0; z-index:-1; border:none; background:#000;"></iframe><![endif]-->',
+                cover = new Element('div', {
+                    'styles': {
+                        'width':"100%",
+                        'height':"100%",
+                        'overflow':'hidden',
+                        'position':"absolute",
+                        'left':"0",
+                        'top':"0",
+                        'z-index':"65958",
+                        'background':"#000",
+                        'opacity':"0.7",
+                        'filter':'alpha(opacity=30)'
+                    },
+                    'class': 'cover-layer',
+                    html: ie6_bug
+                });
+            var _body = !!args ? args.html : '',
+                _title = !!args ? args.title : '';
+
+
+            var _wrapper = new Element('div', {
+                'id': 'popwindow',
+                'class': 'popwindow',
+                'styles':{
+                    'z-index': '65958'
+                },
+                html: '<div class="title"><h4>'+ _title +'</h4><a href="javascript:;" class="close">&times;</a></div><div class="content">'+ _body +'</div>'
+            });
+            if(!!args && !!args['class']){
+                _wrapper.addClass(args['class']);
+            }
+            d.adopt([cover, _wrapper]);
+            adjustBox(cover, _wrapper);
+
+            if(callback != undefined){
+                callback();
+            }
+
+
+            window.addEvents({
+                resize: function(){
+                    adjustBox(cover, _wrapper);
+                },
+                scroll: function(){
+                    adjustBox(cover, _wrapper);
+                }
+            });
+
+
+        }
+
+        function adjustBox(cover, dialog){
+            cover.setStyles({
+                'height': window.getScrollHeight(),
+                'left': 0,
+                'top': 0,
+                'background':'#000'
+            });
+            dialog.setStyles({
+                'left': window.getWidth() / 2 - (dialog.getScrollWidth() / 2) + 'px',
+                'top': (window.getScrollTop() + ((window.getHeight() / 2 - (parseInt(dialog.getStyle('height')) / 2)) / 2)) + 'px'
+            });
+        }
+        $$("#popwindow a.close", "#popwindow input[type=button][vtype=undo]").addEvent('click', function(){
+            if(!!closecallback)
+                closecallback();
+            $$(".cover-layer, #popwindow").dispose();
+        });
+        $$("#popwindow input[type=button][vtype=todo])").addEvent('click', function(){
+            if(!!closecallback)
+                closecallback();
+            $$(".cover-layer, #popwindow").dispose();
+        });
+    },
+    PlaceHolder: function(){
+        if( Browser.name.toLowerCase()=='ie' && Browser.version<=9 ){
+            this.getElements("input[type=text][placeholder], textarea[placeholder]").each(function(d){
+                var placeholder = d.placeholder,
+                    label = new Element('label', {
+                        styles:{
+                            'display':'block',
+                            'width': d.getSize().x,
+                            'height': d.getSize().y,
+                            'padding': 0,
+                            'position':'absolute',
+                            'left': d.offsetLeft,
+                            'top': d.offsetTop,
+                            'z-index':'10',
+                            'font-size':'12px',
+                            'font-weight': '400',
+                            'text-align':'left',
+                            'text-indent':'1em',
+                            'line-height': d.getSize().y,
+                            'color':'#333'
+                        },
+                        'class': 'placetxt',
+                        'text': placeholder
+                    }).addEvent('click', function(){ 
+                        d.focus();
+                    });
+
+                var _wrapper = d.getParent();
+                _wrapper.adopt(label);
+
+
+                d.addEvents({
+                    'focus': function(){
+                        label.setStyle('display', 'none');
+                    },
+                    'blur': function(){
+                        if(!$(this).get('value').trim().length)
+                            label.setStyle('display', 'block');
+                    }
+                });
+            })
+        }
+    },
+    Position: function(){
+        var elem = this;
+        if (!!elem && (elem.tagName=="TEXTAREA"||elem.type.toLowerCase()=="text")){
+            if(Browser.ie){
+                   var rng;
+                   if(elem.tagName == "TEXTAREA"){ 
+                        rng = event.srcElement.createTextRange();
+                        rng.moveToPoint(event.x,event.y);
+                   }else{ 
+                        rng = document.selection.createRange();
+                   }
+                   if( typeof value == 'undefined' ){
+                     rng.moveStart("character",-event.srcElement.value.length);
+                     return  rng.text.length;
+                   }else if(typeof value === "number" ){
+                     var index=this.position();
+                     index>value?( rng.moveEnd("character",value-index)):(rng.moveStart("character",value-index))
+                     rng.select();
+                   }
+            }
+            else{
+                if( typeof value == 'undefined' ){
+                    return elem.selectionStart;
+                }else if(typeof value === "number" ){
+                    elem.selectionEnd = value;
+                    elem.selectionStart = value;
+                }
+            }
+        }
+        else{
+            if( typeof value == 'undefined' )
+               return undefined;
+        }
+    }
+});
+    if($$(".wx .kr").length){
+        var _data = {
+            'rid': 0
+        }
+        $$(".wx .kr .switch")[0].addEvent('click', function(){
+
+            _data.rid = 0;
+            delete _data.item_top;
+            delete _data.items;
+            if(!$$(".wx .kr .panel>.detail").length){
+                //若编辑模式打开
+                if($$(".wx .kr .panel>ul .detail").length){
+                    $$(".wx .kr .panel>ul li").removeClass('edit-mode').addClass('preview-mode');
+                    $$(".wx .kr .panel>ul .detail").dispose();
+                }
+
+
+                var detail = new Element('div', {
+                    'class': "detail",
+                    'html': $("structure").get('value')
+                });
+                $$(".wx .kr .tabs-body>.panel").grab(detail, 'top');
+
+                if($$("input[placeholder]").length>0){
+                    $$(".wx .kr")[0].PlaceHolder();
+                }
+
+
+                //操作demo区域
+                procDemo();
+                $$(".wx .kr .search button").addEvent('click', function(e){
+                    e.stop();
+                    if(typeof search_request != "undefined"){
+                        search_request.cancel();
+                    }
+                    doSearch();
+
+                });
+            }
+        });
+
+        $$(".wx .kr .tabs-body>.panel")[0].addEvent('click', function(e){
+            if(!$(e.target).hasClass('toclose'))return;
+            var _panel = $(e.target).getParents('.detail');
+            if(confirm("确认放弃此次操作？")){
+                _panel.getParents('li')[0].removeClass('edit-mode').addClass('preview-mode');
+                _panel.dispose();
+            }
+        });
+        $$(".wx .kr .tabs-body>.panel").addEvent('click', function(e){
+            if(!$(e.target).hasClass('todel'))return;
+            var _panel = $(e.target).getParents('li')[0],
+                rid = _panel.get('data-rule-id');
+            if(confirm("您是否确认删除此条规则？")){
+                new Request({
+                    url:  "index.php?app=market&ctl=admin_weixin&act=delkeyreply",
+                    method: "post",
+                    data: {'rid': rid},
+                    onSuccess: function (data) {
+                        if(!!data && data=='1')
+                            _panel.dispose();
+                    }
+                }).send();
+            }
+        });
+
+
+        $$(".wx .kr .tabs-body>.panel").addEvent('click', function(e){
+            if(!$(e.target).hasClass('toedit'))return;
+            var _panel = $(e.target).getParents('li')[0];
+            _data.rid = _panel.get('data-rule-id');
+            if(!_panel.hasClass('edit-mode')){
+                //若添加模式开启
+                if($$(".wx .kr .panel>.detail").length)
+                    $$(".wx .kr .panel>.detail").dispose();
+
+
+                _panel.removeClass('preview-mode').addClass('edit-mode').getSiblings().removeClass('edit-mode').addClass('preview-mode');
+                $$(".preview-mode .detail").dispose();
+
+                var detail = new Element('div', {
+                    'class': "detail",
+                    'html': $("structure").get('value')
+                });
+                _panel.grab(detail, 'bottom');
+
+                new Request({
+                    url: "index.php?app=market&ctl=admin_weixin&act=getkeyreplydata",
+                    data: {'rid': _data.rid},
+                    method: "post",
+                    onSuccess: function (data) {
+                        if(!!data){
+                            var data = JSON.decode(data),
+                                demo = $$(".carrier .demo ul").removeClass('hide');
+                            _panel.getElements('.hd li')[0].getElement('input[type=text]').set('value', data.name);
+                            if(data.keyword.length){
+                                data.keyword.each(function(d, dx){
+                                    _panel.getElements('.hd li')[1].getElements('input[type=text]')[dx].set('value', d);
+                                })
+                            }
+                            
+                            if(data.shop_id){
+                                $('shop_id').value = data.shop_id;
+                            }
+                            
+                            
+                            //渲染demo区域
+                            if(!!data.item_top){
+                                if(!demo[0].getElements("li").length){
+                                    demo.adopt(
+                                        new Element('li', {
+                                            'class': 'feature',
+                                            'data-good-id': data.item_top.id
+                                        }).adopt([
+                                            new Element('a', {
+                                                'target': '_blank',
+                                                'href': data.item_top.link
+                                            }).adopt([
+                                                new Element('img', {
+                                                    'src': data.item_top.media.l,
+                                                    'width':275,
+                                                    'height':112,
+                                                    'data-img-l': data.item_top.media.l,
+                                                    'data-img-s': data.item_top.media.s
+                                                }),
+                                                new Element('span', {
+                                                    'html': data.item_top.title
+                                                })
+                                            ]),
+                                            new Element('span', {
+                                                'class': 'item-cover'
+                                            }).adopt(
+                                                new Element('a', {
+                                                    'class': 'del',
+                                                    'text': '删除',
+                                                    'href': 'javascript:;'
+                                                }).adopt(
+                                                    new Element('span')
+                                                )
+                                            )
+                                        ])
+                                    )
+                                }
+                                _data['item_top'] = data.item_top;
+                            }
+                            if(!!data.items && data.items.length>0){
+                                if(demo[0].getElements('li').length>=1){
+                                    data.items.each(function(d){
+                                        demo.adopt(
+                                            new Element('li', {
+                                                'data-good-id': d.id
+                                            }).adopt([
+                                                new Element('a', {
+                                                    'target':'_blank',
+                                                    'href': d.link
+                                                }).adopt(
+                                                    new Element('img', {
+                                                        'src': d.media.s,
+                                                        'width':70,
+                                                        'height':70,
+                                                        'data-img-l': d.media.l,
+                                                        'data-img-s': d.media.s
+                                                    })
+                                                ),
+                                                new Element('span', {
+                                                    'class': 'title'
+                                                }).adopt(
+                                                    new Element('a', {
+                                                        'target': '_blank',
+                                                        'href': d.link,
+                                                        'html': d.title
+                                                    })
+                                                ),
+                                                new Element('span', {
+                                                    'class': 'item-cover'
+                                                }).adopt([
+                                                    new Element('a', {
+                                                        'class': 'stick',
+                                                        'text': '置顶',
+                                                        'href': 'javascript:;'
+                                                    }).adopt(
+                                                        new Element('span')
+                                                    ),
+                                                    new Element('a', {
+                                                        'class': 'del',
+                                                        'text': '删除',
+                                                        'href': 'javascript:;'
+                                                    }).adopt(
+                                                        new Element('span')
+                                                    )
+                                                ])
+                                            ])
+                                        )
+                                    })
+                                }
+                                _data['items'] = data.items;
+                            }
+                            $("procdata").set('value', JSON.encode(_data));
+                            procDemo();
+                        }
+                    }
+                }).send();
+
+
+                $$(".wx .kr .search button").addEvent('click', function(e){
+                    e.stop();
+                    if(typeof search_request != "undefined"){
+                        search_request.cancel();
+                    }
+                    doSearch();
+                });
+            }
+        });
+
+    
+        function procDemo(){
+            
+            //低版本浏览器半透明解决方案（hover情况下未加载的图片会延时0.n秒）
+            if(Browser.ie && parseInt(Browser.version) < 9){
+                $$(".demo ul li").addEvents({
+                    'mouseenter': function(){
+                        var d = $(this);
+                        var image = new Image();
+                        image.onload = function(){
+                            d.getElement('.item-cover').setStyles({
+                                'display': 'block',
+                                'background': 'url('+this.src+')'
+                            });
+                        }
+                        image.src = site + "/themes/yunmall/images/gray-60.png";
+                    },
+                    'mouseleave': function(){
+                        var d = $(this);
+                        d.getElement('.item-cover').setStyle('display', 'none');
+                    }
+                });
+            }
+
+
+
+            //操作demo区域
+            if($$(".demo ul").length){
+                $$(".demo ul")[0].addEvent('click', function(e){
+                    var demo = $(e.target).getParent('ul'),
+                        item = $(e.target).getParent('li'),
+                        current = $(e.target).getParent('li'),
+                        dx = $$(".demo ul li").indexOf(current);
+                    switch(true){
+                        case $(e.target).hasClass('stick') || !!$(e.target).getParent('.stick'):
+                            demoexchange(demo, item);
+                            collectData(current, dx, 1);
+                            break;
+                        case $(e.target).hasClass('del') || !!$(e.target).getParent('.del'):
+                            if(confirm('是否确认删除此商品?')){
+                                collectData(current, dx, 2);
+                                $(e.target).getParent('li').dispose();
+                                
+                                if(!demo.getElements('li').length)
+                                    demo.addClass('hide');
+                                else if(!demo.getElements('.feature').length && demo.getElements('li').length >= 1){
+                                    var clone = demo.getElements('li')[0].clone();
+                                    demo.getElements('li')[0].dispose();
+                                    demoexchange(demo, clone, 'top');
+                                    clone = null;
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                })
+            }
+            if($$(".wx .kr form").length){
+                $$(".wx .kr form")[0].Validator({
+                    't': 0,
+                    'init': function(){
+                        this.t = 0;
+                    },
+                    'othervalid': function(callback){
+                        if($$(".text-wrap[data-type]").length){
+                            var _wrap = $$(".text-wrap[data-type]");
+                            _wrap.each(function(d){
+                                switch(d.get('data-type')){
+                                    case 'least-1':
+                                        var status=0;
+                                        d.getElements('input[type=text]').each(function(item){
+                                            if(item.get('value').length > 0){
+                                                status += 1;
+                                            }
+                                        });
+                                        if(status==0)
+                                            callback(0, d.get('data-tip'));
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                            })
+                        }
+                        if($$(".carrier>.demo>ul").length){
+                            var d = $$(".carrier>.demo>ul")[0]
+                            if(!d.getElements('li').length){
+                                callback(0, d.get('data-tip'));
+                            }
+                        }
+                    },
+                    'err': function(d, strerr){
+                        this.t+= 1;
+                        if(this.t == 1)
+                            alert(strerr);
+                    },
+                    'correct': function(){
+                        if(this.t >= 1){
+                            this.t = 0;
+                        }
+                    }
+                });
+            }
+        }
+
+        function demoexchange(demo, item, where){
+
+            var _item = {
+                'id': item.get('data-good-id'),
+                'link': item.getElement('a').get('href'),
+                'media': {'l':item.getElement('a img').get('data-img-l'), 's':item.getElement('img').get('data-img-s') },
+                'title': item.getElement('.title').get('text')
+            },
+            where = where || 'bottom'
+            if(demo.getElements('li.feature').length){//feature存在的话
+                var feature = demo.getElements('li.feature')[0],
+                    _feature = {
+                    'id': feature.get('data-good-id'),
+                    'link': feature.getElement('a').get('href'),
+                    'media': {'l':feature.getElement('a img').get('data-img-l'), 's':feature.getElement('img').get('data-img-s') },
+                    'title': feature.getElement('a span').get('text')
+                }
+                feature.set('data-good-id', _item.id);
+                feature.getElement('a').set('href', _item.link);
+                feature.getElement('a img').set({
+                    'src': _item.media.l,
+                    'data-img-l': _item.media.l,
+                    'data-img-s': _item.media.s
+                });
+                feature.getElement('a span').set('text', _item.title);
+
+
+                item.set('data-good-id', _feature.id);
+                item.getElement('a').set('href', _feature.link);
+                item.getElement('a img').set({
+                    'src': _feature.media.l,
+                    'data-img-l': _feature.media.l,
+                    'data-img-s': _feature.media.s
+                });
+                item.getElement('.title').set('text', _feature.title);
+            }
+            else{
+                demo.grab(
+                    new Element('li', {
+                        'class': 'feature',
+                        'data-good-id': _item.id
+                    }).adopt([
+                        new Element('a', {
+                            'target': '_blank',
+                            'href': _item.link
+                        }).adopt([
+                            new Element('img', {
+                                'src': _item.media.l,
+                                'width':275,
+                                'height':112,
+                                'data-img-l': _item.media.l,
+                                'data-img-s': _item.media.s
+                            }),
+                            new Element('span', {
+                                'html': _item.title
+                            })
+                        ]),
+                        new Element('span', {
+                            'class': 'item-cover'
+                        }).adopt(
+                            new Element('a', {
+                                'class': 'del',
+                                'text': '删除',
+                                'href': 'javascript:;'
+                            }).adopt(
+                                new Element('span')
+                            )
+                        )
+                    ]), where
+                )
+            }
+        }
+
+        function doSearch(){
+            if($$(".wx .kr .search input[type=text]")[0].get('value').trim().length){
+                var _value = $$(".wx .kr .search input[type=text]")[0].get('value');
+                search_request = new Request({
+                    url: "index.php?app=market&ctl=admin_weixin&act=queryproduct",
+                    data:{'key': _value,'shop_id':$('shop_id').value},
+                    method: "post",
+                    onRequest: function(){
+                        $$(".wx .carrier .list-2")[0].empty().setStyle('background', 'url(<{$env.app.res_url}>/loading1.gif) no-repeat 50% 50%');
+                    },
+                    onSuccess: function (data) {
+                        $$(".wx .carrier .list-2")[0].empty().setStyle('background', 'none');
+                        if(!!data){
+                            var dt = JSON.decode(data),
+                                items = [];
+                            if(dt.items.length > 0){
+                                dt.items.each(function(d, dx){
+                                    items.push(
+                                        new Element('li', {
+                                            'data-good-id': d.id
+                                        }).adopt([
+                                            new Element('a', {
+                                                'href': d.link
+                                            }).adopt(
+                                                new Element('img',{
+                                                    'src': d.media.s,
+                                                    'width': 70,
+                                                    'height': 70,
+                                                    'data-img-l': d.media.l,
+                                                    'data-img-s': d.media.s
+                                                })
+                                            ),
+                                            new Element('span').adopt(
+                                                new Element('a', {
+                                                    'href': d.link,
+                                                    'html': d.title
+                                                })
+                                            )]
+                                        )
+                                    );
+                                });
+                                $$(".wx .carrier .list-2")[0].empty().adopt(items);
+                            }
+                            else{
+                                $$(".wx .carrier .list-2")[0].empty().adopt(
+                                    new Element('li', {
+                                        'text': '很抱歉，没有找到您搜索的商品。'
+                                    })
+                                )
+                            }
+                        }
+                        else{
+                            $$(".wx .carrier .list-2")[0].empty().adopt(
+                                new Element('li', {
+                                    'text': '很抱歉，没有找到您搜索的商品。'
+                                })
+                            )
+                        }
+                        $$(".carrier .list-2 li").addEvent('click', function(e){
+                            e.stop();
+                            var demo_list = $$(".carrier .demo li");
+                            if(demo_list.get('data-good-id').indexOf($(this).get('data-good-id')) == -1){
+                                
+                                var demo = $$(".carrier .demo ul").removeClass('hide');
+                                
+                                if(!demo[0].getElements("li").length){
+                                    collectData($(this), demo[0].getElements("li").length, 0);
+                                    demo.adopt(
+                                        new Element('li', {
+                                            'class': 'feature',
+                                            'data-good-id': $(this).get('data-good-id')
+                                        }).adopt([
+                                            new Element('a', {
+                                                'target': '_blank',
+                                                'href': $(this).getElements('a')[0].get('href')
+                                            }).adopt([
+                                                new Element('img', {
+                                                    'src': $(this).getElements('img')[0].get('src'),
+                                                    'width':275,
+                                                    'height':112,
+                                                    'data-img-l': $(this).getElements('img')[0].get('data-img-l'),
+                                                    'data-img-s': $(this).getElements('img')[0].get('data-img-s')
+                                                }),
+                                                new Element('span', {
+                                                    'html': $(this).getElements('span>a')[0].get('html')
+                                                })
+                                            ]),
+                                            new Element('span', {
+                                                'class': 'item-cover'
+                                            }).adopt(
+                                                new Element('a', {
+                                                    'class': 'del',
+                                                    'text': '删除',
+                                                    'href': 'javascript:;'
+                                                }).adopt(
+                                                    new Element('span')
+                                                )
+                                            )
+                                        ])
+                                    )
+                                }
+                                else if(demo[0].getElements("li").length < 4){//others
+                                    collectData($(this), demo[0].getElements("li").length, 0);
+                                    demo.adopt(
+                                        new Element('li', {
+                                            'data-good-id': $(this).get('data-good-id')
+                                        }).adopt([
+                                            new Element('a', {
+                                                'target':'_blank',
+                                                'href': $(this).getElements('a')[0].get('href')
+                                            }).adopt(
+                                                new Element('img', {
+                                                    'src': $(this).getElements('img')[0].get('src'),
+                                                    'width':70,
+                                                    'height':70,
+                                                    'data-img-l': $(this).getElements('img')[0].get('data-img-l'),
+                                                    'data-img-s': $(this).getElements('img')[0].get('data-img-s')
+                                                })
+                                            ),
+                                            new Element('span', {
+                                                'class': 'title'
+                                            }).adopt(
+                                                new Element('a', {
+                                                    'target': '_blank',
+                                                    'href': $(this).getElements('a')[0].get('href'),
+                                                    'html': $(this).getElements('span>a')[0].get('html')
+                                                })
+                                            ),
+                                            new Element('span', {
+                                                'class': 'item-cover'
+                                            }).adopt([
+                                                new Element('a', {
+                                                    'class': 'stick',
+                                                    'text': '置顶',
+                                                    'href': 'javascript:;'
+                                                }).adopt(
+                                                    new Element('span')
+                                                ),
+                                                new Element('a', {
+                                                    'class': 'del',
+                                                    'text': '删除',
+                                                    'href': 'javascript:;'
+                                                }).adopt(
+                                                    new Element('span')
+                                                )
+                                            ])
+                                        ])
+                                    )
+                                }
+                                else{
+                                    alert("最多只能添加4个商品。")
+                                }
+                            }
+                        });
+                    }
+                }).send();
+            }
+        }
+
+        function collectData(obj, dx, type){//0-add, 1-exchange, 2-del
+            switch(type){
+                case 0:
+                    if(dx == 0){
+                        _data['item_top'] = {
+                            'id': obj.get('data-good-id'),
+                            'title': obj.getChildren('span a')[0].get('text'),
+                            'link': obj.getChildren('span a')[0].get('href'),
+                            'media': {
+                                "l": obj.getChildren('a img')[0].get('data-img-l'),
+                                's': obj.getChildren('a img')[0].get('data-img-s')
+                            }
+                        }
+                    }
+                    else{
+                        if(!_data['items'])
+                            _data['items'] = [];
+                        _data['items'].push({
+                            'id': obj.get('data-good-id'),
+                            'title': obj.getChildren('span a')[0].get('text'),
+                            'link': obj.getChildren('span a')[0].get('href'),
+                            'media': {
+                                "l": obj.getChildren('a img')[0].get('data-img-l'),
+                                's': obj.getChildren('a img')[0].get('data-img-s')
+                            }
+                        });
+                    }
+                    break;
+                case 1:
+                    var _temp = _data.item_top;
+                    _data.item_top = _data.items[dx-1];
+                    _data.items[dx-1] = _temp;
+                    _temp = null;
+                    break;
+                case 2:
+                    if(dx == 0){
+                        if(!!_data.items && _data.items.length > 0){
+                            _data.item_top = _data.items[0];
+                            _data.items.shift();
+                        }
+                        else{ 
+                            delete _data.item_top;
+                        }
+                    }
+                    else {
+                        _data.items.splice(dx-1, 1);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            $("procdata").set('value', JSON.encode(_data));
+        }
+    }
+    //end
+</script>

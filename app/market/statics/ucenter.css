@@ -1,0 +1,22 @@
+body {background:#F9F9F9;}
+body,ul,li,dl,dd,dt{margin:0;padding:0;}
+a {text-decoration:none;}
+ul,li{list-style:none;overflow:hidden;}
+.top_navbar {font-family:Microsoft Yahei;font-weight:bold;border:1px solid #DDDDDD;border-right:none;overflow:hidden;}
+.top_navbar ul li{float:left;width:33%;text-align:center;}
+.top_navbar ul li a{display:block;padding:8px 0;background:#F6F6F6;border-right:1px solid #DDDDDD;font-size:14px;color:#333;}
+.top_navbar ul li a:hover{background:#EDEDED;}
+.top_navbar ul li a.ui-btn-active{background:#3388CC;color:#FFF;}
+
+#gifts_li img{width:130px;height:130px;}
+#gifts_li li{float:left;width:180px;height:240px;margin:0 0 20px 20px;font-size:12px;border:1px solid #DDDDDD;}
+#gifts_li li h4{margin:0;padding:0;}
+#gifts_li li dt{text-align:center;background:#FFF;}
+#gifts_li li dd{padding:10px 10px 0 10px;line-height:1.5em;}
+#gifts_li li .button{text-align:center;padding:5px 0 0 0;}
+#gifts_li li span{ float:right;color:red;}
+
+.box1 {border:1px solid #DDDDDD;}
+.box1 li{float:left;}
+.box1_left {background:#3388CC;color:#FFF;line-height:1.5em;padding:10px 0;width:80px;text-align:center;}
+.box1_right {line-height:65px;text-align:center;width:215px;background:#FFF;font-family:Arial;font-size:28px;}

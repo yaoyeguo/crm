@@ -1,0 +1,33 @@
+<div class="tj_rightbox">
+    <div class="wdgk_box">
+        <div class="wdgk_title"><span class="float1 ">客户购买频次</span></div>
+        <div class="list_cont">
+            <table width="100%" border="0" cellpadding="1" cellspacing="1" bgcolor="#F4F4F4" class="list_table">
+                <tr class="list_tr">
+                    <td>客户等级</td>
+                    <{foreach from=$buy_times item=buy_times key=key}>
+                    <td> <{$buy_times}></td>
+                    <{/foreach}>
+                </tr>
+                <{foreach from=$member_buy item=member key=key}>
+                <tr class="list_tr1">
+                    <td><{$lv.$key}></td>
+                    <{foreach from=$member item=member2 key=key}>
+                    <td><{$member2}></td>
+                    <{/foreach}>
+                </tr>
+                <{/foreach}>
+            </table>
+        </div>
+
+        <!--<div class="wdgk_title"><span class="float1 ">客户销售通路购买次数比较</span></div>
+        <div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=column_times_shop" scrolling="no" width="100%" height="100%"></iframe>
+        </div>
+
+        <div class="wdgk_title"><span class="float1 ">客户销售通路二次购买比较（3个月）</span></div>
+        <div style="height:220px;overflow:hidden" class="map_box">
+            <iframe frameborder="0" src="?app=taocrm&ctl=admin_analysis_chart&act=column_times_two" scrolling="no" width="100%" height="100%"></iframe>
+        </div>-->
+    </div>
+</div>

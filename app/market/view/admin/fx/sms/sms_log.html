@@ -1,0 +1,23 @@
+
+<div class="tableform">
+	 <div class="gridlist" style="border:none;">
+	 	<table width="70%" border="0" cellspacing="0" cellpadding="0">
+	 	  <thead>
+	 	<tr><th><{t}>批次<{/t}></th><th><{t}>状态<{/t}></th><th><{t}>发送时间<{/t}></th></tr>
+	 	</thead>
+	 	<tbody>
+	 	<{foreach from=$smsLogList item=item key=key}>
+	 	<tr>
+	 	    <td><{$item.page+1}></td>
+	 		<td><{$item.is_send}><{if $item.reason}>[<{$item.reason}>]<{/if}></td>
+	 		<td><{if $item.send_time}><{$item.send_time|cdate:'FDATE_FTIME'}><{else}>-<{/if}></td>
+	 	</tr>
+	 	<{/foreach}>
+	 	</tbody>
+	 	</table>
+	 </div>
+	 	 <{$pager}>
+
+
+	 
+</div>

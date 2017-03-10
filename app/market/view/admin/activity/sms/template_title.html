@@ -1,0 +1,80 @@
+<div style="width:80%;margin-left:55px;margin-top:5px">
+	<table>
+		<tr>
+			<td align="left">请输入短信内容的名称：</td>
+		</tr>
+		<tr>
+			<td align="left"><input style="width:200px" type="text" id='templates_id' name="templates_id"  size="20" vtype="required"/>
+		</tr>
+	</table>
+</div>
+
+
+<{area inject='.mainFoot'}>
+	<div style="height:50px;text-align:center">
+		<{button id="down1" class="btn-primary" label=$___b2c="确定"|t:'b2c' type="button"}>
+		<{button id="down2" class="btn-primary" label=$___b2c="取消"|t:'b2c' type="button"}>	
+	</div>
+<{/area}>
+
+<script>
+$("down1").addEvent('click',function(){
+	
+     var templete_title = $('templates_id').value;
+     
+     if(templete_title==""){
+         alert('短信标题不能为空!');
+         $("templates_id").focus();
+         return false;
+     }
+     
+     var message_text = encodeURIComponent($('message_text').value);
+     var message_title = encodeURIComponent(templete_title);
+     var data={'message_text':message_text,'message_title':message_title};
+     new Request({
+         url : 'index.php?app=market&ctl=admin_fx_activity&act=add_template',
+         method : 'post',
+         data:data,
+         onSuccess:function(responseText){
+            //alert(responseText);
+            var data = JSON.decode(responseText);
+            if(data.flag){
+            	alert('标题重复,请重新填写');
+            	$("templates_id").focus();
+            	return false;
+            }
+            $('template_sele_id').set('disabled',false);
+            $('template_sele_id').set('html',data.html);
+            var s = document.getElementById("template_sele_id");
+            var ops = s.options;
+            for(var i=0;i<ops.length; i++){
+                var tempValue = ops[i].value;
+                if(tempValue == data.template_id)   //这里是你要选的值
+                {
+                   ops[i].selected = true;
+                   break;
+                }
+            }
+            if($('sms_id1').get('checked')){
+               $('sms_id2').set('checked',true);
+            }
+            $('message_text').value = data.content;
+            $('content_id').show();
+            $('sms_length').set('html',$('message_text').value.length);
+            set_sms_length();
+            $('down1').getParent('.dialog').retrieve('instance').close();
+        }
+     }).send();
+    return true;
+    
+});
+
+$('down2').addEvent('click',function(){
+	$('down2').getParent('.dialog').retrieve('instance').close();
+});
+</script>
+
+
+
+
+

@@ -1,0 +1,82 @@
+<div style="" class="content-head">
+
+    <div class="finder-title">
+        <h2 class="head-title span-auto"><{$wangwang_title}></h2>
+    </div>
+    <div id="finder-packet-d48745" class="finder-packet" style="width: auto">
+        <div class="packet-items clearfix" style="width:auto;">
+            <ul class="clearfix">
+                <{foreach from=$wangwang_shops item=data key=i}>
+                <{if $shop_id==$data.shop_id}>
+                <li class="current">
+                <{else}>
+                <li>
+                <{/if}>
+                <a href="index.php?app=taocrm&ctl=admin_wangwangjingling&act=index&shop_id=<{$data.shop_id}>">
+                <span><{$data.name}></span>
+                </a>
+                </li>
+                <{/foreach}>
+            </ul>
+            
+        </div>
+    </div>
+
+<{if $wangwang_field}>
+    <form action="index.php?app=taocrm&ctl=admin_wangwangjingling&act=index&shop_id=<{$shop_id}>" id="tmpl_form" method="post">
+    <div style="padding-right:75px;" id="finder-action-d48745" class="gridlist-action finder-action clearfix">
+        <ul class="finder-action-items flt">  
+            <li>
+                <label><{t}>标签属性：<{/t}></label>
+            </li>
+            <{foreach from=$wangwang_search_fields item=search_fields key=field}>
+            <li>
+                <label><{t}><{$field}>：<{/t}></label>
+                <select name="search[<{$field}>]">
+                    <option value="">全部</option>
+	                <{foreach from=$search_fields item=value_field key=i}>
+	                    <option value="<{$value_field}>" <{if $wangwang_search_field[$field] == $value_field}> selected="selected"<{/if}>><{$value_field}></option>
+	                <{/foreach}>
+                </select>
+            </li>
+            <{/foreach}>
+        </ul>
+        <ul>
+            <li><button class="btn" id="add-shopcat-form-submit"><span><span><{t}>搜索<{/t}></span></span></button></li>
+        </ul> 
+    </div>
+    </form>
+<{/if}>
+</div>
+
+<div style="padding-top:2px;">
+    <{if $wangwang_field}>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <thead>
+            <tr>
+        <{foreach from=$wangwang_field item=data key=i}>
+                <th><{$data}></th>
+        <{/foreach}>
+            </tr>
+        </thead>
+        <tbody>
+            <{foreach from=$wangwang_data item=data key=i}>
+                <tr class="provice-bg">
+                    <{foreach from=$data.data item=ws_data key=i}>
+                        <td><{$ws_data}></td>
+                    <{/foreach}>
+                </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+    <{else}>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <tr><td>暂无数据</td></tr>
+      </table>
+    <{/if}>
+</div>
+<script>
+var btn =$('add-shopcat-form-submit');
+btn.addEvent('click',function() {
+    }).send();
+</script>

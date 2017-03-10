@@ -1,0 +1,43 @@
+<div class="tableform">
+<form method='post' action='index.php?app=market&ctl=admin_coupon&act=toAdd'>
+    <input type="hidden" name="finder_id" value="<{$finder_id}>" />
+    <h3 id="coupon_title"><{t}>优惠券添加/编辑<{/t}></h3>
+    
+    <div id="coupon_basic">
+       <{include file="admin/coupon/basic.html"}>
+    </div>
+
+    <div class="table-action">
+        <{assign var=___d value='确定退出?'}>
+        <{button class="btn-primary" type="submit"  label="保存并关闭" id="saveCurrent"}>
+        <{button class="btn-secondary" type="button"  label="取消" onclick="if(confirm('{$___d}'))window.close()"}>
+    </div>
+</form>
+</div>
+
+<script>
+(function(){
+    var _form = $('saveCurrent').getParents('form');
+    _form.store('target',{
+        onRequest:function(e){
+            //提交按钮:disabled
+            $('saveCurrent').set('disabled', 'true');
+            $('saveCurrent').getElements('span')[1].set('text','正在保存');
+        },
+        onComplete:function(rs){
+            if(rs&&!!JSON.decode(rs).success){
+            	<{if $env.get.finder_id}>
+            	 opener.finderGroup["<{$env.get.finder_id}>"].refresh.delay(400,opener.finderGroup["<{$env.get.finder_id}>"]);
+            	<{elseif $post.finder_id}>
+            	 opener.finderGroup["<{$post.finder_id}>"].refresh.delay(400,opener.finderGroup["<{$post.finder_id}>"]);
+            	<{else}>
+            	<{/if}>
+                setTimeout("window.close()",500);
+            }else{
+				$('saveCurrent').set('disabled', '');
+				$('saveCurrent').getElements('span')[1].set('text','保存并关闭');
+			}
+        }
+    });
+})();
+</script>

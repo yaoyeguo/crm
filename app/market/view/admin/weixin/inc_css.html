@@ -1,0 +1,573 @@
+<style>
+label {cursor:pointer;}
+th {text-align:right;}
+
+li {
+	list-style: none;
+}
+
+.wx ul,.wx li,dd,dt,dl{margin:0}
+
+.wx .greet .tips {
+	border-color: #c5dbe3;
+	color: #55737f;
+	background: #ebf5f9;
+}
+
+.wx .greet .panel {
+	width: 649px;
+	height: 318px;
+	padding: 19px 0 18px 18px;
+	position: relative;
+}
+
+.wx .greet .panel .arrow {
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	left: 86px;
+	top: 40px;
+	background: url(<{$env.app.res_url}>/arr1.jpg) no-repeat;
+}
+
+.wx .greet .panel strong {
+	display: inline;
+	float: left;
+	width: 62px;
+	height: 100%;
+	margin-right: 18px;
+	background: url(<{$env.app.res_url}>/h1.jpg) no-repeat;
+}
+
+.wx .greet .panel textarea {
+	float: left;
+	width: 506px;
+	height: 240px;
+	max-width: 506px;
+	max-height: 240px;
+	padding: 12px 20px;
+	color: #666;
+	line-height: 20px;
+	background: #fff;
+}
+
+.wx .greet .panel .btn-save {
+	margin: 14px 0 0;
+}
+
+.wx .greet .panel .tip {
+	float: right;
+	height: 51px;
+	padding: 0 20px 0 0;
+	line-height: 70px;
+}
+
+.wx .greet .container>p {
+	float: left;
+	height: 304px;
+	line-height: 304px;
+	color: #999;
+}
+
+.wx .greet .container>p strong {
+	color: #666;
+}
+
+.wx .greet .container>p a,.wx .greet .container>p a:visited {
+	color: #0099cc;
+	text-decoration: underline;
+}
+
+.wx .greet .container>p a:hover {
+	text-decoration: none;
+}
+
+.wx .greet .container>p>span {
+	display: inline-block;
+	padding-left: 20px;
+	line-height: 20px;
+}
+
+.wx .switch {
+	display: block;
+	float: left;
+	width: 856px;
+	height: 30px;
+	margin: 0 0 10px;
+	border: 1px dotted #e4e4e4;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+	color: #777;
+}
+
+.wx .switch strong {
+	display: inline-block;
+	height: 30px;
+	position: relative;
+	top: 2px;
+	font-size: 20px;
+	line-height: 30px;
+	color: #6584CC;
+}
+
+.wx .switch:hover {
+	color: #fff;
+	background: #6584CC;
+}
+
+.wx .switch:hover strong {
+	color: #fff;
+}
+
+.wx .kr .preview-mode .detail,.wx .kr .edit-mode .brief {
+	display: none;
+}
+
+.wx .kr .tips {
+	float: left;
+	width: 856px;
+	margin: 20px 0 0;
+}
+
+.wx .kr .brief,.wx .kr .hd {
+	width: 856px;
+	height: auto;
+	padding: 0;
+}
+
+.wx .kr .brief ul,.wx .kr .hd ul {
+	float: left;
+	width: 787px;
+	height: 93px;
+	border-right: 1px solid #e7e7e7;
+}
+
+.wx .kr .brief ul li,.wx .kr .hd ul li {
+	float: left;
+	width: 100%;
+	height: 46px;
+	border-bottom: 1px solid #e7e7e7;
+	line-height: 45px;
+}
+
+.wx .kr .hd ul .text-wrap {
+	position: relative;
+}
+
+.wx .kr .brief ul li.last,.wx .kr .hd ul li.last {
+	border: 0;
+}
+
+.wx .kr .brief li label,.wx .kr .hd li label {
+	float: left;
+	width: 60px;
+	text-align: right;
+}
+
+.wx .kr .brief .tags span {
+	display: inline-block;
+	height: 30px;
+	margin: 6px 10px 6px 0;
+	padding: 0 15px;
+	border-radius: 3px;
+	line-height: 30px;
+	background: #ddd;
+}
+
+.wx .kr .hd li input {
+	display: inline;
+	float: left;
+	height: 20px;
+	margin: 7px 10px 0 0;
+	padding: 5px 10px;
+	border: 1px solid #d8d8d8;
+	box-shadow: 0 6px 8px #ececec inset;
+	transition: box-shadow .25s;
+	line-height: 20px;
+}
+
+.wx .kr .hd .text-wrap input {
+	float: left;
+	width: 307px;
+}
+
+.wx .kr .hd .text-3 input {
+	width: 81px;
+}
+
+.wx .kr .brief .action,.wx .kr .hd .action {
+	float: left;
+	width: 68px;
+	height: 63px;
+	padding: 20px 0 10px;
+	text-align: center;
+	background: #f8f8f8;
+}
+
+.wx .kr .brief .action .close,.wx .kr .hd .action .close {
+	display: inline-block;
+	width: 26px;
+	height: 26px;
+	background: url(<{$env.app.res_url}>/ico-wx.png) no-repeat 7px -93px;
+}
+
+.wx .kr .brief .action .close:hover,.wx .kr .hd .action .close:hover {
+	background: url(<{$env.app.res_url}>/ico-close.gif) no-repeat;
+}
+
+.wx .kr .bd {
+	padding: 0;
+}
+
+.wx .kr .bd .tabs {
+	float: left;
+	width: 100%;
+	height: 40px;;
+	margin: 0;
+	padding: 0;
+	background-image: -ms-linear-gradient(top, #F0F0F0 0%, #FDFDFD 100%);
+	background-image: -moz-linear-gradient(top, #F0F0F0 0%, #FDFDFD 100%);
+	background-image: -o-linear-gradient(top, #F0F0F0 0%, #FDFDFD 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F0F0F0),
+		color-stop(1, #FDFDFD) );
+	background-image: -webkit-linear-gradient(top, #F0F0F0 0%, #FDFDFD 100%);
+	background-image: linear-gradient(to bottom, #F0F0F0 0%, #FDFDFD 100%);
+}
+
+.wx .kr .bd .tabs li {
+	float: left;
+	height: 30px;
+	margin: 5px 0 0 10px;
+	padding: 0 10px;
+	position: static;
+	border-radius: 5px;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 30px;
+	color: #fff;
+	background: #6584CC;
+}
+/*.wx .kr .bd .tabs li:hover {background:#479484;}*/
+.wx .kr .bd .tabs-body {
+	float: left;
+	width: 100%;
+	padding: 0;
+}
+
+.wx .kr .panel {
+	width: 856px;
+	border: 0;
+	border-radius: 0;
+	background: none;
+}
+
+.wx .kr .panel>ul>li {
+	float: left;
+	margin: 0 0 20px;
+}
+
+.wx .kr .brief,.wx .kr .detail {
+	float: left;
+	width: 856px;
+	border: 1px solid #e7e7e7;
+	border-radius: 5px;
+	background: #fdfdfd;
+}
+
+.wx .kr .detail {
+	margin: 0 0 120px;
+}
+
+.wx .kr .brief {
+	height: 93px;
+}
+
+.wx .kr .detail {
+	height: auto;
+	overflow: visible;
+}
+
+.wx .kr .carrier {
+	float: left;
+	width: 100%;
+	position: relative;
+	background: #f3f3f3;
+}
+
+.wx .kr .carrier>.action {
+	padding: 0 0 0 350px;
+	position: absolute;
+	bottom: -70px;
+	text-align: center;
+}
+
+.wx .kr .demo {
+	float: left;
+	width: 297px;
+	height: 409px;
+	border-right: 1px solid #d5d5d5;
+	padding: 8px;
+	background: url(<{$env.app.res_url}>/bgtri.jpg) repeat;
+}
+
+.wx .kr .demo>ul {
+	float: left;
+	width: 295px;
+	max-height: 399px;
+	overflow: hidden;
+	border: 1px solid #b8b8b8;
+	border-radius: 5px;
+	box-shadow: 0 2px 15px #C4C4C4;
+	background: #fff;
+}
+
+.wx .kr .demo>ul li {
+	float: left;
+	width: 279px;
+	height: 72px;
+	padding: 8px;
+	position: relative;
+	border-top: 1px solid #efefef;
+}
+
+.wx .kr .demo>ul li img {
+	float: right;
+	border: 1px solid #a0a0a0;
+}
+
+.wx .kr .demo>ul li span.title {
+	display: inline-block;
+	width: 200px;
+	height: 72px;
+	line-height: 72px;
+}
+
+.wx .kr .demo>ul li span.title a {
+	display: inline-block;
+	line-height: 20px;
+	word-break: break-all;
+	vertical-align: middle;
+}
+
+.wx .kr .demo>ul li span.item-cover {
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.7);
+}
+/*.ie7 .kr .demo>ul li:hover span.item-cover,
+.ie8 .kr .demo>ul li:hover span.item-cover { background:url(gray-60.png);}*/
+.wx .kr .demo>ul li span.item-cover a {
+	display: inline-block;
+	height: 20px;
+	margin: 35px 10px;
+	line-height: 20px;
+	color: #fff;
+	font-weight: 700;
+}
+
+.wx .kr .demo>ul li span.item-cover a:hover {
+	text-decoration: none;
+}
+
+.wx .kr .demo>ul li span.item-cover a span {
+	display: inline;
+	float: left;
+	background: url(ico-wx.png) no-repeat;
+}
+
+.wx .kr .demo>ul li span.item-cover a.stick span {
+	width: 15px;
+	height: 8px;
+	margin: 7px 8px 0 0;
+	background-position: 0 -80px;
+}
+
+.wx .kr .demo>ul li span.item-cover a.del span {
+	width: 13px;
+	height: 13px;
+	margin: 5px 8px 0 0;
+	background-position: 0 -100px;
+}
+
+.wx .kr .demo>ul li.feature span.item-cover a {
+	margin: 46px 0;
+}
+
+.wx .kr .demo>ul li.feature span.item-cover a.del span {
+	position: static;
+}
+
+.wx .kr .demo>ul li:hover span.item-cover {
+	display: block;
+}
+
+.wx .kr .demo>ul .feature {
+	width: 275px;
+	height: 112px;
+	margin: 10px;
+	padding: 0;
+	border: 0;
+	position: relative;
+}
+
+.wx .kr .demo>ul .feature img {
+	float: none;
+	border: 0;
+}
+
+.wx .kr .demo>ul .feature>a span {
+	display: block;
+	width: 255px;
+	height: 50px;
+	padding: 0 10px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	text-align: left;
+	line-height: 50px;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.ie7 .kr .demo>ul .feature>a span,.ie8 .kr .demo>ul .feature>a span,.ie9 .kr .demo>ul .feature>a span
+	{
+	background: url(<{$env.app.res_url}>/gray-60.png) !important;
+}
+
+.wx .kr .good {
+	float: left;
+	width: 542px;
+}
+
+.wx .kr .good .search {
+	float: left;
+	width: 100%;
+	height: 40px;
+	position: relative;
+	border-bottom: 1px solid #ddd;
+	line-height: 40px;
+	background: #ececec;
+}
+
+.wx .kr .good .search label {
+	float: left;
+	padding: 0 5px 0 18px;
+	font-weight: 700;
+	color: #6584CC;
+}
+
+.wx .kr .good .search input {
+	float: left;
+	width: 378px;
+	height: 20px;
+	margin: 4px 0 0;
+	padding: 5px 40px 5px 10px;
+	border: 1px solid #d8d8d8;
+	border-radius: 3px;
+	line-height: 20px;
+}
+
+.wx .kr .good .search button {
+	display: block;
+	width: 30px;
+	height: 30px;
+	border: 0;
+	position: absolute;
+	right: 8px;
+	top: 5px;
+	text-align: center;
+	cursor: pointer;
+	background: none;
+}
+
+.wx .kr .good .search button:focus {
+	outline: 0;
+}
+
+.wx .kr .good .search button span {
+	display: block;
+	width: 16px;
+	height: 15px;
+	margin-top: 3px;
+	text-indent: -9999em;
+	background: url(ico-wx.png) 0 -120px;
+}
+
+.wx .kr .good .list {
+	float: left;
+}
+
+.wx .kr .good ul {
+	float: left;
+	width: 522px;
+	height: 358px;
+	overflow-y: scroll;
+	padding: 4px 0 4px 20px;
+}
+
+.wx .kr .good ul li {
+	float: left;
+	width: 246px;
+	height: 72px;
+	margin: 8px 6px 0 0;
+}
+
+.wx .kr .good ul img {
+	float: left;
+	border: 1px solid #a0a0a0;
+}
+
+.wx .kr .good ul span {
+	float: left;
+	width: 166px;
+	height: 72px;
+	padding: 0 0 0 8px;
+	line-height: 72px;
+}
+
+.wx .kr .good ul span a {
+	display: inline-block;
+	line-height: 20px;
+	word-break: break-all;
+	vertical-align: middle
+}
+
+.btn-save,.btn-save:visited {
+	display: inline;
+	float: left;
+	width: 160px;
+	height: 41px;
+	padding: 0;
+	border: 0;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-o-border-radius: 5px;
+	cursor: pointer;
+	font: normal 400 22px/41px 'Microsoft Yahei';
+	color: #fff;
+	background: #6584CC
+}
+
+.ie6 .btn-save,.ie6 .btn-save:visited {
+	display: block;
+}
+
+.btn-save:hover {
+	background: #2F4F9B;
+}
+
+.btn-save:active {
+	line-height: 40px;
+}
+</style>

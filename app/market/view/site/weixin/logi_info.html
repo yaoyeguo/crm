@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会员中心</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>查看物流</h1>
+</nav>
+
+<div class="container gap divider">
+  <ul class="no-bullet logistics-status">
+    <li>物流单号：<{$logi_data.logi_no}></li>
+    <li>物流公司：<{$logi_data.logi_company}></li>
+    <li>发货时间：<{$logi_data.delivery_time}></li>
+  </ul>
+</div>
+<div class="mod top logistics">
+  <div class="mod-head">物流跟踪</div>
+  <div class="mod-body">
+    <ul class="no-bullet process">
+      <!--<li class="active"><span class="status">您的订单已经完成发货</span><span class="time">2015-06-18 14:50</span></li>
+      <li><span class="status">您的订单已经完成中转，从无锡仓发到上海</span><span class="time">2015-06-18 14:50</span></li>-->
+        <{if $data neq null}>
+        <{foreach from=$data item=d key=k}>
+            <{if $length_max eq $k}>
+        <li class="active"><span class="status"><{$d.AcceptStation}></span><span class="time"><{$d.AcceptTime}></span></li>
+            <{else}>
+        <li><span class="status"><{$d.AcceptStation}></span><span class="time"><{$d.AcceptTime}></span></li>
+            <{/if}>
+        <{/foreach}>
+        <{else}>
+        <li>华强宝提供数据支持(以上信息由物流公司提供，如无跟踪信息或有疑问，请咨询对应物流公司)</li>
+        <{/if}>
+    </ul>
+  </div>
+  <div class="mod-foot"></div>
+</div>
+<div class="container gap">
+  <a href="order_detail?order_id=<{$logi_data.order_id}>" class="button expand">返回我的订单</a>
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+</script>
+</body>
+</html>

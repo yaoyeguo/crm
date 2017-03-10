@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>积分兑换订单列表</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <link rel="apple-touch-icon-precomposed" href="statics/img/touch-icon.png">
+  <meta content="telephone=no" name="format-detection">
+  <meta name="author" content="shopex UED Team">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="<{$env.app.res_url}>/css/foundation.css">
+</head>
+<body>
+<nav class="top-bar" data-topbar>
+  <div class="pos-left">
+    <a href="javascript:history.back();" class="icon-arrow_left"></a>
+  </div>
+  <h1>积分兑换订单</h1>
+</nav>
+<ul class="tabs bar-tabs" data-tab>
+  <!--<li class="trigger active"><a href="#content1">全部</a></li>-->
+</ul>
+<div class="tabs-content">
+  <div class="mod content active" id="content1">
+  <{if $order_data neq null}>
+  <{foreach from=$order_data item=data key=k}>
+    <div class="mod-head clearfix">
+      <h1 class="left"><!--<i class="icon-shop"></i><{$data.shop_name}>--></h1>
+      <h2 class="right"><{$data.create_time}></h2>
+    </div>
+    <div class="mod-body table-view">
+      <div class="cell">
+        <a href="point_order_detail?order_id=<{$data.order_id}>" class="navigate-right icon">
+          <p><{$data.goods_name}></p>
+        </a>
+      </div>
+    </div>
+    <!--<div class="mod-foot clearfix">
+      <div class="left"><{$data.flow_status}></div>
+      <div class="right">订单金额：<i class="text-alert">￥<{$data.total_amount}></i></div>
+    </div>-->
+  <{/foreach}>
+  <{else}>
+      <!-- 暂无可用 -->
+      <div class="content placeholder-info">
+          <p>
+              <i class="icon-orders"></i>
+          </p>
+          <p>您还没有相关订单</p>
+      </div>
+   <{/if}>
+  </div>
+
+</div>
+
+<script src="<{$env.app.res_url}>/js/libs.min.js"></script>
+<script src="<{$env.app.res_url}>/js/foundation.min.js"></script>
+<script src="<{$env.app.res_url}>/js/main.min.js"></script>
+<script>
+</script>
+</body>
+</html>

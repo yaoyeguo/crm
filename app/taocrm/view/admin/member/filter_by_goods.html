@@ -1,0 +1,116 @@
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <th><{t}>店铺：<{/t}></th>
+      <td>
+        <input id="shop_id" value="<{$shop_id}>" type="hidden" />
+        <b><{$shop_name}></b>
+      </td>
+    </tr>
+    
+    <tr>
+      <th><{t}>选择商品：<{/t}></th>
+      <td style="background:#FFFAC3;"><div style="height:80px;overflow-y:auto">
+        <{foreach from=$goods item=data key=k}>
+        <label><input checked name="goods_id[]" value="<{$data.goods_id}>" type="checkbox" /> <{$data.name}></label><br/>
+        <{/foreach}></div>
+      </td>
+    </tr>
+    
+    <tr>
+      <th><em class="c-red">*</em> <{t}>购买日期<{/t}>：</th>
+      <td>
+        <{input size="20" type='date' id='date_from' name='date_from' value=$date_from }>
+        ~     
+        <{input size="20" type='date' id='date_to' name='date_to' value=$date_to }>
+      </td>
+    </tr>
+    
+    <tr>
+      <th><em class="c-red">*</em> <{t}>是否购买<{/t}>：</th>
+      <td>
+        <label><input name="has_buy" value=1 type="radio" checked="checked"  /> 购买</label>　　
+        <label><input name="has_buy" value=0 type="radio"  /> 未购买</label>
+      </td>
+    </tr>
+    
+    <tbody id="buy_filter">
+        <tr>
+          <th><em class="c-red">*</em> <{t}>购买范围<{/t}>：</th>
+          <td>
+            <label><input name="all_buy" value=1 type="radio"  /> 购买过全部</label>　　
+            <label><input name="all_buy" value=0 type="radio" checked="checked"  /> 购买任意商品</label>
+          </td>
+        </tr>
+        
+        <tr>
+          <th><em class="c-red">*</em> <{t}>付款状态<{/t}>：</th>
+          <td>
+            <label><input name="pay_status" value="all" type="radio"  checked="checked"  /> 全部</label>　　
+            <label><input name="pay_status" value=1 type="radio"  /> 已付款</label>　　
+            <label><input name="pay_status" value=0 type="radio"  /> 未付款</label>
+          </td>
+        </tr>
+
+        <tr style="display:none">
+          <th><em class="c-red">*</em> <{t}>购买数量<{/t}>：</th>
+          <td>
+          大于等于
+          <{input size="6" type='text' id='quantity' name='quantity' value=1 }>
+          
+          </td>
+        </tr>
+    </tbody>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label=" 查看客户 " id="p-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+_btn.addEvent('click',function(){
+    //_form.fireEvent('submit',{stop:$empty});
+    var goods_id = '';
+    $$('input[name="goods_id[]"]').each(function(item,index){
+        goods_id += '&goods_id[]='+(item.get('value'));
+    });
+    
+    var data = '&filter_type=goods';
+    data += '&shop_id='+$('shop_id').get('value');
+    data += '&quantity='+$('quantity').get('value');
+    data += '&date_from='+$('date_from').get('value');
+    
+    data += '&date_to='+$('date_to').get('value');
+    data += goods_id;
+    data += '&has_buy='+$$('input[name=has_buy]:checked').get('value');
+    data += '&all_buy='+$$('input[name=all_buy]:checked').get('value');
+    data += '&pay_status='+$$('input[name=pay_status]:checked').get('value');
+    //alert(data);return false;
+    
+    show_members(data);
+});
+
+$$('input[name=has_buy]').addEvent('click',function(){
+    if($(this).value == 1){
+        $('buy_filter').show();
+    }else{
+        $('buy_filter').hide();
+    }
+});
+
+function show_members(murl){
+    murl = 'index.php?app=taocrm&ctl=admin_member_report&act=index'+murl;
+    var url='index.php?app=desktop&act=alertpages&goto='+encodeURIComponent(murl);
+    Ex_Loader('modedialog',function() {
+        new finderDialog(url,{width:1000,height:660});
+    });
+}
+</script>

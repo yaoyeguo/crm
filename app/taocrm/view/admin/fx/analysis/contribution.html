@@ -1,0 +1,169 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+<style>
+
+#goods_page_nav { display:block;padding:5px 0 5px 5px;}
+#prev,#next,.sbtn {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+#no_prev,#no_next{background:#AAA;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;display:;}
+</style>
+<!--table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%" valign="top" bgcolor="#E4E4E4" style="padding:12px 8px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div-->
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <{include file="admin/analysis/fx_search.html"}>
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                  
+                    
+                    <div class="tableform">
+
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>分销商名称<{/t}></th>
+                                    <th><{t}>总订单数<{/t}></th>
+                                    <th><{t}>订单总额<{/t}></th>
+                                    <th><{t}>客户总数<{/t}></th>
+                                    <th><{t}>付款订单<{/t}></th>
+                                    <th><{t}>付款金额<{/t}></th>
+                                    <th><{t}>付款客户数<{/t}></th>
+                                    <th><{t}>未支付订单数<{/t}></th>
+                                    <th><{t}>未支付金额<{/t}></th>       
+                                    <th><{t}>未支付客户数<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                 <tr>
+                                     <td><{$key}></td>
+                                     <td><{$data.TotalOrders}></td>
+                                     <td><{$data.TotalAmount|cur}></td>
+                                     <td><{$data.TotalMembers}>
+                                     	 <{if($data.TotalMembers > 0)}>
+	                                     	<a onclick="show_members('&shop_id=<{$shop_id}>&count_by=contribution&filter_type=analysis&order_status=all&date_from=<{$date_from}>&date_to=<{$date_to}>&agent_name=<{$key}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+	                                     <{/if}>
+                                     
+                                     </td>
+                                     <td><{$data.PayOrders|default:0}></td>
+                                     <td><{$data.PayAmount|cur}></td>
+                                     <td><{$data.PayMembers}>
+                                     	<{if($data.PayMembers > 0)}>
+	                                     	<a onclick="show_members('&shop_id=<{$shop_id}>&count_by=contribution&filter_type=analysis&order_status=pay&date_from=<{$date_from}>&date_to=<{$date_to}>&agent_name=<{$key}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+	                                     <{/if}>
+                                     </td>
+                                     <td><{$data.UnpayOrders|default:0}></td>
+                                     <td><{$data.UnpayMmount|cur}></td>
+                                     <td><{$data.UnpayMembers}>
+                                     	<{if($data.UnpayMembers > 0)}>
+	                                     	<a onclick="show_members('&shop_id=<{$shop_id}>&count_by=contribution&filter_type=analysis&order_status=unpay&date_from=<{$date_from}>&date_to=<{$date_to}>&agent_name=<{$key}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+	                                     <{/if}>
+                                     </td>
+                                 </tr>
+                                 <{/foreach}>
+                                 
+                                 <tr bgcolor="#F1F6F7">
+                                     <td>小计</td>
+                                     <td><{$total_data.TotalOrders}></td>
+                                     <td><{$total_data.TotalAmount|cur}></td>
+                                     <td><{$total_data.TotalMembers}></td>
+                                     <td><{$total_data.PayOrders|default:0}></td>
+                                     
+                                     <td><{$total_data.PayAmount|cur}></td>
+                                     <td><{$total_data.PayMembers}></td>
+                                     <td><{$total_data.UnpayOrders|default:0}></td>
+                                     <td><{$total_data.UnpayMmount|cur}></td>
+                                     <td><{$total_data.UnpayMembers}></td>
+                                 </tr>
+                            </tbody>   
+                        </table>                      
+                        
+                    </div>
+                    
+                   <span>
+                     	<span style="float:right">当前<{$page}>页/共<{$count}>条记录</span>
+                     	<span style="float:left"><{$pager}></span>
+                     </span>
+                
+                </div>
+				
+
+            </div>
+        </div>
+    </div>
+    <!--div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+</td>
+</tr>
+</table-->
+
+<script>
+(function(){
+	    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%3 == 1) list_tr[i].setStyle('background','#F4F4F4');
+        if (i%3 == 2) list_tr[i].setStyle('background','#EEE');
+    }
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+                if(i==2) {
+                    $('sel_order_status').setStyle('display', 'none');
+                }else{
+                    $('sel_order_status').setStyle('display', 'block');
+                }
+                if(i==1) $('frame2').set('src', $('frame2').get('title'));
+            };
+        });
+    }
+    
+   
+    
+})();
+
+
+</script>

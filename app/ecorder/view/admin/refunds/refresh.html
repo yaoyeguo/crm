@@ -1,0 +1,44 @@
+<div style="padding:20px;text-align:center;">
+
+    <p style="color:#017C7C;font-size:11pt;">当查询退款单部分数据缺失时，<br/>请于1小时后点击“退款单更新”显示最新数据
+        <div id="loading" style="display:none;"><{img src="loading.gif" app="market" }></div>
+    </p>
+
+    
+    <form class="sui-form form-horizontal" action="index.php?<{$env.server.QUERY_STRING}>" method="post" id="myForm">
+        <div class="control-group">
+            <input type="hidden" name="act" value="exec" />
+        </div>
+    </form>
+
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="saveBtn" name="submit" label="开始更新"}>
+    </div>
+<{/area}>
+
+<script>
+var _btn = $('saveBtn');
+_btn.addEvent('click',function(event){
+    $('loading').show();
+    _btn.set('disabled', true);
+    $('myForm').fireEvent('submit', new Event(event));
+});
+    
+$('myForm').store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if(hash_res_obj.success != undefined && hash_res_obj.success != ""){
+            try{
+                var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns){
+                _dialogIns.close();
+            }
+        }
+    }
+});
+</script>

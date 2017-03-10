@@ -1,0 +1,37 @@
+<table cellspacing="0" cellpadding="0" border="0" align="center">
+        <tbody>
+            <tr class="title">
+                <th width="10%"><em class="c-red">*</em>标题：</th>
+                <td width="90%"><{input type="text" name="news[title][]" value=$item.title
+                    vtype="required" }></td>
+            </tr>
+            <tr class="picurl">
+                <th><em class="c-red">*</em>封面： <br/>大图360*200<br/>小图200*200</th>
+                <td><{input type="image" name="news[picurl][]" vtype="required" value=$item.picurl 
+                    width=160 height=100 }></td>
+            </tr>
+            <tr class="digest">
+                <th><em class="c-red">*</em>摘要：</th>
+                <td><{input type="textarea" name="news[digest][]" value=$item.digest  
+                    vtype="required" width="300" }></td>
+            </tr>
+            <tr class="link_type">
+                <th><em class="c-red">*</em>链接到：</th>
+                <td><input type="radio" name="news[link_type][<{$index_item}>]" value="url"
+                    onClick="chooseLinkType()" <{if $item.link_type == 'url'}>checked<{/if}> />链接 <input type="radio"
+                    name="news[link_type][<{$index_item}>]" value="article" onClick="chooseLinkType()" <{if $item.link_type == 'article'}>checked<{/if}> />文章</td>
+            </tr>
+            <tr style="display: none;" class="link_type_url">
+                <th><em class="c-red">*</em>链接地址：</th>
+                <td><{input type="text" name="news[link_type_url][]" value=$item.link_type_url
+                    vtype="required" size=35 }></td>
+            </tr>
+            <tr style="display: none;" class="link_type_article">
+                <th><em class="c-red">*</em>文章内容：</th>
+                <td><{input type="textarea" name="news[link_type_article][]" value=$item.link_type_article
+                    vtype="required" }></td>
+            </tr>
+
+        </tbody>
+    </table>
+    

@@ -1,0 +1,119 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <{include file="admin/analysis/fx_search.html"}>
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                  
+                    
+                    <div class="tableform">
+
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>客户名称<{/t}></th>
+                                    <th><{t}>总订单数<{/t}></th>
+                                    <th><{t}>订单总额<{/t}></th>
+                                    <th><{t}>付款订单<{/t}></th>
+                                    <th><{t}>付款金额<{/t}></th>
+                                    <th><{t}>联系电话<{/t}></th>
+                                    <th><{t}>所属区域<{/t}></th>       
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data}>
+                                 <tr>
+                                     <td><{$data.shipName}></td>
+                                     <td><{$data.TotalOrders}></td>
+                                     <td><{$data.TotalAmount|cur}></td>
+                                     <td><{$data.PayOrders}></td>
+                                     <td><{$data.PayAmount|cur}></td>
+                                     <td><{$data.shipMobile}></td>
+                                     <td><{$data.shipArea}></td>
+                                 </tr>
+                                 <{/foreach}>
+                                 
+                            </tbody>   
+                        </table>                      
+                        
+                    </div>
+                    
+                     <span style="padding-bottom:10px">
+                     	<span style="float:right">当前<{$page}>页/共<{$count}>条记录</span>
+                     	<span style="float:left"><{$pager}></span>
+                     </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+   
+
+<script>
+(function(){
+    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%3 == 1) list_tr[i].setStyle('background','#F4F4F4');
+        if (i%3 == 2) list_tr[i].setStyle('background','#EEE');
+    }
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                tab_div[i].setStyle('display', 'block');
+                if(i==2) {
+                    $('sel_order_status').setStyle('display', 'none');
+                }else{
+                    $('sel_order_status').setStyle('display', 'block');
+                }
+                if(i==1) $('frame2').set('src', $('frame2').get('title'));
+            };
+        });
+    }
+    
+    $('order_status').addEvent('change',function(){
+        change_chart();
+    });
+    
+})();
+
+
+</script>

@@ -1,0 +1,464 @@
+<{css src="active_plan/index.css"}> 
+<style>
+a.add-icon {
+	text-decoration:none;
+}
+
+#step_area {}
+#step_area p,#step_area ul,#step_area form{margin:0;padding:0;}
+#step_area ul{list-style:none;}
+#step_area .icon-box .content{cursor:pointer;}
+</style>
+
+<div id="debug"><!--调试信息--></div>
+
+<div class="wrap" style="font-family:Microsoft Yahei;padding:20px 0 0 0;">
+    <ul class="signup" style="list-style:none;">
+        <li class="cell">
+            <div class="area" id="step_area"> 
+                
+                <!--开始 start-->
+                <div class="icon-box start-box">
+                    <div class="content"> 
+                        <i class="dire zs"></i> 
+                        <span class="txt">开 始</span> 
+                        <span class="flag-box"><i class="start dire"></i></span> 
+                        <a step="1" offset_x="130" offset_y="0" href="javascript:;" class="add-icon"><span>＋</span></a>
+                    </div>
+                </div>
+                <!--开始 end--> 
+
+            </div>
+        </li>
+    </ul> 
+</div>
+
+<!--活动时间 start-->
+<div id="active_time_template" style="display:none;">
+    <div class="icon-box active-time time-evt" data-parent="is">
+        <div class="content" onclick="open_step('_period','活动时间',0,1);">
+            <i class="dire zs" style="border-left-color:#B59BB0;"></i>
+            <span class="txt">活动时间</span>
+            <span class="flag-box only-dire atime"></span> 
+            <i class="del"></i> 
+            <i class="edit"></i> 
+            <a step="2" offset_x="112" offset_y="0" href="javascript:;" class="add-icon"><span>＋</span></a>
+        </div>
+        <div class="time-root inner" style="display: none">
+            <ul>
+                <!--li>开始时间</li>
+                    <li>
+                        <p class="date">2012-12-22</p>
+                        <p class="tim">22:55:00</p>
+                    </li>
+                    <li>
+                        <i class="exp">每 3 天 1 次</i>
+                    </li-->
+            </ul>
+        </div>
+    </div>
+</div>
+<!--活动时间 end--> 
+
+<!--筛选条件 start-->
+<div id="screen_template" style="display:none;">
+    <div class="icon-box screen tj">
+        <div class="content clearfix" style="background:#9BA5B5;" onclick="open_step('_filter','筛选条件',0,1);">
+            <div>
+                <div class="prop"><i class="dire zs"></i><span class="txt">筛选条件</span><span class="flag-box only-dire sdx"></span>
+                <i class="del"></i>
+                <i class="edit"></i>
+                </div>
+                <div class="val inner">
+                    <p>结果</p>
+                    <p class="total_valid_num">0</p>
+                    <i class="num-icon"></i></div>
+                <a step="3" offset_x="156" offset_y="0" data-parent="icon-box" class="add-icon" href="javascript:;"><span>＋</span></a></div>
+        </div>
+    </div>
+</div>
+<!--筛选条件 end--> 
+
+<!--发送短信 start-->
+<div id="dx_template" style="display:none;">
+    <div class="icon-box screen dx">
+        <div class="content clearfix" onclick="open_step('_sms','发送短信',0,1);">
+            <div>
+                <div class="prop">
+                    <i class="dire zs" style="border-left-color: rgb(181, 172, 155);"></i>
+                    <span class="txt">发送短信</span>
+                    <span class="flag-box only-dire sdx"></span>
+                    <i class="del"></i>
+                    <i class="edit"></i>
+                </div>
+                <div class="val inner">
+                    <p>结果</p>
+                    <p class="valid_num">0</p>
+                    <i class="num-icon"></i>
+                </div>
+                <a step="4" offset_x="156" offset_y="0" data-parent="icon-box" class="add-icon" href="javascript:;"><span>＋</span></a></div>
+        </div>
+        
+    </div>
+</div>
+</div>
+<!--发送短信 end--> 
+
+<!--等待时间 start-->
+<div id="wait_time_template" style="display:none;">
+    <div class="icon-box wait-time time-evt" data-parent="is">
+        <div id="days$id" class="content" onclick="open_step('_wait_days','等待时间',$(this).get('id').replace('days',''),1);">
+            <i class="dire zs" style="border-left-color:#A1B59B;"></i> 
+            <!--a href="javascript:;" class="add-icon" data-parent="is"><span>＋</span></a--> 
+            <span class="txt">等待时间</span>
+            <span class="flag-box only-dire wtime"></span> 
+            <i class="del"></i> 
+            <i class="edit"></i> 
+            <a step="5" offset_x="112" offset_y="0" href="javascript:;" class="add-icon" data-parent="icon-box"><span>＋</span></a>
+        </div>
+        <div class="time-root inner" style="display: none">
+            <ul>
+                <!--li>开始时间</li>
+                    <li>
+                        <p class="date">2012-12-22</p>
+                        <p class="tim">22:55:00</p>
+                    </li>
+                    <li>
+                        <i class="exp">每 2 天 1 次</i>
+                    </li-->
+            </ul>
+        </div>
+    </div>
+</div>
+<!--等待时间 end--> 
+
+<!--统计结果模板 start-->
+<div id="group_template" style="display:none;">
+    <div id="report_box$id" class="icon-box group" data-parent="is" style="cursor:pointer;" onclick="open_step('_report','统计结果',$(this).get('id').replace('report_box',''),1);">
+        <div class="content"> 
+            <!--i class="dire zs"></i--> 
+            <!--a href="javascript:;" class="add-icon"><span>＋</span></a--> 
+            <span class="txt">统计结果</span> 
+            <span class="flag-box only-dire sgroup"></span> 
+            <i class="del"></i> 
+            <i class="edit" style="display:none"></i>
+        </div>
+    </div>
+</div>
+<!--统计结果模板 end--> 
+
+<!--菜单模板 start-->
+    <div id="menu_template" class="menus" style="display:none;">
+        <div>
+            <div class="menus-in inner">
+                <p class="next" style="margin:0;padding:5px 0;text-align:center;">选择下一步</p>
+                <ul style="list-style:none;margin:0;padding:0;">
+                    <li data-parent="menus"> <a onclick="open_step('_period','活动时间',0,0);" href="javascript:;">创建活动时间</a> </li>
+                    <li data-parent="menus"> <a onclick="open_step('_filter','筛选条件',0,0);" href="javascript:;">创建筛选条件</a> </li>
+                    <li data-parent="menus"> <a onclick="open_step('_sms','发送短信',0,0);" href="javascript:;">创建发送短信</a> </li>
+                    
+                    <li data-parent="menus"> <a onclick="open_step('_wait_days','等待时间',days_box,0);" href="javascript:;">创建等待时间</a> </li>
+                    <li data-parent="menus"> <a onclick="go_to('group_template');" href="javascript:;">创建统计结果</a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+<!--菜单模板 end-->
+
+<!--折线2模板 start-->
+<div id="sep_twice" style="display:none;">
+    <div style="height:120px;width:30px;top:27px;background:#FFF;position:absolute;z-index:999;">
+        <div style="height:100%;width:15px;border:5px solid #819CD3;margin:40px 5px;border-right:none;position:absolute;z-index:999;"></div>
+    </div>
+</div>
+
+<!--折线3模板 start-->
+<div id="sep_triple" style="display:none;">
+    <div style="height:240px;width:30px;top:27px;background:#FFF;position:absolute;z-index:999;">
+        <div style="height:50%;width:15px;border:5px solid #819CD3;margin:0 5px;border-right:none;position:absolute;z-index:999;margin-top:40px;"></div>
+        <div style="height:50%;top:160px;width:15px;border:5px solid #819CD3;margin:0 5px;border-right:none;border-top:none;position:absolute;z-index:999;"></div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+    var offset_x = 0;
+    var offset_y = 0;
+    var sms_box_num = 0;
+    var days_box = 0;
+    var report_box = 0;
+    var total_valid_num = <{$rs_active.valid_num}>;
+    var active_id = <{$active_id}>;
+    var last_step = '';
+    var step_area = $('step_area');
+    var screen_template = $('screen_template');
+    var menu_list = $$('#menu_template ul li');
+    var pos_dom;
+    var stype = 'single';
+    var edit_mode = false;
+    var half_compare = <{$rs_active.half_compare}>;//活动对照
+    var ab_compare = <{$rs_active.ab_compare}>;//短信ab对照
+
+    var step_area_children = step_area.getChildren();
+    var step_area_size = step_area.getChildren().length;
+    
+    $('menu_template').addEvent('mouseleave', function(){
+        $(this).hide();
+    });
+    
+    $$('#step_area a.add-icon').addEvent('mouseover', function(){
+        show_menus($(this));
+    });
+    
+    if(active_id>0){
+        init_step();
+        edit_mode = true;
+    }
+    
+function init_step(){
+
+    days_box = 0;
+
+    step_area.set('html', step_area_children[0].outerHTML);
+
+    move_curr(1);
+    go_to('active_time_template');
+    
+    move_curr(1);
+    go_to('screen_template');
+    
+    move_curr(1);
+    go_to('dx_template');
+
+    //如果是3短信，move3 如果是ab对照，move2
+    var move =1;
+    
+    if(half_compare==1 && ab_compare==1){
+        move = 3;
+    }else if(half_compare==1 || ab_compare==1){
+        move = 2;
+    }else{
+        move = 1;
+    }
+    
+    for(var i=move;i>=1;i--){
+        move_curr(move);
+        go_to('wait_time_template');
+        
+        move_curr(1);
+        go_to('group_template');
+    }
+    
+    update_member_num();
+}
+
+function move_curr(i){
+    var all_add_icons = $$('#step_area a.add-icon');
+    pos_dom = all_add_icons[all_add_icons.length - i];
+}
+
+function show_menus(ele){
+
+    var main = $('main');
+    pos_dom = ele;
+
+    //$('debug').set('text',  ele.getTop() + ':' + ele.getLeft());
+    
+    menu_list.hide();
+    menu_list[ele.get('step') - 1].show();
+
+    $('menu_template').setStyles({top:ele.getTop() - main.getTop(),left:ele.getLeft() - main.getLeft()});
+    $('menu_template').show();
+}
+
+function set_last_pos(){
+    var step_area_children = step_area.getChildren();
+    var step_area_size = step_area.getChildren().length;
+    
+    step_area_children[step_area_size-1].setStyles({left:offset_x});
+    
+    if(offset_y > 0){
+        step_area_children[step_area_size-1].setStyles({ top:offset_y});
+        //step_area_children[step_area_size-1].getElement('a.add-icon').set('offset_y', offset_y);
+    }
+    
+    var add_icon = step_area_children[step_area_size-1].getElement('a.add-icon');
+    if(add_icon){
+    
+        if(stype == 'single'){
+            //单流程累加x的值
+            offset_x = offset_x + parseInt(add_icon.get('offset_x'));
+            //offset_y = parseInt(add_icon.get('offset_y'));
+            
+            add_icon.set('offset_x', offset_x);
+            add_icon.set('offset_y', offset_y);
+        }else{
+            //y轴多流程时，不累加x的值
+            //offset_y = parseInt(add_icon.get('offset_y'));
+            
+            add_icon.set('offset_x', offset_x + parseInt(add_icon.get('offset_x')));
+            add_icon.set('offset_y', offset_y);
+        }
+    }
+    //debug(offset_x);
+    //debug(offset_y);
+}
+
+function debug(str){
+    var html = $('debug').get('html') + ';  =' + str;
+    $('debug').set('html', html);
+}
+
+function go_to(id){
+
+    stype = "single";
+
+    offset_x = parseInt(pos_dom.get('offset_x'));
+    offset_y = parseInt(pos_dom.get('offset_y'));
+
+    if(id=="dx_template"){
+        if(half_compare==1 && ab_compare==1){
+            set_sms_triple(id);//进入短信 + 活动对照组
+            return true;
+        }else if(half_compare==1 || ab_compare==1){
+            set_sms_twice(id);//进入短信 or 活动对照组
+            return true;
+        } 
+    }
+
+    //alert(id)
+    var html = $(id).get('html');
+    
+    if(id=='wait_time_template'){
+        html = html.replace('$id', days_box);
+        days_box++;
+    }
+    
+    if(id=='group_template'){
+        html = html.replace('$id', report_box);
+        report_box++;
+    }
+    
+    append(html, step_area);
+    
+    /*
+    ('active_time_template');
+    ('screen_template');
+    ('dx_template');
+    ('wait_time_template');
+    ('group_template');
+    */    
+    last_step = id;
+    set_last_pos();
+    
+    offset_y = 0;
+    
+    $('menu_template').hide();
+    $$('#step_area a.add-icon').addEvent('mouseover', function(){
+        show_menus($(this));
+    });
+}
+
+function set_sms_twice(id){
+    //alert(id)
+    append($('sep_twice').get('html'), step_area);
+    set_last_pos();
+    
+    stype = "twice";
+    
+    offset_x += 30;
+    //第一个短信框
+    append($(id).get('html'), step_area);
+    set_last_pos();
+    
+    //第二个短信框
+    offset_y += 150;
+    append($(id).get('html'), step_area);
+    set_last_pos();
+    
+    offset_y = 0;
+    
+    last_step = id;
+    $$('#step_area a.add-icon').addEvent('mouseover', function(){
+        show_menus($(this));
+    });
+}
+
+function set_sms_triple(id){
+    //alert(id)
+    append($('sep_triple').get('html'), step_area);
+    set_last_pos();
+    
+    stype = "twice";
+    
+    offset_x += 30;
+    //第一个短信框
+    append($(id).get('html'), step_area);
+    set_last_pos();
+    
+    //第二个短信框
+    offset_y += 150;
+    append($(id).get('html'), step_area);
+    set_last_pos();
+
+    //第3个短信框
+    offset_y += 120;
+    append($(id).get('html'), step_area);
+    set_last_pos();
+    
+    offset_y = 0;
+    
+    last_step = id;
+    $$('#step_area a.add-icon').addEvent('mouseover', function(){
+        show_menus($(this));
+    });
+}
+
+function append(html, target){
+
+    //alert(html)
+    //alert($('step_area').get('html'))
+    var html = target.get('html') + html;
+    $('step_area').set('html', html); 
+    
+    var screen = $$('#step_area div.screen');
+    if(screen.length == 4){
+        screen[1].getElement('span.txt').set('text', '对照组');
+        screen[2].getElement('span.txt').set('text', '短信A组');
+        screen[3].getElement('span.txt').set('text', '短信B组');
+    }
+    
+    if(screen.length == 3){
+        if(ab_compare == 1){
+            screen[1].getElement('span.txt').set('text', '短信A组');
+            screen[2].getElement('span.txt').set('text', '短信B组');
+        }else{
+            screen[1].getElement('span.txt').set('text', '对照组');
+            screen[2].getElement('span.txt').set('text', '短信组');
+        }
+    }
+}
+
+var is_modify = 0;
+function open_step(step, _title, box_id, modify){
+    is_modify = modify;
+    var url = 'index.php?app=market&ctl=admin_active_plan&act='+step+'&p[0]='+active_id+'&box_id='+box_id+'&modify='+modify;
+    new Dialog(url,{title:_title,width:700,height:350,onShow:function(){}});
+}
+
+function update_member_num(){
+    $$('#step_area div.tj').getElement('p.total_valid_num').set('text', total_valid_num);
+    var dx_box = $$('#step_area div.dx');
+    if(dx_box.length == 3){
+        dx_box[0].getElement('p.valid_num').set('text', parseInt(total_valid_num/2));
+        dx_box[1].getElement('p.valid_num').set('text', parseInt(total_valid_num/4));
+        dx_box[2].getElement('p.valid_num').set('text', parseInt(total_valid_num/4));
+    }else if(dx_box.length == 2){
+        dx_box[0].getElement('p.valid_num').set('text', parseInt(total_valid_num/2));
+        dx_box[1].getElement('p.valid_num').set('text', parseInt(total_valid_num/2));
+    }else if(dx_box.length == 1){
+        dx_box[0].getElement('p.valid_num').set('text', (total_valid_num));
+    }
+    
+}
+</script>

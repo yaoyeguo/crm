@@ -1,0 +1,342 @@
+.clearfix {display: block; *zoom: 1; _height: 1%;}
+.clearfix:after {clear: both; display: block; content: "\0020";}
+
+.signup .cell {line-height: 25px; margin-bottom: 6px;}
+.signup .textfield { height: 23px; line-height: 23px; width: 419px; border: 1px solid #BEBEBE;}
+.text-muted {margin-left: 5px;}
+.area {height: 400px; position: relative; overflow: auto;}
+
+/*图标盒子样式*/
+.icon-box {
+    font-size: 18px;
+    color: #FFF;
+    padding: 10px 22px;
+    position: absolute;
+    
+    border-radius: 6px;
+    top: 27px;
+    left: 35px;
+    width: 64px;
+}
+
+.active-time {background:#B59BB0;}
+.screen >div {background:#B5AC9B;}
+.wait-time {background:#A1B59B;}
+.group {background:#DB8B8A;}
+
+.start-box {
+    width: 42px;
+    background-color: #9ba5b5;
+}
+
+.screen {
+    width: auto;
+}
+
+.active-time, .wait-time, .screen, .group {
+    left: 131px;
+    font-size: 16px;
+    padding-left: 19px;
+    padding-right: 20px;
+    border: 0 none;
+    z-index: 2;
+}
+
+.screen {
+    width: 176px;
+    padding: 0;
+}
+
+.screen .content {
+    border-radius: 6px;
+    padding: 0 0 14px;
+    margin-bottom: 10px;
+    width: 147px;
+    position: relative;
+    float: left;
+}
+
+
+.screen .content .only-dire {
+    position: relative;
+    top: 4px;
+}
+
+
+
+.screen .content .zs {right: -83px;}
+
+.screen .content .add-icon {right: -44px; top: 25px; margin-top: 0;}
+
+.screen .val {
+    margin-left: 83px;
+    border-left: 1px solid #c5cad2;
+    color: #f0ff6f;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 12px;
+    height: 63px;
+}
+
+.icon-box .content {
+    position: relative;
+}
+
+.screen .content>div {
+    border-radius: 4px;
+    /*
+    min-height: 77px;
+    */
+    padding-top: 5px;
+    padding-right: 10px;
+}
+
+.icon-box .content .prop {
+    margin-left: 10px;
+    position: relative;
+}
+
+.icon-box .content .prop {
+    float: left;
+}
+
+.icon-box .num-icon {
+    width: 25px;
+    height: 27px;
+    margin-left: 16px;
+    display: block;
+    background: url("icon.png") no-repeat -46px -47px;
+    position: absolute;
+}
+
+.icon-box .dire {
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent;
+    border-left-color: #9ba5b5;
+}
+
+
+.icon-box .zs {
+    position: absolute;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    right: -32px;
+    top: 50%;
+    margin-top: -6px;
+}
+
+.active-time .zs, .wait-time .zs, .group .zs{
+    right: -30px;
+}
+
+.screen .zs {top: 50%; margin-top: 0;}
+
+
+.icon-box .del, .icon-box .edit {
+    position: absolute;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    line-height: 1;
+    background-image: url("icon.png");
+    background-repeat: no-repeat;
+}
+
+
+.icon-box .del {
+    bottom: -6px;
+    left: -16px;
+    background-position: -101px -50px;
+    display:none;
+}
+
+.icon-box .edit {
+    right: -16px;
+    bottom: -6px;
+    background-position: -101px -64px;
+}
+.screen .del {
+    bottom: -10px;
+    left: -5px;
+}
+
+.screen .edit {
+    bottom: -10px;
+    right: -5px;
+}
+
+
+.icon-box .time-root {
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: "宋体";
+    margin-left: -15px;
+    margin-right: -16px;
+    border-top: 1px solid #c5cad2;
+    padding-left: 3px;
+}
+
+.icon-box .time-root li {
+    margin: 3px 0;
+    line-height: 1.5;
+}
+
+.icon-box .time-root li:last-child {
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.icon-box .time-root p {
+    line-height: 1.2;
+}
+
+.icon-box .flag-box {
+    display: block;
+    width: 30px;
+    height: 25px;
+    padding-top: 5px;
+    background-color: #FFF;
+    margin: 7px auto 0;
+}
+
+.icon-box .only-dire {
+    width: 30px;
+    padding-top: 0;
+    height: 40px;
+    margin-top: 0;
+    top: -4px;
+    background-color: transparent;
+    background-image: url("icon.png");
+    background-repeat: no-repeat;
+}
+
+.icon-box .atime {
+    width: 36px;
+    height: 36px;
+    background-position: 0 -3px;
+}
+
+.icon-box .wtime {
+    width: 34px;
+    height: 38px;
+    background-position: -103px -1px;
+}
+
+.icon-box .stj {
+    width: 36px;
+    height: 37px;
+    background-position: 0 -47px;
+}
+
+.icon-box .sdx {
+    width: 40px;
+    height: 36px;
+    background-position: -46px -3px;
+}
+
+.icon-box .sgroup {
+    width: 29px;
+    height: 38px;
+   background-position: -149px -1px;
+}
+
+.icon-box .start {
+    border-left-width: 16px;
+    border-right-width: 16px;
+    border-top-width: 10px;
+    border-bottom-width: 10px;
+    display: block;
+    margin-left: 8px;
+}
+
+.icon-box .add-icon {
+    position: absolute;
+    right: -66px;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    line-height: 25px;
+    background-color: #f1dd75;
+    border: 1px solid #f8efbe;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.no-dire .add-icon {
+    display: none;
+}
+
+.add-icon span {
+    color: #FFF;
+    font-size: 32px;
+    font-weight: 700;
+    position: relative;
+    left: -1px;
+}
+
+.menus {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 2px solid #9ba5b5;
+    width: 95px;
+    font-family: "宋体";
+    z-index: 999;
+}
+
+.menus-in {
+    background-color: #e5e5e5!important;
+}
+
+.menus-in .next {
+    padding: 6px 18px 8px 13px;
+    color: #666;
+    font-size: 12px;
+}
+
+.menus-in li {
+    background-color: #FFF;
+    padding: 4px 2px 3px 3px;
+    border-bottom: 1px solid #9ba5b5;
+    font-size: 12px;
+}
+
+.menus-in li:last-child {
+    border: 0 none;
+}
+
+.menus-in li a {
+    display: block;
+    padding: 2px 9px;
+    color: #333;
+    background-color: #FFF;
+}
+
+.menus-in li a:hover {
+    background-color: #9ba5b5;
+    color: #FFF;
+}
+
+.no-bar .bar {
+    display: none;
+}
+
+.bar {
+    position: absolute;
+    border-top: 5px solid #819cd3;
+    border-left: 5px solid #819cd3;
+    border-bottom: 5px solid #819cd3;
+    width: 15px;
+    height: auto;
+    top: 25px;
+    bottom: 45px;
+    left: -25px;
+    z-index: 0;
+}
+
+.no-bor .bar {
+    bottom: 25px!important;
+    height: 0;
+}

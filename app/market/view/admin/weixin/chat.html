@@ -1,0 +1,24 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>序号<{/t}></th>
+            <th><{t}>聊天内容<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$chats item=item key=key}>
+         <tr>
+             <td><{$key+1}></td>
+             <td><{$item.chat_content}></td>
+             <td><{if $item.created}><{$item.created}><{else}>-<{/if}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+    
+    <{$pagers}>
+</div>
+</div>

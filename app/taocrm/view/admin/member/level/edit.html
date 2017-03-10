@@ -1,0 +1,190 @@
+<style>
+#sel_templates input{display:none;}
+label {cursor:pointer;}
+#sel_templates label {margin:0 10px 0 0;overflow:hidden;display:block;float:left;}
+#sel_templates label img{width:140px;float:left;}
+#sel_templates .checked {border:2px solid #5779BD;}
+
+.req_fields div{padding:0 0 5px 0;}
+span.del,span.add{color:#FFF;font-size:14px;font-weight:bold;padding:2px 5px;cursor:pointer;}
+span.del{background:#F60;}
+span.add{background:#090;}
+
+/*选项卡效果*/
+#my_tab_nav {overflow:hidden;}
+#my_tab_nav span {display:block;padding:3px 10px;margin:0 0 0 20px;float:left;cursor:pointer;}
+#my_tab_nav span {background:#D7DCE2;}
+#my_tab_nav span.hover{background:#5779BD;color:#FFF;}
+#my_tab_body {background:#FFF;border:1px solid #D7DCE2;padding:10px;min-height:180px;}
+#award_list td{padding:3px 5px;}
+</style>
+<{if $info}>
+    <form style="position:relative;" id="form_store" class="tableform" action="index.php?app=taocrm&ctl=admin_member_level&act=level_edit" method="POST">
+<{else}>
+    <form style="position:relative;" id="form_store" class="tableform" action="index.php?app=taocrm&ctl=admin_member_level&act=level_add" method="POST">
+<{/if}>
+
+<div id="my_tab_body1">
+
+    <table id="step_1" style="width:600px;" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tr>
+            <th><em class="c-red">*</em>等级名称：</th>
+            <td>
+                <{input id="level_name_input" value=$info.level_name name="info[level_name]" vtype="required"}>
+            </td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em>等级规则：</th>
+            <td style="color:red">
+                <{if($rule[type] == 'point')}>
+                你已选择根据积分设置会员等级规则，如需根据消费金额设置可在系统设置中更改
+                <{else}>
+                你已选择根据消费金额设置会员等级规则，如需根据积分设置可在系统设置中更改
+                <{/if}>
+            </td>
+        </tr>
+        <{if($rule[type] == 'point')}>
+        <tr>
+            <th>消费积分：</th>
+            <td>
+                <select name="info[rule_point_month]" id='rule_point_month'>
+                    <option value="0" <{if $info.rule_point_month == 0}>selected<{/if}>>无限制</option>
+                    <option value="6" <{if $info.rule_point_month == 6}>selected<{/if}>>6个月</option>
+                    <option value="12" <{if $info.rule_point_month == 12}>selected<{/if}>>12个月</option>
+                    <option value="24" <{if $info.rule_point_month == 24}>selected<{/if}>>24个月</option>
+                </select>
+                <select name="info[rule_point_condition]"  id='rule_point_condition'>
+                    <option value="between" <{if $info.rule_point_condition == 'between'}>selected<{/if}>>介于</option>
+                </select>
+                <span id='rule_point_input' <{if $info.rule_point_condition == 'nolimit'}>style="display:none"<{/if}>>
+                <{input id="rule_point_min" value=$info.rule_point_min|default:0 name="info[rule_point_min]" vtype="required" style="width:50px;"}>~
+                <{input id="rule_point_max" value=$info.rule_point_max|default:1 name="info[rule_point_max]" vtype="required" style="width:50px;"}>
+                </span>
+            </td>
+        </tr>
+        <{else}>
+        <tr>
+            <th>成功交易金额：</th>
+            <td>
+                <select name="info[rule_amount_month]" id='rule_amount_month'>
+                    <option value="0" <{if $info.rule_amount_month == 0}>selected<{/if}>>无限制</option>
+                    <option value="6" <{if $info.rule_amount_month == 6}>selected<{/if}>>6个月</option>
+                    <option value="12" <{if $info.rule_amount_month == 12}>selected<{/if}>>12个月</option>
+                    <option value="24" <{if $info.rule_amount_month == 24}>selected<{/if}>>24个月</option>
+                </select>
+                <select name="info[rule_amount_condition]"  id='rule_amount_condition'>
+                    <option value="between" <{if $info.rule_amount_condition == 'between'}>selected<{/if}>>介于</option>
+                    <option value="nolimit" <{if $info.rule_amount_condition == 'nolimit'}>selected<{/if}>>无限制</option>
+                </select>
+                <span id='rule_amount_input' <{if $info.rule_amount_condition == 'nolimit'}>style="display:none"<{/if}>>
+                <{input id="rule_amount_min" value=$info.rule_amount_min|default:0 name="info[rule_amount_min]" vtype="required" style="width:50px;"}>~
+                <{input id="rule_amount_max" value=$info.rule_amount_max|default:1 name="info[rule_amount_max]" vtype="required" style="width:50px;"}>元
+                </span>
+                <span id='rule_amount_p' <{if $info.rule_amount_condition != 'nolimit'}>style="display:none"<{/if}>>客户成交金额不参与会员等级计算</span>
+            </td>
+        </tr>
+        <tr>
+            <th>成功交易次数：</th>
+            <td>
+                <select name="info[rule_count_month]" id='rule_count_month'>
+                    <option value="0" <{if $info.rule_count_month == 0}>selected<{/if}>>无限制</option>
+                    <option value="6" <{if $info.rule_count_month == 6}>selected<{/if}>>6个月</option>
+                    <option value="12" <{if $info.rule_count_month == 12}>selected<{/if}>>12个月</option>
+                    <option value="24" <{if $info.rule_count_month == 24}>selected<{/if}>>24个月</option>
+                </select>
+                <select name="info[rule_count_condition]"  id='rule_count_condition'>
+                    <option value="between" <{if $info.rule_count_condition == 'between'}>selected<{/if}>>介于</option>
+                    <option value="nolimit" <{if $info.rule_count_condition == 'nolimit'}>selected<{/if}>>无限制</option>
+                </select>
+                <span id='rule_count_input' <{if $info.rule_count_condition == 'nolimit'}>style="display:none"<{/if}>>
+                <{input id="rule_count_min" value=$info.rule_count_min|default:0 name="info[rule_count_min]" vtype="required" style="width:50px;"}>~
+                <{input id="rule_count_max" value=$info.rule_count_max|default:1 name="info[rule_count_max]" vtype="required" style="width:50px;"}>次
+                </span>
+                <span id='rule_count_p' <{if $info.rule_count_condition != 'nolimit'}>style="display:none"<{/if}>>客户成交次数不参与会员等级计算</span>
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>
+               <label><input type="radio" value="or" name="info[rule_select]" <{if $info.rule_select == 'or' || !$info.rule_select}>checked<{/if}>>满足以上任一条件</label>
+               <label><input type="radio" value="and" name="info[rule_select]" <{if $info.rule_select == 'and'}>checked<{/if}>>同时满足以上条件</label>&nbsp;&nbsp;&nbsp;
+            </td>
+        </tr>
+        <{/if}>
+        <tr>
+            <th>规则描述：</th>
+            <td>
+                <{input class="x-input" type="textarea" id="rule_msg_input" value=$info.rule_msg name="info[rule_msg]" style="width:270px;height:30px;"}>
+            </td>
+        </tr>
+    </table>
+
+    <{if $info}>
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[level_id]" value="<{$info.level_id}>" type="hidden" />
+    </div>
+    <{/if}>
+
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+<script>
+(function(){
+    var _form = $('form_store');
+	var btn =$('survey-form-submit');
+
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+
+    $$("#rule_point_condition").addEvent('change',function(){
+        if(this.value == 'nolimit'){
+            $('rule_point_input').hide();
+            $('rule_point_p').show();
+        }else{
+            $('rule_point_input').show();
+            $('rule_point_p').hide();
+        }
+    });
+    $$("#rule_amount_condition").addEvent('change',function(){
+        if(this.value == 'nolimit'){
+            $('rule_amount_input').hide();
+            $('rule_amount_p').show();
+        }else{
+            $('rule_amount_input').show();
+            $('rule_amount_p').hide();
+        }
+    });
+
+    $$("#rule_count_condition").addEvent('change',function(){
+        if(this.value == 'nolimit'){
+            $('rule_count_input').hide();
+            $('rule_count_p').show();
+        }else{
+            $('rule_count_input').show();
+            $('rule_count_p').hide();
+        }
+    });
+})();
+</script>

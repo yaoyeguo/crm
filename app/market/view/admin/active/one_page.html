@@ -1,0 +1,277 @@
+<style>
+* {font-family:Arial}
+#p_id2,#p_id3,#p_id4 {color:blue;text-align:center;line-height:2em}
+#sms_total_num {color:blue;}
+#edm_total_num {color:blue;}
+.region_list {margin: 0;padding: 0;}
+.region_list li {display: inline-block;	width: 75px;}
+.title_table {background-color: #F4F4F4;font-size: 20px}
+.title_table tr td {background-color: #F4F4F4;}
+.dialog .table-action {margin: 0px;padding: 0px;}
+
+#goods_page_nav { display:block;padding:5px 0;}
+#prev,#next {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+</style>
+
+<{input type=hidden name="active_name" id="active_name" value=$active.active_name}> 
+<{input type=hidden name="shop_id" id="shop_id" value=$shop.shop_id}> 
+<{input type=hidden name="market_id" id="market_id" value=$market_id}> 
+<div class="tableform" style="margin:0;padding:0;">
+
+    <!--活动设置-->
+    <div style="width:100%;">
+    <div border="0" cellspacing="0" cellpadding="0">
+    <table>
+        <tr>
+            <th>店铺：</th>
+            <td><{$shop.name}></td>
+        </tr>
+        <tr>
+            <th>活动名称：</th>
+            <td><{$active.active_name}></td>
+        </tr>
+        <tr>
+            <th><label>短信内容：</label></th>
+            <td>
+                <div style='width:360px;'>
+                    <{input type=textarea id="sms_body" value=$sms_body style="width:99%;height:60px;" name="sms_body"  }>
+                    <div>
+                        <span style="float:right;"><label><input disabled="disabled" id='unsubscribe' type='checkbox' value='1' checked="checked" /> 退订回N</label></span>
+                        (参考字数：<span id="sms_length"></span>)
+                        <a onclick="insertAtCursor(document.getElementById('sms_body'),&quot;&lt;{用户名}&gt;&quot;)"><button class="btn" type="button"><span><span>用户名</span></span></button></a>
+                        <a onclick="insertAtCursor(document.getElementById('sms_body'),&quot;&lt;{店铺}&gt;&quot;)"><button class="btn" type="button"><span><span>店铺</span></span></button></a>
+                        <div>如果字符数超过70,可能会被拆分成两条短信发送。</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>短信发送清单：</th>
+            <td>
+                <div id="loading_counter"><{img app="taocrm" src="loading.gif" align="absmiddle" }> 正在计算客户数量，请稍等……</div>
+                <div id="counter" style="display:none;color:blue">
+                    您选择的客户数：<span id="el_select_sms_membernums"></span><br />
+                    有效客户数：<span id="el_vaild_sms_membernums"></span><br />
+                    无效客户数：<span style="color:#ff0000" id="el_unvaild_sms_membernums"></span><br />
+                    当天已营销客户数：<span style="color:#ff0000" id="el_sent_sms_membernums"></span>
+                    &nbsp;&nbsp;
+                    是否发送:
+                    <label><input type="radio" name="sent_member_sms" value="1" checked>是</label>　　
+                    <label><input type="radio" name="sent_member_sms" value="0">否</label>
+                    <br />
+                    当前共待发送客户数：<span id="el_reality_sms_membernums"></span>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+	<div class="table-action">
+        <div id="running" style="display:none"><{img app="taocrm" src="loading.gif" align="absmiddle" }> 正在执行，请耐心等待……</div>
+        <div id="act_btn">
+            <{button label="发送" type="button" id="active_exec" class="btn-primary"}> 
+            <{button label="关闭" type="button" id="close_btn" class="nodisabled"}>
+        </div>
+	</div>
+</div>
+<span id="el_createactive_loading" style="display: none;">创建营销活动中,这可能需要点时间...</span>
+<{input type=hidden name="report_filter" id="report_filter" value=$report_filter}>
+<{input type=hidden name="filter_sql" id="filter_sql" value=$filter_sql}>
+
+<script>
+var active_id = 0;
+
+(function(){
+
+    //------------------短信字数检测--------------------
+    if(navigator.userAgent.indexOf("MSIE")>0){
+        document.getElementById('sms_body').attachEvent("onpropertychange",set_sms_length);
+    }else if(navigator.userAgent.indexOf("Firefox")>0){
+        document.getElementById('sms_body').addEventListener("input",set_sms_length,false);
+    }
+    
+    $('unsubscribe').addEvent('click',function(){get_sms_length();});
+    $('sms_body').addEvent('blur',function(){get_sms_length();});
+    
+    $$('input[name="sent_member_sms"]').addEvent('click',function(){
+        var el_sent_sms_membernums = $('el_sent_sms_membernums').get('text');
+        var el_vaild_sms_membernums = $('el_vaild_sms_membernums').get('text');
+        if(this.value == '1'){
+            $('el_reality_sms_membernums').set('text',el_vaild_sms_membernums);
+        }else{
+            $('el_reality_sms_membernums').set('text',el_vaild_sms_membernums - el_sent_sms_membernums);
+        }
+    });
+    //------------------end--------------------
+
+    //开始执行活动
+    $("active_exec").addEvent('click',function(){
+
+        var err_msg = '';
+        var is_send_salemember = 0;
+        var sms_body = $('sms_body').value;
+        if(sms_body == ''){
+            alert('请输入短信内容.');
+            return false;
+        }
+
+        if($('unsubscribe').get('checked')) {
+            unsubscribe = 1;
+        }
+        
+        $('running').set('html','<{img app="taocrm" src="loading.gif" align="absmiddle" }> 正在执行，请耐心等待……');
+        $('running').show();
+        $('act_btn').hide();
+        
+        var market_id = $('market_id').value;
+        var shop_id = $('shop_id').value;
+        var active_name = $('active_name').value;
+        
+        $$('input[name=sent_member_sms]').each(function(el){
+            if(el.checked){
+                is_send_salemember = el.value;
+            }
+        });
+        
+        var data={'active_id':active_id,'market_id':market_id,'shop_id':shop_id,'active_name':active_name,'is_send_salemember':is_send_salemember,'unsubscribe':unsubscribe,'sms_body':sms_body};
+        new Request({
+            url : 'index.php?app=market&ctl=admin_active&act=onepage_run',
+            method : 'post',
+            data:data,
+            onSuccess:function(responseText){
+                //alert(responseText);
+                try{
+                    var data = JSON.decode(responseText);
+                    if(data.active_id) active_id = data.active_id;
+                    if(data.res == 'succ'){
+                        $('running').set('html','执行成功！');
+                        $('active_exec').hide();
+                        $('act_btn').show();
+                    }else{
+                        alert(data.msg);
+                        $('act_btn').show();
+                        $('running').set('html',data.msg);
+                    }
+                }catch(e){              
+                    err_msg = '服务器发生了内部错误:' + responseText;
+                    alert(err_msg); 
+                    $('running').set('html',err_msg);
+                    $('act_btn').show();
+                }
+            }
+        }).send();
+
+        return true;
+    });
+    
+    load_counter();//预览统计数据
+    get_sms_length();//计算短信字数
+    
+    //关闭弹出层
+    $('close_btn').addEvent('click',function(){
+        $('close_btn').getParent('.dialog').retrieve('instance').close();
+    });
+    
+})();
+
+function load_counter(){
+
+    var market_id = $('market_id').value;
+    var shop_id = $('shop_id').value;
+    var err_msg = '';
+    
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active&act=onepage_count&market_id='+market_id+'&shop_id='+shop_id,
+        method : 'post',
+        onSuccess:function(responseText){
+            //alert(responseText);
+            try{
+                var data = JSON.decode(responseText);
+                if(data.res == 'succ'){
+                    if (data.count.valid_member == 0){
+                        $('loading_counter').set('html','符合条件的客户数为 0 .');
+                        $('active_exec').hide();
+                        return false;
+                    }
+
+                    $('el_select_sms_membernums').set('text',data.count.total_member);
+                    $('el_vaild_sms_membernums').set('text',data.count.valid_member);
+                    $('el_unvaild_sms_membernums').set('text',data.count.unvalid_member);
+                    $('el_sent_sms_membernums').set('text',data.count.sent_member);
+                    $('el_reality_sms_membernums').set('text',data.count.valid_member);
+                    $('counter').show();
+
+                }else{
+                    alert(data.msg);
+                }
+                $('loading_counter').hide();
+            }catch(e){
+                $('active_exec').hide();
+                err_msg = '服务器发生了内部错误:'+responseText+'，请联系客服';
+                alert(err_msg); 
+                $('loading_counter').set('html', '<font color=red>'+err_msg+'</font>');
+            }
+        }
+    }).send();
+}
+
+function set_sms_length(){
+
+    var sms = $('sms_body').value;
+    var color = '';
+    if($('unsubscribe').get('checked')) unsubscribe = 1;
+    
+    if(sms.length > 70){
+        color = 'red';
+    }else if(unsubscribe == 1 && sms.length > 65){
+        color = 'red';
+    }
+    
+    $('sms_length').set('html','<font color="'+color+'">'+sms.length+'</font>');
+}
+
+function get_sms_length(){
+
+    var sms = $('sms_body').value;
+    var unsubscribe = 0;
+    
+    if($('unsubscribe').get('checked')) {
+        unsubscribe = 1;
+    }
+    
+    if(sms.length > 70){
+        alert('短信内容超过70个字符，内容将会拆分多条发送！');
+    }else if(unsubscribe == 1 && sms.length > 65){
+        alert('短信内容超过65个字，系统默认增加‘退订回N’字样，内容将会拆分多条发送！');
+    }
+    
+    set_sms_length();
+}
+
+function insertAtCursor(myField, myValue){
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

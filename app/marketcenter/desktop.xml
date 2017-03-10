@@ -1,0 +1,17 @@
+<desktop>
+
+    <permissions>
+        <permission id="marketmana" display='true'>卡券管理</permission>
+    </permissions>
+    
+    <workground name="营销推广" id="market.active" controller="admin_cards" action="index" order="300">
+        
+        <menugroup name="微信卡券" order="3006100">
+            <menu controller='admin_cards' action='index' permission='marketmana' display='true' order='3006100'>卡券列表</menu>
+            <menu controller='admin_getcards' action='index' permission='marketmana' display='true' order='3006200'>领取列表</menu>
+            <menu controller='admin_consumecards' action='index' permission='marketmana' display='true' order='3006300'>核销列表</menu>
+        </menugroup>
+        
+    </workground>
+    
+</desktop>

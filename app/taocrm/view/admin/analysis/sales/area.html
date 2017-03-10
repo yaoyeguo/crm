@@ -1,0 +1,231 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<style>
+#top5_area {width:760px;height:80px;background:url(<{$env.app.res_url}>/top5.gif);}
+    #top5_area li{width:20%;float:left;padding-top:30px;}
+    #top5_area h3{font-size:20px;}
+</style>
+
+<!--table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%" valign="top" bgcolor="#E4E4E4" style="padding:12px 8px">
+    <div class="cir_top">
+        <img src="<{$env.app.res_url}>/cir_topleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_topright.jpg" class="cir_right" />
+    </div-->
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0">
+        <h4>
+            <div class="title_left" >
+                <{$path}>
+             </div>
+            <{include file="admin/analysis/search.html"}>
+        </h4>
+        <div class="tj_rightbox" style="margin:0;padding:0;">
+            <div class="wdgk_box">
+            
+            	<div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>地图一览</span></li>
+                            <li class="tab"><span>区域排行</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tableform">
+                        <div>
+                            <div>
+                                <ul id="top5_area">
+                                    <li>
+                                        <h3></h3>
+                                        <label></label>：<b></b>
+                                    </li>
+                                    <li>
+                                        <h3></h3>
+                                        <label></label>：<b></b>
+                                    </li>
+                                    <li>
+                                        <h3></h3>
+                                        <label></label>：<b></b>
+                                    </li>
+                                    <li>
+                                        <h3></h3>
+                                        <label></label>：<b></b>
+                                    </li>
+                                    <li>
+                                        <h3></h3>
+                                        <label></label>：<b></b>
+                                    </li>
+                                </ul>
+                            </div>    
+                            
+                            <div style="float:left; width:600px; height:400px;">
+                                <{include file="admin/analysis/map.html" app="taocrm"}>
+                            </div>
+        
+                            <div class="fkfb_list" style="width:150px">
+                            <ul>
+                                <li><label for="map_type1"><input type="radio" name="map" id="map_type1" value='1' checked onclick='change_map_type(this.value)' />订单金额</label></li>
+                                <li><label for="map_type2"><input type="radio" name="map" id="map_type2" value='2' onclick='change_map_type(this.value)' />订单数</label></li>
+                                <li><label for="map_type3"><input type="radio" name="map" id="map_type3" value='3' onclick='change_map_type(this.value)' />客户数</label></li>
+                                <li><label for="map_type4"><input type="radio" name="map" id="map_type4" value='4' onclick='change_map_type(this.value)' />平均订单单价</label></li>
+                            
+                            <ul style="background:#F1F6F8;">
+                                <li><label for="map_type5"><input type="radio" name="map" id="map_type5" value='5' onclick='change_map_type(this.value)' />付款订单金额</label></li>
+                                <li><label for="map_type6"><input type="radio" name="map" id="map_type6" value='6' onclick='change_map_type(this.value)' />付款订单数</label></li>
+                                <li><label for="map_type7"><input type="radio" name="map" id="map_type7" value='7' onclick='change_map_type(this.value)' />付款客户数</label></li>
+                                <li><label for="map_type8"><input type="radio" name="map" id="map_type8" value='8' onclick='change_map_type(this.value)' />付款订单单价</label></li>
+                            </ul>
+
+                            <ul>
+                                <li><label for="map_type9"><input type="radio" name="map" id="map_type9" value='9' onclick='change_map_type(this.value)' />完成订单金额</label></li>
+                                <li><label for="map_type10"><input type="radio" name="map" id="map_type10" value='10' onclick='change_map_type(this.value)' />完成订单数</label></li>
+                                <li><label for="map_type11"><input type="radio" name="map" id="map_type11" value='11' onclick='change_map_type(this.value)' />完成客户数</label></li>
+                                <li><label for="map_type12"><input type="radio" name="map" id="map_type12" value='12' onclick='change_map_type(this.value)' />完成订单单价</label></li>
+                            </ul>
+                            </div>
+        
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="tableform" style="display:none;">
+                        <div style="height:355px;overflow:hidden" class="map_box">
+                            <iframe id="frame2" frameborder="0" title="?app=taocrm&ctl=admin_analysis_chart&act=area_rank&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=2" scrolling="no" width="100%" height="100%" id='line_frame2'></iframe>
+                        </div> 
+                    </div>
+                    
+                    <div class="tableform" style="display:none">
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>区域<{/t}></th>
+                                    
+                                    <th><{t}>订单总数<{/t}></th>
+                                    <th><{t}>总金额<{/t}></th>
+                                    <th><{t}>客户数<{/t}></th>
+                                    <th><{t}>平均订单单价<{/t}></th>
+                                    
+                                    <th><{t}>付款订单总数<{/t}></th>
+                                    <th><{t}>付款金额<{/t}></th>
+                                    <th><{t}>付款客户数<{/t}></th>
+                                    <th><{t}>订单单价<{/t}></th>
+                                    
+                                    <th><{t}>完成订单总数<{/t}></th>
+                                    <th><{t}>完成金额<{/t}></th>
+                                    <th><{t}>完成客户数<{/t}></th>
+                                    <th><{t}>订单单价<{/t}></th>
+
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                 <tr>
+                                     <td>
+                                        <a target="dialog::{width:750,height:300,title:'<{$data.area}> 区域明细'}" href="?app=taocrm&ctl=admin_analysis_sales&act=city&shop_id=<{$shop_id}>&state=<{$data.area}>&date_from=<{$date_from}>&date_to=<{$date_to}>"><{$data.area}></a>
+                                    </td>
+                                     
+                                     <td><{$data.total_orders}> (<{$data.total_orders_ratio|cur}>%)</td>
+                                     <td><{$data.total_amount|cur}> (<{$data.total_amount_ratio|cur}>%)</td>
+                                     <td title="<{$data.total_members_ratio}>%"><{$data.total_members}> 
+                                     <{if($data.total_members)}>
+                                     <a onclick="show_members('&shop_id=<{$shop_id}>&count_by=area&filter_type=analysis&order_status=all&date_from=<{$date_from}>&date_to=<{$date_to}>&area=<{$data.state_id}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}>
+                                     </td>
+                                     <td><{$data.per_amount|cur}></td>
+                                     
+                                     <td><{$data.paid_orders}> (<{$data.paid_orders_ratio|cur}>%)</td>
+                                     <td><{$data.paid_amount|cur}> (<{$data.paid_amount_ratio|cur}>%)</td>
+                                     <td title="<{$data.paid_members_ratio}>%"><{$data.paid_members}> 
+                                     <{if($data.paid_members)}>
+                                     <a onclick="show_members('&shop_id=<{$shop_id}>&count_by=area&filter_type=analysis&order_status=paid&date_from=<{$date_from}>&date_to=<{$date_to}>&area=<{$data.state_id}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}>
+                                     </td>
+                                     <td><{$data.paid_per_amount|cur}></td>
+                                     
+                                     <td><{$data.finish_orders}> (<{$data.finish_orders_ratio|cur}>%)</td>
+                                     <td><{$data.finish_amount|cur}> (<{$data.finish_amount_ratio|cur}>%)</td>
+                                     <td title="<{$data.finish_members_ratio}>%"><{$data.finish_members}> 
+                                     <{if($data.finish_members)}>
+                                     <a onclick="show_members('&shop_id=<{$shop_id}>&count_by=area&filter_type=analysis&order_status=finish&date_from=<{$date_from}>&date_to=<{$date_to}>&area=<{$data.state_id}>');"><{img align="absmiddle" app="desktop" src="bundle/zoom_btn.gif"}></a>
+                                     <{/if}>
+                                     </td>
+                                     <td><{$data.finish_per_amount|cur}></td>
+             
+                                 </tr>
+                                 <{/foreach}>
+                                 <tr bgcolor="#F0F5F7">
+                                     <td>合计</td>
+                                     <td><{$total_data.total_orders}></td>
+                                     <td><{$total_data.total_amount|cur}></td>
+                                     <td><{$total_data.total_members}></td>
+                                     <td><{$total_data.total_amount/$total_data.total_members|cur}></td>
+                                     
+                                     <td><{$total_data.paid_orders}></td>
+                                     <td><{$total_data.paid_amount|cur}></td>
+                                     <td><{$total_data.paid_members}></td>
+                                     <td><{$total_data.paid_amount/$total_data.paid_members|cur}></td>
+                                     
+                                     
+                                     <td><{$total_data.finish_orders}></td>
+                                     <td><{$total_data.finish_amount|cur}></td>
+                                     <td><{$total_data.finish_members}></td>
+                                     <td><{$total_data.finish_amount/$total_data.finish_members|cur}></td>
+                                 </tr>
+                            </tbody>   
+                        </table>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--div class="cir_bottom">
+        <img src="<{$env.app.res_url}>/cir_bottomleft.jpg" class="cir_left" />
+        <img src="<{$env.app.res_url}>/cir_bottomright.jpg" class="cir_right" />
+    </div>
+</td>
+</tr>
+</table-->
+
+
+<script>
+(function(){
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+    
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%2 == 1)
+        list_tr[i].setStyle('background','#EEE');
+    }   
+
+    //选项卡效果
+    var tab_container = $$('#group_edit_container');
+    var tab_nav,tab_div;
+    for(var i=0;i<tab_container.length;i++){
+        tab_nav = $('tab_nav').getElements('li');
+        tab_div = tab_container[i].getElements('div.tableform');
+        tab_nav.each(function($obj,i){
+            $obj.onclick=function(){
+                tab_nav.set('class','tab');
+                tab_div.setStyle('display', 'none');
+                this.set('class','tab current');
+                
+                if(i==1) $('frame2').set('src', $('frame2').get('title'));
+                
+                tab_div[i].setStyle('display', 'block');
+            };
+        });
+    }
+})();
+</script>
+

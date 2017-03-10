@@ -1,0 +1,50 @@
+<div id="tmpl_form" class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+<form method="post" action="index.php?app=market&ctl=admin_weixin&act=lottery_manage_close" id="terminal">
+	<{input type='hidden' value=$item_id name="item_id" id="item_id"}>
+<table align="center">
+	<tr>
+		<td class="table-action">
+            是：<input value='on' type='radio' id="invalid_id" name="invalid_name" required='true' checked=checked>
+            否：<input value='off' type='radio' id="invalid_id" name="invalid_name" required='true'></td>
+	</tr>
+	<tr>
+		<td class="table-action" ><{button label="确定" type="submit" id="sel_mem_btn" class="btn-primary"}></td>
+	</tr>
+</table>
+</form>
+</div>
+
+
+<script>
+(function(){
+var _form = $('terminal');//form_id
+var btn =$('sel_mem_btn');//bt_id
+
+_form.store('target',{
+	onSuccess:function(response){
+		var hash_res_obj = JSON.decode(response);
+
+		if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+		{
+			try{
+				var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+			}catch(e){}
+
+			if(_dialogIns)
+			{
+				_dialogIns.close();
+			}
+		}
+
+	}
+});
+    btn.addEvent('click',function(){
+    	var validate = true;
+    	if (validate) {
+    		_form.fireEvent('submit',{stop:$empty});
+    	}
+	});
+})();
+
+
+</script>

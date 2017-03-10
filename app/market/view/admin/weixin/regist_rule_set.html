@@ -1,0 +1,99 @@
+<{include file='admin/weixin/inc_css.html'}>
+<div id="weixin_page" class="wx">
+<form method="post" action="index.php?app=market&ctl=admin_weixin&act=saveRegistRule">
+<h4><{t}>微信签到规则设定<{/t}></h4>
+<div class="tableform" style="background:none repeat scroll 0 0 #f3f3f3;border: 1px dotted #785;">
+	<div class="division">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<th>签到方式：</th>
+					<td>
+                        <!--<label><input type="radio" name="regist_rule" value="1" <{if $registRule.regist_rule== 1}>checked="checked"<{/if}> />
+                        1.用户回复任意内容</label>
+					    <br/>-->
+                        <label><input type="radio" name="regist_rule" value="2" <{if $registRule.regist_rule== 2}>checked="checked"<{/if}> />
+                        用户回复关键字
+                        </label>
+                        &nbsp<input type="text" name="regist_rule_keywords" value="<{$registRule.regist_rule_keywords|default:'如：签到'}>" size="25">
+                    </td>
+				</tr>
+				<tr>
+                    <th>签到完成回复内容:</th>
+                    <td><{input type="textarea" style="height:50px;width:500px;" name="replyFinishTxt" size="50" value=$registRule.replyFinishTxt|default:'签到成功！您此次签到获得金币：&lt;{积分}&gt;,总积分:&lt;{总积分}&gt;'}></td>
+                </tr>
+			</tbody>
+		</table>
+
+	</div>
+</div>
+
+<h4><{t}>微信签到积分设定<{/t}></h4>
+<div class="tableform" style="background:none repeat scroll 0 0 #f3f3f3;border: 1px dotted #785;">
+	<div class="division">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<th>签到获取积分规则：</th>
+					<td>
+						<table>
+							<tr>
+								<td><input type="radio" name="regist_point_rule"  value="1" <{if $registRule.regist_point_rule == 1}>checked="checked"<{/if}>>
+                                &nbsp;每次签到送&nbsp;<input type="text" name="regist_point_rule_1_point" value="<{$registRule.regist_point_rule_1_point}>" size="5">&nbsp;积分
+                                <br />
+								</td>
+							</tr>
+							<tr>
+							 <td style="color:#a8a8a8">（说明：签到积分值固定，不论是否连续，每次都赠送设定的固定积分值）</td>
+							</tr>
+							<tr>
+								<td>
+                                    <input type="radio" name="regist_point_rule" value="2" <{if $registRule.regist_point_rule == 2}>checked="checked"<{/if}>>
+                                    &nbsp;规则2.每次签到送&nbsp;
+                                    <input type="text" name="regist_point_rule_2_point" value="<{$registRule.regist_point_rule_2_point}>" size="5">
+                                    &nbsp;积分。每连续签到满&nbsp;
+                                    <input type="text" name="regist_point_rule_2_times" value="<{$registRule.regist_point_rule_2_times}>" size="5">
+                                    &nbsp;次送&nbsp;
+                                    <input type="text" name="regist_point_rule_2_times_point" value="<{$registRule.regist_point_rule_2_times_point}>" size="5">
+                                    &nbsp;积分。
+                                </td>
+							</tr>
+							<tr>
+                             <td style="color:#a8a8a8">(说明：满连续签到次数赠送特殊的赠送积分，赠送完成后签到重新计算连续签到)</td>
+                            </tr>
+							<tr>
+								<td><input type="radio" name="regist_point_rule" value="3" <{if $registRule.regist_point_rule == 3}>checked="checked"<{/if}>>规则3.每次签到送<input
+									type="text" name="regist_point_rule_3_point" value="<{$registRule.regist_point_rule_3_point}>" size="5">积分，连续签到1次加送<input
+									type="text" name="regist_point_rule_3_go_point" value="<{$registRule.regist_point_rule_3_go_point}>" size="5">积分。连续满<input type="text"
+									name="regist_point_rule_3_times" value="<{$registRule.regist_point_rule_3_times}>" size="5">次后，每次签到送<input type="text" name="regist_point_rule_3_times_point"
+									 value="<{$registRule.regist_point_rule_3_times_point}>" size="5">积分。</td>
+							</tr>
+							<tr>
+                             <td style="color:#a8a8a8">(说明：连续签到积分赠送为递增值，满设定次数后连续签到，将为固定值，如签到中断，签到将重新计算为首次)</td>
+                            </tr>
+						</table></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</div>
+<div class="tableform" >
+	<div class="division">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+				    <td colspan="2">
+        <p>示例：</p><p>规则1.每次签到送<strong>10</strong>积分，如有客户分别在1号，2号、3号，10号、15号签到，那每次都得到10个积分。</p><p>规则2.每次签到送<strong>2</strong>积分，每连续签到满<strong>5</strong>次送<strong>10</strong>积分，客户分别在1号，2号，3号，4号，5号，6号，10号分别签到，客户在1,2,3,4号分别得到2分，客户5号签到将得到2+10=12积分，6号签到得2积分，10号得2积分，连续签到满5次加送10&mdash;&mdash;只有在连续签到的基础上才会额外赠送加分。</p><p>规则3.类似淘宝的淘金币签到规则，首次签到送<strong>5</strong>积分，连续签到<strong>1</strong>次加送5积分，连续满<strong>8</strong>次后，每次签到送40积分，客户 在 1,2,3,4,5,6,7,8,9,10,15,16号分别签到，该客户在1号得到5积分，2号得到10积分，3号得到15积分，以此类推4、5、6、7、8号分别得到，20,25,30,35,40积分，满8次后，9号，将继续得到40积分，10号也得到40积分，如果中断签到后，系统将从新从5个积分赠送算作首次签到。<br></p>
+				    </td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</div>
+
+<hr>
+<p align="center"><input type="submit" value="保存"/></p>
+</form>
+</div>

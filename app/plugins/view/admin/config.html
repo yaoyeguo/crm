@@ -1,0 +1,178 @@
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="p_form" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$rs.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.title name="plugin_name" id="plugin_name"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr>
+      <th><{t}>插件名称：<{/t}></th>
+      <td><b><{$plugins.title}></b></td>
+    </tr>
+    
+    <{foreach from=$items item=data key=key}>
+    
+    <{if $data.type=='textarea'}>
+        <tr><th>短信模板：</th><td>
+            <button class="btn" id="sel_sms_template" type="button"><span><span>选择模板</span></span></button>
+                
+                <span>
+                    <a href="http://www.dwz.cn/"style="color:#0597E0;text-decoration: none;" target='_blank'>
+                    <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+                    网址缩短工具
+                    </a>
+                </span>          
+        </td></tr>
+    <{/if}>
+    
+    <tr>
+      <th><em class="c-red">*</em><{t}><{$data.label}><{/t}>：</th>
+      <td>
+        <{$data.prefix}>
+      
+        <{if $data.type=='checkbox'}>
+            <{foreach from=$data.options item=c_data key=c_key}>
+                <label>
+                    <input <{if(in_array($c_key,$params[$key]))}>checked<{/if}> name="params[<{$key}>][]" type="checkbox" value="<{$c_key}>" /><{$c_data}> 
+                </label>
+            <{/foreach}>
+        <{elseif $data.type=='textarea'}>
+        
+            <{input type=$data.type class="x-input" style="width:80%;height:60px;" vtype="required" name="params[{$key}]" id="sms_content" value=$params[$key] }>
+            
+            <{if($plugins.addons=='tags')}>
+                <br/>
+                字符数：<b id="sms_length" style="font-size:18px;color:blue;font-family:Arial">0</b>，
+                约 <b id="sms_num" style="font-size:18px;color:red;font-family:Arial">0</b> 条短信长度
+                
+                <{foreach from=$plugins.tags item=tag }>
+                    <a onclick="insertAtCursor(document.getElementById('sms_content'),&quot;&lt;{<{$tag}>}&gt;&quot;)"><button class="btn" type="button"><span><span><{$tag}></span></span></button></a>
+                <{/foreach}>
+            <{/if}>
+                
+            <div style="color:#0597E0;padding:3px 0;display:<{$need_sign}>;">
+                <{img src="alert.gif" app="market" height="16" align="absmiddle" }>
+                某些店铺缺少短信签名，请<a href="index.php?app=ecorder&ctl=admin_sms_sign&act=index" target="_blank" style="cursor:pointer;" id="config_sms_sign">点击这里设置</a>。
+            </div>
+            
+            <div style="color:#0597E0;padding:3px 0;">
+                <{img src="alert.gif" app="market" height="16" align="absmiddle" }>
+                <font color="#0597E0">短信内的网址请在前面加<b>http://</b>，末尾加空格，以防止手机识别错误！</font>
+            </div>
+            
+        <{else}>
+            <{input type=$data.type vtype="required" name="params[{$key}]" value=$params[$key] options=$data.options size=$data.size }>
+        <{/if}>
+        
+        <{$data.desc}>
+      </td>
+    </tr>
+    
+    <{/foreach}>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="保存" id="p-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+var _btn = $('p-form-submit');
+var _form = $('p_form');
+
+$('sel_sms_template').addEvent('click',function(){
+    var url = 'index.php?app=plugins&ctl=admin_manage&act=sel_sms_template';
+    new Dialog(url,{
+            title:'选择短信模板',width:700,height:320,
+            onShow:function(){
+                
+            }
+        }
+    );
+});
+
+_btn.addEvent('click',function(){
+
+    var shop_list = $$("input[name='params[shop_id][]']:checked");
+    if(shop_list.length == 0){
+        alert('您没有选择店铺，插件将不会运行。');
+        //return false;
+    }
+
+    var sms_content = $('sms_content').value;
+    if(sms_content.test(/【.+】$/) == false){
+        alert('您的短信末尾缺少签名，为了保证短信正常发送，系统将自动为您添加，请确认');
+        sms_content += '【\<\{签名\}\>】';
+        $('sms_content').value = sms_content;
+        return false;
+    }
+
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+_form.store('target',{
+    onSuccess:function(response){
+        try{
+            var _dialogIns = _btn.getParent('.dialog').retrieve('instance');
+        }catch(e){}
+        if(_dialogIns)
+        {	
+            _dialogIns.close();
+        }
+    }
+});
+
+(function(){
+    
+    //判断字数
+    $$('textarea').each(function(el){
+        set_sms_len(el);
+        
+        el.addEvent('change',function(){
+            set_sms_len(el);
+        });
+    });
+    
+})();
+
+function set_sms_len(el){
+    $('sms_length').set('text',el.value.length)
+    $('sms_num').set('text',Math.ceil(el.value.length/67))
+}
+
+function insertAtCursor(myField, myValue){
+    
+    if(myValue.indexOf('签名') != -1){
+        myValue = '【'+myValue+'】';
+        myField.value += myValue;
+        return false;
+    }
+
+    //IE support
+    if (document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }
+    else if (myField.selectionStart || myField.selectionStart == '0')
+    {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0)
+        {
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+</script>

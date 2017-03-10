@@ -1,0 +1,271 @@
+<{include file='admin/weixin/inc_css.html'}>
+
+<style>
+#search_list,#select_list {overflow-y:scroll;}
+.item_list {height:110px;overflow-y:auto;border:1px solid #CCC;background:#FFF;padding:5px;}
+#search_list li span{float:right;cursor:pointer;color:blue;}
+#select_list li span{float:right;cursor:pointer;color:red;}
+.item_list ul{padding:0;margin:0;}
+.item_list li{padding:2px 5px;}
+</style>
+
+<form id="survey_form" method="post" action="index.php?app=market&ctl=admin_weixin&act=survey_edit">
+
+<div style="">
+	<table width="100%" cellpadding=4 cellspacing=3>
+        <tr>
+            <th width=60>活动名称：</th>
+            <td><{input value=$rs.title name="title" id="title" type="text" size=20 vtype="required" }></td>
+            <th width=90>活动关键词：</th>
+            <td><{input value=$rs.keywords name="keywords" type="text" size=20 vtype="required" }></td>
+        </tr>
+        <tr>
+            <th>开始时间：</th>
+            <td><{input value=$rs.start_date name="start_date" type="time" }></td>
+            <th>结束时间：</th>
+            <td><{input value=$rs.end_date name="end_date" type="time" }></td>
+        </tr>
+        <tr>
+            <th>活动状态：</th>
+            <td colspan=3 id="item_type_td">
+                <label><input <{if($rs.is_active=='1')}>checked<{/if}> type="radio" name="is_active" value='1' /> 启用</label>　　
+                <label><input <{if($rs.is_active=='0')}>checked<{/if}> type="radio" name="is_active" value='0' /> 不启用</label>
+            </td>
+        </tr>
+        <tr id="text_type">
+            <th valign="top">结 束 语：</th>
+            <td colspan=3>
+                <{input value=$rs.end_words name="end_words" type="textarea" rows=2 cols=60  }>
+            </td>
+        </tr>
+        <tr id="text_type">
+            <th valign="top">问答题目：</th>
+            <td colspan=3>
+                <table>
+                    <tr>
+                        <td width="50%">
+                            从题库中搜索<{input id="q" size=10 type="text"}>
+                            <{button id="search_items" label="搜索" }>
+                        </td>
+                        <td width="50%">已选 <span id="select_num">2</span> 题（最多10题）</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="search_list" class="item_list">
+                                <!--font color=gray>无搜索结果</font-->
+                                <ul>
+                                    <{foreach from=$items key=k item=data}>
+                                    <li id="l_item_<{$data.item_id}>">
+                                        <span>选择</span>
+                                        <{$data.title}>
+                                    </li>
+                                    <{/foreach}>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div id="select_list" class="item_list">
+                                <!--font color=gray>还未选择题目</font-->
+                                <ul id="select_list_ul">
+                                    <{foreach from=$select_items key=k item=data}>
+                                    <li id="r_item_<{$data.item_id}>">
+                                        <span>删除</span>
+                                        <{$data.title}>
+                                    </li>
+                                    <{/foreach}>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <input name="survey_id" value="<{$rs.survey_id}>" type="hidden" />
+    <input name="item_ids" id="item_ids" value="<{$rs.item_ids}>" type="hidden" />
+</div>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+</form>
+
+<script>
+(function(){
+
+	var _form = $('survey_form');
+
+	var btn =$('survey-form-submit');
+
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+
+	
+
+_form.store('target',{
+
+    onSuccess:function(response){
+
+        var hash_res_obj = JSON.decode(response);
+
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+
+        {
+
+            try{
+
+                var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+
+            }catch(e){}
+
+            if(_dialogIns)
+
+            {	
+
+                _dialogIns.close();
+
+                window.finderGroup['<{$env.get.finder_id}>'].refresh();
+
+            }
+
+        }	
+
+    }
+
+});
+
+
+
+	    btn.addEvent('click',function(){
+        
+            if($$('#select_list li').length==0){
+                alert('请至少选择一个题目哦');
+                return false;
+            }
+
+		    _form.fireEvent('submit',{stop:$empty});
+
+		});
+        
+    var item_ids = $('item_ids').value; 
+    if(item_ids){
+        var item_id_arr = item_ids.split(',');
+        item_id_arr.each(function(v){
+            //alert(idx);
+            $$('#l_item_'+v+' span').set('html','<font color=green>已选择</font>');
+        });
+    }
+    
+    $('search_items').addEvent('click',function(){
+        var q=$('q').value;
+        ajax_get_items(q);
+        
+        /*
+        if(q==''){
+            alert('请输入搜索关键词');
+            $('q').focus();
+        }else{
+            ajax_get_items(q);
+        }*/
+    });
+        
+})();
+
+function ajax_get_items(q){
+    var _data = {'q':q};
+    var myRequest=new Request({//建立Request对象
+        url:'index.php?app=market&ctl=admin_weixin&act=ajax_get_items',//要请求的地址
+        method : 'post',
+        data:_data,
+        onSuccess:function(responseText){
+            //alert(responseText);
+            var obj = eval('('+responseText+')');
+            var html = [];
+            obj.each(function(v){
+                html.push('<li id="l_item_'+v.item_id+'"><span>选择</span>'+v.title.replace(q,'<font color=red>'+q+'</font>')+'</li>');
+            });
+            $('search_list').set('html', html.join(''));
+            set_item_ids();
+            set_background();
+        }
+    }).send();//用他的send方法发送
+}
+        
+function set_background(){
+   $$('#search_list li').each(function(el,idx){
+        if(idx%2==1){
+            //alert(2);
+            el.setStyle('background-color','#eeeeee');
+        }else{
+            el.setStyle('background-color','#ffffff');
+        }
+    });
+
+    $$('#select_list li').each(function(el,idx){
+        if(idx%2==1){
+            //alert(2);
+            el.setStyle('background-color','#eeeeee');
+        }else{
+            el.setStyle('background-color','#ffffff');
+        }
+    }); 
+}
+
+function set_select_num(){
+    $('select_num').setHTML($$('#select_list li').length);
+    set_item_ids();
+}
+
+function chk_select_num(){
+    if($$('#select_list li').length>=10){
+        return false;
+    }
+    return true;
+}
+
+function set_item_ids(){
+    var item_ids = [];
+    $$('#select_list li').each(function(el){
+        var item_id = el.get('id').replace('r_item_','');
+        item_ids.push(item_id);
+        $$('#l_item_'+item_id+' span').set('html','<font color=green>已选择</font>');
+    });
+    $('item_ids').value = item_ids.join(',');    
+}
+
+$('select_list').addEvent('click',function(e){
+    if(e.target.tagName=='SPAN'){
+        if(1==1 || confirm('确定要删除吗？')){
+            var item_id = e.target.getParent().get('id').replace('r_','l_');
+            //alert(item_id)
+            $$('#'+item_id+' span').set('html','选择');
+            e.target.getParent().destroy();
+            set_select_num();
+            set_background();
+        }
+    }
+});
+
+$('search_list').addEvent('click',function(e){
+    if(e.target.tagName=='SPAN'){
+    
+        if(chk_select_num()==false){
+            alert('最多只能选择10题哦');
+            return false;
+        }
+    
+        var item_id = e.target.getParent().get('id').replace('l_','r_');
+        //alert(item_id)
+        e.target.getParent('li').clone().inject($('select_list_ul')).set('id',item_id).getElement('span').set('html','删除');
+        e.target.set('html','<font color=green>已选择</font>');
+        set_background();
+        set_select_num();
+    }
+});
+
+set_background();
+set_select_num();
+</script>

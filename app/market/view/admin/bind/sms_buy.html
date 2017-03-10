@@ -1,0 +1,16 @@
+<div class="tableform">
+    
+</div>
+<div class="tableform"><iframe id="sms_iframe" frameborder="0" src="<{$frameurl}>" width="100%" height="750px;" ></iframe>
+</div>
+
+<script type="text/javascript">
+    (function(){
+        var _form = $('enterpriseUnbind');
+        var btn =$('unbind');
+        
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+    })();
+</script>

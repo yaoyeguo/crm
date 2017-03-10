@@ -1,0 +1,27 @@
+<h3><{t}>领劵设置<{/t}></h3>
+<div id="x-g-basic" class="goods-detail tableform">
+  <div class="division">
+    <table border="0" cellpadding="0" cellspacing="0" class="rule_list">
+      <tr>
+        <th style="width:10%"><{t}>库存<{/t}>：</th>
+        <td style="width:90%"><{input type="text" value=$card.quantity vtype='required' name="card[quantity]" maxlength="20"}>份</td>
+      </tr>
+      <tr>
+        <th><{t}>领劵限制<{/t}>：<br><span class="notice-inline "><{t}>（选填）<{/t}></span></th>
+        <td><{input type="text" value=$card.get_limit name="card[get_limit]" maxlength="20"}>张<br><span class="notice-inline "><{t}>每个用户领劵上线，如不填，则默认为1<{/t}></span></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <label><input type="checkbox" value="true" name="card[can_share]" <{if ($card.can_share != false)}>checked<{/if}>/>用户可以分享领劵链接</label>
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <label><input type="checkbox" value="true" name="card[can_give_friend]" <{if ($card.can_give_friend != false)}>checked<{/if}>/>用户领劵后可转赠其他好友</label>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

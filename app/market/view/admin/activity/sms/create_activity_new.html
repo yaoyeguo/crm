@@ -1,0 +1,128 @@
+<style>
+* {
+	font-family: Arial
+}
+
+#p_id2,#p_id3,#p_id4 {
+	color: blue;
+	text-align: center;
+	line-height: 2em
+}
+
+#sms_total_num {
+	color: blue;
+}
+
+#edm_total_num {
+	color: blue;
+}
+
+.region_list {
+	margin: 0;
+	padding: 0;
+}
+
+.region_list li {
+	display: inline-block;
+	width: 75px;
+}
+
+.title_table {
+	background-color: #F4F4F4;
+	font-size: 20px
+}
+
+.title_table tr td {
+	background-color: #F4F4F4;
+}
+
+.dialog .table-action {
+	margin: 0px;
+	padding: 0px;
+}
+
+#goods_page_nav {
+	display: block;
+	padding: 5px 0;
+}
+
+#prev,#next {
+	cursor: pointer;
+	background: #5D84B0;
+	color: #FFF;
+	border: 1px solid #333;
+	padding: 2px 5px;
+	margin: 0 8px 0 0;
+}
+</style>
+
+
+<{input type=hidden name="users_list" id="users_list" value=$userslist}>
+<{input type=hidden value=$activity_id name="activity_id_name" id="activity_id_id"}> 
+<{input type=hidden name="shop_id" id="shop_id" value=$data.shop_id}>
+<{input type=hidden value=$tag name="tag_name" id="tag_id"}>
+<{input type=hidden value=$CacheId name="CacheId" id="CacheId"}>
+<{input type=hidden value=$CacheIdCreateTime name="CacheIdCreateTime" id="CacheIdCreateTime"}>
+
+<div class="tableform" style="margin: 0; padding: 0;">
+
+	<!--活动设置-->
+	<{include file='admin/activity/sms/step1.html'}>
+
+	<!--选择客户-->
+	<{include file='admin/activity/sms/step2.html'}>
+
+	<!--选择短信和优惠券模板-->
+	<{include file='admin/activity/sms/step3.html'}>
+
+	<!--发送-->
+	<{include file='admin/activity/sms/step4.html'}>
+
+
+</div>
+<script>
+
+var active_status = '<{$activity.is_active}>';
+if(active_status == 'finish') $$('div.table-action').set('html','<b style="font-size:14px;color:blue">活动已经完成</b>');
+if(active_status == 'dead') $$('div.table-action').set('html','<b style="font-size:14px;color:red">活动已经作废</b>');
+
+
+ //根据当前进度展示不同的界面
+    var tag_id = $('tag_id').value;
+    switch(tag_id){
+        case 'sel_member':
+            $('activity_id').hide();
+            $('select_me').show();
+            $('select_sms_template').hide();
+            $('exec_div').hide();
+        break;
+
+        case 'sel_template':
+            $('activity_id').hide();
+            $('select_me').hide();
+            $('select_sms_template').show();
+            $('exec_div').hide();
+        break;
+
+        case 'wait_exec':
+            $('activity_id').hide();
+            $('select_me').hide();
+            $('select_sms_template').hide();
+            $('exec_div').show();
+        break;   
+    }
+    
+    
+function select_value(p1,p2){
+    var s = document.getElementById(p1);
+     var ops = s.options;
+     for(var i=0;i<ops.length; i++){
+        if(ops[i].selected)
+        {   
+            var tempValue = ops[i].innerHTML;
+            $(p2).set('html',tempValue);
+            break;
+        }
+     }
+}
+</script>

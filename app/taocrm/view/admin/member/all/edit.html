@@ -1,0 +1,141 @@
+<form action="index.php?<{$env.server.QUERY_STRING}>" method="post">
+<div class="tableform" style="background-color:#FFFFFF;border:none;" style="width:100%;">
+    <input type=hidden name='member_id' value=<{$mem.member_id}>>
+    <div class="division" style="border:none;">
+        <table  border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="100" align="right" ><{t}>客户昵称(ID):<{/t}></td>
+                <td width="100"><{if $mem.account.uname}><{$mem.account.uname}><{else}><{$mem.member_id}><{/if}></td>
+                <td align="right"><{t}>昵称来源:<{/t}></td>
+                    <td align="left"><{$mem.channel_type}><input type="hidden" name="channel_type" value="<{$mem.channel_type}>" /></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>真实姓名:<{/t}></td>
+                <td> <{input app=ectools type="text" name='name' value=$mem.contact.name }></td>
+                <td align="right"><{t}>会员卡号:<{/t}></td>
+                <td><{input app=ectools type="text" name='member_card' value=$mem.member_card }></td>
+            </tr>
+              <tr>
+                <td align="right"><{t}>性别:<{/t}></td>
+                <td><{input type='gender' name='gender' value=$mem.profile.gender }></td>
+                <td align="right"><{t}>生日:<{/t}></td>
+                <td><{input type='date' name='birthday' value=$mem.profile.birthday }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>手机:<{/t}></td>
+                    <td><{input app=ectools type="text" name='mobile' value=$mem.contact.phone.mobile maxlength=11 }></td>
+             <td align="right"><{t}>邮箱:<{/t}></td>
+                <td>
+                    <{input size=30 app=ectools type="text" name='email' value=$mem.contact.email vtype='email' }>
+                </td>
+            </tr>
+            <tr>
+                <td align="right"><{t}>电话:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='tel' value=$mem.contact.phone.telephone }></td>
+                <td align="right"><{t}>QQ:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='qq' value=$mem.qq }></td>
+            </tr>
+              <tr>
+                <td align="right"><{t}>旺旺:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='wangwang' value=$mem.wangwang }></td>
+                <td align="right"><{t}>微信:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='weixin' value=$mem.weixin }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>微博:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='weibo' value=$mem.weibo }></td>
+                <td align="right"><{t}>支付宝:<{/t}></td>
+                <td>
+                <{input app=ectools type="text" name='alipay_no' value=$mem.alipay_no }></td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>地区:<{/t}></td>
+                    <td><{input app=ectools type="region" name='area' value=$mem.contact.area }></td>
+                    <td align="right"><{t}>邮编:<{/t}> </td>
+                    <td>
+                        <{input size=10 maxlength=6 app=ectools type="text" name='zipcode' value=$mem.contact.zipcode }>
+                    </td>
+            </tr>
+            <tr>
+                <td align="right"><{t}>地址:<{/t}></td>
+                <td><{input size=50 app=ectools type="text" name='addr' value=$mem.contact.addr }></td>
+                    <td align="right"><{t}>推荐码:<{/t}></td>
+                <td>
+                        
+                        <{$rec_info.self_code }>
+                    </td>
+            </tr>
+             <tr>
+                <td align="right"><{t}>备注:<{/t}></td>
+                    <td ><{input size=50 type="text" name="remark" value=$mem.remark}></td>
+                    <td align="right"><{t}>推荐人码:<{/t}></td>
+                    <td>
+                        
+                        <{input size=10 type="text" id='commend_code' name='commend_code' value=$rec_info.parent_code }>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right"><{t}>二维码:<{/t}></td>
+                    <td >
+                        <a href="javascript:;" id='commend_link'>显示二维码</a>
+                    </td>
+                    <td align="right"><{t}>推荐人手机号:<{/t}></td>
+                    <td>
+                        <{$rec_info.parent_mobile}>
+                       <!-- <{input size=10 maxlength=11 type="text" name='commend_mobile' value=$rec_info.parent_mobile }>-->
+                    </td>
+            </tr>
+              <tr>
+                <th><{t}>自定义属性<{/t}></th>
+                <td colspan="3">
+                    <{foreach from=$prop_name item=v key=k}>
+                        <{if($v!='')}>
+                            <{$v}>：                       
+                            <{if($prop_type[$k]=='date')}>
+                                <{input type="date" size="10" maxlength="20" name="prop_name[{$k}]" value=$prop_val[$k] }>
+                            <{else}>
+                                <{input type="text" size="10" maxlength="20" name="prop_name[{$k}]" value=$prop_val[$k] }>
+                            <{/if}>
+                            &nbsp;
+                            <{if($k==4)}>
+                                <div style="height:5px;overflow:hidden;">&nbsp;</div>
+                            <{/if}>
+                        <{/if}>
+                    <{/foreach}>
+                    
+                    <div>
+                        <a href="index.php?app=taocrm&ctl=admin_all_member&act=add_member_prop&redirect_uri=<{$redirect_uri}>" target="dialog::{widtd:700,height:380,title:'自定义属性'}" style="color:#5779BD;">点击这里定义客户属性</a>
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="4"  class="table-action"><{button type="submit" label=$___b2c="保存"|t:'b2c' }></td></tr>
+        </table>
+    </div>
+</div>
+</form>
+<script>
+    var self_code = '<{$rec_info.self_code }>';
+(function(){
+    /*
+	var input = $(document.body).getElements('input[name=contact[area]]')[0];
+	var select = input.getNext('select');
+	select.addEvent('change',function(e){
+		if($(e.target).value !='_NULL_'){
+			input.getParent('span').set('vtype','area');
+		}
+		else{
+			input.getParent('span').set('vtype','');
+		}
+	});
+    */
+    $('commend_link').addEvent('click',function(){
+        window.location.href = 'index.php?app=taocrm&ctl=admin_all_member&act=lottery_manage_href&self_code='+self_code;
+    });
+})();
+</script>
+

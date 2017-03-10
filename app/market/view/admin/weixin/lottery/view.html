@@ -1,0 +1,32 @@
+<div container='true'>
+<div class="tableform">
+    <input type="button" value="导出所有" onclick="window.open('index.php?app=market&ctl=admin_weixin&act=lottery_manage_export&item_id=<{$item_id}>')"/>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="10%">参与时间</td>
+            <td width="10%">参与人</td>
+            <td width="10%">手机号</td>
+            <td width="20%">收货地址</td>
+            <td>扣除积分</td>
+            <td width="20%">抽奖结果</td>
+            <td width="20%">活动名称</td>
+        </tr>
+        <{foreach from=$lotterylog item=log}>
+        <tr>
+            <td><{$log.create_time|date_format:"%Y-%m-%d %H:%m"}></td>
+            <td><{$log.people_name}></td>
+            <td><{$log.phone}></td>
+            <td><{$log.people_adr}></td>
+            <td><{$log.minus_score}></td>
+            <td><{$log.lottery_info_name}></td>
+            <td><{$log.lottery_name}></td>
+        </tr>
+        <{foreachelse}>
+            <tr>
+                <td colspan="6">没有数据</td>
+
+            </tr>
+        <{/foreach}>
+    </table>
+</div>
+</div>

@@ -1,0 +1,27 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>  
+            <th><{t}>发送时间<{/t}></th>
+            <th><{t}>手机号<{/t}></th>
+            <th><{t}>短信内容<{/t}></th>
+            <th><{t}>短信类型<{/t}></th>
+            <th><{t}>操作人<{/t}></th>
+        </tr>
+    </thead>
+    <tbody>
+        <{foreach from=$log_list item=item key=key}>
+         <tr>
+             <td><{$item.send_time|date_format:'%Y-%m-%d %H:%M:%S'}></td>
+             <td><{$item.mobile}></td>
+             <td><{$item.content}></td>
+             <td><{$item.source}></td>
+             <td><{$item.op_user}></td>
+         </tr>
+        <{/foreach}>
+    </tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

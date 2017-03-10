@@ -1,0 +1,92 @@
+<desktop>
+    
+    <permissions>
+        <permission id="shop_channels" display='false'>店铺渠道</permission>
+        <permission id="shop_lv_rules">等级规则</permission>
+        <permission id="credit_rules">积分规则</permission>
+        <permission id="gift_rules">赠品规则</permission>
+        <permission id="loginLog">登录日志</permission>
+        <permission id="goods_download" display='false'>商品下载</permission>
+        <permission id="order_download" display='false'>订单下载</permission>
+        <permission id="order_analysis" display='false'>统计数据</permission>
+        <permission id="memory_repeat_load">重加载数据</permission>
+        
+        <permission id="shop_sign">短信签名</permission>
+        <permission id="shop_manage">店铺管理</permission>
+        <permission id="import_tool">导入工具</permission>
+        <permission id="level_init">客户等级初始化</permission>
+        <permission id="order_list">订单查询</permission>
+        <permission id="refund_list">退款单查询</permission>
+        <permission id="support">服务和支持</permission>
+        <permission id="sys_bind">系统绑定</permission>
+        
+        <permission id="setting_api_log">同步日志管理</permission>
+        <permission id="fx_support">分销增值服务</permission>
+        
+    </permissions>
+    
+    <workground name="我的店铺" id="ecorder.shop" order="100">
+        <menugroup name="我的店铺" order="1001000">
+            <menu controller='admin_shop_overview' action='index' permission='shop_manage' display='true' order='1001100'>店铺概览</menu>
+            <menu controller='admin_shop_channel' action='index' permission='shop_manage' display='true' order='1001200'>开通新店铺</menu>
+            <menu controller='admin_shop' action='index' permission='shop_manage' display='true' order='1001300'>已开通店铺</menu>
+            <menu controller='admin_shop_lv' action='index' permission='shop_lv_rules' display='true' order='1001320'>店铺等级规则</menu>
+            <menu controller='admin_shop_credit' action='index' permission='credit_rules' display='true' order='1001350'>店铺积分规则</menu>
+        </menugroup>
+        
+        <menugroup name="我的短信" order="1002000">
+            <menu controller='admin_sms_sign' action='index' permission='shop_sign' display='true' order='1002400'>短信签名</menu>
+        </menugroup>
+        
+        <menugroup name="我的工具" order="1003000">
+            <menu controller='admin_orders' action='index' permission='order_list' display='true' order='1003200'>销售订单查询</menu>
+            <menu controller='admin_refunds' action='index' permission='refund_list' display='true' order='1003300'>退款单查询</menu>
+            <menu controller='admin_analysis' action='member' permission='level_init' display='true' order='1003600'>客户等级初始化</menu>
+            <menu controller='admin_shop' action='loginLog' permission='loginLog' display='true' order='1003700'>系统登录日志</menu>
+            <menu controller='admin_shop' action='import_member' permission='import_tool' display='true' order='1003800'>客户导入工具</menu>
+            <menu controller='admin_analysis' action='memory' permission='memory_repeat_load' display='true' order='1003900'>重新加载数据</menu>
+            
+			<menu controller='admin_download' action='goods' permission='goods_download' display='false' order='7000100'>商品下载</menu>
+            <menu controller='admin_download' action='order' permission='order_download' display='false' order='7000200'>订单下载</menu>
+			<menu controller='admin_analysis' action='index' permission='order_analysis' display='false' order='8000100'>订单统计</menu>
+        </menugroup>
+        
+    </workground>
+    
+    <workground name="系统设置" id="sys.config" order="600">
+
+         <menugroup name="微信管理" order="6004000">
+            <menu controller='admin_shop' action='standardWeixin' permission='sys_bind' display='true' order='6004000'>切换微信服务版本</menu>
+        </menugroup>
+
+        <menugroup name="商派系统绑定" order="6001000">
+            <menu controller='admin_shop' action='erp_bind' permission='sys_bind' display='true' order='6001100'>绑定ECshop</menu>
+            <menu controller='admin_shop' action='erp_bind1' permission='sys_bind' display='false' order='6001200'>绑定淘管ERP</menu>
+        </menugroup>
+        
+        <menugroup name="赠品促销管理" order="6001300">
+            <menu controller='admin_gift_list' action='index' permission='gift_rules' display='true' order='6001310'>赠品列表</menu>
+            <menu controller='admin_gift_rule' action='index' permission='gift_rules' display='true' order='6001320'>促销规则</menu>
+            <menu controller='admin_gift_rule' action='logs' permission='gift_rules' display='true' order='6001330'>赠品发送记录</menu>
+            <menu controller='admin_gift_rule' action='set_logs' permission='gift_rules' display='true' order='6001340'>赠品设置</menu>
+        </menugroup>
+    
+        <menugroup name="增值服务" order="6002000">
+            <menu controller='admin_help_support' action='fx_support' permission='fx_support' display='true' order='6002100'>分销客户管理和报表</menu>
+            <menu controller='admin_help_support' action='index' permission='support' display='true' order='6002300'>CRM专家服务支持</menu>
+            
+            <menu controller='admin_fx_orders' action='index1' permission='fx_support' display='false' order='6002200'>客户服务跟踪管理</menu>
+            <menu controller='admin_fx_orders' action='index3' permission='fx_support' display='false' order='6002400'>客户推荐返佣赠品</menu>
+        </menugroup>
+        
+        <menugroup name="同步日志管理" order="6003000">
+            <menu controller='admin_api_log' action='index' params='p[0]:all' permission='setting_api_log' display='true' order='6003100'>所有</menu>
+            <menu controller='admin_api_log' action='index' params='p[0]:success' permission='setting_api_log' display='true' order='6003200'>成功</menu>
+            <menu controller='admin_api_log' action='index' params='p[0]:running' permission='setting_api_log' display='true' order='6003300'>运行中</menu>
+            <menu controller='admin_api_log' action='index' params='p[0]:fail|p[1]:request' permission='setting_api_log' display='true' order='6003400'>请求失败</menu>
+            <menu controller='admin_api_log' action='index' params='p[0]:fail|p[1]:response' permission='setting_api_log' display='true' order='6003500'>响应失败</menu>
+        </menugroup>
+        
+    </workground>
+    
+</desktop>

@@ -1,0 +1,117 @@
+<style>
+#paid_tips {margin:0 0 0 65px;background:#FFF;padding:5px;border:1px solid #EEE;}
+#paid_tips b {color:#F00;}
+</style>
+
+<form method="POST" action="index.php?<{$env.server.QUERY_STRING}>" class="tableform" id="form_plugin" style="margin:0;padding:0;">
+<div>
+<{input type=hidden value=$plugins.worker name="worker" id="worker"}>
+<{input type=hidden value=$plugins.plugin_id name="plugin_id" id="plugin_id"}>
+<{input type=hidden value=$plugins.max_buy_times id="max_buy_times"}>
+<{input type=hidden value=$remain_time id="remain_time"}>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level'>
+    <tr>
+      <th><{t}>插件名称：<{/t}></th>
+      <td><b><{$plugins.title}></b></td>
+    </tr>
+    
+    <tr>
+      <th><{t}>功能说明：<{/t}></th>
+      <td style='line-height:20px'><{$plugins.desc}></td>
+    </tr>
+    
+    <tr class="member_retail">
+      <th><em class="c-red">*</em><{t}>服务时限<{/t}>：</th>
+      <td>
+      	 <select id="month" name="month" class="x-input">
+            <{foreach from=$plugins.month item=dd key=kk }>
+                <option value='<{$kk}>'>
+                    <{if($plugins.dead_line)}>
+                        至<{$plugins.dead_line}>截止
+                    <{else}>
+                        <{$dd}> 个月
+                    <{/if}>
+                </option>
+            <{/foreach}>
+         </select>
+      </td>
+    </tr>
+    <tr class="member_retail">
+      <th><{t}>合计费用<{/t}>：</th>
+      <td><b id='price'><{$plugins.price[0]}></b> 条短信</td>
+    </tr>
+    <tr class="member_retail">
+      <th><{t}>您的余额<{/t}>：</th>
+      <td><b><{$month_residual}></b> 条短信</td>
+    </tr>
+</table>
+
+<div id="paid_tips">
+使用插件需<b id='buy_price'><{$plugins.price[0]}></b>条短信购买，可使用<b id='buy_month'><{$plugins.month[0]}></b>个月。<br/>系统会从您的短信余额中扣除，自动营销发送的短信需<b>另外扣除</b>。
+</div>
+
+</div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button type="button" label="确定" id="form-submit"}>
+    <span id="tips" style="display:none"><a href="index.php?app=market&ctl=admin_sms_account&act=index" target="_top">短信余额不足，请充值。</a></span>
+    <span id="tips2" style="display:none">您的剩余服务时限还有2年，暂时无需购买。</span>
+    <span id="tips3" style="display:none">您已经购买过该插件，不能重复购买。</span>
+    <span id="tips4" style="display:none"><{img align="absmiddle" app="taocrm" src="loading.gif" }> 正在加载，请稍等……</span>
+</div>
+<{/area}>
+
+<script>
+var month_residual = <{$month_residual}>;
+var month = $('month');
+var price_list = ('<{$price_list}>').split(',');
+var month_list = ('<{$month_list}>').split(',');
+
+month.addEvent('change',function(){
+    $('price').set('html',price_list[$(this).get('value')]);
+    $('buy_price').set('html',price_list[$(this).get('value')]);
+    $('buy_month').set('html',month_list[$(this).get('value')]);
+    
+    check_money();
+});
+
+check_money();
+check_month();
+check_buy_times();
+
+var _btn = $('form-submit');
+var _form = $('form_plugin');
+
+_btn.addEvent('click',function(){
+    _btn.hide();
+    $('tips4').show();
+    _form.fireEvent('submit',{stop:$empty});
+});
+
+//判断短信余额
+function check_money(){
+    if(price_list[month.get('value')]>month_residual){
+        $('tips').show();$('form-submit').hide();
+    }else{
+        $('tips').hide();$('form-submit').show();
+    }
+}
+
+//判断剩余服务时限
+function check_month(){
+    var remain_time = $('remain_time').value;
+    if(parseInt(remain_time)>=24){
+        $('tips2').show();$('tips').hide();$('form-submit').hide();
+    }
+}
+
+//判断是否允许续费
+function check_buy_times(){
+    var max_buy_times = $('max_buy_times').value;
+    var remain_time = $('remain_time').value;
+    if(max_buy_times == '1' && parseInt(remain_time)>0){
+        $('tips3').show();$('tips').hide();$('form-submit').hide();
+    }
+}
+</script>

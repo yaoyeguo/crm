@@ -1,0 +1,34 @@
+
+
+<div style="clear:both;">
+<div class="tableform">
+    <h4>返利记录</h4>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>
+            <th><{t}>返利主键ID<{/t}></th>
+            <th><{t}>返利周期ID<{/t}></th>
+            <th><{t}>订单编号<{/t}></th>
+            <th><{t}>客户名称<{/t}></th>
+            <th><{t}>手机号<{/t}></th>
+            <th><{t}>返利值<{/t}></th>
+            <th><{t}>创建时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$logs item=item key=key}>
+         <tr>
+             <td><{$item.id}></td>
+             <td><{$item.rebate_cycle_id}></td>
+             <td><{if $item.order_id}><{$item.order_id}><{else}>---<{/if}></td>
+             <td><{$item.uname}></td>
+             <td><{if $item.mobile}><{$item.mobile}><{else}>---<{/if}></td>
+             <td><{$item.rebate_amount}></td>
+             <td><{$item.create_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+        <{$pager}>
+</div>
+</div>

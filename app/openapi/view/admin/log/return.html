@@ -1,0 +1,19 @@
+<div class="tableform">
+    <div class="division">
+        <h3>返回值信息</h3>
+        <textarea cols='120' rows='20' readonly="readonly"><{$v}></textarea>
+        <h3>返回值信息解析</h3>
+        <textarea cols='120' rows='20' readonly="readonly"><{$msg|print_r}></textarea>
+        <table class="gridlist" cellspacing="0" cellpadding="0" border="0" >
+            <{foreach from=$msg item=item key=key}>
+            <tr>
+                <td><{$key}></td>
+                <td><{$item}></td>
+            </tr>
+            <{/foreach}>
+        </table>
+
+    </div>
+</div>
+
+

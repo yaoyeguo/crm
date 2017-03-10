@@ -1,0 +1,5 @@
+<select name="coupon_id" style="width:245px;">
+    <{foreach from=$coupons item=coupon}>
+        <option value='<{$coupon.coupon_id}>' <{if $coupon.coupon_id==$select_coupon}>selected<{/if}>><{$coupon.coupon_name}></option>
+    <{/foreach}>
+ </select>

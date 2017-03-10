@@ -1,0 +1,74 @@
+<div id="tmpl_form" class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+<form method="post" action="index.php?app=market&ctl=admin_active_sms&act=sendTestSms" id="sms_test_form">
+<table align="center" cellpadding="5">
+    <tr>
+         <th width="20%">发送内容:</th>
+         <td><textarea class="x-input" id="sms_content" style="width:96%;height:80px;padding:5px;" name="content"><{$sendContent}></textarea></td>
+    </tr>
+     <tr>
+         <th>短信签名:</th>
+         <td>
+            <select class="x-input" vtype='required' name="sms_sign" id="sms_sign">
+                <option value="">请选择</option>
+            <{foreach from=$sign_list item=sign}>
+                <option value="<{$sign.sign}>"><{$sign.sign}></option>
+            <{/foreach}>
+            </select>
+         </td>
+    </tr>
+    <tr>
+         <th>手机号码:</th>
+         <td><{input maxlength="11" type="text" id="sms_phone" name="phones"}></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="table-action" >
+            <div id="show_res"></div>
+            <div id="show_btn"><{button label="发送" type="button" id="send_test_sms" class="btn-primary"}></div>
+        </td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+var sms_test_form = $('sms_test_form');
+
+$('send_test_sms').addEvent('click', function(){
+
+    var content = $$('#sms_test_form #sms_content');
+    var sign = $$('#sms_test_form #sms_sign');
+    var phone = $$('#sms_test_form #sms_phone');
+  
+    if(content.get('value') == ''){
+        alert('请输入短信内容');
+        return false;
+    }
+    
+    if(sign.get('value') == ''){
+        alert('请选择短信签名');
+        return false;
+    }
+    
+    if(phone.get('value') == ''){
+        alert('请输入手机号');
+        return false;
+    }
+    
+    $('show_btn').hide();
+   $('show_res').set('html','请耐心等待...');
+   
+   ajax_send_test_sms();
+  
+});
+
+function ajax_send_test_sms(){
+    new Request.JSON({
+    url : 'index.php?app=market&ctl=admin_active_sms&act=sendTestSms',
+    method : 'post',
+    onSuccess : function(responseText){
+        //alert(responseText);
+        $('show_res').set('html',responseText.msg);
+        $('show_btn').show();
+    }
+}).send(sms_test_form);
+}
+</script>

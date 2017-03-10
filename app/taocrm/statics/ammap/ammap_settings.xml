@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <projection>mercator</projection>
+  <text_size>12</text_size>
+  <text_color></text_color>
+  <reload_data_interval>100</reload_data_interval>
+  <preloader_on_reload>true</preloader_on_reload>
+  <fit_to_screen>true</fit_to_screen>
+  <drag_map>false</drag_map>
+  <always_hand></always_hand>
+  <force_smoothing></force_smoothing>
+  
+  <navigation_path>
+    <enabled>true</enabled>
+    <x/><!-- [70] (Number or Number%) x position of path -->
+    <y/><!-- [30] (Number or Number%) y position of path -->
+    <color/><!-- [#000000] (hex color code) path background color --><alpha/><!-- [0] (0 - 100) path background alpha -->
+    <padding/><!-- [0] (Number) horizontal padding of path buttons --><text_color/><!-- [#FFFFFF] (hex color code) -->
+    <text_color_hover/><!-- [#CC0000] (hex color code) -->
+    <text_size/><!-- [text_size] (Number) -->
+    <separator/><!-- [] symbol which separates path entries -->
+    <home_text/><!-- [] (text) Home text -->
+  </navigation_path>
+    
+  <background>
+      <color>#F1F5FA</color>
+  </background>
+  
+  <zoom>
+    <enabled>false</enabled>
+    <locked>true</locked>
+    <mouse_wheel_enabled>false</mouse_wheel_enabled>
+    <arrows_enabled>false</arrows_enabled>
+    <home_link_enabled>false</home_link_enabled>   
+    <zoom_on_click>false</zoom_on_click>
+    <grid_click_enabled>false</grid_click_enabled>
+  </zoom>
+  
+  <small_map>
+    <enabled>false</enabled>
+  </small_map>
+  
+  <area>                                                  
+    <balloon_text>                                                    
+      <![CDATA[<b>{title}</b>{description}]]>
+      <!--00319A/a9d4fc-->
+    </balloon_text>
+    <active_only_if_value_set>0</active_only_if_value_set>
+    <color_solid>#FF0000</color_solid>
+    <color_light>#FAEE98</color_light>
+    <color_hover>#5591BD</color_hover>
+    <color_selected></color_selected>
+    <color_unlisted></color_unlisted>
+    <color_no_value></color_no_value>    
+    <disable_when_clicked>true</disable_when_clicked>
+    <preserve_color></preserve_color>
+  </area>
+  
+  <movie>
+    <balloon_text>                                            
+      <![CDATA[<b>{title}</b>{description}]]>
+    </balloon_text> 
+    <active_only_if_value_set></active_only_if_value_set>
+    <color></color>
+    <color_hover>#0000ff</color_hover>
+    <color_selected></color_selected>
+    <hover_focus></hover_focus> 
+  </movie>
+  
+  <label>
+    <balloon_text>                                            
+      <![CDATA[]]>
+    </balloon_text>
+    <bg_margins_horizontal></bg_margins_horizontal>
+    <bg_margins_vertical></bg_margins_vertical>
+    <hover_focus></hover_focus>
+  </label>
+
+  <line>
+    <balloon_text>                                            
+      <![CDATA[{title}-{description}]]>
+    </balloon_text>
+    <color></color>                                                           
+    <alpha></alpha>
+    <width></width>
+    <dashed></dashed>
+    <arrow></arrow>
+    <arrow_size></arrow_size>
+    <arrow_color></arrow_color>
+    <arrow_alpha></arrow_alpha>
+    <curved></curved>
+    <hover_focus></hover_focus>
+  </line>
+  
+  <balloon><!-- balloon is shown when user roll overs the objects -->
+      <enabled/><!-- [true] (true / false) -->
+      <max_width>400</max_width><!-- [30%] (Number or Number%) -->
+      <color>#FFFFFF</color><!-- [#880000] (hex color code) balloon background color -->
+      <alpha>90</alpha><!-- [100] (0 - 100) -->
+      <text_color>#000000</text_color><!-- [0xFFFFFF] (hex color code) -->
+      <text_size/><!-- [text_size] (Number) -->
+      <border_color>#00319A</border_color><!-- [balloon.color] (hex color code) -->
+      <border_alpha>90</border_alpha><!-- [balloon.alpha] (0 - 100) -->
+      <border_width>2</border_width><!-- [0] (Number) -->
+      <corner_radius>7</corner_radius><!-- [0] (Number) -->
+      <arrow>horizontal</arrow><!-- [vertical] (vertical / horizontal) balloon's arrow position -->
+  </balloon>
+  
+  <export_as_image>
+    <file>./chart/export.php</file>
+    <target></target>
+    <x></x>
+    <y></y>
+    <color></color>
+    <alpha></alpha>
+    <text_color></text_color>
+    <text_size></text_size>
+  </export_as_image>  
+    
+  <strings>                                                
+    <loading_map>载入地图中</loading_map>
+    <export_as_image>导出</export_as_image>
+    <collecting_data>收集数据中</collecting_data>
+    <no_data>对不起,你选择的范围没有数据</no_data>
+  </strings>
+</settings>

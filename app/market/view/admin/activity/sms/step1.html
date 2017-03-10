@@ -1,0 +1,208 @@
+<div id="group_edit_container" style="width: 100%;">
+	<div id="activity_id" border="0" cellspacing="0" cellpadding="0">
+		<table>
+			<tr>
+				<th><em class="red">*</em><{t}>所属店铺：<{/t}></th>
+				<td><{if !$oneshop}> 
+					<select name="activity[shop_id]" id="shop_select">
+						<option value="">-请选择-</option> 
+						<{foreach from=$shopList item=shop}>
+							<option value=<{$shop.shop_id}>><{$shop.name}></option>
+						<{/foreach}>
+					</select>
+				 <{else}> 
+				 	<select name="activity[shop_id]" id="shop_select" disabled="disabled">
+				  		<option value=<{$oneshop.shop_id}>><{$oneshop.name}></option>
+					</select> 
+				<{/if}></td>
+			</tr>
+			<tr>
+				<th><label><em class="red">*</em><{t}>活动名称：<{/t}></label>
+				</th>
+				<td><{input type='text' size="40" id='activity_name_id'
+					name='activity[activity_name]' value=$activity.activity_name }></td>
+			</tr>
+			<tr>
+				<th><label><{t}>活动开始时间：<{/t}></label>
+				</th>
+				<td><{input size="30" type='date' id='activity_time_id'
+					name='activity_time_name' value=$beigin_time}></td>
+			</tr>
+			<tr>
+				<th><label><{t}>活动结束时间：<{/t}></label>
+				</th>
+				<td><{input size="30" type='date' id='end_time_id'
+					name='end_time_name' value=$end_time }></td>
+			</tr>
+			<tr>
+				<th><label><{t}>活动方式：<{/t}></label>
+				</th>
+				<td><{input size="30" type='text' id='activity_type'
+					name='activity_type'}></td>
+			</tr>
+			<tr>
+				<th><label>活动描述：</label>
+				</th>
+				<td><{input type='text' size="30" id='activity_tg_id'
+					name='activity_tg_name' value=""}></td>
+			</tr>
+			<tr>
+				<th><label>预期成本：</label>
+				</th>
+				<td><{input type='text' id='cost_id' size="30" vtype="number"
+					name='cost_name' value=""}></td>
+			</tr>
+
+		</table>
+
+		<div class="table-action"><{button label="下一步 >>" type="button"
+			id="btn01" class="btn-primary"}> <{button label="关闭" type="button"
+			id="close_btn" class="nodisabled"}></div>
+	</div>
+	<span id="el_createactivity_loading" style="display: none;">创建营销活动中,这可能需要点时间...</span>
+</div>
+
+<script>
+	window.addEvent('domready', function() {
+
+		$$('#close_btn').addEvent('click', function() {
+			$('close_btn').getParent('.dialog').retrieve('instance').close();
+		});
+		
+	     $$('#member_close_btn').addEvent('click',function(){
+	            $('member_close_btn').getParent('.dialog').retrieve('instance').close();
+	     });
+		
+		$$('#template_exec_close').addEvent('click',function(){
+	        $('template_exec_close').getParent('.dialog').retrieve('instance').close();
+	    });
+		
+	    $$('#sms_close_btn').addEvent('click',function(){
+		        $('sms_close_btn').getParent('.dialog').retrieve('instance').close();
+		});
+		
+
+		//进入下一步：step2
+		$("btn01").addEvent('click', function() {
+			step2();
+		});
+
+	});
+
+	function step2() {
+		if ($('shop_select').value == "") {
+			alert("请选择店铺");
+			return false;
+		}
+		var shop_id=$('shop_select').value;
+		
+		$act_value = $('activity_name_id').value;
+		if ($act_value == "") {
+			alert('请输入活动名称');
+			$('activity_name_id').focus();
+			return false;
+		}
+
+		var isCheckDate = true;
+		var activity_time_id_value = $('activity_time_id').value;
+		var end_time_id_value = $('end_time_id').value;
+		if (duibi(activity_time_id_value, end_time_id_value) == false) {
+			alert('活动开始时间不能大于活动结束时间，请检查');
+			return false;
+		}
+		
+
+		var costId = $('cost_id').value;
+		if (costId != '') {
+			var re = /^[0-9]+\.?[0-9]*$/;
+			if (!re.test(costId)) {
+				alert('预期成本必须是数值');
+				return false;
+			}
+		}
+
+
+		select_value("shop_select", "final_shop_name");
+
+		var data = {
+			'shop_id' : shop_id,
+			'activity_name' : $('activity_name_id').value,
+			'create_time' : $('activity_time_id').value,
+			'type' : 'sms',
+			'tags' : $('activity_tg_id').value,
+			'cost' : $('cost_id').value,
+			'end_time' : $('end_time_id').value,
+			'send_method' : 'sms',
+			'userslist':$('users_list').value,
+			'cache_id':$('CacheId').value,
+			'cache_id_create_time':$('CacheIdCreateTime').value
+		};
+
+		$('btn01').hide();
+		$('el_createactivity_loading').show();
+		
+		new Request.JSON(
+				{
+					url : 'index.php?app=market&ctl=admin_fx_activity&act=toAdd_new&p[activity_id]='+$('activity_id_id').value,
+					method : 'post',
+					data : data,
+					onSuccess : function(obj, responseText) {
+						try {
+							//alert(responseText);
+							//return false;
+							var data = JSON.decode(responseText);
+							
+							if (data.res == 'succ') {
+								$('activity_id_id').value = data.data.activity_id;
+								$('shop_id').value = data.data.shop_id;
+								/*
+								$('activity_id').hide();
+                                $('select_me').show();
+                                
+								$('el_createactivity_loading').hide();
+								*/
+								 //如果存在筛选条件，跳过step2
+				                if($('users_list').value!='' || $('CacheId').value!=''){
+				                	$('activity_id').hide();
+	                                $('select_me').hide();
+				                    $('select_sms_template').show();
+				                }else{
+				                	$('activity_id').hide();
+	                                $('select_me').show();
+				                }
+				                $('el_createactivity_loading').hide();
+				                
+							} else {
+
+								$('btn01').show();
+								$('el_createactivity_loading').hide();
+								alert(data.msg);
+							}
+						} catch (e) {
+							//alert(responseText);
+							$('btn01').show();
+							$('el_createactivity_loading').hide();
+							alert("服务器发生了内部错误");
+						}
+					}
+				}).send();
+		return true;
+	}
+	
+	function duibi(a, b) {
+	    var arr = a.split("-");
+	    var starttime = new Date(arr[0], arr[1], arr[2]);
+	    var starttimes = starttime.getTime();
+	    
+	    var arrs = b.split("-");
+	    var lktime = new Date(arrs[0], arrs[1], arrs[2]);
+	    var lktimes = lktime.getTime();
+
+	    if (starttimes > lktimes) {
+	        return false;
+	    }
+	    else {
+	       return true;
+	    }
+	}
+</script>

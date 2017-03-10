@@ -1,0 +1,63 @@
+<div class="tableform">
+    <form id="tmpl_form" action="index.php?app=market&ctl=admin_sms_template_type&act=save" method="post" >
+        <input type="hidden" name="sourceAction" value="<{$data.action}>" />
+        <input type="hidden" name="typeId" value="<{$data.group.type_id}>" />
+        <table>
+            <tr>
+                <th width="30%">模板分类名称:</th>
+                <td width="70%"><input type="text" name="title" id="title" value="<{$data.group.title}>" /></td>
+            </tr>
+            <tr>
+                <th>模板分类备注:</th>
+                <td><textarea rows="5" cols="40" name="description" id="description"><{$data.group.remark}></textarea></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+    <{button type="button" label="保存" id="editThemeGroup"}>
+</div>
+<{/area}>
+
+<script type="text/javascript">
+(function(){
+    var _form = $('tmpl_form');
+    var btn =$('editThemeGroup');
+    var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+    
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+        
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                
+                if(_dialogIns)
+                {   
+                    _dialogIns.close();
+                    window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+                }
+            }
+            
+        }
+    });
+    
+    btn.addEvent('click',function() {
+    	if ($('title').value == '') {
+    		alert('请输入模板分类名称');
+    	}/*
+    	else if ($('description').value == '') {
+    		alert('请输入模板分类备注');
+    	}*/
+    	else {
+    		_form.fireEvent('submit',{stop:$empty});	
+    	}      
+    });
+    
+})();
+</script>

@@ -1,0 +1,48 @@
+
+<div class="tableform">
+    
+    <div class="division">
+        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>  
+                    <th><{t}>插件名称<{/t}></th>
+                    <th><{t}>费用<{/t}></th>
+                    <th><{t}>购买时限<{/t}></th>
+                    <th><{t}>购买时间<{/t}></th>
+                    <th><{t}>截止时间<{/t}></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <{foreach from=$orders item=data}>
+                <tr>
+                    <td><{$data.plugin_name}></td>
+                    <td><{$data.amount}> (短信数)</td>
+                    <td>
+                    <{if($plugin_desc.dead_line != '')}>
+                        截止 <{$plugin_desc.dead_line}>
+                    <{else}>
+                        <{$data.month}> 个月
+                    <{/if}>
+                    </td>
+                    <td><{$data.buy_time|cdate:FDATE_FTIME}></td>
+                    <td>
+                    <{if($plugin_desc.dead_line != '')}>
+                        <{$plugin_desc.dead_line}>
+                    <{else}>
+                        <{$data.end_time|cdate:FDATE_FTIME}>
+                    <{/if}>
+                    </td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+$$('img.buy').addEvent('click',function(){
+    new Dialog('index.php/index.php?app=plugins&ctl=admin_buy&act=buy',{width:600,height:230,title:'购买插件'});
+});
+</script>
+

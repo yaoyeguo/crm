@@ -1,0 +1,195 @@
+<div id="exec_div">
+    
+    <table>
+        <tr>
+            <th width="20%">店铺： </th>
+            <td width="80%" id="final_shop_name"><{$active.shop_name}></td>
+        </tr>
+        <tr>
+            <th>活动名称：</th><td id="final_active_name"><{$active.active_name}></td>
+        </tr>
+        <tr id="edm_final_template_name_tr" <{if(!$active.edm_template_name)}>style="display:none"<{/if}>>
+            <th>EDM模板：</th><td id="edm_final_template_name"><{$active.edm_template_name}></td>
+        </tr>
+        
+        <!--邮件发送清单：-->
+		<tr id="el_send_edm_list" style="display: none;">
+            <th>邮件发送清单：</th>
+			<td  id="edm_total_num">
+			您选择的客户数：<span id="el_select_edm_membernums"><{$activityMemberNums.total_member_count}></span><br />
+            有效客户数：<span id="el_vaild_edm_membernums"><{$activityMemberNums.valid_member_count}></span><br />
+            无效客户数：<span style="color:#ff0000" id="el_unvaild_edm_membernums"><{$activityMemberNums.unvalid_member_count}></span><br />
+            当天已营销客户数：<span style="color:#ff0000" id="el_sent_edm_membernums"><{$activityMemberNums.sent_member_count}></span>
+                &nbsp;&nbsp;是否发送:
+                <label><input type="radio" name="sent_member_edm" value="1" checked>是</label>
+                <label><input type="radio" name="sent_member_edm" value="0">否</label>
+            <br />
+            当前共待发送客户数：<span id="el_reality_edm_membernums"><{$activityMemberNums.WaitSendMember}></span><br />
+            <span id="active_group_member"></span>
+            </td>
+        </tr>
+		<tr id="el_send_edm_no" style="display:none" colspan="2"><td>没有需要发送的邮件</td></tr>
+    </table>
+    
+    <div id='sms_send_id' class="table-action" style="text-align:center;padding:5px 0;">
+        <{button label="<< 上一步" id="exec_up_btn" class="btn-primary"}> 
+        <{button label="发送" type="button" id="exec_btn" class="btn-primary"}>
+        <{button label="关闭" type="button" id="sms_close_btn" class="btn-primary nodisabled"}>
+    </div>
+    
+    <p id="loading_bar" style="display:none;text-align:center;color:#4B5F87">
+        <br/><br/>
+        正在执行，请耐心等待…… 
+        <br/><img src="<{$env.app.res_url}>/loading42.gif" />
+    </p>
+    
+    <div id="sms_info_content" style="display: none;">
+        <p><span style="color:red;" id="difpice"></span></p>
+        <p>
+            <a href="index.php?app=market&ctl=admin_sms_account&act=index" target="_top">
+                <{button label="去充值>>" type="button" id="" class="btn-primary"}>
+            </a>
+        </p>
+    </div>  
+		
+</div>
+<script>
+
+//执行
+ var page_size = 1000;
+ var page = 0;
+ var sendType_val = '';
+ 
+ (function(){
+ 
+	 var sendType = JSON.decode('<{$actity_type}>');
+     
+	 if(sendType.contains('edm')){
+        sendType_val = 'edm';
+        $('el_send_edm_list').show();
+
+        $('el_send_edm_no').hide();
+        $('exec_btn').show();
+     }
+	 
+    var isActive = '<{$active.is_active}>';
+    if (isActive == 'wait_exec' && sendType_val == 'edm') {
+        var controlGroupMembers = parseInt('<{$activityMemberNums.controlGroupMembers}>');
+        if (controlGroupMembers > 0) {
+            tmp_html = '活动人数对照组：'+controlGroupMembers+'<br/>';
+            $('active_group_member').set('html', tmp_html);
+        }
+    }
+    if(!sendType_val) sendType_val = $('send_method').value;
+     
+    var els = $ES('input[type=radio]',$(sendType_val+'total_num'));
+	els.each(function(el){
+		 el.addEvent('click',function(){
+			 var valid_member_count = parseInt($('el_vaild_'+sendType_val+'_membernums').get('text'));
+			 var sent_membernums = parseInt($('el_sent_'+sendType_val+'_membernums').get('text'));
+			 if(el.checked && el.value == 1){
+				    $('el_reality_'+sendType_val+'_membernums').set('text',valid_member_count);
+			 }else{
+				 $('el_reality_'+sendType_val+'_membernums').set('text',valid_member_count-sent_membernums);
+			 }
+			 showExecBtn();
+		 });
+	 });
+ })();
+ 
+ showExecBtn();
+ function showExecBtn(){
+	 var reality_membernums = parseInt($('el_reality_'+sendType_val+'_membernums').get('text'));
+	 if(reality_membernums <= 0 ){
+		 $('exec_btn').hide();
+	 }else{
+		 $('exec_btn').show();
+	 }
+ }
+ 
+ 
+ var is_send_salemember;
+ function test(){
+	 $('sms_send_id').hide();
+     $('loading_bar').show(); 
+     run_send_func(0);      
+     $('active_id').hide();
+     $('select_me').hide();
+     $('select_sms_template').hide();
+     $('exec_div').show();
+     return true;
+ }
+
+ $$("#exec_btn").addEvent('click',function(){
+	 
+     $ES('input[name=sent_member_'+sendType_val+']').each(function(el){
+    	 if(el.checked){
+    		 is_send_salemember = el.value;
+    	 }
+     });
+     test();
+});
+
+//分页执行
+function run_send_func(page){
+    var send_method = $('send_method').value=='edm'? 'edm_exec':'sms_exec';
+
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active_edm&act='+send_method+'&p[0]='+$('active_id_id').value,
+        method : 'post',
+        update : $('coupon_id'),
+        data:{'exec_tag':'exec','page':page,'is_send_salemember':is_send_salemember},
+        onSuccess:function(responseText){      
+		    //alert(responseText);
+			//return false;
+            try{
+                var data = JSON.decode(responseText);
+                
+                if(data.res == 'fail'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     $('sms_send_id').show();
+                     //$('exec_btn').hide();
+                     //$('exec_up_btn').hide();
+                     return false;
+                }else if(data.res == 'balance_less'){
+                     alert(data.msg);
+                     $('loading_bar').hide();
+                     $("difpice").set('html',"您的账号可用余额不足请充值");
+                     $('sms_info_content').show();
+                     return false;
+                }else{
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    $('exec_up_btn').hide();
+					alert("提交成功，短信/邮件发送需要一点时间，请耐心等待。");
+                    
+                }
+                return false;
+                
+                page++;
+                var total_page = parseInt(data.selemem/1000)+1;
+                $('percent').set('html',parseInt(page*100/total_page));
+                $('total_count').set('html',data.selemem);
+                if(page<total_page) {
+                    run_send_func(page);
+                }else{
+                    $('loading_bar').hide();
+                    $('sms_send_id').show();
+                    $('exec_btn').hide();
+                    $('exec_up_btn').hide();
+                    alert("提交成功，短信/邮件发送需要一点时间，请耐心等待。"); 
+                }
+            }catch(e){
+                //alert(responseText);
+                $('loading_bar').hide();
+                $('sms_send_id').show();
+                $('exec_btn').hide();
+                $('exec_up_btn').hide();
+                alert("服务器发生了内部错误:"+responseText); 
+            }
+        }
+    }).send();
+}
+</script>

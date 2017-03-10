@@ -1,0 +1,21 @@
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+        <tr>  
+            <th><{t}>手机号码<{/t}></th>
+            <th><{t}>下载时间<{/t}></th>
+        </tr>
+    </thead>
+	<tbody>
+		<{foreach from=$logs item=item key=key}>
+         <tr>
+             <td><{$item.mobile}></td>
+             <td><{$item.create_time|cdate:'FDATE_FTIME'}></td>
+         </tr>
+        <{/foreach}>
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

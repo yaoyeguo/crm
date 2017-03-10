@@ -1,0 +1,118 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<style>
+.compare_td td{background:#F0F5F7;}
+</style>
+<input type="hidden" value="<{$nodetype}>" id="tagid" name="tagid">
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+
+    <div class="cir_rightbox_x" style="padding:0 5px 0 0 ">
+        <h4>
+            <{include file="admin/analysis/search.html"}>
+            <div class="title_left">
+                <{$path}>
+             </div>
+        </h4>
+        <div class="tj_rightbox" style="padding:0;margin:0;">
+            <div class="wdgk_box">
+            
+                <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+                    <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                        <ul>
+                            <li class="tab current"><span>商品销量</span></li>
+                            <li class="tab"><span>库存周转周期</span></li>
+                            <li class="tab"><span>数据明细</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="height:610px;overflow:hidden;">
+                    <div class="tableform" >
+                        
+                        <div style="height:610px;overflow:hidden" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_chart_goods&act=goods_rank&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=1" scrolling="no" width="100%" height="100%" id='line_frame1'></iframe>
+                        </div> 
+                        
+                    </div>
+                    
+                    <div class="tableform">
+                        
+                        <div style="height:610px;overflow:hidden;" class="map_box">
+                            <iframe frameborder="0" src="?app=taocrm&ctl=admin_chart_goods&act=goods_rank&service=<{$service}>&target=1&date_from=<{$date_from}>&date_to=<{$date_to}>&line_shop=false&count_by=<{$count_by}>&shop_id=<{$shop_id}>&c_date_from=<{$c_date_from}>&c_date_to=<{$c_date_to}>&target=2" scrolling="no" width="100%" height="100%" id='line_frame2'></iframe>
+                        </div> 
+                    </div>
+                    
+                    <div class="tableform">
+                    
+                        <{if (!$compare_data)}>
+                        <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>  
+                                    <th><{t}>商品名称<{/t}></th>
+                                    <th><{t}>销量<{/t}></th>
+                                    <{if not $nodetype}>
+                                    <th><{t}>库存数<{/t}></th>
+                                    <{/if}>
+                                    <th><{t}>销售额<{/t}></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <{foreach from=$analysis_data item=data key=key}>
+                                    <{if($key<=10)}>
+                                     <tr>
+                                         <td><{$data.name}></td>
+                                         <td><{$data.nums}></td>
+                                         <{if not $nodetype}>
+                                         <td><{$data.store}></td>
+                                         <{/if}>
+                                         <td><{$data.amount|cur}></td>                                     
+                                     </tr>
+                                    <{/if}>
+                                 <{/foreach}>
+                            </tbody>
+                        </table>
+                        <{/if}>
+                        
+                    </div>
+                    
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+<script>
+(function(){
+
+    $('compare_span').hide();
+    $('count_unit').hide();
+    
+    var c_date_from = $('c_date_from').get('value');
+
+    //选项卡效果
+    var tab_container = $('group_edit_container');
+    var tab_nav = $('tab_nav').getElements('li');
+    var tab_div = tab_container.getElements('div.tableform');
+    tab_nav.each(function($obj,i){
+    	 if($('tagid').value==1){
+    		 tab_nav[1].setStyle('display', 'none');
+         }
+        $obj.onclick=function(){
+            tab_nav.set('class','tab');
+            tab_div.setStyle('display', 'none');
+            this.set('class','tab current');
+            tab_div[i].setStyle('display', 'block');
+        };
+    });
+
+})();
+
+</script>

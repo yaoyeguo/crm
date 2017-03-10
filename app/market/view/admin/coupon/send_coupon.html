@@ -1,0 +1,268 @@
+<style>
+* {font-family:Arial}
+#p_id2,#p_id3,#p_id4 {color:blue;text-align:center;line-height:2em}
+#sms_total_num {color:blue;}
+#edm_total_num {color:blue;}
+.region_list {margin: 0;padding: 0;}
+.region_list li {display: inline-block;	width: 75px;}
+.title_table {background-color: #F4F4F4;font-size: 20px}
+.title_table tr td {background-color: #F4F4F4;}
+.dialog .table-action {margin: 0px;padding: 0px;}
+
+#goods_page_nav { display:block;padding:5px 0;}
+#prev,#next {cursor:pointer;background:#5D84B0;color:#FFF;border:1px solid #333;padding:2px 5px;margin:0 8px 0 0;}
+</style>
+
+<{input type=hidden name="coupon_id" id="coupon_id" value=$couponId}>
+<{input type=hidden name="shop_id" id="shop_id" value=$shopId}>
+<{input type=hidden name="active_id" id="active_id" value="0"}>
+<{input type=hidden name="shopName" id="shopName" value=$shop_name}>
+
+<div class="tableform" style="margin:0;padding:0;" id="send_coupon_area">
+
+    <!--活动设置-->
+    <{include file='admin/coupon/step1.html'}>
+
+   <!--选择短信和优惠券模板-->
+    <{include file='admin/coupon/step2.html'}>
+
+    <!--发送-->
+    <{include file='admin/coupon/step3.html'}>
+
+</div>
+
+
+
+<script>
+var groupId = 0;
+var is_send_salemember = 1;
+
+function goStep1(){
+	 $('step3').hide();
+     $('step2').hide();
+     $('step1').show();
+}
+
+function goStep2(){
+	 var group_id = getGroupId();
+	 if(group_id == 0){
+		 alert('请选择会员分组!');
+		 return false;
+	 }
+
+	 groupId = group_id;
+
+	 $('step3').hide();
+     $('step2').show();
+     $('step1').hide();
+}
+
+function goStep3(){
+
+	//检测短信内容是否合法
+    if(chk_sms_content()==false) return false;
+
+    var templete = '';
+    var templete_title = '';
+    var couponvlue_id = true;
+
+    templete = $('message_text').value;
+    templete = encodeURIComponent(templete);
+
+    var sms = $$('input[name="sms_send"]:checked').get('value');
+    if(sms=="sms"){
+        if($('sms_id1').get('checked')){
+            if($('message_text').value == ""){
+                alert('短信内容不能为空!');
+                $("message_text").focus();
+                return false;
+            }
+            if($('template_sele_id').value==0){
+                alert("请保存短信内容");
+                return false;
+            }
+
+        }else{
+            if($('template_sele_id').value==0){
+                alert("请选择短信模板");
+                return false;
+            }
+        }
+
+        //检查短信签名
+        templete = $('message_text').value;
+        templete = encodeURIComponent(templete);
+    }
+
+
+     $('template_btn').hide();
+     $('el_updateactive_loading').show();
+
+     var data = {'shop_id':$('shop_id').value,'coupon_id':$('coupon_id').value,'group_id':groupId,'active_id':$('active_id').value};
+     new Request({
+         url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=goStep3',
+         method : 'post',
+         data:data,
+         onSuccess:function(responseText){
+            var tmp_html = '';
+            try{
+                var data = JSON.decode(responseText);
+                if(data.status == 'succ'){
+                	$('active_id').value = data.active_id;
+                    $('el_select_sms_membernums').set('text',data.info.count);
+                    $('el_sent_sms_membernums').set('text',data.info.send);
+                    $('el_reality_sms_membernums').set('text',data.info.count);
+                }else{
+                    alert(data.msg);
+                }
+
+                $('step3').show();
+                $('step2').hide();
+                $('step1').hide();
+
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+
+            }catch(e){
+                $('template_btn').show();
+                $('el_updateactive_loading').hide();
+                alert("服务器发生了内部错误:"+responseText);
+            }
+        }
+    }).send();
+
+    return true;
+
+}
+
+function execSend(){
+	 $ES('input[name=sent_member_sms]').each(function(el){
+         if(el.checked){
+             is_send_salemember = el.value;
+         }
+     });
+
+	 var templete = '';
+	 var templete_title = '';
+
+	 templete = $('message_text').value;
+	 templete = encodeURIComponent(templete);
+
+	 var data = {
+			 'shop_id':$('shop_id').value,
+			 'coupon_id':$('coupon_id').value,
+			 'group_id':groupId,'active_id':$('active_id').value,
+			 'is_send_salemember':is_send_salemember,
+			 'unsubscribe':$('unsubscribe').checked ? 1 : 0,
+			 'templete':templete,
+			 'template_id':$('template_sele_id').value,
+			 'shopName':$('shopName').value
+			 };
+	 new Request({
+	        url : 'index.php?app=market&ctl=admin_coupon_ecstore&act=execSend',
+	        method : 'post',
+	        data:data,
+	        onSuccess:function(responseText){
+	            //alert(responseText);
+	            //return false;
+	            try{
+	                var data = JSON.decode(responseText);
+
+	                if(data.status == 'fail'){
+	                     alert(data.msg);
+	                     $('loading_bar').hide();
+	                     $('sms_send_id').show();
+	                     return false;
+	                }else if(data.status == 'balance_less'){
+	                     alert(data.msg);
+	                     $('loading_bar').hide();
+	                     $("difpice").set('html',"您的账号可用余额不足请充值");
+	                     $('sms_info_content').show();
+	                     return false;
+	                }else if(data.status == 'succ'){
+	                    $('loading_bar').hide();
+	                    $('sms_send_id').show();
+	                    $('exec_btn').hide();
+	                    $('exec_up_btn').hide();
+	                    alert("提交成功，短信/邮件发送需要一点时间，请耐心等待。");
+
+	                }else{
+
+	                	$('loading_bar').hide();
+	                    $('sms_send_id').show();
+	                    $('exec_btn').hide();
+	                    $('exec_up_btn').hide();
+	                    alert("提交异常，请稍后再试:"+responseText);
+	                }
+
+
+	            }catch(e){
+
+	            	$('loading_bar').hide();
+	                $('sms_send_id').show();
+	                $('exec_btn').hide();
+	                $('exec_up_btn').hide();
+	                alert("提交异常，请稍后再试:"+responseText);
+	            }
+	        }
+	    }).send();
+}
+
+function getGroupId(){
+	 var group_id = 0;
+     $ES('input[type="radio"] ',$('step1')).each(function(el){
+        if(el.checked){
+            group_id = el.value;
+        }
+     });
+
+     return group_id;
+}
+
+
+//检测短信内容是否合法
+function chk_sms_content(){
+    var err_msg1 = '短信末尾缺少签名，为了保证短信正常发送，系统将自动为您添加，请确认';
+    var err_msg2 = '短信内容不能包含2个【或】，请修改后再试';
+
+    //检查短信签名A
+    var templete = $('message_text').value;
+    templete = templete.replace(/【【/g,'【');
+    templete = templete.replace(/】】/g,'】');
+    templete = templete.replace(/\[|\]/g,'');
+    if(templete.test(/【.+】$/) == false){
+        alert(err_msg1);
+        templete += '【'+$('sms_sign').value+'】';
+        $('message_text').value = templete;
+        return false;
+    }
+    $('message_text').value = templete;
+    if(templete.match(/【/g).length > 1 || templete.match(/】/g).length > 1){
+        alert(err_msg2);
+        return false;
+    }
+
+}
+
+function select_value(p1,p2){
+    var s = document.getElementById(p1);
+     var ops = s.options;
+     for(var i=0;i<ops.length; i++){
+        if(ops[i].selected)
+        {
+            var tempValue = ops[i].innerHTML;
+            $(p2).set('html',tempValue);
+            break;
+        }
+     }
+}
+
+
+(function(){
+	//关闭弹出层
+	$ES('.close_btn',$('send_coupon_area')).addEvent('click',function(){
+	    $('send_coupon_area').getParent('.dialog').retrieve('instance').close();
+	});
+})();
+
+</script>

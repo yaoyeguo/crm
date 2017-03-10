@@ -1,0 +1,95 @@
+<{if($from!='dialog')}>
+    <div style="" class="content-head">
+        <div class="finder-title">
+            <h2 class="head-title span-auto">短信签名</h2>
+        </div>
+    </div>
+<{/if}>
+
+<div style="padding-top:2px;">
+    <table cellspacing="0" cellpadding="0" border="0" class="gridlist">
+        <col width="120" />
+        <col width="80" />
+        <thead>
+            <tr>   
+                <th style="text-align:right;">店铺</th>
+                <th>签名编号</th>
+                <th style="text-align:left;">短信签名</th>
+            </tr>
+        </thead>
+        <tbody id="sign_list">
+            <{foreach from=$signs item=data key=i}>
+            <tr id="tr<{$data.shop_id}>">
+                <td style="text-align:right;"><{$data.name}></td>
+                <td><{$data.extend_no}></td>
+                <td style="text-align:left;">
+                    <{input type="text" name="sms_sign" value=$data.sms_sign size=14 maxlength=10 }>
+                    <button id="<{$data.shop_id}>" type="button">保存</button>
+                    <span style="color:green">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </td>
+            </tr>
+            <{/foreach}>
+        </tbody>
+    </table>
+</div>
+
+<div style="background:#FFC;padding:5px;margin:2px 0 0 0;"> 尊敬的客户，为了保障您的短信正常发送，短信内容末尾必须加签名，如：上海商派。</div>
+
+<{if($from=='dialog')}>
+    <{area inject='.mainFoot'}>
+        <div class="table-action">
+            <{button onclick="$(this).getParent('.dialog').retrieve('instance').close();" class="btn-primary" type="button" label="关闭"}>
+        </div>
+    <{/area}>
+<{/if}>
+
+<script>
+(function(){
+    
+    $$('#sign_list button').addEvent('click', function(){
+        var el = this;
+        var shop_id = el.id;
+        var sms_sign = el.getParent().getElement('input').get('value');
+        if(sms_sign == ''){
+            alert('请输入短信签名');
+            return false;
+        }
+        
+        sms_sign = sms_sign.replace('【', '');
+        sms_sign = sms_sign.replace('】', '');
+        
+        var myRequest = new Request({
+            url: 'index.php?app=ecorder&ctl=admin_shop&act=save_sign',
+            method: 'POST',
+            data: 'shop_id='+shop_id+'&sms_sign='+sms_sign,
+            onSuccess:function(responseText){
+                //alert(responseText);
+                el.getParent().getElement('span').set('html', responseText);
+            }
+        }).send();
+    });
+    
+})();
+
+//刷新父窗口的签名选择框
+function refresh_sms_sign(id){
+    var myRequest = new Request.JSON({
+        url: 'index.php?app=ecorder&ctl=admin_shop&act=get_sms_sign_list',
+        method: 'POST',
+        data: '',
+        onSuccess:function(responseText){
+            //alert(responseText);
+            var options = [];
+                options.push('<option value="">请选择</option>');
+            responseText.each(function(val){
+                //alert(val.extend_no);
+                //alert(val.sign);
+                options.push('<option value="'+val.sign+'">'+val.sign+'</option>');
+            });
+            $(id).set('html', options.join("\n"));
+            $(id).set('value', '');
+        }
+    }).send();
+}
+</script>
+

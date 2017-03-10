@@ -1,0 +1,34 @@
+<div class="tableform">
+    <div class="division">
+        <h3>基本参数</h3>
+        <textarea cols='120' rows='10' readonly="readonly"><{$v}></textarea>
+        <h3>基本参数解析</h3>
+        <textarea cols='120' rows='20' readonly="readonly"><{$content|print_r}></textarea>
+        <table class="gridlist" cellspacing="0" cellpadding="0" border="0" >
+            <tr>
+              <th><{t}>访问来源标示：<{/t}></th>
+              <td><{$params.flag}></td>
+            </tr>
+            <tr>
+                <th><{t}>方法：<{/t}></th>
+                <td><{$params.method}></td>
+            </tr>
+            <tr>
+                <th><{t}>密钥：<{/t}></th>
+                <td><{$params.sign}></td>
+            </tr>
+        </table>
+        <h3>详细参数</h3>
+        <table class="gridlist" cellspacing="0" cellpadding="0" border="0" >
+            <{foreach from=$content item=item key=key}>
+                    <tr>
+                        <td><{$key}></td>
+                        <td>
+                            <{$item}>
+                            <!--<{if is_array($item) }>--> <!--<{/if}>-->
+                        </td>
+                    </tr>
+            <{/foreach}>
+        </table>
+    </div>
+</div>

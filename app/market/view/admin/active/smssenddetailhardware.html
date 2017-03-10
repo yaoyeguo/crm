@@ -1,0 +1,17 @@
+<div class="tableform">
+     <div class="gridlist" style="border:none;">
+        <table width="70%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+        <tr><th><{t}>活动总人数<{/t}></th><th><{t}>成功发送人数<{/t}></th><th><{t}>失败人数<{/t}></th></tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><{$list.count}></td>
+            <td><{$list.sendCount}></td>
+            <td><{$list.faildCount}></td>
+        </tr>
+        </tbody>
+        </table>
+     </div>
+         <{$pager}>
+</div>

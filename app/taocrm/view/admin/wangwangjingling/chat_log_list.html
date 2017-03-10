@@ -1,0 +1,95 @@
+<{area inject=".mainHead"}>
+    <{css src="style.css" app='taocrm'}>
+<{/area}>
+<style>
+#top5_area {width:760px;height:80px;background:url(<{$env.app.res_url}>/top5.gif);}
+    #top5_area li{width:20%;float:left;padding-top:30px;}
+    #top5_area h3{font-size:20px;}
+</style>
+<script>
+(function(){
+    //Asset.css('<{$env.app.res_url}>/style.css');
+})();
+</script>
+<div class="cir_rightbox_x" style="padding:0 5px 0 0">
+  <h4>
+      <div class="title_left" >
+          <{$path}>
+       </div>
+      <{include file="admin/analysis/search.html"}>
+  </h4>
+  <div class="tj_rightbox" style="padding:0;margin:0;">
+    <div class="wdgk_box">
+        <div id="group_edit_container" class="finder-detail-content" style="width: 100%;">
+            <div id="tab_nav" class="tabs-wrap finder-tabs-wrap clearfix">
+                <ul>
+                    <li class="tab current"><span>客户列表</span></li>
+                </ul>
+            </div>
+            <div class="tableform">
+                <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th><{t}>客户名称<{/t}></th>
+                            <th><{t}>咨询日期<{/t}></th>
+                            <{if $type == 1}>
+                            <th><{t}>操作<{/t}></th>
+                            <{/if}>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$wangwang_chat_data item=data key=key}>
+                        <tr>
+                            <td><{$data.uname}></td>
+                            <td><{$data.chat_date|cdate:FDATE}></td>
+                            <{if $type == 1}>
+                            <td class="smemberinfo" item-id="<{$data.id}>" nick="<{$data.uname}>"><label style="cursor:pointer;">客户信息</label></td>
+                            <{/if}>
+                        </tr>
+                    <{/foreach}>
+                    </tbody>
+                </table>
+                <{$pager}>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+    //斑马线
+    var list_tr = $$('table.gridlist tbody tr');
+    for(var i=0;i<(list_tr.length-1);i++) {
+        if (i%3 == 1) list_tr[i].setStyle('background','#F4F4F4');
+        if (i%3 == 2) list_tr[i].setStyle('background','#EEE');
+    }
+    
+    //数据详情
+    var setType = "<{$type}>";
+    if (setType == 1) {
+        var list_info = $$('table.gridlist tbody tr td.smemberinfo');
+        list_info.addEvent('click', function(){
+            var id = this.getProperty('item-id');
+            var nick = this.getProperty('nick');
+            new Dialog('index.php?app=taocrm&ctl=admin_wangwangchat&act=getMemberInfo&id=' + id, {'title':nick, 'width':680, 'height':280});
+        });
+    }
+
+    //不显示对比时间段
+    $('compare_span').setStyle('display','none');
+    
+    //不显示时间单位
+    $('count_unit').setStyle('display','none');
+    //选项卡效果
+})();
+
+function change_chart(){
+    var order_status = $('order_status').get('value');
+    var iframe1=$('line_frame1');
+    var iframe2=$('line_frame2');
+    iframe1.src += '&order_status='+order_status;
+    iframe2.src += '&order_status='+order_status;
+}
+</script>

@@ -1,0 +1,42 @@
+<div class="tableform" style="margin: 0; padding: 0;">
+    <div>
+        系统将对所有关注“商家运营助手公众号的微信账户，进行群发信息。如关注客户取消关注将无法获得此推广信息。
+    </div>
+</div>
+<form action="index.php?app=market&ctl=admin_weixin&act=up_send_all_msg" method="post" id="tmpl_form">
+    <input type="hidden" name="id" value="<{$id}>" />
+</form>
+
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="button" label="确定发送" id="theme-form-submit"}></div>
+<{/area}>
+
+
+<script>
+var _form = $('tmpl_form');
+var btn = $('theme-form-submit');
+
+_form.store('target',{ onSuccess : function(response) {
+    var hash_res_obj = JSON.decode(response);
+
+    if (hash_res_obj.success != undefined && hash_res_obj.success != "") {
+        try {
+        var _dialogIns = btn.getParent('.dialog').retrieve( 'instance');
+        } catch (e) { }
+
+            if (_dialogIns) {
+            _dialogIns.close();
+            //window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+btn.addEvent('click', function() {
+    _form.fireEvent('submit', {
+        stop : $empty
+    });
+});
+
+</script>

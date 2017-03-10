@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map map_file="maps/china.swf" tl_long="73.620045" tl_lat="53.553745" br_long="134.768463" br_lat="18.168882" zoom="95%" zoom_x="3.63%" zoom_y="2.68%">
+<areas>
+<area mc_name="CN_34" title="安徽省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_33" title="浙江省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_36" title="江西省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_32" title="江苏省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_22" title="吉林省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_63" title="青海省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_35" title="福建省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_23" title="黑龙江省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_41" title="河南省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_13" title="河北省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_43" title="湖南省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_42" title="湖北省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_65" title="新疆" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_54" title="西藏" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_62" title="甘肃省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_45" title="广西" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_52" title="贵州省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_21" title="辽宁省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_15" title="内蒙古" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_64" title="宁夏" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_11" title="北京市" value="0"><description><![CDATA[0%]]></description></area>
+<area mc_name="CN_31" title="上海市" value="0"><description><![CDATA[400%]]></description></area>
+<area mc_name="CN_61" title="陕西省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_37" title="山东省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_14" title="山西省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_12" title="天津市" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_53" title="云南省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_44" title="广东省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_46" title="海南省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_51" title="四川省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="CN_50" title="重庆市" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="TW" title="台湾省" value="0"><description><![CDATA[0]]></description></area>
+<area mc_name="borders" title="borders" color="#FFFFFF" balloon="false"></area>
+</areas>
+<movies>
+<movie title="香港" file="circle" color="#000000" width="5" height="5" long="114.153542" lat="22.411249" fixed_size="true"><description><![CDATA[0]]></description></movie>
+<movie title="澳门" file="circle" color="#000000" width="5" height="5" long="113.5502" lat="22.1636915147872" fixed_size="true"><description><![CDATA[0]]></description></movie>
+</movies>
+</map>

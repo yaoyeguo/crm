@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=320, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"> 
+<title>微信预约</title>
+<style>
+body{background:#FFF;margin:0;padding:5px;font-size:12px;color:#444;}
+#container {width:100%;margin:0 auto; background:#FFF; overflow:hidden}
+ul,h3,form,h4 {margin:0;padding:0;}
+ul{list-style:none}
+a {text-decoration:none}
+img{border:none}
+    
+.content {background:#EEE;border-radius:5px;}
+label {cursor:pointer;}
+
+input {font-size:14px;}
+
+.vote_items {padding:0 0 0 20px;}
+.vote_items li{padding:10px 0 0 0;}
+label.checked,label.unchecked { padding:6px 15px; display:inline-block}
+    label.checked { border:1px solid #F60; background:url(check.gif) no-repeat right bottom #FF9;}
+    label.unchecked { border:1px solid #AAA; background:#FFF;}
+   
+.txt {
+    border: 1px solid #D8D8D8;
+    border-radius: 3px;
+    box-shadow: 0 3px 12px #ECECEC inset;
+    height: 16px;
+    line-height: 18px;
+    padding: 5px;
+    transition: box-shadow 0.25s ease 0s;
+}
+
+input.txt:focus {
+    box-shadow: 0 3px 12px #DEDEDE inset;
+}
+
+.btn {
+    background: none repeat scroll 0 0 #6E8C8C;
+    border: 0 none;
+    border-radius: 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline;
+    font: 400 14px/31px 'Microsoft Yahei';
+    height: 31px;
+    padding: 0;
+    width: 90px;
+}
+
+.btn:hover {
+    background: none repeat scroll 0 0 #5CAA9C;
+}
+
+.plus {cursor:pointer;background:#069;height:20px;width:20px;color:#FFF;font-weight:bold;border:none;}
+</style>
+</head>
+<body>
+<div id="container">
+
+<form action="" method="post" >
+    <div style="background:#069;color:#FFF;font-size:24px;font-family:Microsoft Yahei;padding:10px 20px;margin:0 0 5px 0;border-radius:5px;"><{$rs.title}></div>
+    
+    <div class="content"><{$rs.content}>&nbsp;</div>
+    
+    <h4 style="padding:5px 0 0 5px;">请输入预约信息：</h4>
+    
+    <ul class="vote_items">
+        <{if(in_array('num', $rs.req_fields.prop))}>
+        <li>预约数量：<button type="button" id="minus" class="plus">-</button><input value="1" class="txt" id="num" name="num" type="text" size="4" /><button type="button" class="plus" id="plus">+</button></li>
+        <{/if}>
+        
+        <{if(in_array('color', $rs.req_fields.prop))}>
+        <li>
+            　　颜色：<input class="txt" name="color" type="text" size="6" />
+        </li>    
+        <{/if}>
+        
+        <{if(in_array('size', $rs.req_fields.prop))}>
+        <li>　　尺码：<input class="txt" name="size" type="text" size="6" />
+        </li>    
+        <{/if}>
+        
+        <{foreach from=$rs.req_fields.other.name item=data key=k}>
+            <{if ($data!='')}>
+                <{if ($rs.req_fields.other.type[$k]=='num')}>
+                    <li><{$data}>：
+                    <button type="button" id="minus" class="plus">-</button>
+                    <input class="txt" name="more_info[<{$data}>]" type="number" size="4" maxlength="8" value="1" />
+                    <button type="button" class="plus" id="plus">+</button>
+                    </li>
+                <{elseif ($rs.req_fields.other.type[$k]=='date')}>
+                    <li><{$data}>：<input class="txt" name="more_info[<{$data}>]" type="date" size="15" maxlength="11" /></li>
+                <{else}>
+                    <li><{$data}>：<input class="txt" name="more_info[<{$data}>]" type="text" size="15" maxlength="11" /></li>
+                <{/if}>
+            <{/if}>
+        <{/foreach}>
+        
+        <{if(in_array('truename', $rs.req_fields.user))}>
+        <li>　　姓名：<input class="txt" name="truename" type="text" size="6" /></li>
+        <{/if}>
+        
+        <{if(in_array('mobile', $rs.req_fields.user))}>
+        <li>手机号码：<input class="txt" name="mobile" type="number" size="15" maxlength="11" /></li>
+        <{/if}>
+
+        <{if(in_array('addr', $rs.req_fields.user))}>
+        <li>详细地址：<input class="txt" name="addr" type="text" size="30" /></li>
+        <{/if}>
+        
+        <li>备注留言：<input class="txt" name="order_content" type="text" size="30" /></li>
+    </ul>
+    
+    <button class="btn" type="submit" style="width:100%;margin:5px 0;">提交</button>
+    <input name="due_id" type="hidden" value="<{$rs.due_id}>" />
+    <input name="wx_id" type="hidden" value="<{$wx_id}>" />
+    
+    <div style="color:#333;font-family:Verdana;font-size:11px;line-height:20px!important;overflow:visible!important;display:block!important;visibility:visible!important;text-align:center;zoom:1;">Powered By <a style="text-decoration:none" href="http://www.shopex.cn" target="_blank"><b style="color: rgb(92, 113, 158);">Shop</b><b style="color: rgb(243, 144, 0);">Ex</b></a></div>
+</div>
+
+</form>
+
+<script src="http://lib.sinaapp.com/js/jquery/1.6/jquery.min.js"></script>
+<script>
+ $(function(){
+                  
+        $('input[type="radio"]').each(function(){
+            var e = $(this);
+            e.hide();
+            if(e.attr('checked')){
+                e.parent().attr('class','checked');
+            }else{
+                e.parent().attr('class','unchecked');
+            }
+        });
+       
+        $('label').click(function(){
+            var e = $(this);
+            e.parent().parent().find('label').attr('class','unchecked');
+            e.attr('class','checked');
+            e.find('input').eq(0).attr('checked','checked');
+        });
+        
+        $('#plus').click(function(){plus_on(1, $(this));});
+        $('#minus').click(function(){plus_on(-1, $(this));});
+       
+    });
+    
+    function plus_on(act,el){
+        
+        if(act == 1){
+            var num_el = el.prev();
+        }else{
+            var num_el = el.next();
+        }
+        
+        var num = parseInt(num_el.val());
+        if(act == 1){
+            num_el.val((num+1));
+        }else{
+            if(num > 1){
+                num_el.val((num-1));
+            }
+        }
+    }
+    
+</script>
+</body>
+</html>

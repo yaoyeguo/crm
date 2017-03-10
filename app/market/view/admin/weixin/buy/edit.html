@@ -1,0 +1,182 @@
+<{if $page_type eq 'add'}>
+    <form style="position:relative;" id="wx_lottery_frm" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=buy_manage_add" method="POST">
+<{else}>
+    <form style="position:relative;" id="wx_lottery_frm" class="tableform" action="index.php?app=market&ctl=admin_weixin&act=buy_manage_edit" method="POST">
+<{/if}>
+
+<div id="my_tab_nav">
+    <span class="hover" id="show_1">
+            <b>1、活动基本信息</b>
+    </span>
+    <span id="show_2">
+            <b>2、设置活动界面</b>
+    </span>
+</div>
+
+<div id="my_tab_body">
+
+    <table id="step_1" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tr>
+            <th><em class="c-red">*</em>活动名称:</th>
+            <td>
+                <{input id="buy_name_input" value=$info.buy_name name="info[buy_name]" vtype="required"}>
+            </td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em>开始时间:</th>
+            <td>
+                <{input type="date" vtype="date" name="info[start_time]" style="width:66px; font-family:arial;" value=$info.start_time}>
+            </td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em>结束时间:</th>
+            <td>
+                <{input type="date" vtype="date" name="info[end_time]" style="width:66px; font-family:arial;" value=$info.end_time}>
+            </td>
+        </tr>
+        <tr>
+            <th><em class="c-red">*</em>所需积分:</th>
+            <td>
+                <{input id="minus_score_input" value=$info.minus_score name="info[minus_score]" vtype="required"}>
+            </td>
+        </tr>
+        <tr>
+            <th>限制次数:</th>
+            <td>
+                <{input type="select" id="limit_times" options=$limit_times_arr value=$info.limit_times name="info[limit_times]"}>
+            </td>
+        </tr>
+        <tr>
+            <th>活动说明:</th>
+            <td>
+               <{input class="x-input" type="textarea" id="msg_input" value=$info.msg name="info[msg]" style="width:400px;height:100px;"}>
+            </td>
+        </tr>
+
+    </table>
+
+    <div id="step_2" style="display:none">
+    <table>
+        <tr>
+            <th>ERP赠品:</th>
+            <td>
+                <{input type="select" id="shop_gift_id" options=$erp_gifts_arr value=$info.shop_gift_id name="info[shop_gift_id]"}>
+            </td>
+        </tr>
+        <tr>
+            <th>商品名称:</th>
+            <td>
+                <{input id="goods_name_input" value=$info.goods_name name="info[goods_name]"}>
+            </td>
+        </tr>
+        <tr>
+            <th>商品编码:</th>
+            <td>
+                <{input id="goods_code_input" value=$info.goods_code name="info[goods_code]"}>
+            </td>
+        </tr>
+        <tr>
+            <th>商品图片:</th>
+            <td>
+               <{input id="goods_img" width=160 height=60 type="image" value=$info.goods_img name="info[goods_img]"}>
+            </td>
+        </tr>
+        <tr>
+            <th>商品描述:</th>
+            <td>
+                <{input class="x-input" type="textarea" id="goods_msg_input" value=$info.goods_msg name="info[goods_msg]" style="width:400px;height:80px;"}>
+            </td>
+        </tr>
+        <tr>
+            <th>可兑换总量:</th>
+            <td>
+               <{input size="12" id="goods_all_stock_input" value=$info.goods_all_stock name="info[goods_all_stock]" }>
+            </td>
+        </tr>
+        
+        <{if($info.buy_id)}>
+        <tr>
+            <th>剩余数量:</th>
+            <td>
+                <b><{$info.goods_stock}></b>　　
+                已兑换数量：<b><{$info.join_num}></b>
+            </td>
+        </tr>
+        <{/if}>
+        
+        </table>
+    </div>
+
+    <{if $info}>
+    <div style="width:100%;clear:both;"></div>
+        <input name="info[buy_id]" value="<{$info.buy_id}>" type="hidden" />
+    </div>
+    <{/if}>
+</form>
+
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button type="button" label="保存" id="survey-form-submit"}>
+    </div>
+<{/area}>
+
+<script>
+    var oper_type = '<{$oper_type}>';
+(function(){
+    var _form = $('wx_lottery_frm');
+	var btn =$('survey-form-submit');
+    if(oper_type == 'view'){
+        btn.hide();
+    }
+    _form.store('target',{
+        onSuccess:function(response){
+            var hash_res_obj = JSON.decode(response);
+            if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+            {
+                try{
+                    var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                }catch(e){}
+                if(_dialogIns)
+                {
+                    _dialogIns.close();
+                }
+            }
+        }
+    });
+
+    btn.addEvent('click',function(){
+        _form.fireEvent('submit',{stop:$empty});
+    });
+
+    //选项卡
+    $$('#my_tab_nav span').addEvent('click',function(event){
+        $('step_1').hide();
+        $('step_2').hide();
+        
+        $('step_'+$(this).get('id').replace('show_','')).show();
+        $(this).getParent().getElements('span').set('class', '');
+        $(this).set('class', 'hover');
+    });
+
+    //erp赠品
+    $("shop_gift_id").addEvent('change',function(){
+        var gift_id = $('shop_gift_id').value;
+        console.info(gift_id);
+        if(gift_id > 0){
+            var data = {'gift_id':gift_id};
+            new Request({
+                url : 'index.php?app=market&ctl=admin_weixin&act=get_shop_gift_id',
+                method : 'post',
+                data:data,
+                onSuccess:function(responseText){
+                    var data = JSON.decode(responseText);
+                    $('goods_name_input').set('value',data.gift_name);
+                    $('goods_code_input').set('value',data.gift_bn);
+                    $('goods_all_stock_input').set('value',data.change_num);
+                }
+            }).send();
+        }
+    });
+    
+})();
+</script>

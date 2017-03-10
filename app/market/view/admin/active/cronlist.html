@@ -1,0 +1,203 @@
+<h3 class="head-title">定时营销任务列表</h3>
+
+<div id="finder-header-7b3ba0" style="overflow: hidden; width: 100%;" class="finder-header-wrapper">
+    <table width="100%" cellspacing="0" cellpadding="0" class="finder-header">
+    <thead>
+        <tr>
+            <td>
+                <div order="" key="column_control" class="cell " >
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">任务名称（活动或插件名称）</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">开始日期</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">结束时间</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">执行周期</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">执行时间</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">已执行次数</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">累计发送人数</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">任务状态</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="column_control" class="cell ">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">任务来源</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div order="" key="role_name" class="cell orderable">
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="finder-col-label">查看详情</div>
+                                </td>
+                                <td width="5px">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </thead>
+    </table>
+</div>
+<div id="main" class="content-main" style="height: 90%; width: 100%;">
+    <div class="finder-list finder-normal" id="finder-list-7b3ba0">
+        <table width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+        <{foreach from=$data_list item=item}>
+            <tr item-id="1" class="row odd first ">
+                <td key="column_control">
+                    <div class="cell"><{$item.active_name}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.start_time|date_format:'%Y-%m-%d'}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.end_time|date_format:'%Y-%m-%d %H:%M:%S'}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.exec_cycle}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.exec_time|date_format:'%Y-%m-%d %H:%M:%S'}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.exec_count}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.exec_num}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.status}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><{$item.type}></div>
+                </td>
+                <td key="role_name">
+                    <div class="cell"><a href="<{$item.type_href}>"><{$item.type_a}></a></div>
+                </td>
+            </tr>
+        <{/foreach}>
+
+        </tbody>
+        </table>
+    </div>
+</div>

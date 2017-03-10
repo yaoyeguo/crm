@@ -1,0 +1,994 @@
+<style>
+#create_type {list-style:none; margin: 0;}
+#create_type li{display:inline-block;margin:5px}
+#sel_user_p {padding:5px;border:1px solid #CCC;overflow:hidden;background:#EAEEF4;border-radius:5px;margin:5px 0 0 0;}
+    #sel_user_p label{display:block;float:left;width:120px;overflow:hidden;}
+.head-title {margin:0 0 0 0;}
+#assign_users {background:#7695D2;color:#FFF;border-radius:5px;padding:5px;line-height:1.5em;}
+td.preview {font-weight:bold;}
+
+#sel_goods_list li,#goods_list li{
+    border-bottom:1px solid #EAEEF4;
+    cursor:pointer;
+    overflow:hidden;
+}
+#sel_goods_list li.goods_header,#goods_list li.goods_header{
+    background:#DBE2ED;
+}
+#sel_goods_list .bn,#goods_list .bn{
+    display:block;
+    float:left;
+    width:100px;
+}
+#active_form label,#active_form button {cursor:pointer;}
+#active_form .division {border:none;}
+
+#active_form #shop_list {margin:0;padding:0;}
+#active_form #shop_list li{
+    display:inline-block;width:150px;
+    margin:0 0 5px 0;border-radius:6px;
+}
+#active_form #shop_list li.hover {background:#F8D998;}
+</style>
+
+<form id="active_form" action="index.php?<{$env.server.QUERY_STRING}>" method="POST">
+<!------------------------step1---------------------------->
+<{input type="hidden" name="active_id" id="active_id" value=$rs_active.active_id }>
+<div id="step1">
+    <div class="division">
+        <h3 class="head-title">选择生成方式</h3>
+        <ul id="create_type">
+            <li><label ><input type="radio" name="source" value="step1_group" <{if($rs_active['source']=='step1_group' || !$rs_active['source'])}>checked="checked"<{/if}> />根据“自定义分组客户”设置自动营销</label></li>
+            <li><label ><input type="radio" name="source" value="step1_tags" <{if($rs_active['source']=='step1_tags')}>checked="checked"<{/if}> />根据“客户标签组”设置自动营销</label></li>
+            <li><label ><input type="radio" name="source" value="step1_goods" <{if($rs_active['source']=='step1_goods')}>checked="checked"<{/if}> />根据“客户购买商品”设置自动营销</label></li>
+        </ul>
+    </div>
+    <div id="step1_group" class="division step1_select" style="display:none">
+        <{input type="select" name="g_shopid"  options=$g_shops  required="true" value=$g_shop_id /}>
+        <{foreach from=$groups item=group key=s_id}>
+        <table id="group_<{$s_id}>" width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist"<{if($s_id != $g_shop_id)}>style="display:none"<{/if}>>
+            <thead >
+                <tr>   
+                    <th>分组名称</th>
+                    <th>客户数</th>
+                </tr>
+            </thead>
+            <tbody >
+                <{foreach from=$group item=data key=i}>
+                <tr class="provice-bg">
+                    <td style="text-align:left;font-weight:bold" width="30%">
+                    <{if $data.childs>0 }>
+                    <span id="<{$data.group_id}>" class="imgTree tree_close" onclick="clickTree(this,1);"> &nbsp;&nbsp; </span>
+                    <{else}>
+                    <span id="<{$data.group_id}>" class="imgTree tree_open"> &nbsp;&nbsp; </span>
+                    <{/if}>
+                    <label ><input type="radio" name="group_id" value="<{$data.group_id}>" <{if($data.group_id == $rs_active[group_id])}>checked='checked'<{/if}>/><{$data.group_name}></label>
+                    </td>
+                    <td width="10%"> <{$data.members}> </td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+        <{/foreach}>
+        <table id="group_none" width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist" style="display:none">
+            <thead >
+                <tr>   
+                    <th>分组名称</th>
+                    <th width="10%">客户数</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr class="provice-bg">
+                    <td colspan="2">该店铺下没有分组</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="step1_tags" class="division step1_select"style="display:none">
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" class="gridlist">
+            <thead >
+                <tr>   
+                    <th>标签名称</th>
+                    <th>客户数</th>
+                    <th>标签类型</th>
+                </tr>
+            </thead>
+            <tbody >
+                <{foreach from=$tags item=tag key=k}>
+                <tr class="provice-bg">
+                    <td style="text-align:left;font-weight:bold" width="30%">
+                        <label ><input type="radio" name="tag_id" value="<{$tag.tag_id}>" <{if($tag.tag_id == $rs_active[tag_id])}>checked='checked'<{/if}>/><{$tag.tag_name}></label>
+                    </td>
+                    <td width="10%"> <{$tag.members}> </td>
+                    <td width="10%"> <{$tag.type_msg}> </td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+    </div>
+    <div id="step1_goods" class="division step1_select"style="display:none;margin: 0 13px 10px 0;">
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+            <tbody>
+                <tr>
+                    <td width="50%">
+                        <div class="division" style="height:274px;">
+                            <div style="height:26px;">
+                                <span style="float:right;">
+                                    商品分组：
+                                    <{input type="select" options=$goods_group onchange="get_group_products(this.value);" }>
+                                </span>
+                                已选择商品：<span id="goods_num"></span>
+                            </div>
+                            <ul id="sel_goods_list" style="height:250px;overflow-y:scroll;margin:0;">
+                                <li class="goods_header"><span class='bn'>商家编码</span>商品名称</li>
+                                <{foreach from=$rs_goods item=data}>
+                                <li title="<{$data.org_name}>"><input type='hidden' name='goods_id[]' value='<{$data.goods_id}>' /><span class='bn'><{$data.bn}>&nbsp;</span><{$data.name}></li>
+                                <{/foreach}>
+                            </ul>
+                        </div>
+                    </td>
+                    <td width="50%">
+                        <div class="division" style="height:274px;">
+                            <div style="height:26px;">
+                                <span>
+                                    商品名称/编码：
+                                    <{input type="text" id="s_goods_name" /}>
+                                    <{button class="filterBtn btn-thirdly" type="button" id="s_goods_btn" label="搜索"}>
+                                </span>
+                            </div>
+                            <ul id="goods_list" style="height:250px;overflow-y:scroll;margin:0;"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!------------------------step2---------------------------->
+<div id="step2" style="display:none;">
+    <div class="division">
+        <h3 class="head-title">自动排除条件</h3>
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <!--默认开启-->
+            <tr>
+			  <th align="right"><{input type="checkbox" checked="checked" disabled="disabled" /}></th>
+			  <td>
+                黑名单客户组，无或错误手机号客户将自动排除
+              </td>
+			</tr>
+            
+            <!--默认开启-->
+            <tr>
+			  <th align="right"><{input name="exclude_filter[unique_user]" id="exclude_filter[unique_user]" type="checkbox" value="1" checked="checked" disabled="disabled" /}></th>
+			  <td>
+                <label for="exclude_filter[unique_user]">本次营销周期内，同一客户只发一次</label>
+              </td>
+			</tr>
+            
+            <tr>
+			  <th align="right"><input name="exclude_filter[hours_open]" id="exclude_filter[hours_open]" type="checkbox" value="1" <{if($rs_active.exclude_filter.hours_open)}>checked<{/if}> /></th>
+			  <td>
+                <{input id="exclude_filter[hours]" name="exclude_filter[hours]" type="text" value=$rs_active.exclude_filter.hours size="6" /}>
+                <label for="exclude_filter[hours_open]">
+                小时内发送过手机短信客户自动排除(除验证码通知类短信)</label>
+              </td>
+			</tr>
+            <tr>
+			  <th align="right"><input name="exclude_filter[goods_days_open]" id="exclude_filter[goods_days_open]" type="checkbox" value="1" <{if($rs_active.exclude_filter.goods_days_open)}>checked<{/if}> /></th>
+			  <td>
+                <{input id="exclude_filter[goods_days]" name="exclude_filter[goods_days]" type="text" value=$rs_active.exclude_filter.goods_days size="6" /}>
+                <label for="exclude_filter[goods_days_open]">天内购买过指定商品自动排除</label>
+              </td>
+			</tr>
+            <tr style="display:<{if(!$rs_active.exclude_filter.goods_days_open)}>none<{/if}>;">
+			  <th align="right"></th>
+			  <td>
+                <!--排除商品-->
+                <{input name="exclude_filter[exclude_good_ids]" type="hidden" value="" size="6" /}>
+                <div style="background:#DBE2ED;border-radius:8px;padding:8px;">
+                    <label><input name="exclude_filter[the_goods]" id="exclude_filter[the_goods]" type="checkbox" value="1" <{if($rs_active.exclude_filter.the_goods)}>checked<{/if}> /> 排除购买过本次活动商品的客户</label> 
+                    
+                    <div style="padding:8px 0;">排除商品分组：
+                    <select name="exclude_filter[goods_group_id]" id="goods_group_id">
+                        <option title="0" value=""></option>
+                        <{foreach from=$rs_group item=data}>
+                        <option <{if($rs_active.exclude_filter.goods_group_id==$data.group_id)}>selected<{/if}> title="<{$data.goods_num}>" value="<{$data.group_id}>"><{$data.group_name}></option>
+                        <{/foreach}>
+                    </select>
+                    共计 <font color=red>0</font>  种商品</div>
+                    
+                    排除商家编码：<{input id="exclude_filter[goods_bn]" name="exclude_filter[goods_bn]" type="text" value=$rs_active.exclude_filter.goods_bn size="20" /}>
+                    <button type="button" id="filter_goods_bn" title="根据商家编码精确匹配">查询</button>
+                    <button type="button" id="clear_bn">清空</button>
+                    <div style="color:#F30;margin:5px 10px;"></div>
+                </div>
+              </td>
+			</tr>
+		</table>
+    </div>
+</div>
+
+<!------------------------step3---------------------------->
+<div id="step3" style="display:none;">
+    <div class="division">
+        <h3 class="head-title">执行活动条件</h3>
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <tr id="cycle_type">
+			  <th align="right">周期类型：</th>
+			  <td>
+                <label><input name="cycle_type" value="auto" type="radio" /> 自动周期营销</label>　　
+                <label><input name="cycle_type" value="fixed" type="radio" /> 固定周期营销</label>
+              </td>
+			</tr>
+            <tr>
+			  <th align="right"></th>
+			  <td>
+                规则：
+                <{assign var="opt" value=array('order_finish'=>'订单完成时间','order_paid'=>'订单付款时间','order_create'=>'订单创建时间')}>
+                <{input id="auto_cycle_type" name="auto_cycle_type" type="select" options=$opt value=$rs_active.auto_cycle_type }>
+                后 <{input id="auto_cycle_days" name="auto_cycle_days" type="text" value=$rs_active.auto_cycle_days size="6" /}>天 执行
+              </td>
+			</tr> 
+            <tr style="display:none;">
+			  <th align="right"></th>
+			  <td>
+                已完成订单的客户，每 <{input id="fixed_cycle_days" name="fixed_cycle_days" type="text" value=$rs_active.fixed_cycle_days size="6" /}> 天 执行一次
+              </td>
+			</tr>
+            <tr>
+	            <th align="right">每次执行时间：</th>
+	            <td id="status">
+                    <{input id="auto_run_hour" name="auto_run_hour" type="text" value=$rs_active.auto_run_hour size="6" /}>时
+                    <{input id="auto_run_min" name="auto_run_min" type="text" value=$rs_active.auto_run_min size="6" /}>分
+                </td>
+	        </tr>
+            <tr id="select_shop">
+	            <th align="right"><em class="c-red">*</em>适用店铺：</th>
+	            <td>
+                    <ul id="shop_list">
+                    <{foreach from=$shops item=v key=k}>
+                        <li><input name="shop_id[]" id="shop_list<{$k}>" type="checkbox" value="<{$k}>" /><label for="shop_list<{$k}>"><{$v}></label></li>
+                    <{/foreach}>
+                    </ul>
+                </td>
+	        </tr>
+		</table>
+    </div>
+</div>
+
+<!------------------------step4---------------------------->
+<div id="step4" style="display:none;">
+    <div class="division">
+        <h3 class="head-title">营销短信模板</h3>
+        <table width="100%" border="0" cellpadding="6" cellspacing="0" >
+            <col width="15%" />
+            <col width="85%" />
+            <tr>
+			  <th align="right"><em class="c-red">*</em><{t}>活动名称：<{/t}></th>
+			  <td><{input type="text" id="active_name" name="active_name" value=$rs_active.active_name size="25" vtype="required" }></td>
+			</tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em><{t}>起止时间：<{/t}></th>
+	            <td>
+                    <{input size="30" type='date' id="start_time" name='start_time' value=$rs_active.start_time vtype="required" }>
+                     至 
+                    <{input size="30" type='date' id="end_time" name='end_time' value=$rs_active.end_time vtype="required" }>
+                </td>
+	        </tr>
+            <tr>
+	            <th align="right"><em class="c-red">*</em><{t}>状　　态：<{/t}></th>
+	            <td id="status">
+                    <label>
+                        <input type="radio" value="1" name="status" <{if($rs_active.status)}>checked<{/if}> /> 开启
+                    </label>
+                    　　　　　
+                    <label>
+                        <input type="radio" value="0" name="status" <{if(!$rs_active.status)}>checked<{/if}> /> 关闭
+                    </label>
+                </td>
+	        </tr>
+            <tr>
+                <th align="right"><em class="c-red">*</em><{t}>短信内容：<{/t}></th>
+                <td>
+                        <label>
+                            <input id="templete_add" type='radio' name='sms_content_type' onclick="sms_templete_add();"/>
+                            <{t}>新增<{/t}></label>
+                    　　　
+                        <label style="margin-left:20px">
+                            <input id="templete_sel" type='radio' name='sms_content_type' checked="checked" onclick="sms_templete_sel();"/>
+                        </label>
+                        <select name="template_id" id="template_id" class="x-input-select inputstyle">
+                            <option value="0">请选择短信模板</option>
+                            <{foreach from=$rs_templetes item=item}> <option <{if $rs_active.template_id == $item.template_id}>selected<{/if}> value=<{$item.template_id}>><{$item.title}>
+                            </option>
+                            <{/foreach}>
+                        </select>
+ 
+                </td>
+            </tr>
+            <tr id='content_id'>
+                <th>&nbsp;</th>
+                <td>
+                    <div style='width:480px;'>
+                        <div style='width:100%;border:1px solid #CCC;background:#EEE;border-bottom:none;padding:0 5px;line-height:24px;'>
+                            <span style="float:right;color:#999;">
+                                约<b class="txt_count" style="color:blue;">0</b>字，
+                                <b class="sms_num" style="color:red;">0</b>条短信
+                                <{help}><{t}>短信内容的实际长度以最终发出的结果为准<{/t}><{/help}>
+                            </span>
+                            <span style="margin-left:5px">插入参数：</span>
+                            <a style="margin-left:5px" onclick="insertAtCursor('message_text','&lt;{姓名}&gt;')">姓名</a>
+                            <a style="margin-left:5px" onclick="insertAtCursor('message_text','&lt;{昵称}&gt;')">昵称</a>
+                            <!--a style="margin-left:5px" onclick="insertAtCursor('message_text','&lt;{店铺}&gt;')">店铺</a-->
+                        </div>
+                        <div>
+                            <{input class="x-input" type="textarea" id="message_text" value=$rs_active.templete style="width:100%;height:60px;margin-top:0px;resize:none;" name="templete"  }>
+                            <div style="width:495px;">
+                                <span style="float:right;">
+                                    <{button label="保存短信内容" type="button" id="template_btn_save" class="btn-second"}>
+                                    <{button label="保存为新模板" type="button" id="add_sms_btn_save" class="btn-second" style="display:none" }>
+                                </span>
+                                <label><input disabled="disabled" id='unsubscribe' type='checkbox' value='1' checked="checked" />
+                                    退订回N</label>
+                                    <{help}><{t}>系统自动添加<{/t}><{/help}>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                短信签名：
+                                 <select class="x-input" vtype='required' name="extend_no" id="extend_no">
+                                    <option value="">请选择</option>
+                                <{foreach from=$sign_list item=sign}>
+                                    <option value="<{$sign.extend_no}>" <{if $sign.sign == $rs_active.sms_sign}>selected<{/if}>><{$sign.sign}></option>
+                                <{/foreach}>
+                                </select>
+                                
+                                <span style="cursor:pointer;color:#0597E0;" id="config_sms_sign">
+        <{img src="conf.gif" app="market" height="16" align="absmiddle" }>
+        设置签名
+    </span>
+                                
+                                <input type="hidden" name="sms_sign" id="sms_sign" value="<{$rs_active.sms_sign}>">
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr> 
+            
+            
+            
+            <tr>
+			  <th align="right"><{t}>备注说明：<{/t}></th>
+			  <td><{input type="text" id="remark" name="remark" value=$rs_active.remark  style="width:480px;" }></td>
+			</tr>
+		</table>
+    </div>
+</div>
+</form>
+
+<!------------------------btn 切换按钮---------------------------->
+<{area inject='.mainFoot'}>
+    <div class="table-action">
+        <{button class="btn-primary" type="button" id="back_btn" label="上一步" style="display:none;"}>
+        <{button class="btn-primary" type="button" id="step1_btn" label="下一步"}>
+        <{button class="btn-primary" type="button" id="step2_btn" label="下一步" style="display:none;"}>
+        <{button class="btn-primary" type="button" id="step3_btn" label="下一步" style="display:none;"}>
+        <{button class="btn-primary" type="button" id="step4_btn" label="保存" style="display:none;"}>
+    </div>
+<{/area}>
+
+<script>
+var curr_step = 1;//初始步骤
+var max_sms_len = 67;//单条短信字符数
+var cycle_type = '<{$rs_active.cycle_type}>';
+var shop_id = '<{$rs_active.shop_id}>';
+
+    $$('#active_form input[name="shop_id[]"]').each(function(ele){
+        if(shop_id.indexOf(ele.get('value')) >= 0){
+            ele.set('checked', true);
+        } 
+    });
+    
+    set_checkbox_bg();
+    $$('#shop_list input').addEvent('click', function(){
+        set_checkbox_bg();
+    });
+    
+    ajax_get_goods($('filter_goods_bn'));
+
+
+    $$('input[name="source"]').addEvent('click', function(){
+        select_step1();
+    });
+    $$('select[name="g_shopid"]').addEvent('change', function(){
+        change_shop_for_group(this.get('value'));
+    });
+
+    function change_shop_for_group(id)
+    {
+        $$('.gridlist').hide();
+        if($$('#group_'+id).length == 0)
+        {
+            $('group_none').show();
+        }else{
+            $$('#group_'+id).show();
+        }
+    }
+    function select_step1()
+    {
+        var step1_show = $$('input[name="source"]:checked').get('value');
+        $$('.step1_select').hide();
+        $$('#'+step1_show).show();
+    }
+(function(){
+
+    init_btn();
+
+    init_goods();
+    
+    init_event();
+    
+    init_value();
+    select_step1();
+    
+})();
+
+function clickTree(obj,depth){
+    if(obj.get('class')=='imgTree tree_open') {
+        obj.set('class','imgTree tree_close')
+        removeChilds(obj.parentNode.parentNode.getNext(),depth);
+    }else{
+        obj.set('class','imgTree tree_open')
+        getChildGroup(obj.id,depth);
+    }
+}
+function removeChilds(o,depth){
+    var o_depth = o.get('depth');
+    var o_next = o.getNext();
+    if(!o_depth) return false;
+    if( o_depth != depth) {
+        o.remove();
+        removeChilds(o_next,depth);
+    }
+}
+
+function getChildGroup(parent_id,depth){
+    var o = $(parent_id).parentNode.parentNode;
+    var data_str = 'parent_id='+parent_id;
+    var templates = '<td style="text-align:left" width="30%">\
+    {$imgTree} <label ><input type="radio" name="group_id" value="{$group_id}" {checked} />{$group_name}</label> </td>\
+                <td width="10%">{$members} </td>'; 
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=taocrm&ctl=admin_member_group&act=getChildGroup',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                var imgTree;
+                var obj = eval('(' + responseText + ')');
+                for(var i=0;i<obj.length;i++){
+                    new_node = templates.replace(/\{\$parent_id\}/g,obj[i].parent_id).replace(/\{\$group_id\}/g,obj[i].group_id).replace('{$group_name}',obj[i].group_name).replace('{$members}',obj[i].members).replace('{$update_time}',obj[i].update_time).replace('{$op_user}',obj[i].op_user);
+                    
+                    //替换节点图标
+                    if(obj[i].childs>0) {
+                        imgTree = '<span id="'+obj[i].group_id+'" class="imgTree tree_close" onclick="clickTree(this,'+(depth+1)+');"> &nbsp;&nbsp; </span>';
+                    }else{
+                        imgTree = '<span class="imgTree tree_open"> &nbsp;&nbsp; </span>';
+                    }
+                    if(obj[i].group_id == '<{$rs_active['group_id']}>')
+                    {
+                        new_node = new_node.replace('{checked}','checked="checked"');
+                    }
+                    for(var j=1;j<=depth;j++){
+                        imgTree = '　　'+imgTree;
+                    }
+                    new_node = new_node.replace('{$imgTree}',imgTree);
+                    
+                    var e = new Element('tr');
+                    e.set('depth',depth+1);
+                    e.set('id','tr'+obj[i].group_id);
+                    e.set('class','provice-bg');
+                    e.set('html',new_node);
+                    e.inject(o, 'after');
+                }
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+function init_value(){
+    cycle_type == 'fixed' ? cycle_type='fixed' : cycle_type='auto';
+    $$('#cycle_type input[value="'+cycle_type+'"]').fireEvent('click',{stop:$empty});
+    $$('#cycle_type input[value="'+cycle_type+'"]').set('checked',true);
+    
+    set_sms_length('');
+}
+
+function init_event(){
+    //监控短信内容变化
+    if(navigator.userAgent.indexOf("MSIE")>0){
+        $('extend_no').attachEvent("onpropertychange",function(){set_sms_length('')});
+        $('message_text').attachEvent("onpropertychange",function(){set_sms_length('')});
+    }else if(navigator.userAgent.indexOf("Firefox")>0){
+    	$('extend_no').addEventListener("change",function(){set_sms_length('')},false);
+    	$('message_text').addEventListener("input",function(){set_sms_length('')},false);
+    }
+    
+    //选择短信模板
+    $("template_id").addEvent('change',function(){
+        chg_sms_templete('');
+    });
+    
+    //保存模板
+    $("template_btn_save").addEvent('click',function(){
+        save_sms_templete('');
+    });
+    
+    $("add_sms_btn_save").addEvent('click',function(){
+        if($('message_text').value==""){
+            alert('短信内容不能为空!');
+            $("message_text").focus();
+            return false;
+        }
+
+        new Dialog('index.php?app=market&ctl=admin_active&act=save_template&from=active_cycle',{width:350,height:120,title:'短信模板标题'});
+    });
+    
+    $('exclude_filter[goods_days_open]').addEvent('click', function(){
+        var next_ele = $(this).getParent().getParent().getNext();
+        if($(this).checked == true){
+            next_ele.show();
+        }else{
+            next_ele.hide();
+        }
+    });
+    
+    $('goods_group_id').addEvent('change', function(){
+        $(this).getNext().set('text', $(this).options[$(this).selectedIndex].get('title'));
+    });
+	
+	var goods_group_id = $('goods_group_id');
+	goods_group_id.getNext().set('text', goods_group_id.options[goods_group_id.selectedIndex].get('title'));
+}
+
+function chg_sms_templete(ab){
+    if($('template_id'+ab).value=="0") {
+        $('message_text'+ab).set('value', '');
+        return false;
+    }
+     
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active&act=select_template&p[1]='+$('template_id'+ab).value,
+        method : 'post',
+        onSuccess:function(responseText){
+            $('message_text'+ab).value = responseText;
+            set_sms_length(ab);
+        }
+    }).send();
+    
+    return true;
+}
+
+function save_sms_templete(ab){
+    var data={'message_text':$('message_text'+ab).value};
+    new Request({
+        url : 'index.php?app=market&ctl=admin_active&act=edit_save&p[1]='+$('template_id'+ab).value,
+        method : 'post',
+        data:data,
+        onSuccess:function(responseText){
+            alert('模板保存成功！');
+            $('message_text'+ab).value = responseText;
+        }
+    }).send();
+}
+
+function init_goods(){
+    $('s_goods_btn').addEvent('click',function(event){
+        getProducts('search');
+    });
+    
+    $('goods_list').addEvent('dblclick',function(event){
+        copy_goods(event.target, 'sel_goods_list');
+    });
+    
+    $('sel_goods_list').addEvent('dblclick',function(event){
+        copy_goods(event.target, 'goods_list');
+    });
+    
+    getProducts('init');
+    
+    count_goods();
+}
+
+function init_btn(){
+    //返回键
+    $('back_btn').addEvent('click', function(){
+        back_step();
+    });
+    
+    //下一步
+    $('step1_btn').addEvent('click', function(){
+        goto_step(2);
+    });
+    
+    //下一步
+    $('step2_btn').addEvent('click', function(){
+        goto_step(3);
+    });
+    
+    //下一步
+    $('step3_btn').addEvent('click', function(){
+        goto_step(4);
+    });
+    
+    //保存
+    $('step4_btn').addEvent('click', function(){
+        save_active();
+    });
+    
+    $$('#cycle_type input').addEvent('click', function(){
+        if($(this).value=='fixed'){
+            $('cycle_type').getNext().hide();
+            $('cycle_type').getNext().getNext().show();
+        }else{
+            $('cycle_type').getNext().getNext().hide();
+            $('cycle_type').getNext().show();
+        }
+    });
+    
+    $('clear_bn').addEvent('click', function(){
+        $('exclude_filter[goods_bn]').set('value', '');
+        $('clear_bn').getNext().set('html', '');
+    });
+    
+    $('filter_goods_bn').addEvent('click', function(){
+        ajax_get_goods($(this));
+    });
+}
+
+function ajax_get_goods(ele){
+
+    //清除所有未选择的赠品
+    //只移除未选择的商品
+    var goods_bn = ele.getPrevious().get('value');
+    if(goods_bn=='' || goods_bn=='请输入指定商品的商家编码'){
+        return false;
+    }
+
+    var _url = 'index.php?app=ecorder&ctl=admin_gift_rule&act=ajax_get_goods';
+    var _data = 'goods_bn='+goods_bn;
+    new Request({
+        url : _url,
+        method : 'post',
+        data : _data,
+        onSuccess : function(responseText){
+            //alert(responseText);
+            ele.getNext().getNext().set('text', responseText);
+        }
+    }).send();
+}
+
+function save_active(){
+    var template_id = $('template_id');
+    if(template_id.get('disabled') == true){
+        alert('请保存短信模板');
+        return false;
+    }else{
+        if(template_id.get('value') == 0){
+            alert('请选择短信模板');
+            return false;
+        }
+    }
+    
+    var sms_sign = $('extend_no');
+    var sms_sign_txt = sms_sign.options[sms_sign.selectedIndex].text;
+    if(sms_sign_txt == ''){
+        alert('请输入短信签名');
+        sms_sign.focus();
+        return false;
+    }
+    
+    //检测特殊字符
+    var re = /[\[\]【】%&\*#@\(\)]/i;
+    if(re.test(sms_sign_txt) || re.test(sms_sign_txt)){
+        alert('短信内容和签名不能包含下列字符 []【】%&*#@() ');
+        return false;
+    }
+    
+    $('goods_list').set('html', '');
+    $('active_form').fireEvent('submit',{stop:$empty});
+}
+
+$('active_form').store('target',{
+    onRequest:function(){
+       $('step4_btn').set('disabled', 'disabled');
+    },
+    onSuccess:function(response){
+        $('step4_btn').set('disabled', false);
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('step4_btn').getParent('.dialog').retrieve('instance');
+            }catch(e){
+            
+            }
+            if(_dialogIns) _dialogIns.close();
+        }	
+    }
+});
+
+function set_sms_length(ab){
+    $('sms_sign').value = $('extend_no').options[$('extend_no').selectedIndex].text;
+    var message_text = $('message_text'+ab);
+    var sms_size = message_text.get('value').length
+                    + $('sms_sign'+ab).get('value').length 
+                    + 5;
+    var counter = message_text.getParent().getPrevious();
+    counter.getElement('.txt_count').set('html', sms_size);
+    counter.getElement('.sms_num').set('html',Math.ceil(sms_size/67));
+}
+
+function back_step(){
+    goto_step(curr_step - 1);
+}
+
+function goto_step(i){
+    if(check_step(i)==false){
+        return false;
+    }
+
+    if(i==1){
+        $('back_btn').hide();
+    }else{
+        $('back_btn').show();
+    }
+    curr_step = i;
+
+    $('step1').hide();
+    $('step2').hide();
+    $('step3').hide();
+    $('step4').hide();
+    
+    $('step1_btn').hide();
+    $('step2_btn').hide();
+    $('step3_btn').hide();
+    $('step4_btn').hide();
+    
+    $('step'+i+'_btn').show();
+    $('step'+i).show();
+}
+
+//检验表单是否完整
+function check_step(i){
+    if(curr_step > i){
+        return true;
+    }else{
+        if(i==2){
+            var source = $$('input[name="source"]:checked').get('value');
+
+            if(source == 'step1_group')
+            {
+                if($$('input[name="group_id"]:checked').length == 0){
+                    alert('请选择有效的分组');
+                    return false;
+                }
+                var g_shop_id = $$('select[name="g_shopid"]').get('value');
+                $$('#select_shop input').set('checked',false);
+                $$('#shop_list'+g_shop_id).set('checked',true);
+                $$('#select_shop input').set('disabled',true);
+                set_checkbox_bg();
+            }
+            if(source == 'step1_tags')
+            {
+                if($$('input[name="tag_id"]:checked').length == 0){
+                    alert('请选择有效的标签');
+                    return false;
+                }
+                $$('#select_shop input').set('disabled',true);
+                $$('#select_shop').hide();
+            }
+            if(source == 'step1_goods')
+            {
+            if($('goods_num').get('text') == 0){
+                alert('请选择有效的商品');
+                return false;
+            }
+                $$('#select_shop input').set('disabled',false);
+                $$('#select_shop').show();
+                $$('#active_form input[name="shop_id[]"]').each(function(ele){
+                    if(shop_id.indexOf(ele.get('value')) >= 0){
+                        ele.set('checked', true);
+                    } 
+                });
+                set_checkbox_bg();
+            }
+        }
+    
+        if(i==3){
+            if($('exclude_filter[hours_open]').checked && $('exclude_filter[hours]').value==''){
+                alert('请输入需要自动排除的小时数');
+                $('exclude_filter[hours]').focus();
+                return false;
+            }
+            
+            if($('exclude_filter[goods_days_open]').checked && $('exclude_filter[goods_days]').value==''){
+                alert('请输入需要排除购买商品的天数');
+                $('exclude_filter[goods_days]').focus();
+                return false;
+            }
+        }
+        
+        if(i==4){
+            if($$('#cycle_type input:checked').get('value')=='fixed'){
+                if($('fixed_cycle_days').get('value')=='' || $('fixed_cycle_days').get('value')=='0'){
+                    alert('请输入固定周期天数');
+                    $('fixed_cycle_days').focus();
+                    return false;
+                }
+            }else{
+                if($('auto_cycle_type').get('value')=='' || $('auto_cycle_days').get('value')==''){
+                    alert('请选择自动周期类型和天数');
+                    $('auto_cycle_days').focus();
+                    return false;
+                }
+            }
+            
+            if($('auto_run_hour').value=='' || $('auto_run_min').value==''){
+                alert('请输入执行时间');
+                return false;
+            }
+            
+            if($$('#active_form input[name="shop_id[]"]:checked').length==0 && $$('input[name="tag_id"]:checked').length == 0){
+                alert('请至少选择一个店铺');
+                return false;
+            }
+        }
+        
+        if(i==5){
+            if($('callplan_name').get('value') == ''){
+                alert('请输入计划名称');
+                return false;
+            }
+            if($('assign_users').get('text') == ''){
+                alert('请指定参与拨打的客服');
+                return false;
+            }
+        }
+    }
+}
+
+function count_goods(){
+    $('goods_num').set('text', $$('#sel_goods_list li').length - 1); 
+}
+
+function copy_goods(ele, target){
+    if(ele.getTag() == 'span'){
+        ele = ele.getParent();
+    }
+    if(ele.getTag() == 'li' && !ele.hasClass('goods_header')){
+        ele.injectInside(target);
+        count_goods();
+    }
+}
+
+function get_group_products(group_id){
+    //alert(group_id);
+    if(!group_id) return false;
+    var sel_goods = '0';
+    $$('#sel_goods_list input').each(function($obj,i){
+        sel_goods += ','+$obj.value;
+    });
+    
+    var data_str = '&group_id='+group_id+'&sel_goods='+sel_goods;
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecgoods&ctl=admin_shop_goods&act=ajaxGetGoodsList',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                $('sel_goods_list').set('html', responseText);
+                count_goods();
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+function getProducts(act){
+    var goods_name = $('s_goods_name').get('value');
+    if(act=='search' && goods_name==''){
+        //alert('请输入商品名称 或 商家编码');
+        //return false;
+    }
+    var sel_goods = '0';
+    $$('#sel_goods_list input').each(function($obj,i){
+        sel_goods += ','+$obj.value;
+    });
+  
+    var data_str = '&name='+goods_name+'&sel_goods='+sel_goods;
+    var ajaxReq = new Request(
+    {
+        method : 'post',
+        url : 'index.php?app=ecgoods&ctl=admin_shop_goods&act=ajaxGetGoodsList',
+        data: data_str,
+        onSuccess : function(responseText) {
+            //alert(responseText);
+            if(responseText != 'null') {
+                $('goods_list').set('html', responseText);
+            }
+        },
+        onFailure : function() {}
+    });
+    ajaxReq.send();
+}
+
+function sms_templete_add(){
+    $('template_id').set('value',0);
+    $('template_id').set('disabled',true);
+    $('template_btn_save').hide();
+    $('add_sms_btn_save').show();
+    $('message_text').value = "";
+    set_sms_length('');
+}
+
+function sms_templete_sel(){
+    $('template_id').set('disabled',false);
+    $('template_id').set('value','0');
+    $('template_btn_save').show();
+    $('add_sms_btn_save').hide();
+    $('message_text').value = "";
+    set_sms_length('');
+}
+
+function insertAtCursor(id, myValue){
+    //IE support
+    var myField = document.getElementById(id);
+    if(document.selection)
+    {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        sel.select();
+    }else if(myField.selectionStart || myField.selectionStart == '0'){
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        var restoreTop = myField.scrollTop;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos,myField.value.length);
+        if (restoreTop > 0){
+            myField.scrollTop = restoreTop;
+        }
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    }else{
+        myField.value += myValue;
+        myField.focus();
+    }
+}
+
+function set_checkbox_bg(){
+    $$('#shop_list input').each(function(ele){
+        if(ele.get('checked')){
+            ele.getParent().set('class','hover');
+        }else{
+            ele.getParent().set('class','');
+        }
+    });
+}
+
+$('config_sms_sign').addEvent('click', function(){
+    window.open('index.php?app=ecorder&ctl=admin_sms_sign&act=index');
+    //new Dialog('index.php?app=ecorder&ctl=admin_shop&act=signs&from=dialog',{title:'短信签名',width:550,height:400,onClose:function(){refresh_sms_sign('extend_no');}});
+    });
+</script>

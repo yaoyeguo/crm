@@ -1,0 +1,74 @@
+<div class="tableform">
+           <div class="division">
+
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+        <col width="15%" />
+        <col width="85%" />
+        <tbody>
+        <tr>
+          <th>店铺编号</th>
+          <td colspan="2"><{$shop.shop_bn}></td>
+        </tr>
+        <tr><th>名称</th>
+          <td colspan="2"><{$shop.name}>
+          
+          <{if $reset_login}>
+            <{$reset_login}>
+            <{help}><{t}>当与前端店铺同步出现session失效或不存在时，请重新登录。<{/t}><{/help}>
+          <{/if}>
+                    
+          </td>
+        </tr>
+		<tr>
+		  <th>店铺类型</th>
+          <td colspan="2">
+          
+          <{$shop_type[$shop.shop_type]}>
+          
+          <{if($shop.node_type=='wechat' && $shop.node_id)}>
+            <a href="?app=ecorder&ctl=admin_weixin&act=bind_event&node_id=<{$shop.node_id}>"><{button type="button" label="重新绑定微信消息"}></a>
+            <{help}><t>手动申请重新绑定微信消息</t><{/help}>
+          <{/if}>
+          </td>
+		</tr>
+        <tr>
+          <th>店铺节点</th>
+          <td colspan="2"><{$shop.node_id}></td>
+        </tr>
+        <tr>
+          <th>地区</th>
+          <td width="25%"><{$shop.area|region}></td>
+          <td width="49%">&nbsp;</td>
+        </tr>
+        <tr>
+          <th>地址</th>
+          <td colspan="2"><{$shop.addr}></td>
+        </tr>
+        <tr>
+          <th>发件人</th>
+          <td colspan="2"><{$shop.default_sender}></td>
+        </tr>
+		<tr>
+          <th>邮编</th>
+          <td colspan="2"><{$shop.zip}></td>
+        </tr>
+		 <tr>
+          <th>电话</th>
+          <td colspan="2"><{$shop.tel}></td>
+        </tr>
+        <tr>
+          <th>手机</th>
+          <td colspan="2"><{$shop.mobile}></td>
+        </tr>
+        <{if($shop.config['ecshop_url'])}>
+        <tr>
+          <th>ECShop</th>
+          <td colspan="2"><a href="<{$shop.config['ecshop_url']}>" target="_blank"><{$shop.config['ecshop_url']}></a></td>
+        </tr>
+        <{/if}>
+        </tbody>
+      </table>
+	
+
+  </div>
+    </div>

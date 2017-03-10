@@ -1,0 +1,46 @@
+<div class="tableform">
+  <div class="division">
+    <form method="post" action="index.php?app=ecgoods&ctl=admin_brand&act=del_brand" id="terminal">
+        <{input type="hidden" id="brand_id" name="brand_id" value=$brand_id }>
+        <{input type="hidden" id="task" name="task" value="del" }>
+        
+        <{$del_msg}>
+      
+        <div class="table-action">
+            <{button class="btn-primary" type="button" id="saveterminal" name="submit" label="确定"}>
+            <{button class="btn" type="button" id="cancel" label="取消"}>
+        </div>
+    </form>
+  </div>
+</div>
+<script>
+$('cancel').addEvent('click',function(event){
+    var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+    _dialogIns.close();
+});
+
+$('saveterminal').addEvent('click',function(event){
+
+    $('terminal').fireEvent('submit',new Event(event));
+
+});
+
+$('terminal').store('target',{
+    onSuccess:function(response){
+        var hash_res_obj = JSON.decode(response);
+        if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+        {
+            try{
+                var _dialogIns = $('saveterminal').getParent('.dialog').retrieve('instance');
+            }catch(e){}
+            
+            if(_dialogIns)
+            {
+                _dialogIns.close();
+                window.finderGroup['<{$env.get.finder_id}>'].refresh();
+            }
+        }
+    }
+});
+
+</script>

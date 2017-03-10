@@ -1,0 +1,152 @@
+<div class="finder-title">
+    <h2 class="head-title span-auto">营销任务监控</h2>
+</div>
+
+<div id="finder-packet-797e10" class="finder-packet " style="width: 1393px;">
+    <div class="packet-items clearfix" style="width: 1395px;">
+        <ul class="clearfix" style="width: 216px;">
+                    <li class="current">
+                <a href="index.php?app=market&ctl=admin_active_analysis&act=index">
+                                    <span>任务概览</span>
+                    </a>
+            </li>
+                            <li class=" last">
+                <a href="index.php?app=market&ctl=admin_active_analysis&act=index&view=1">
+                                    <span>任务详情</span>
+                    </a>
+            </li>
+                        </ul>
+    </div>
+    <div class="scroll-handle l"><span>«</span></div>
+    <div class="scroll-handle r"><span>»</span></div>
+</div>
+
+<style>
+#finder-action-797e10{height:auto;background:#EFEFEF;border-top:1px solid #CCCCCC;}
+#finder-action-797e10 ul{padding:0 0 0 2em;line-height:2em;}
+#finder-action-797e10 ul li{clear:both;}
+
+.active_box {overflow:hidden;padding:0 0 30px 0;}
+.active_box .active_type {
+    background:#7090CE;border-radius:50%;width:70px;
+    height:70px;color:#FFF;text-align:center;
+    font-size:14px;font-weight:bold;float:left;
+}
+.active_status {width:60%;padding:0 0 0 20px;float:left;}
+.active_status tr td{font-size:22px;font-weight:bold;line-height:2em;width:16%;}
+.active_status tr td.f12{font-size:12px;font-weight:normal;color:#F30;height:44px;}
+</style>
+<div style="padding-right:7px;" id="finder-action-797e10" class="gridlist-action finder-action clearfix">
+        说明：
+        <ul>
+            <li>1.本页面显示数据，统计时间为当前时间点。</li>
+            <li>2.统计当前时间点内存在的周期营销活动数、营销插件启用数、定时营销活动数等。</li>
+            <li>3.统计各类营销任务累计营销成功客户数、失败客户数、最后执行时间等。</li>
+        </ul>
+  </div>
+
+<div class="division">
+
+    <div class="active_box">
+        <div class="active_type"><br/>周期<br/>营销</div>
+        <div class="active_status">
+        
+            <{if($sys_version == 'Pro_Ver')}>
+                <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>当前有效活动数</th>
+                            <th>关闭的周期活动</th>
+                            <th>累计执行次数</th>
+                            <th>累计成功发送人数</th>
+                            <th>失败人数</th>
+                            <th>最后执行时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><{$cycle.opened|default:0}></td>
+                            <td><{$cycle.closed|default:0}></td>
+                            <td><{$cycle.run_times|default:0}></td>
+                            <td><{$cycle.succ_num|default:0}></td>
+                            <td><{$cycle.fail_num|default:0}></td>
+                            <td style="font-size:12px;"><{$cycle.last_run_time|default:'-'}></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <{else}>
+                <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>当前有效活动数</th>
+                            <th>关闭的周期活动</th>
+                            <th>累计执行次数</th>
+                            <th>累计成功发送人数</th>
+                            <th>失败人数</th>
+                            <th>最后执行时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="f12">旗舰版支持</td>
+                            <td class="f12">旗舰版支持</td>
+                            <td class="f12">旗舰版支持</td>
+                            <td class="f12">旗舰版支持</td>
+                            <td class="f12">旗舰版支持</td>
+                            <td class="f12">旗舰版支持</td>
+                        </tr>
+                    </tbody>
+                </table>
+            <{/if}>
+        </div>
+    </div>
+    
+    <div class="active_box">
+        <div class="active_type"><br/>营销<br/>插件</div>
+        <div class="active_status">
+            <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th>已开启插件数</th>
+                        <th>关闭的插件数</th>
+                        <th>累计执行次数</th>
+                        <th>累计成功发送人数</th>
+                        <th>失败人数</th>
+                        <th>最后执行时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><{$plugins.opened|default:0}></td>
+                        <td><{$plugins.closed|default:0}></td>
+                        <td><{$plugins.run_times|default:0}></td>
+                        <td><{$plugins.succ_num|default:0}></td>
+                        <td><{$plugins.fail_num|default:0}></td>
+                        <td style="font-size:12px;"><{$plugins.last_run_time|default:'-'}></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="active_box">
+        <div class="active_type"><br/>定时<br/>营销</div>
+        <div class="active_status">
+            <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th>未执行的定时活动</th>
+                        <th>已执行的定时活动</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><{$ontime.wait|default:0}></td>
+                        <td><{$ontime.finish|default:0}></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>

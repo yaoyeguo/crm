@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="format-detection" content="telephone=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<title>确认收货地址</title>
+<script src="<{$env.app.res_url}>/js/jquery.js"></script>
+<style>
+body {background:#F9F9F9;font-family:Microsoft Yahei;}
+body,ul,li,dl,dd,dt{margin:0;padding:0;}
+a {text-decoration:none;}
+ul,li{list-style:none;overflow:hidden;}
+.top_navbar {font-family:Microsoft Yahei;font-weight:bold;border:1px solid #DDDDDD;border-right:none;overflow:hidden;}
+.top_navbar ul li{float:left;width:33%;text-align:center;}
+.top_navbar ul li a{display:block;padding:8px 0;background:#F6F6F6;border-right:1px solid #DDDDDD;font-size:14px;color:#333;}
+.top_navbar ul li a:hover{background:#EDEDED;}
+.top_navbar ul li a.ui-btn-active{background:#3388CC;color:#FFF;}
+
+#gifts_li img{width:130px;height:130px;}
+#gifts_li li{float:left;width:140px;height:240px;margin:0 0 20px 20px;font-size:12px;border:1px solid #DDDDDD;}
+#gifts_li li h4{margin:0;padding:0;}
+#gifts_li li dt{text-align:center;background:#FFF;}
+#gifts_li li dd{padding:10px 10px 0 10px;line-height:1.5em;}
+#gifts_li li .button{text-align:center;padding:5px 0 0 0;}
+#gifts_li li span{ float:right;color:red;}
+
+.box1 {border:1px solid #DDDDDD;}
+.box1 li{float:left;}
+.box1_left {background:#3388CC;color:#FFF;line-height:1.5em;padding:10px 0;width:80px;text-align:center;}
+.box1_right {line-height:65px;text-align:center;width:215px;background:#FFF;font-family:Arial;font-size:28px;}
+
+#point_logs li{line-height:2em;padding:10px 0;border-bottom:1px dotted #CCC;}
+#point_logs li span{float:right;font-size:12px;line-height:1.5em;text-align:right;}
+
+font.red {color:red;}
+font.green {color:green;}
+font.date {color:#999;}
+
+#addr_list {}
+#addr_list li{border-bottom:1px dotted #CCC;padding:10px 0;}
+label {cursor:pointer;}
+
+table th{text-align:right;font-weight:normal;}
+</style>
+</head>
+<body>
+
+<div style="line-height:48px;background:url(<{$env.app.res_url}>/gray_bg.png) repeat-x  #DDDDDD;width:100%;text-align:center;">确认中奖人信息</div>
+
+<div style="clear:both;margin:20px auto;">
+    
+    <dl>
+        <dd>
+        
+            <ul id="addr_list">
+            
+                <{foreach from=$rs_orders item=data key=k}>
+                <li class="addr_li"><table><tr><td valign="top"><input id="receiver_addr<{$k}>" name="receiver_addr" type="radio" value="<{$data.addr}>" /></td> <td><label for="receiver_addr<{$k}>"> <{$data.addr}></label></td></tr></table></li>
+                <{/foreach}>
+                
+                <li class="addr_li"><label><input id="new_addr" name="receiver_addr" type="radio" value="new_addr" /> 使用新地址</label>
+                
+                    <table style="margin:0 0 0 20px;font-size:12px;display:none;">
+                        <tr>
+                            <th>省份：</th><td>
+                                <{input type="text" title="省份" name="new_addr[state]" size="10" maxlength="6" /}>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>城市：</th><td>
+                                <{input type="text" title="城市" name="new_addr[city]" size="10" maxlength="6" /}>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>区域：</th><td>
+                                <{input type="text" title="区域" name="new_addr[district]" size="10" maxlength="6" /}>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>街道地址：</th><td>
+                                <textarea title="街道地址" name="new_addr[addr]" style="resize:none;width:200px;height:40px;"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </li>
+                <li>
+                    姓名：<{input title="姓名" value=$rs_orders.0.ship_name id="receiver" name="receiver" size="10" maxlength="6" }>
+                    联系电话：<{input title="联系电话" value=$rs_wx_member.mobile id="mobile" name="mobile" size="18" maxlength="11" }>
+                    <{input type="hidden" id="log_id" name="log_id" value=$log_id }>
+                    <{input type="hidden" id="wx_id" name="wx_id" value=$wx_id }>
+                </li>
+            </ul>
+            
+            <div style="text-align:center;padding:20px 0 0 0;">
+                <button id="save_order" style="height:40px;width:100px;">确认</button>
+            </div>
+            
+        </dd>
+    </dl>
+    
+</div>
+
+<script>
+$(function(){
+    
+    $('#addr_list input[type="radio"]').click(function(){
+        $('#addr_list label').css({'font-weight':'normal','color':'#333'});
+        if($(this).attr('id')!='new_addr'){
+            $(this).parent().next().find('label').css({'font-weight':'bold','color':'#5779BD'});
+            $('#new_addr').parent().next().hide();
+        }else{
+            $(this).parent().css({'font-weight':'bold','color':'#5779BD'});
+            $(this).parent().next().slideDown(500);
+        }
+    });
+    
+    $('#addr_list input').eq(0).trigger('click');
+    
+    $('#save_order').click(function(){
+        save_order();
+    });
+    
+});
+
+function save_order(){
+   
+    has_error = false;
+    if($('input[name="receiver_addr"]:checked').val() == 'new_addr'){
+        $('#new_addr').parent().next().find('input,textarea').each(function(){
+            if($(this).val() == ''){
+                $(this).focus();
+                alert('请输入'+$(this).attr('title'));
+                has_error = true;
+                return false;
+            }
+        });
+    }
+    
+    if($('#receiver').val() == ''){
+        alert('请输入收货人');
+        $('#receiver').focus();
+        return false;
+    }
+    
+    if($('#mobile').val() == '' || $('#mobile').val().length!=11){
+        alert('请在联系电话里输入11位手机号码');
+        $('#mobile').focus();
+        return false;
+    }
+    
+    if(has_error == true) return false;
+
+    var _data = [];
+    $('#addr_list input[type=radio]:checked,#addr_list input[type=text],#addr_list input[type=hidden],#addr_list textarea').each(function(){
+        _data.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
+    });
+    //alert(_data.join('&'));
+    
+    $.ajax({
+        url: "lottery_res",
+        data: _data.join('&'),
+        type: 'POST',
+        cache: false,
+        success: function(html){
+            alert(html.replace('error',''));
+            if(html.indexOf('error') == -1){
+                window.location.href = 'lottery?wx_id='+$('#wx_id').val();
+            }
+        }
+    });
+}
+</script>
+
+</body>
+</html>

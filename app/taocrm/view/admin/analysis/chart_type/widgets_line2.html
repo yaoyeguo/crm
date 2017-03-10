@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>amCharts examples</title>
+        <script src="<{$env.app.res_url}>/amcharts/amcharts.js" type="text/javascript"></script>         
+        <script type="text/javascript">
+            var chart;
+
+            var chartData = <{$chartData}>;
+            
+            AmCharts.ready(function () {
+                // SERIAL CHART
+                chart = new AmCharts.AmSerialChart();
+                chart.dataProvider = chartData;
+                chart.categoryField = "x";
+                //chart.startDuration = 1;
+                chart.plotAreaBorderColor = "#DADADA";//边框颜色
+                chart.plotAreaBorderAlpha = 0;
+                // this single line makes the chart a bar chart          
+                chart.rotate = false;//图标的方向
+                chart.depth3D = 0;//立体度设置
+                //chart.angle = 30;
+                chart.fontSize = 12;
+
+                // AXES
+                // Category
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.gridPosition = "start";
+                categoryAxis.gridAlpha = 0;//横坐标
+                categoryAxis.axisAlpha = 0;
+                categoryAxis.tickLength = 0;
+                categoryAxis.dashLength = 0;
+                //categoryAxis.labelRotation = 90;
+
+                // Value
+                var valueAxis1 = new AmCharts.ValueAxis();
+                valueAxis1.axisAlpha = 0;//Y坐标1
+                valueAxis1.gridAlpha = 0;
+                valueAxis1.dashLength = 0;
+                //valueAxis1.minimum = 0;
+                valueAxis1.position = "bottom";
+                chart.addValueAxis(valueAxis1);
+                
+                // Value
+                var valueAxis2 = new AmCharts.ValueAxis();
+                valueAxis2.axisAlpha = 0;//Y坐标2
+                valueAxis2.gridAlpha = 0.1;
+                valueAxis2.dashLength = 4;
+                valueAxis2.position = "top";
+                chart.addValueAxis(valueAxis2);
+                
+                // second graph
+                var graph3 = new AmCharts.AmGraph();
+                graph3.valueAxis = valueAxis1;
+                graph3.title = "<{$chartLabel.y3}>";
+                graph3.valueField = "y3";
+                graph3.type = "line";//线形图
+                graph3.lineColor = "#5CCDF7";
+                graph3.balloonText = "<{$chartLabel.y3}>:[[value]]";
+                graph3.lineThickness = 4;//线宽
+                graph3.legendValueText = "[[value]]";
+                graph3.bullet = "round";//坐标点的形状：square
+                graph3.bulletColor = "#FFFFFF";
+                graph3.bulletBorderColor = "#0789B9";
+                chart.addGraph(graph3);
+                
+                // distance graph
+                var graph3 = new AmCharts.AmGraph();
+                graph3.valueAxis = valueAxis2;
+                graph3.title = "<{$chartLabel.y2}>";
+                graph3.valueField = "y2";
+                graph3.type = "line";//线形图
+                graph3.lineColor = "#0789B9";
+                graph3.balloonText = "<{$chartLabel.y2}>:[[value]]";
+                graph3.lineThickness = 4;//线宽
+                graph3.legendValueText = "[[value]]";
+                graph3.bullet = "round";//坐标点的形状：square
+                graph3.bulletBorderColor = "#18667E";
+                graph3.bulletColor = "#FFFFFF";
+                chart.addGraph(graph3);
+
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.fontSize = 12;//图例
+                legend.position = 'top';
+                legend.equalWidths = false;
+                chart.addLegend(legend);
+                
+                // CURSOR
+                var chartCursor = new AmCharts.ChartCursor();//鼠标线
+                chartCursor.cursorColor = '#18667E';
+                //chartCursor.cursorPosition = "mouse";//鼠标线的位置，跟随鼠标或自动对齐
+                chart.addChartCursor(chartCursor);
+
+                // WRITE
+                chart.write("chartdiv");
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div id="chartdiv" style="width:100%; height: 230px;"></div>
+    </body>
+
+</html>

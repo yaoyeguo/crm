@@ -1,0 +1,114 @@
+<desktop>
+
+    <widgets id="taocrm_desktop_widgets_index" order='30'>桌面统计</widgets>
+    
+	<permissions>
+	    <permission id="member">客户管理</permission>
+	    <permission id="member_tags">客户标签</permission>
+	    <permission id="member_group">客户分组</permission>
+	    <permission id="member_import">客户导入</permission>
+	    <permission id="member_export">客户导出</permission>
+        <permission id="add_member">添加客户</permission>
+        <permission id="caselog">服务记录</permission>        
+        <permission id="alarm">事件提醒</permission>        
+        <permission id="sms_log">短信日志</permission>    
+        
+         
+	    <permission id="phone_search">客户快捷查询</permission>
+	    <permission id="points_init">客户积分初始化</permission>
+        <permission id="analysts">整店运营分析</permission>
+        <permission id="rolescfg">系统管理</permission>
+        <permission id="member_analysts">客户属性分析</permission>
+        
+        <permission id="wangwangjingling">旺旺咨询客户</permission>
+        <permission id="wangwangchat">旺旺属性客户</permission>
+        <permission id="exapp">应用设置</permission>
+        <permission id="sys_bind_ww">绑定旺旺精灵</permission>
+        <permission id="ww_lost">旺旺流失客户分析</permission>
+        <permission id="laichacha">店铺情报</permission>
+        <permission id="wwchat">旺旺客户</permission>
+    </permissions>
+    
+    <adminpanel group="desktop_setting" permission="setting" controller='admin_shop' action='shopnode' display='true'>网店节点</adminpanel>
+    
+    <workground name="我的店铺" id="ecorder.shop" order="100">
+        <menugroup name="我的工具" order="1003000">
+            <menu controller='admin_member' action='phone_search' permission='phone_search' display='true' order='1003100'>客户快捷查询</menu>
+            <menu controller='admin_points_log' action='index' permission='points_init' display='true' order='1003500'>客户积分初始化</menu>
+        </menugroup>
+
+        <menugroup name="我的短信" order="1002000">
+            <menu controller='admin_sms_log' action='index' permission='sms_log' display='true' order='1002310'>短信发送记录</menu>
+        </menugroup>
+    </workground>
+    
+    <workground name="我的客户" id="taocrm.member" order="200">
+    
+        <menugroup name="客户信息" order="2001000">
+            <menu controller='admin_member' action='index' permission='member' display='true' order='2001100'>客户列表</menu>
+            <menu controller='admin_member_tag' action='index3' permission='member_tags' display='false' order='2001400'>标签设置</menu>
+            <menu controller='admin_member' action='exportIndex' permission='member_export' display='true' order='2001500'>客户导出</menu>
+            <menu controller='admin_member' action='import' permission='member_import' display='true' order='2001600'>客户导入工具</menu>
+            <menu controller='admin_member' action='add_member' permission='add_member' display='true' order='2001700'>添加客户</menu>
+        </menugroup>
+        
+        <menugroup name="客户分组" order="2002000">
+            <menu controller='admin_member_group' action='index' permission='member_group' display='true' order='2002100'>自定义分组</menu>
+            <menu controller='admin_member_tag' action='index' permission='member_group' display='true' order='2002200'>标签客户组</menu>
+            <menu controller='admin_member_vip' action='index' permission='member_group' display='true' order='2002300'>贵宾客户组</menu>
+            <menu controller='admin_member_blacklist' action='index' permission='member_group' display='true' order='2002400'>黑名单客户</menu>
+            <menu controller='admin_invalidmember' action='index' permission='member_group' display='true' order='2002500'>无效手机客户列表</menu>
+            <menu controller='admin_invalidmemberemail' action='index' permission='member_group' display='false' order='2002600'>无效邮箱客户列表</menu>
+        </menugroup>
+        
+        <menugroup name="潜在客户" order="2003000">
+            <menu controller='admin_member_import' action='index' permission='member_import' display='true' order='2003100'>外部客户</menu>
+            <menu controller='admin_member_import' action='sms' permission='member_import' display='true' order='2003200'>外部客户营销记录</menu>
+            
+            <menu controller='admin_member_import' action='assess' permission='member_import' display='true' order='2003300'>已清洗外部客户</menu>
+            
+            <menu controller='admin_member_wwchat' action='index' permission='wwchat' display='true' order='2003400'>旺旺客户</menu>
+            
+            
+            <menu controller='admin_analysis_member' action='lose' permission='ww_lost' display='true' order='2003500'>旺旺流失分析</menu>
+            
+            <menu controller='admin_member_import' action='index2' permission='member_import' display='false' order='2003600'>xxxxxxxxxx注册客户</menu>
+            <menu controller='admin_member_import' action='index3' permission='member_import' display='false' order='2003700'>xxxxxxxxxx创建新客户</menu>
+        </menugroup>
+        
+        <menugroup name="流失休眠客户" order="2004000">
+            <menu controller='admin_wangwangjingling' action='index' permission='wangwangjingling' display='false' order='2004100'>30天旺旺接待未下单</menu>
+            <menu controller='admin_wangwangjingling' action='index' permission='wangwangjingling' display='false' order='2004200'>30天下单未付款</menu>
+            <menu controller='admin_wangwangjingling' action='index' permission='wangwangjingling' display='false' order='2004300'>深度休眠客户</menu>
+        </menugroup>
+
+        <menugroup name="自定义属性客户" order="2005000">
+            <menu controller='admin_wangwangjingling' action='index' permission='wangwangjingling' params="type:1" display='true' order='2005100'>自定义属性客户</menu>
+            <menu controller='admin_wangwangjingling' action='member' permission='wangwangjingling' params="type:2" display='false' order='1010100'>已下单客户</menu>
+            <menu controller='admin_wangwangjingling' action='index' permission='wangwangjingling' params="type:0" display='false' order='1010200'>未下单客户</menu>
+        </menugroup>
+        
+    </workground>
+    
+    <workground name="系统设置" id="sys.config" order="600">
+        <menugroup name="增值服务" order="6002000">
+            <menu controller='admin_cha' action='index' permission='laichacha' display='false' order='6002200'>竞争对手情报</menu>
+        </menugroup> 
+    </workground>
+    
+    <workground name="营销推广" id="market.active" order="300">
+    
+        <menugroup name="系统营销模型" order="3003000">
+            <menu controller='admin_sale_model' action='model1' permission='member' display='true' order='3003100'>基础营销模型</menu>
+            <menu controller='admin_sale_model' action='model2' permission='member' display='false' order='3003200'>xxxxxx高级营销模型</menu>
+        </menugroup>
+    
+    </workground>
+    
+    <workground name="系统设置" id="sys.config" order="600">
+        <menugroup name="商派系统绑定" order="6001000">
+            <menu controller='admin_app' action='index' permission='sys_bind_ww' display='false' order='6000900'>绑定旺旺精灵</menu>
+        </menugroup>
+    </workground>  
+    
+</desktop>

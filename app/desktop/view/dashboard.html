@@ -1,0 +1,274 @@
+<div class="notice clearfix tableform" id="browser_notice" style="display:none;">
+<div class="flt">
+<b class="f-14">	我们强烈建议您升级或更换到新型浏览器，提升后台操作体验（响应速度更快、视觉效果更佳）!</b>
+<p>被推荐的浏览器有：
+	Google <a href="http://www.google.com/chrome?hl=zh-cn" target="_blank"><b class="c-blue">Chrome</b></a>、
+	Apple  <a href="http://www.apple.com.cn/safari/download/" target="_blank"><b class="c-blue">Safari</b></a>、
+	Mozilla <a href="http://www.mozillaonline.com/" target="_blank"><b class="c-blue">Firefox</b></a>、
+	Microsoft <a href="http://www.microsoft.com/china/windows/internet-explorer/" target="_blank"><b class="c-blue">IE7＋</b></a>
+</p>
+</div>
+<div class="frt">
+	<span class="btn pointer close" onclick="$('browser_notice').dispose();"><span><span>知道了</span></span></span>
+</div>
+</div>
+<div class='tableformbind' style="display:true;">
+   <a target="dialog::{width:576,height:400,title:''}" href="index.php?app=market&ctl=admin_bind&act=bind" label="" id='tableformbind' style="display:none;"></a>
+</div>
+<script>
+/*
+(function(){
+          new Request({url:'index.php?ctl=dashboard&act=checkBindOver',method:'post',data:{'t': $time()},
+              onSuccess:function(str){
+                  if(str){
+                      $('tableformbind').click();
+                  }
+              }
+            }).send();
+	}).periodical(86400000);*/
+    
+</script>
+
+<script>
+void function(){
+	if(window.ie6){
+		if('know'==Cookie.read('browser-notice'))return;
+		$('browser_notice').show();
+		$$('#browser_notice .close').addEvent('click',function(){
+				Cookie.write('browser-notice','know',{duration:1});
+		});
+		
+	
+	}
+}();	
+</script>
+<div class="widgets clearfix"> 
+	<div id="t-1" class="wcol t-1 clearfix">
+		<{foreach from=$widgets_3 item=widget name="widget"}>
+		  <div class="item <{$widget.className}>" id="<{$widget.class_full_name}>">
+			 <div class="dashbd-action"></div>
+			 <div class="dashbd-bd">
+				 <div class="dashbd-head">
+					<div class="dashbd-headl"><{$widget.title}></div>
+				</div>
+				<div class="dashbd-list">
+					<{$widget.html}>
+				</div>
+			 </div>
+		   </div> 
+		<{/foreach}>
+	</div>
+    <div id="l-1" class="wcol l-1 flt">
+		<{foreach from=$widgets_1 item=widget name="widget"}>
+		  <div class="item <{$widget.className}>" id="<{$widget.class_full_name}>">
+			 <div class="dashbd-action"></div>
+			 <div class="dashbd-bd">
+				 <div class="dashbd-head">
+					<div class="dashbd-headl"><{t}><{$widget.title}><{/t}></div>
+				</div>
+				<div class="dashbd-list">
+					<{$widget.html}>
+				</div>
+			 </div>
+		   </div> 
+		<{/foreach}>
+        <div id="bottomHelper" class="item bottomPos" style="height:50px;"></div>
+	</div>
+	<div id="l-2" class="wcol l-2 flt">
+		<{foreach from=$widgets_2 item=widget name="widget"}>
+		  <div class="item <{$widget.className}>" id="<{$widget.class_full_name}>">
+			 <div class="dashbd-action"></div>
+			 <div class="dashbd-bd">
+				 <div class="dashbd-head">
+					<div class="dashbd-headl"><{$widget.title}></div>
+				</div>
+				<div class="dashbd-list">
+					<{$widget.html}>
+				</div>
+			 </div>
+		   </div> 
+		<{/foreach}>
+        <div id="bottomHelper" class="item bottomPos" style="height:50px;"></div>
+	</div>
+    	<div id="b-1" class="wcol b-1 clearfix">
+		<{foreach from=$widgets_4 item=widget name="widget"}>
+		  <div class="item <{$widget.className}>" id="<{$widget.class_full_name}>">
+			 <div class="dashbd-action"></div>
+			 <div class="dashbd-bd">
+				 <div class="dashbd-head">
+					<div class="dashbd-headl"><{t}><{$widget.title}><{/t}></div>
+				</div>
+				<div class="dashbd-list">
+					<{$widget.html}>
+				</div>
+			 </div>
+		   </div> 
+		<{/foreach}>
+	</div>
+</div>
+
+<{area inject=".mainFoot"}>
+<div class="note clearfix" style="margin-bottom:0;height:20px;display:none;">
+	 <div class="span-auto">
+		 <{t}> 当前版本：<{/t}><{$deploy.product_name}>  V<{$deploy.product_version}> 
+		 <a target="command::{title:'<{t}>检查更新<{/t}>'}" class="lnk" style="color:#3367ac" href="index.php?ctl=appmgr&act=fetchindex"><{t}>检查更新<{/t}></a>
+		 
+		 
+	  </div>     
+	<div class="user-tip frt">
+		<b><{t}>你知道么?<{/t}>&nbsp;&nbsp;&nbsp;&nbsp;</b><span id="dashboard-tip"><{$tip}></span>
+		 &nbsp;<span class="lnk" onclick="$('dashboard-tip').set('opacity',0);new Request.HTML({url:'index.php?app=desktop&ctl=dashboard&act=fetch_tip',onComplete:function(){$('dashboard-tip').set('opacity',1);},update:'dashboard-tip',evalScripts:false}).get()"><{t}>再一条<{/t}></span>
+	</div>
+   
+</div>
+
+<{/area}>  
+
+<input type="hidden" id="notice_id" value='<{$notice_id}>' />
+<input type="hidden" id="dashboard-side-r-trigger"/>
+<script>
+    //new Equalizer('.span-9').equalize();
+    $$('.widgets .valigntop').each(function(item){
+        item.injectTop(item.getParent());
+    });
+
+    new Side_R('index.php?app=desktop&ctl=dashboard&act=advertisement',{width:250,title:'<span class="font9px">advertisement</span>',trigger:$('dashboard-side-r-trigger'),
+        onShow:function(){this.container.setStyle('overflow-y','hidden');}
+    });
+
+	$$('.head-nav .wg').removeClass('current');
+    
+    //--------------------------弹出框增加部分--------------------------
+    function setTipsStatus(e){
+        if(e==true) {
+            Cookie.write('updateTips'+$('notice_id').value, 'hide');
+        }else{
+            Cookie.write('updateTips'+$('notice_id').value, 'show');
+        }
+    }
+    
+    //封装的nextSib方法出去空白节点
+    function nextSib(t){
+        var n=t.nextSibling;
+        if(t.nextSibling.nodeType!=1){
+            n=n.nextSibling;
+        }
+        return n;
+    }
+    
+    //封装的insertAfter
+    function insertAfter(newChild,target){
+        var oParent=target.parentNode;
+        if(oParent.lastChild==target){
+            oParent.appendChild(newChild);
+        }else{
+            oParent.insertBefore(newChild,nextSib(target));
+        }
+    }
+    
+    function addCheckbox(){
+        var iframes = document.getElementsByName('dialog-frame');
+        var obj = document.createElement('div');
+        obj.innerHTML = '<div style="padding:5px 0 5px 10px;background:#DBE2ED"><label><input onclick="setTipsStatus(this.checked);" id="donot_show" type="checkbox" />下次不再显示此提示</label></div>';
+        insertAfter(obj,iframes[0]);
+    }
+    //--------------------------弹出框增加部分--------------------------
+
+    /**
+    * 桌面拖拽
+    */
+    (function(){
+		/*
+        <{if $init_finish == 0}>
+            new Dialog('index.php?app=taocrm&ctl=admin_newbie',{title:'使用向导',width:650,height:350});
+            //new Dialog('index.php?app=market&ctl=admin_bind&act=bind',{title:'使用向导',width:576,height:400});
+        <{else}>
+            //系统通知提示框
+            if($('notice_id').value!='' && Cookie.read('updateTips'+$('notice_id').value)!='hide') {
+                new Dialog('index.php?app=taocrm&ctl=admin_notice&act=index',{title:'系统公告',iframe:true,width:650,height:350,onLoad:function(){addCheckbox();}});
+            }
+        <{/if}>
+        */
+        
+        <{if $flag == 1}>
+	 		//new Dialog('index.php?app=taocrm&ctl=admin_newbie&act=expired_notice&day=<{$day}>',{title:'到期提醒',width:430,height:180});
+	    <{else}>
+	    	<{if $init_finish == 0}>
+	    		//new Dialog('index.php?app=taocrm&ctl=admin_newbie',{title:'使用向导',width:650,height:350});
+	    	<{else}>
+		    	//系统通知提示框
+	            if($('notice_id').value!='' && Cookie.read('updateTips'+$('notice_id').value)!='hide') {
+	                //new Dialog('index.php?app=taocrm&ctl=admin_notice&act=index',{title:'系统公告',iframe:true,width:650,height:350,onLoad:function(){addCheckbox();}});
+	            }
+	    	<{/if}>
+        <{/if}>
+    
+        
+    
+        var defaultItems = $$('.dashbd-headl');
+        var DragMod = {
+            init:function(){
+                $$('.dashbd-headl').setStyle('cursor','move');    
+                this.attachDrag();
+
+            },
+            attachDrag:function(){
+                defaultItems.each(function(el){
+                    el.addEvent('mousedown',function(e){
+                        e.stop();
+                        var item = el.getParent('.item');
+
+                        var clone = item.clone().set('id','cloneItem').setStyles(item.getCoordinates()).setStyle('opacity',0.7).removeClass('item').inject(document.body);
+                        var where = 'before',sortString = '';
+                        var drag = new Drag.Move(clone,{
+                            droppables:$$('.item'),
+                            onDrop:function(thisElement,overed,event){
+                                thisElement.destroy();
+                                item.setStyle('display','block').replaces($('DragDiv'));
+                                (function(){
+                                    $$('.l-1,.l-2,.t-1,.b-1').each(function(mod){
+                                        if(mod.getElements('.item').length === 0) return;
+                                        if(mod.getElements('.item').length === 1 && mod.getElements('.item')[0].get('id') === 'bottomHelper') return;
+                                        if(mod.getElements('.item').length) sortString += (' ' + mod.get('id') + ':');
+                                        mod.getElements('.item').each(function(item){
+                                            if(item.get('id') === 'bottomHelper'){
+                                                return;
+                                            }
+                                            sortString += (item.get('id') + ','); 
+                                        }) 
+                                        sortString = sortString.substring(0,sortString.length-1);
+                                    });
+                                    
+                                   new Request({
+                                        url:"<{$dashboard_sort_url}>",
+                                        data:"sort=" + sortString
+                                   }).send();
+                                    
+                                   sortString = '';
+                                })();
+                            },
+                            onEnter:function(thisElement,overed){
+                                e.stop();
+                                if(overed === $('DragDiv').getNext()){
+                                    where='after';
+                                    if(overed.get('id') === 'bottomHelper') return;
+                                }
+                                $('DragDiv').inject(overed,where);
+                                where = 'before';
+                            },
+                            onStart:function(thisElement,event){
+                                event.stop();
+                                var dd = new Element('div',{'id':'DragDiv'}).setStyles(item.getCoordinates()).setStyles({
+                                    'border':'2px dashed #ddd'
+                                }).inject(item,'before');
+                                item.setStyle('display','none');
+                            }
+                        });
+                        drag.start(e);
+                    });
+                });
+            }
+        };
+        DragMod.init(); 
+    })();
+</script>

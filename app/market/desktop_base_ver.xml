@@ -1,0 +1,63 @@
+<desktop>
+    
+    <permissions>
+        <permission id="markets">营销管理</permission>
+        <permission id="rolescfg">系统管理</permission>
+        <permission id="edm_manage">EDM配置</permission>
+        <permission id="smscfg">短信设置</permission>
+        <permission id="coupon">优惠券设置</permission>
+        <permission id="send">短信发送列表</permission>
+        <permission id="weixin">微信营销</permission>
+        
+        <permission id="shop_sms">短信帐号</permission>
+        <permission id="shop_sms_template">短信模板</permission>
+        <permission id="shop_sms_send_log">发送记录</permission>
+        <permission id="add_sms_active">创建短信营销</permission>
+        <permission id="sms_active_list">短信营销列表</permission>
+    </permissions>
+    
+    <workground name="我的店铺" id="ecorder.shop" order="100">
+    
+        <menugroup name="我的短信" order="1002000">
+            <menu controller='admin_sms_active' action='index' permission='shop_sms' display='true' order='1002100'>短信帐号</menu>
+            <menu controller='admin_sms_templates' action='themes' permission='shop_sms_template' display='true' order='1002200'>短信模板</menu>
+            <menu controller='admin_sms_send' action='index' permission='shop_sms_send_log' display='true' order='1002300'>营销短信日志</menu>
+            
+            <menu controller='admin_sms_log' action='index' permission='shop_sms_send_detail' display='false' order='1002500'>xxxx发送明细</menu>
+        </menugroup>
+
+		<menugroup name="xxxxEDM配置" id="edm_manage" order="1700">
+            <menu controller='admin_edm_account' action='index' permission='edm_manage' display='false' order='6001100'>邮件配置</menu>
+            <menu controller='admin_edm_templates' action='themes' permission='edm_manage' display='false' order='6001200'>邮件模板</menu>
+            <menu controller='admin_edm_tclass' action='index' permission='edm_manage' display='false' order='6001300'>模板分类</menu>
+            <menu controller='admin_edm_active' action='index' permission='edm_manage' display='false' order='6001400'>邮件模板市场</menu>
+            <menu controller='admin_edm_send' action='index' permission='edm_manage' display='false' order='6001500'>邮件发送列表</menu>
+            <menu controller='admin_edm_doc' action='rule' permission='edm_manage' display='false' order='6001600'>EDM制作规范</menu> 
+        </menugroup>
+		
+    </workground>
+    
+    <workground name="营销推广" id="market.active" order="300">
+    
+        <menugroup name="自定义营销" order="3001000">
+            <menu controller='admin_active' action='guide' permission='add_sms_active' display='true' order='3001100'>创建营销活动</menu>
+            <menu controller='admin_active_sms' action='index' permission='sms_active_list' display='true' order='3001200'>营销活动列表</menu>
+            
+			<menu controller='admin_active_edm' action='index' permission='markets' display='false' order='2001200'>邮件活动列表</menu>
+        </menugroup>   
+		
+        <menugroup name="xxxxxxxxxx淘宝优惠券" order="3005000">
+            <menu controller='admin_coupon' action='index' permission='coupon' display='false' order='3005100'>淘宝优惠券管理</menu>
+            <menu controller='admin_coupon_analysis' action='index' permission='coupon' display='false' order='3005200'>淘宝优惠券使用</menu>
+        </menugroup> 
+    
+        <menugroup name="营销效果评估" order="3006000">
+            <menu controller='admin_active_assess' action='index' permission='markets' display='false' order='3006100'>短信营销效果评估</menu>
+            <menu controller='admin_coupon_analysis' action='index' permission='coupon' display='false' order='3006200'>xxxxxxxxxx淘宝优惠券使用评估</menu>
+            <menu controller='admin_remind_effect' action='index' permission='markets' display='true' order='3006300'>催付效果评估</menu>
+            <menu controller='admin_active_monitor' action='index' permission='markets' display='true' order='3006600'>营销效果监控评估</menu>
+        </menugroup>
+
+    </workground>
+   
+</desktop>

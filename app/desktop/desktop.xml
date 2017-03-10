@@ -1,0 +1,68 @@
+<desktop>
+    <panelgroup id="setting" icon="panel-setting.png" order="10">商店配置</panelgroup>
+    <panelgroup id="user" icon="panel-user.png" order="50">管理员和权限</panelgroup>
+    <panelgroup id="network" icon="panel-network.png" order="80">联网</panelgroup>
+    <panelgroup id="other" icon="panel-other.png" order="70">其他</panelgroup>
+
+
+    <adminpanel group="desktop_other" controller="queue" permission="performance" order="60" display='true'>队列管理</adminpanel> 
+    <adminpanel group="desktop_setting" controller="system" permission="performance" action="service" display='true' order="70">系统配置</adminpanel>
+    <adminpanel group="desktop_setting" controller="email" permission="performance" action="setting" display='false'>系统配置</adminpanel>
+
+
+    <adminpanel group="desktop_user" permission="users" controller="users" display='true'>操作员管理</adminpanel>
+    <adminpanel group="desktop_user" permission="users" controller="roles" display='true'>角色管理</adminpanel>
+    <adminpanel group="desktop_other" permission="other" controller="pam" display='true'>登陆认证设置</adminpanel> 
+    <adminpanel group="desktop_setting" controller="certificate" action="index" permission="shopsetting" display="true" order='50'>授权证书</adminpanel>
+    <adminpanel group="desktop_setting" controller="adminpanel" action="index" permission="setting" display="false" order='20'>配送方式</adminpanel>
+
+    <adminpanel group="desktop_network" controller="network">网店邻居</adminpanel> 
+    <adminpanel group="desktop_other" permission="setting" controller="data" display='true'>数据备份与还原</adminpanel>
+    <adminpanel group="desktop_other" permission="setting" controller="backup" display='false'>数据备份</adminpanel>
+    <adminpanel group="desktop_other" permission="setting" controller="comeback" display='false'>数据还原</adminpanel>
+    <adminpanel group="desktop_other" permission="setting" controller="debug" display='false'>清除体验数据</adminpanel>
+
+    <adminpanel group="desktop_other" permission="performance" controller="cachemgr" display='false'>缓存管理</adminpanel>
+    <adminpanel group="desktop_other" permission="performance" controller="cachemgr" action="status" display='true' order="50">缓存管理</adminpanel>
+    <adminpanel group="desktop_other" permission="performance" controller="cachemgr" action="optimize" display='false'>优化缓存</adminpanel>
+    <adminpanel group="desktop_other" permission="performance" controller="cachemgr" action="clean" display='false'>清空缓存</adminpanel>
+    <adminpanel group="desktop_setting" permission="shopsetting" controller="appmgr" display='true' order="20">应用中心</adminpanel>
+    <adminpanel group="desktop_other" permission="other" controller="rpcnotify" display='true'>通知</adminpanel>
+    <adminpanel group="desktop_other" permission="other" controller="system" action="set_title" display='true'>标题设置</adminpanel>
+
+    <adminpanel group="desktop_other" permission="other" controller="shoprelation" display='false'>网店邻居</adminpanel>
+
+    <permissions>
+        <permission id="shopsetting" display='false'>商店设置</permission>
+        <permission id="set_matrix_switch" display='false'>矩阵私有化</permission>
+        <permission id="setting" display='false'>数据管理</permission>
+        <permission id="performance" display='false'>缓存,队列管理</permission> 
+        <permission id="sys_roles" display='true'>角色管理</permission>
+        <permission id="sys_users" display='true'>员工账号设置</permission>
+        <permission id="other" display='false'>其他</permission> 
+        <permission id="queue_manager">队列管理</permission>
+        <permission id="url_set">推荐码设置</permission>
+        <permission id="self_service_menu">自服务菜单配置</permission>
+    </permissions>
+    
+    <workground name="系统设置" id="sys.config" order="600">
+    
+        <menugroup name="管理员和权限"  order="6000000">
+            <menu controller='users' action='index' permission='sys_users' display='true' order='6000700'>员工账号设置</menu>
+            <menu controller='roles' action='index' permission='sys_roles' display='true' order='6000800'>角色管理</menu>
+            <!--menu controller='matrix' action='index' permission='set_matrix_switch' display='true' order='6000900'>开启矩阵私有化</menu-->
+        </menugroup>
+        
+         <menugroup name="队列管理" order="6003000">
+            <menu controller='redisqueue' action='queue' permission='queue_manager' display='true' order='6001310'>队列视图</menu>
+            <menu controller='surveillance' action='show' permission='queue_manager' display='true' order='6001320'>平台监控</menu>
+        </menugroup>
+        
+        <menugroup name="基础设置" order="6005000">
+            <menu controller='users' action='recommend_link_set' permission='url_set' display='true' order='6005800'>推荐码信息设置</menu>
+            <menu controller='users' action='self_service_menu' permission='self_service_menu' display='true' order='6005900'>自服务菜单配置</menu>
+        </menugroup>
+        
+    </workground>
+
+</desktop>
